@@ -1,0 +1,19 @@
+---
+
+namespace: ansibleguy
+name: opnsense
+version: 1.0.0
+readme: 'README.md'
+authors:
+- 'AnsibleGuy <guy@ansibleguy.net>'
+description: your collection description
+license:
+- 'GPLv3'
+license_file: 'LICENSE.txt'
+tags: []
+dependencies: {}
+repository: http://example.com/repository
+documentation: http://docs.example.com
+homepage: http://example.com
+issues: http://example.com/issue/tracker
+build_ignore: []
