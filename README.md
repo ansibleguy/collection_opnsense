@@ -18,8 +18,6 @@ Then - install the collection itself:
 
 ```bash
 ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
-# or
-ansible-galaxy install -r ansibleguy_opnsense.yml
 ```
 
 

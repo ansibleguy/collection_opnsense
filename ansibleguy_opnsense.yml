@@ -1,6 +1,0 @@
----
-
-collections:
-  - name: 'https://github.com/ansibleguy/collection_opnsense.git'
-    type: 'git'
-    version: 'stable'
