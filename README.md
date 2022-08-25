@@ -26,6 +26,12 @@ ansible-galaxy collection install ansibleguy.opnsense
 
 ## Usage
 
+### Prerequisites
+
+You need to create API credentials as described in [the documentation](https://docs.opnsense.org/development/how-tos/api.html#creating-keys).
+
+**Menu**: System - Access - Users - Edit {admin user} - Add api key
+
 ### Basics
 
 If some parameters will be the same every time - use 'module_defaults':
@@ -36,6 +42,10 @@ If some parameters will be the same every time - use 'module_defaults':
     ansibleguy.opnsense.alias:
         firewall: 'opnsense.template.ansibleguy.net'
         api_credential_file: '/home/guy/.secret/opn.key'
+        # if you use an internal certificate:
+        #   ssl_ca_file: '/etc/ssl/certs/custom/ca.crt'
+        # else you COULD (but SHOULD NOT) use:
+        #   ssl_verify: false
 
   tasks:
     - name: Example
