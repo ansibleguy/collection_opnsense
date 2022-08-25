@@ -2,7 +2,7 @@ import httpx
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api_helper import check_host, ssl_verification, check_response, get_params_path
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api_helper import check_host, ssl_verification, check_response, get_params_path, debug_output
 
 
 class Session:
@@ -13,35 +13,56 @@ class Session:
     def start(self):
         check_host(module=self.m)
         return httpx.Client(
-            base_url=f"https://{self.m.params['host']}/api",
+            base_url=f"https://{self.m.params['firewall']}/api",
             auth=(self.m.params['api_key'], self.m.params['api_secret']),
             verify=ssl_verification(module=self.m),
         )
 
     def get(self, call_config: dict) -> dict:
         params_path = get_params_path(call_config=call_config)
-        return check_response(
+        call_url = f"{call_config['module']}/{call_config['controller']}/{call_config['command']}{params_path}"
+
+        debug_output(
+            module=self.m,
+            msg=f"REQUEST: GET | URL: {self.s.base_url}{call_url}"
+        )
+
+        response = check_response(
             module=self.m,
             call_config=call_config,
-            response=self.s.get(f"/{call_config['module']}/{call_config['controller']}/{call_config['command']}{params_path}").json()
+            response=self.s.get(call_url).json()
         )
+
+        debug_output(module=self.m, msg=f"{response}")
+        return response
 
     def post(self, call_config: dict) -> dict:
         headers = {}
+        data = None
 
-        if call_config['data'] is not None and len(call_config['data']) > 0:
+        if 'data' in call_config and call_config['data'] is not None and len(call_config['data']) > 0:
             headers = {'Content-Type': 'application/json'}
+            data = call_config['data']
 
         params_path = get_params_path(call_config=call_config)
+        call_url = f"{call_config['module']}/{call_config['controller']}/{call_config['command']}{params_path}"
 
-        return check_response(
+        debug_output(
+            module=self.m,
+            msg=f"REQUEST: POST | "
+                f"HEADERS: '{headers}' | "
+                f"URL: {self.s.base_url}{call_url} | "
+                f"DATA: {data}"
+        )
+
+        response = check_response(
             module=self.m,
             call_config=call_config,
-            response=self.s.post(
-                f"/{call_config['module']}/{call_config['controller']}/{call_config['command']}{params_path}",
-                data=call_config['data'], headers=headers,
-            ).json()
+            response=self.s.post(call_url, json=data, headers=headers).json()
         )
+
+        debug_output(module=self.m, msg=f"{response}")
+        return response
 
     def close(self):
         self.s.close()
@@ -50,15 +71,25 @@ class Session:
 def single_get(module: AnsibleModule, call_config: dict) -> dict:
     check_host(module=module)
     params_path = get_params_path(call_config=call_config)
-    return check_response(
+    call_url = f"https://{call_config['firewall']}/api/{call_config['module']}/{call_config['controller']}/{call_config['command']}{params_path}"
+
+    debug_output(
+        module=module,
+        msg=f"REQUEST: GET | URL: {call_url}"
+    )
+
+    response = check_response(
         module=module,
         call_config=call_config,
         response=httpx.get(
-            f"https://{call_config['host']}/api/{call_config['module']}/{call_config['controller']}/{call_config['command']}{params_path}",
+            call_url,
             auth=(call_config['api_key'], call_config['api_secret']),
             verify=ssl_verification(module=module),
         ).json()
     )
+
+    debug_output(module=module, msg=f"{response}")
+    return response
 
 
 def single_post(module: AnsibleModule, call_config: dict) -> dict:
@@ -69,13 +100,25 @@ def single_post(module: AnsibleModule, call_config: dict) -> dict:
         headers = {'Content-Type': 'application/json'}
 
     params_path = get_params_path(call_config=call_config)
+    call_url = f"https://{call_config['firewall']}/api/{call_config['module']}/{call_config['controller']}/{call_config['command']}{params_path}"
 
-    return check_response(
+    debug_output(
+        module=module,
+        msg=f"REQUEST: POST | "
+            f"HEADERS: '{headers}' | "
+            f"URL: {call_url} | "
+            f"DATA: {call_config['data']}"
+    )
+
+    response = check_response(
         module=module,
         call_config=call_config,
         response=httpx.post(
-            f"https://{call_config['host']}/api/{call_config['module']}/{call_config['controller']}/{call_config['command']}{params_path}",
+            call_url,
             auth=(call_config['api_key'], call_config['api_secret']), verify=ssl_verification(module=module),
-            data=call_config['data'], headers=headers,
+            json=call_config['data'], headers=headers,
         ).json()
     )
+
+    debug_output(module=module, msg=f"{response}")
+    return response

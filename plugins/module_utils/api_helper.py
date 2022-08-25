@@ -41,8 +41,8 @@ def is_ip(host: str) -> bool:
 
 
 def check_host(module: AnsibleModule) -> None:
-    if not is_ip(module.params['host']) and not domain(module.params['host']):
-        module.fail_json(f"Host '{module.params['host']}' is neither a valid IP nor Domain-Name!")
+    if not is_ip(module.params['firewall']) and not domain(module.params['firewall']):
+        module.fail_json(f"Host '{module.params['firewall']}' is neither a valid IP nor Domain-Name!")
 
 
 def ssl_verification(module: AnsibleModule) -> (ssl.SSLContext, bool):
@@ -60,17 +60,20 @@ def ssl_verification(module: AnsibleModule) -> (ssl.SSLContext, bool):
 def check_response(module: AnsibleModule, call_config: dict, response: dict) -> dict:
     if ('status' in response and response['status'] not in call_config['allowed_http_stati']) or \
             ('result' in response and response['result'] == 'failed'):
-        msg1 = f" => '{response['message']}'" if 'message' in response else ''
-        msg2 = f" with response: {response['status']}{msg1}" if 'status' in response else ''
-        module.fail_json(msg=f"API call failed{msg2} | Raw response: {response}")
+        module.fail_json(msg=f"API call failed | Response: {response}")
     return response
 
 
 def get_params_path(call_config: dict) -> str:
     params_path = ''
 
-    if call_config['params'] is not None:
+    if 'params' in call_config and call_config['params'] is not None:
         for param in call_config['params']:
             params_path += f"/{param}"
 
     return params_path
+
+
+def debug_output(module: AnsibleModule, msg: str):
+    if 'debug' in module.params and module.params['debug']:
+        module.warn(msg)

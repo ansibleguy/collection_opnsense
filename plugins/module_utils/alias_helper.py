@@ -1,31 +1,13 @@
-from collections import Counter
 import validators
 from ipaddress import ip_address, ip_network
 
 from ansible.module_utils.basic import AnsibleModule
 
 
-def get_only_values(rows: list) -> list:
-    values = []
-
-    for row in rows:
-        if type(row) == dict:
-            values.extend(row.values())
-
-        else:
-            values.append(row)
-
-    return values
-
-
-def alias_changed(existing: list, configured: list) -> bool:
-    return Counter(get_only_values(existing)) != Counter(configured)
-
-
 def validate_values(module: AnsibleModule) -> None:
     v_type = module.params['type']
 
-    for value in module.params['values']:
+    for value in module.params['content']:
         error = f"Value '{value}' is invalid for type '{v_type}'!"
         if v_type == 'host':
             try:
@@ -57,3 +39,19 @@ def validate_values(module: AnsibleModule) -> None:
         elif v_type in ['url', 'urltable']:
             if not validators.url(value):
                 module.fail_json(error)
+
+
+def get_alias(name: str, aliases: list) -> dict:
+    alias = {}
+
+    for existing in aliases:
+        if existing['name'] == name:
+            alias = existing
+            break
+
+    return alias
+
+
+def equal_type(existing: str, configured: str) -> bool:
+    e = existing.lower().replace(' ', '').split('(', 1)[0]
+    return configured == e

@@ -1,7 +1,5 @@
 # Ansible Collection - ansibleguy.opnsense
 
-### ROLE IN EARLY DEVELOPMENT - DO NOT USE IN PRODUCTION!!
-
 ## Requirements
 
 The [httpx python module](https://www.python-httpx.org/) is used for API communications!
@@ -19,33 +17,46 @@ python3 -m pip install validators
 Then - install the collection itself:
 
 ```bash
+# may be a newer version
+ansible-galaxy install -r ansibleguy_opnsense.yml
+# or
 ansible-galaxy collection install ansibleguy.opnsense
 ```
 
 
 ## Usage
 
-### Aliases
+### Basics
+
+If some parameters will be the same every time - use 'module_defaults':
 
 ```yaml
 - hosts: localhost
-  tasks:
-    - name: Adding a simple alias
-      ansibleguy.opnsense.alias:
-        host: 'opnsense.template.ansibleguy.net'
+  module_defaults:
+    ansibleguy.opnsense.alias:
+        firewall: 'opnsense.template.ansibleguy.net'
         api_credential_file: '/home/guy/.secret/opn.key'
-        name: 'ANSIBLE_TEST1'
-        description: 'just a test'
-        values: ['1.1.1.1']
-        state: 'present'
-        # type: 'host'  # default
-        # ssl_ca_file: '/etc/ssl/certs/custom/ca.crt'
-        # ssl_verify: False
-        # api_key: !vault ...  # alternative to 'api_credential_file'
-        # api_secret: !vault ...
 
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST1'
+        content: ['1.1.1.1']
 ```
 
+### Alias
+
+See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md)
+
+State: stable
+
+### Multi-Alias
+
+Faster if you need/want to mass-manage aliases.
+
+See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md)
+
+State: unstable
 
 ## Development
 
@@ -59,10 +70,47 @@ One can choose to either:
 
   p.e. _check current state => create/update/delete_)
 
+  ```python3
+  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api_base import Session
+  session = Session(module=module)
+  session.get(call_config={'controller': 'alias', 'command': 'addItem', 'data': {'name': 'dummy', ...}})
+  session.post(call_config={'controller': 'alias', 'command': 'delItem', 'params': [uuid]})
+  session.close()
+  ```
 
 - use a single call - if only one is needed
 
   p.e. toggle a cronjob or restart a service
 
+  ```python3
+  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api_base import single_get, single_post
+  single_get(
+      module=module, 
+      call_config={'controller': 'alias', 'command': 'addItem', 'data': {'name': 'dummy', ...}}
+  )
+  single_post(
+      module=module, 
+      call_config={'controller': 'alias', 'command': 'delItem', 'params': [uuid]}
+  )
+  ```
 
-For simplicity - the base functions only use the 'params' of the AnsibleModule object for their config.
+For the controller/command/params/data definition - check the [OPNSense API Docs](https://docs.opnsense.org/development/api.html#core-api)!
+
+
+### Debugging
+
+If you want to output something to ansible's runtime - use 'module.warn':
+
+```python3
+module.warn(f"{before} != {after}")
+```
+
+You can also add the 'debug' argument to the modules to allow verbose output for the api requests. 
+
+```python3
+module_args = dict(
+    debug=dict(type='bool', required=False, default=False),
+    ...
+)
+```
+
