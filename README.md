@@ -17,10 +17,9 @@ python3 -m pip install validators
 Then - install the collection itself:
 
 ```bash
-# may be a newer version
-ansible-galaxy install -r ansibleguy_opnsense.yml
+ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
 # or
-ansible-galaxy collection install ansibleguy.opnsense
+ansible-galaxy install -r ansibleguy_opnsense.yml
 ```
 
 
