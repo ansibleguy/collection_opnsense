@@ -11,8 +11,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
 
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md'
+DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md'
+EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md'
 
 
 def run_module():
