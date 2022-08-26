@@ -65,6 +65,17 @@ If some parameters will be the same every time - use 'module_defaults':
         content: ['1.1.1.1']
 ```
 
+#### Inventory
+
+If you are running the modules over hosts in your inventory - you would do it like that:
+
+```yaml
+- hosts: firewalls
+  connection: local  # execute modules on controller
+  gather_facts: no
+  ...
+```
+
 #### Vault
 
 You may want to use '**ansible-vault**' to **encrypt** your 'api_credential_file' or 'api_secret'

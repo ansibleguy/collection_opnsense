@@ -1,10 +1,10 @@
 ---
 
-- name: Alias stati
+- name: Testing Alias stati
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.multi_alias:
+    ansibleguy.opnsense.alias:
       firewall: 'opn-test.local'
       api_credential_file: '/home/tester/.secret/opn.key'
       ssl_verify: false
@@ -43,6 +43,13 @@
       failed_when: >
         not opn4.changed or
         opn4.failed
+
+    - name: Changing to other type - invalid
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST1'
+        content: ['https://test.ansibleguy.net']
+      register: opn9
+      failed_when: not opn9.failed
 
     - name: Disabling
       ansibleguy.opnsense.alias:
@@ -87,11 +94,11 @@
         not opn4.changed or
         opn4.failed
 
-- name: Alias types
+- name: Testing Alias types
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.multi_alias:
+    ansibleguy.opnsense.alias:
       firewall: 'opn-test.local'
       api_credential_file: '/home/tester/.secret/opn.key'
       ssl_verify: false
@@ -164,7 +171,7 @@
         name: 'ANSIBLE_TEST2_PORT3'
         type: 'port'
         content: "{{ item }}"
-      register: opnnet1
+      register: opnport1
       failed_when: not opnport1.failed
       loop:
         - ['70000']
@@ -198,19 +205,19 @@
 
     - name: Adding urltable
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_URL1'
+        name: 'ANSIBLE_TEST2_URLTABLE1'
         type: 'urltable'
         content: ['https://www.spamhaus.org/drop/drop.txt']
 
-    - name: Adding multiple urls
+    - name: Adding multiple urltables
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_URL2'
+        name: 'ANSIBLE_TEST2_URLTABLE2'
         type: 'urltable'
         content: ['https://www.spamhaus.org/drop/drop.txt', 'https://www.spamhaus.org/drop/edrop.txt']
 
-    - name: Adding invalid url
+    - name: Adding invalid urltable
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_URL3'
+        name: 'ANSIBLE_TEST2_URLTABLE3'
         type: 'urltable'
         content: "{{ item }}"
       register: opnurltable1
@@ -218,3 +225,28 @@
       loop:
         - ['httks://test.ansibleguy.net']
         #        - ['https://ansibleguy.net']  # not an urltable
+
+    # cleanup
+
+    - name: Cleanup
+      ansibleguy.opnsense.alias:
+        name: "{{ item }}"
+        state: 'absent'
+      register: opntypecleanup
+      diff: false
+      loop:
+        - 'ANSIBLE_TEST2_URLTABLE3'
+        - 'ANSIBLE_TEST2_URLTABLE2'
+        - 'ANSIBLE_TEST2_URLTABLE1'
+        - 'ANSIBLE_TEST2_URL1'
+        - 'ANSIBLE_TEST2_URL2'
+        - 'ANSIBLE_TEST2_URL3'
+        - 'ANSIBLE_TEST2_PORT1'
+        - 'ANSIBLE_TEST2_PORT2'
+        - 'ANSIBLE_TEST2_PORT3'
+        - 'ANSIBLE_TEST2_NET1'
+        - 'ANSIBLE_TEST2_NET2'
+        - 'ANSIBLE_TEST2_NET3'
+        - 'ANSIBLE_TEST2_HOST1'
+        - 'ANSIBLE_TEST2_HOST2'
+        - 'ANSIBLE_TEST2_HOST3'
