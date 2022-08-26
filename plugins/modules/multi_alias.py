@@ -4,6 +4,12 @@
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.arg_spec import ModuleArgumentSpecValidator
+
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_DEFAULTS, ALIAS_MOD_ARGS
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
+
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md'
@@ -17,56 +23,107 @@ def run_module():
         api_secret=dict(type='str', required=False, no_log=True),
         api_credential_file=dict(type='str', required=False),
         ssl_verify=dict(type='bool', required=False, default=True),
+        ssl_ca_file=dict(type='str', required=False),
+        fail_verification=dict(
+            type='bool', required=False, default=False,
+            description='Fail module if single alias fails the verification.'
+        ),
         debug=dict(type='bool', required=False, default=False),
-        # todo: updatefreq not yet working (used by 'urltable')
-        # updatefreq_days=dict(type='int', required=False),
     )
 
-    # result = dict(
-    #     changed=False,
-    #     diff={
-    #         'before': {},
-    #         'after': {},
-    #     }
-    # )
+    result = dict(
+        changed=False,
+        diff={
+            'before': {},
+            'after': {},
+        }
+    )
 
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
     )
 
-    # # static defaults
-    # module.params.update({
-    #     'module': 'firewall',
-    #     'controller': 'alias',
-    #     'allowed_http_stati': [200, 'done'],
-    # })
-    # if module.params['updatefreq_days'] is None:
-    #     module.params['updatefreq_days'] = ''
+    validator = ModuleArgumentSpecValidator(ALIAS_MOD_ARGS,
+                                            module.mutually_exclusive,
+                                            module.required_together,
+                                            module.required_one_of,
+                                            module.required_if,
+                                            module.required_by)
 
-    # alias = Alias(module=module, result=result)
-    # if module.params['state'] == 'absent':
-    #     if alias.exists:
-    #         alias.delete()
-    #
-    # else:
-    #     if module.params['content'] is not None and len(module.params['content']) > 0:
-    #         if alias.exists:
-    #             alias.update()
-    #
-    #         else:
-    #             alias.create()
-    #
-    #     # dis-/enabling
-    #     if alias.exists:
-    #         if module.params['enabled']:
-    #             alias.enable()
-    #
-    #         else:
-    #             alias.disable()
-    # alias.s.close()
-    # module.exit_json(**result)
-    module.fail_json('Not yet implemented - sorry!')
+    session = Session(module=module)
+    existing_aliases = Alias(module=module, session=session, result={}).pull_call()
+
+    for _name, _config in module.params['aliases'].items():
+        # build config and validate it the same way the module initialization would do
+        alias_cnf = {
+            **ALIAS_DEFAULTS,
+            **{
+                'name': _name,
+                'firewall': module.params['firewall']
+            },
+            **_config
+        }
+        validation_result = validator.validate(parameters=alias_cnf)
+
+        try:
+            validation_error = validation_result.errors[0]
+
+        except IndexError:
+            validation_error = None
+
+        if validation_error:
+            error_msg = validation_result.errors.msg
+            if module.params['fail_verification']:
+                module.fail_json(f"Got invalid config for alias '{_name}': {error_msg}")
+
+            else:
+                module.warn(f"Got invalid config for alias '{_name}': {error_msg}")
+
+        else:
+            # process single alias like in the 'alias' module
+            alias_result = dict(
+                changed=False,
+                diff={
+                    'before': {},
+                    'after': {},
+                }
+            )
+            alias = Alias(
+                module=module,
+                result=alias_result,
+                cnf=alias_cnf,
+                session=session,
+                fail=module.params['fail_verification'],
+            )
+
+            alias.check(existing_aliases=existing_aliases)
+            if alias.cnf['state'] == 'absent':
+                if alias.exists:
+                    alias.delete()
+
+            else:
+                if alias.cnf['content'] is not None and len(alias.cnf['content']) > 0:
+                    if alias.exists:
+                        alias.update()
+
+                    else:
+                        alias.create()
+
+                if alias.exists:
+                    if alias.cnf['enabled']:
+                        alias.enable()
+
+                    else:
+                        alias.disable()
+
+            if alias_result['changed']:
+                result['changed'] = True
+                result['diff']['before'].update(alias_result['diff']['before'])
+                result['diff']['after'].update(alias_result['diff']['after'])
+
+    session.close()
+    module.exit_json(**result)
 
 
 def main():

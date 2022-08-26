@@ -4,10 +4,11 @@ This module allows you to manage single aliases.
 
 If you want to mass-manage aliases - take a look at the [multi_alias](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md) module. It is faster for that use-case!
 
-STATE: stable
+STATE: testing - but usable
 
 ```yaml
 - hosts: localhost
+  gather_facts: no
   tasks:
     - name: Example
       ansibleguy.opnsense.alias:

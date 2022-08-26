@@ -1,0 +1,11 @@
+---
+
+skip_list:
+  - 'var-naming'
+  - 'no-handler'
+  - '503'  # no-handler code
+  - 'role-name'
+  - '106'
+  - 'ignore-errors'
+  - 'yaml'
+  - '204'  # line length => checked by yamllint

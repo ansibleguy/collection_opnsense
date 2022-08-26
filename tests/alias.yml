@@ -1,0 +1,220 @@
+---
+
+- name: Alias stati
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.multi_alias:
+      firewall: 'opn-test.local'
+      api_credential_file: '/home/tester/.secret/opn.key'
+      ssl_verify: false
+
+  tasks:
+    - name: Removing - does not exist
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST1'
+        state: 'absent'
+      register: opn1
+      failed_when: opn1.changed
+
+    - name: Adding
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST1'
+        content: ['1.1.1.1']
+      register: opn2
+      failed_when: >
+        not opn2.changed or
+        opn2.failed
+
+    - name: Nothing changed
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST1'
+        content: ['1.1.1.1']
+      register: opn3
+      failed_when: >
+        opn3.changed or
+        opn3.failed
+
+    - name: Changing
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST1'
+        content: ['1.1.1.2', '1.1.1.3']
+      register: opn4
+      failed_when: >
+        not opn4.changed or
+        opn4.failed
+
+    - name: Disabling
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST1'
+        enabled: false
+      register: opn5
+      failed_when: >
+        not opn5.changed or
+        opn5.failed
+
+    - name: Disabling - nothing changed
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST1'
+        enabled: false
+      register: opn8
+      failed_when: >
+        opn8.changed or
+        opn8.failed
+
+    - name: Enabling
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST1'
+      register: opn6
+      failed_when: >
+        not opn6.changed or
+        opn6.failed
+
+    - name: Enabling - nothing changed
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST1'
+      register: opn7
+      failed_when: >
+        opn7.changed or
+        opn7.failed
+
+    - name: Removing
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST1'
+        state: 'absent'
+      register: opn4
+      failed_when: >
+        not opn4.changed or
+        opn4.failed
+
+- name: Alias types
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.multi_alias:
+      firewall: 'opn-test.local'
+      api_credential_file: '/home/tester/.secret/opn.key'
+      ssl_verify: false
+
+  tasks:
+    # hosts
+
+    - name: Adding single host
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_HOST1'
+        type: 'host'
+        content: ['1.1.1.1']
+
+    - name: Adding multiple hosts
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_HOST2'
+        type: 'host'
+        content: ['1.1.1.1', '1.1.1.2']
+
+    - name: Adding invalid host
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_HOST3'
+        type: 'host'
+        content: "{{ item }}"
+      register: opnhost1
+      failed_when: not opnhost1.failed
+      loop:
+        - ['1.1.1.n']
+
+    # networks
+
+    - name: Adding network
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_NET1'
+        type: 'network'
+        content: ['192.168.0.0/24']
+
+    - name: Adding multiple networks
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_NET2'
+        type: 'network'
+        content: ['192.168.0.0/24', '192.168.1.0/24']
+
+    - name: Adding invalid network
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_NET3'
+        type: 'network'
+        content: "{{ item }}"
+      register: opnnet1
+      failed_when: not opnnet1.failed
+      loop:
+        - ['192.168.0.0/240']
+
+    # ports
+
+    - name: Adding port
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_PORT1'
+        type: 'port'
+        content: ['9000']
+
+    - name: Adding multiple ports
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_PORT2'
+        type: 'port'
+        content: ['80', '443']
+
+    - name: Adding invalid port
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_PORT3'
+        type: 'port'
+        content: "{{ item }}"
+      register: opnnet1
+      failed_when: not opnport1.failed
+      loop:
+        - ['70000']
+
+    # urls
+
+    - name: Adding url
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_URL1'
+        type: 'url'
+        content: ['https://ansibleguy.net']
+
+    - name: Adding multiple urls
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_URL2'
+        type: 'url'
+        content: ['https://template.ansibleguy.net', 'http://test.ansibleguy.net']
+
+    - name: Adding invalid url
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_URL3'
+        type: 'url'
+        content: "{{ item }}"
+      register: opnurl1
+      failed_when: not opnurl1.failed
+      loop:
+        - ['httks://test.ansibleguy.net']
+        - ['test.ansibleguy.net']
+
+    # urltable
+
+    - name: Adding urltable
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_URL1'
+        type: 'urltable'
+        content: ['https://www.spamhaus.org/drop/drop.txt']
+
+    - name: Adding multiple urls
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_URL2'
+        type: 'urltable'
+        content: ['https://www.spamhaus.org/drop/drop.txt', 'https://www.spamhaus.org/drop/edrop.txt']
+
+    - name: Adding invalid url
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST2_URL3'
+        type: 'urltable'
+        content: "{{ item }}"
+      register: opnurltable1
+      failed_when: not opnurltable1.failed
+      loop:
+        - ['httks://test.ansibleguy.net']
+        #        - ['https://ansibleguy.net']  # not an urltable

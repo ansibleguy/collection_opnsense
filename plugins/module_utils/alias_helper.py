@@ -1,13 +1,11 @@
-import validators
 from ipaddress import ip_address, ip_network
+import validators
 
-from ansible.module_utils.basic import AnsibleModule
 
+def validate_values(error_func, cnf: dict) -> None:
+    v_type = cnf['type']
 
-def validate_values(module: AnsibleModule) -> None:
-    v_type = module.params['type']
-
-    for value in module.params['content']:
+    for value in cnf['content']:
         error = f"Value '{value}' is invalid for type '{v_type}'!"
         if v_type == 'host':
             try:
@@ -15,30 +13,30 @@ def validate_values(module: AnsibleModule) -> None:
 
             except ValueError:
                 if not validators.domain(value):
-                    module.fail_json(error)
+                    error_func(error)
 
         elif v_type == 'network':
             try:
                 ip_network(value)
 
             except ValueError:
-                module.fail_json(error)
+                error_func(error)
 
         elif v_type == 'port':
             try:
                 if not validators.between(int(value), 1, 65535):
-                    module.fail_json(error)
+                    error_func(error)
 
             except ValueError:
-                module.fail_json(error)
+                error_func(error)
 
         elif v_type == 'mac':
             if not validators.mac_address(value):
-                module.fail_json(error)
+                error_func(error)
 
         elif v_type in ['url', 'urltable']:
             if not validators.url(value):
-                module.fail_json(error)
+                error_func(error)
 
 
 def get_alias(name: str, aliases: list) -> dict:

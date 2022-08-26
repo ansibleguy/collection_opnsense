@@ -1,5 +1,8 @@
 # Ansible Collection - ansibleguy.opnsense
 
+[![Functional Test Status](https://badges.ansibleguy.net/opnsense.collection.test.svg)](https://github.com/ansibleguy/collection_opnsense/blob/stable/scripts/test.sh)
+[![Lint Test Status](https://badges.ansibleguy.net/opnsense.collection.lint.svg)](https://github.com/ansibleguy/collection_opnsense/blob/stable/scripts/lint.sh)
+
 ## Requirements
 
 The [httpx python module](https://www.python-httpx.org/) is used for API communications!
@@ -18,8 +21,16 @@ Then - install the collection itself:
 
 ```bash
 ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
+
+# or for local development
+
+cd $PLAYBOOK_DIR
+mkdir -p collections/ansible_collections/ansibleguy/opnsense
+cd collections/ansible_collections/ansibleguy/opnsense
+git clone https://github.com/ansibleguy/collection_opnsense.git
 ```
 
+---
 
 ## Usage
 
@@ -31,10 +42,13 @@ You need to create API credentials as described in [the documentation](https://d
 
 ### Basics
 
+#### Defaults
+
 If some parameters will be the same every time - use 'module_defaults':
 
 ```yaml
 - hosts: localhost
+  gather_facts: no
   module_defaults:
     ansibleguy.opnsense.alias:
         firewall: 'opnsense.template.ansibleguy.net'
@@ -51,23 +65,54 @@ If some parameters will be the same every time - use 'module_defaults':
         content: ['1.1.1.1']
 ```
 
-### Alias
+#### Vault
+
+You may want to use '**ansible-vault**' to **encrypt** your 'api_credential_file' or 'api_secret'
+
+```bash
+ansible-vault encrypt /path/to/credential/file
+# or
+ansible-vault encrypt_string 'api_secret'
+
+# run playbook:
+ansible-playbook -D opnsense.yml --ask-vault-pass
+```
+
+#### Running
+
+These modules support check-mode and can show you the difference between existing and configured items:
+
+```bash
+# show difference
+ansible-playbook opnsense.yml -D
+
+# run in check-mode (no changes are made)
+ansible-playbook opnsense.yml --check
+```
+
+---
+
+### Modules
+
+#### Alias
 
 See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md)
 
-State: stable
+State: testing - but usable
 
-### Multi-Alias
+#### Multi-Alias
 
 Faster if you need/want to mass-manage aliases.
 
 See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md)
 
-State: unstable
+State: testing - but usable
+
+---
 
 ## Development
 
-The basic API interaction is handled in 'ansibleguy.opnsense.plugins.module_utils.api_base'.
+The basic API interaction is handled in 'ansibleguy.opnsense.plugins.module_utils.api'.
 
 I kept is pretty generic - therefore all plugins should be able to function with it!
 
@@ -78,10 +123,10 @@ One can choose to either:
   p.e. _check current state => create/update/delete_)
 
   ```python3
-  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api_base import Session
+  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
   session = Session(module=module)
-  session.get(call_config={'controller': 'alias', 'command': 'addItem', 'data': {'name': 'dummy', ...}})
-  session.post(call_config={'controller': 'alias', 'command': 'delItem', 'params': [uuid]})
+  session.get(cnf={'controller': 'alias', 'command': 'addItem', 'data': {'name': 'dummy', ...}})
+  session.post(cnf={'controller': 'alias', 'command': 'delItem', 'params': [uuid]})
   session.close()
   ```
 
@@ -90,14 +135,14 @@ One can choose to either:
   p.e. toggle a cronjob or restart a service
 
   ```python3
-  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api_base import single_get, single_post
+  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import single_get, single_post
   single_get(
       module=module, 
-      call_config={'controller': 'alias', 'command': 'addItem', 'data': {'name': 'dummy', ...}}
+      cnf={'controller': 'alias', 'command': 'addItem', 'data': {'name': 'dummy', ...}}
   )
   single_post(
       module=module, 
-      call_config={'controller': 'alias', 'command': 'delItem', 'params': [uuid]}
+      cnf={'controller': 'alias', 'command': 'delItem', 'params': [uuid]}
   )
   ```
 
