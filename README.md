@@ -28,10 +28,10 @@ ansible-galaxy collection install git+https://github.com/ansibleguy/collection_o
 
 # or for local development
 
-cd $PLAYBOOK_DIR
-mkdir -p collections/ansible_collections/ansibleguy/opnsense
-cd collections/ansible_collections/ansibleguy/opnsense
+mkdir -p $PLAYBOOK_DIR/collections/ansible_collections/ansibleguy/opnsense
+cd /tmp
 git clone https://github.com/ansibleguy/collection_opnsense.git
+mv collection_opnsense/* $PLAYBOOK_DIR/collections/ansible_collections/ansibleguy/opnsense
 ```
 
 ---

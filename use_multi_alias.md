@@ -1,10 +1,17 @@
 # OPNSense - Multi-Alias module
 
+**STATE**: testing - but usable
+
 This module allows you to manage multiple aliases.
 
-Each alias has the attributes as defined in the [alias](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md) module!
+It is faster than the 'alias' module as it reduces the needed api/http calls.
 
-STATE: testing - but usable
+**Config**:
+
+- Each alias has the attributes as defined in the [alias](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md) module
+
+- To ensure valid configuration - the attributes of each alias get verified using ansible's built-in verifier
+
 
 ```yaml
 - hosts: localhost
