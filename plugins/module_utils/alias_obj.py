@@ -99,6 +99,9 @@ class Alias:
             self.r['diff']['before'] = {self.cnf['name']: _before}
             self.r['diff']['after'] = {self.cnf['name']: _after}
 
+            if self.m.params['debug'] and self.r['changed']:
+                self.m.warn(self.r['diff'])
+
             if self.r['changed'] and not self.m.check_mode:
                 # updating alias
                 self.s.post(cnf={
@@ -134,6 +137,9 @@ class Alias:
 
         if self.r['changed']:
             self.r['diff']['before'] = {self.cnf['name']: self.alias['content'].split(',')}
+
+            if self.m.params['debug']:
+                self.m.warn(self.r['diff'])
 
     def _delete_call(self) -> dict:
         return self.s.post(cnf={

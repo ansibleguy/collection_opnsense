@@ -34,6 +34,7 @@
       failed_when: >
         opn3.changed or
         opn3.failed
+      when: not ansible_check_mode
 
     - name: Changing
       ansibleguy.opnsense.alias:
@@ -59,6 +60,7 @@
       failed_when: >
         not opn5.changed or
         opn5.failed
+      when: not ansible_check_mode  # will not work if does not exist
 
     - name: Disabling - nothing changed
       ansibleguy.opnsense.alias:
@@ -68,6 +70,7 @@
       failed_when: >
         opn8.changed or
         opn8.failed
+      when: not ansible_check_mode
 
     - name: Enabling
       ansibleguy.opnsense.alias:
@@ -76,6 +79,7 @@
       failed_when: >
         not opn6.changed or
         opn6.failed
+      when: not ansible_check_mode  # will not work if does not exist
 
     - name: Enabling - nothing changed
       ansibleguy.opnsense.alias:
@@ -84,6 +88,7 @@
       failed_when: >
         opn7.changed or
         opn7.failed
+      when: not ansible_check_mode
 
     - name: Removing
       ansibleguy.opnsense.alias:
@@ -93,6 +98,7 @@
       failed_when: >
         not opn4.changed or
         opn4.failed
+      when: not ansible_check_mode
 
 - name: Testing Alias types
   hosts: localhost
