@@ -2,6 +2,11 @@
 
 set -e
 
+if [ -n "$1" ]
+then
+  source "$1"
+fi
+
 cd "$(dirname "$0")/.."
 rm -rf '~/.ansible/collections/ansible_collections/ansibleguy/opnsense'
 ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
