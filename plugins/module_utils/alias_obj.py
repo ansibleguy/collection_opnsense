@@ -21,7 +21,6 @@ class Alias:
         self.fail = fail
         self.exists = False
         self.alias = None
-        self.uuid = None
         self.call_cnf = {  # config shared by all calls
             'module': 'firewall',
             'controller': 'alias',
@@ -36,10 +35,8 @@ class Alias:
         self.alias = get_alias(aliases=existing_aliases['rows'], name=self.cnf['name'])
         self.exists = len(self.alias) > 0
         if self.exists:
-            self.uuid = self._uuid_call()
-
             self.call_cnf.update({
-                'params': [self.uuid],
+                'params': [self.alias['uuid']],
             })
 
         if not self.exists and self.cnf['state'] == 'present':
@@ -59,14 +56,6 @@ class Alias:
         return self.s.get(cnf={
             **self.call_cnf, **{'command': 'searchItem'}
         })
-
-    def _uuid_call(self) -> str:
-        return self.s.get(cnf={
-            **self.call_cnf, **{
-                'command': 'getAliasUUID',
-                'params': [self.cnf['name']],
-            }
-        })['uuid']
 
     def create(self):
         # creating alias
@@ -162,7 +151,7 @@ class Alias:
         self.s.post(cnf={
             **self.call_cnf, **{
                 'command': 'toggleItem',
-                'params': [self.uuid, 1],
+                'params': [self.alias['uuid'], 1],
             }
         })
 
@@ -179,6 +168,6 @@ class Alias:
         self.s.post(cnf={
             **self.call_cnf, **{
                 'command': 'toggleItem',
-                'params': [self.uuid, 0],
+                'params': [self.alias['uuid'], 0],
             }
         })

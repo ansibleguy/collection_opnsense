@@ -69,6 +69,9 @@ def ssl_verification(module: AnsibleModule) -> (ssl.SSLContext, bool):
 
 
 def check_response(module: AnsibleModule, cnf: dict, response: dict) -> dict:
+    if 'allowed_http_stati' not in cnf:
+        cnf['allowed_http_stati'] = [200, 'done']
+
     if ('status' in response and response['status'] not in cnf['allowed_http_stati']) or \
             ('result' in response and response['result'] == 'failed'):
         module.fail_json(msg=f"API call failed | Response: {response}")
