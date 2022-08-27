@@ -1,0 +1,116 @@
+---
+
+- name: Testing Multiple Aliases
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.multi_alias:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Removing - do not exist
+      ansibleguy.opnsense.multi_alias:
+        aliases:
+          ANSIBLE_TEST_2_1:
+          ANSIBLE_TEST_2_2:
+          ANSIBLE_TEST_2_3:
+          ANSIBLE_TEST_2_4:
+          ANSIBLE_TEST_2_5:
+          ANSIBLE_TEST_2_6:
+          ANSIBLE_TEST_2_7:
+          ANSIBLE_TEST_2_8:
+          ANSIBLE_TEST_2_9:
+          ANSIBLE_TEST_2_10:
+      state: 'absent'
+      register: opn1
+      failed_when: opn1.changed
+
+    - name: Adding
+      ansibleguy.opnsense.multi_alias:
+        aliases:
+          # hosts
+          ANSIBLE_TEST_2_1:
+            content: '192.168.1.1'
+          ANSIBLE_TEST_2_2:
+            content: ['192.168.1.1', '192.168.1.2']
+
+          # networks
+          ANSIBLE_TEST_2_3:
+            type: 'network'
+            content: '192.168.1.0/24'
+          ANSIBLE_TEST_2_4:
+            type: 'network'
+            content: ['192.168.1.0/24', '192.168.2.0/24']
+
+          # ports
+          ANSIBLE_TEST_2_5:
+            type: 'port'
+            content: 80
+          ANSIBLE_TEST_2_6:
+            type: 'port'
+            content: [80, 443]
+
+          # urls
+          ANSIBLE_TEST_2_7:
+            type: 'url'
+            content: 'http://test.ansibleguy.net'
+
+          # urltables
+          ANSIBLE_TEST_2_8:
+            type: 'urltable'
+            content: ['https://www.spamhaus.org/drop/drop.txt', 'https://www.spamhaus.org/drop/edrop.txt']
+
+          # geoip
+          ANSIBLE_TEST_2_9:
+            type: 'geoip'
+            content: 'AT'
+          ANSIBLE_TEST_2_10:
+            type: 'geoip'
+            content: ['AT', 'DE', 'CH']
+
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+
+    - name: Changing
+      ansibleguy.opnsense.multi_alias:
+        aliases:
+          ANSIBLE_TEST_2_2:
+            content: ['192.168.1.1', '192.168.1.3']
+          ANSIBLE_TEST_2_3:
+            type: 'network'
+            content: '192.168.10.0/24'
+          ANSIBLE_TEST_2_5:
+            type: 'port'
+            content: 81
+          ANSIBLE_TEST_2_7:
+            type: 'url'
+            content: 'http://test.template.ansibleguy.net'
+          ANSIBLE_TEST_2_8:
+            type: 'urltable'
+            content: 'https://www.spamhaus.org/drop/dropv6.txt'
+          ANSIBLE_TEST_2_9:
+            type: 'geoip'
+            content: 'DE'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+
+    - name: Removing - do not exist
+      ansibleguy.opnsense.multi_alias:
+        aliases:
+          ANSIBLE_TEST_2_1:
+          ANSIBLE_TEST_2_2:
+          ANSIBLE_TEST_2_3:
+          ANSIBLE_TEST_2_4:
+          ANSIBLE_TEST_2_5:
+          ANSIBLE_TEST_2_6:
+          ANSIBLE_TEST_2_7:
+          ANSIBLE_TEST_2_8:
+          ANSIBLE_TEST_2_9:
+          ANSIBLE_TEST_2_10:
+      state: 'absent'

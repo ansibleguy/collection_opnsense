@@ -5,21 +5,21 @@
   gather_facts: no
   module_defaults:
     ansibleguy.opnsense.alias:
-      firewall: 'opn-test.local'
-      api_credential_file: '/home/tester/.secret/opn.key'
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
   tasks:
     - name: Removing - does not exist
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST1'
+        name: 'ANSIBLE_TEST_1__1_1'
         state: 'absent'
       register: opn1
       failed_when: opn1.changed
 
     - name: Adding
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST1'
+        name: 'ANSIBLE_TEST_1_1'
         content: ['1.1.1.1']
       register: opn2
       failed_when: >
@@ -28,7 +28,7 @@
 
     - name: Nothing changed
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST1'
+        name: 'ANSIBLE_TEST_1_1'
         content: ['1.1.1.1']
       register: opn3
       failed_when: >
@@ -38,7 +38,7 @@
 
     - name: Changing
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST1'
+        name: 'ANSIBLE_TEST_1_1'
         content: ['1.1.1.2', '1.1.1.3']
       register: opn4
       failed_when: >
@@ -47,14 +47,14 @@
 
     - name: Changing to other type - invalid
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST1'
+        name: 'ANSIBLE_TEST_1_1'
         content: ['https://test.ansibleguy.net']
       register: opn9
       failed_when: not opn9.failed
 
     - name: Disabling
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST1'
+        name: 'ANSIBLE_TEST_1_1'
         enabled: false
       register: opn5
       failed_when: >
@@ -64,7 +64,7 @@
 
     - name: Disabling - nothing changed
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST1'
+        name: 'ANSIBLE_TEST_1_1'
         enabled: false
       register: opn8
       failed_when: >
@@ -74,7 +74,7 @@
 
     - name: Enabling
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST1'
+        name: 'ANSIBLE_TEST_1_1'
       register: opn6
       failed_when: >
         not opn6.changed or
@@ -83,7 +83,7 @@
 
     - name: Enabling - nothing changed
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST1'
+        name: 'ANSIBLE_TEST_1_1'
       register: opn7
       failed_when: >
         opn7.changed or
@@ -92,7 +92,7 @@
 
     - name: Removing
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST1'
+        name: 'ANSIBLE_TEST_1_1'
         state: 'absent'
       register: opn4
       failed_when: >
@@ -105,8 +105,8 @@
   gather_facts: no
   module_defaults:
     ansibleguy.opnsense.alias:
-      firewall: 'opn-test.local'
-      api_credential_file: '/home/tester/.secret/opn.key'
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
   tasks:
@@ -114,19 +114,19 @@
 
     - name: Adding single host
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_HOST1'
+        name: 'ANSIBLE_TEST_1_2_HOST1'
         type: 'host'
         content: ['1.1.1.1']
 
     - name: Adding multiple hosts
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_HOST2'
+        name: 'ANSIBLE_TEST_1_2_HOST2'
         type: 'host'
         content: ['1.1.1.1', '1.1.1.2']
 
     - name: Adding invalid host
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_HOST3'
+        name: 'ANSIBLE_TEST_1_2_HOST3'
         type: 'host'
         content: "{{ item }}"
       register: opnhost1
@@ -138,19 +138,19 @@
 
     - name: Adding network
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_NET1'
+        name: 'ANSIBLE_TEST_1_2_NET1'
         type: 'network'
         content: ['192.168.0.0/24']
 
     - name: Adding multiple networks
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_NET2'
+        name: 'ANSIBLE_TEST_1_2_NET2'
         type: 'network'
         content: ['192.168.0.0/24', '192.168.1.0/24']
 
     - name: Adding invalid network
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_NET3'
+        name: 'ANSIBLE_TEST_1_2_NET3'
         type: 'network'
         content: "{{ item }}"
       register: opnnet1
@@ -162,19 +162,19 @@
 
     - name: Adding port
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_PORT1'
+        name: 'ANSIBLE_TEST_1_2_PORT1'
         type: 'port'
         content: ['9000']
 
     - name: Adding multiple ports
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_PORT2'
+        name: 'ANSIBLE_TEST_1_2_PORT2'
         type: 'port'
         content: ['80', '443']
 
     - name: Adding invalid port
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_PORT3'
+        name: 'ANSIBLE_TEST_1_2_PORT3'
         type: 'port'
         content: "{{ item }}"
       register: opnport1
@@ -186,19 +186,19 @@
 
     - name: Adding url
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_URL1'
+        name: 'ANSIBLE_TEST_1_2_URL1'
         type: 'url'
         content: ['https://ansibleguy.net']
 
     - name: Adding multiple urls
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_URL2'
+        name: 'ANSIBLE_TEST_1_2_URL2'
         type: 'url'
         content: ['https://template.ansibleguy.net', 'http://test.ansibleguy.net']
 
     - name: Adding invalid url
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_URL3'
+        name: 'ANSIBLE_TEST_1_2_URL3'
         type: 'url'
         content: "{{ item }}"
       register: opnurl1
@@ -211,19 +211,19 @@
 
     - name: Adding urltable
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_URLTABLE1'
+        name: 'ANSIBLE_TEST_1_2_URLTABLE1'
         type: 'urltable'
         content: ['https://www.spamhaus.org/drop/drop.txt']
 
     - name: Adding multiple urltables
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_URLTABLE2'
+        name: 'ANSIBLE_TEST_1_2_URLTABLE2'
         type: 'urltable'
         content: ['https://www.spamhaus.org/drop/drop.txt', 'https://www.spamhaus.org/drop/edrop.txt']
 
     - name: Adding invalid urltable
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST2_URLTABLE3'
+        name: 'ANSIBLE_TEST_1_2_URLTABLE3'
         type: 'urltable'
         content: "{{ item }}"
       register: opnurltable1
@@ -231,6 +231,30 @@
       loop:
         - ['httks://test.ansibleguy.net']
         #        - ['https://ansibleguy.net']  # not an urltable
+
+    # geoip
+
+    - name: Adding geoip
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_1_2_GEOIP1'
+        type: 'geoip'
+        content: ['AT']
+
+    - name: Adding multiple geoips
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_1_2_GEOIP2'
+        type: 'geoip'
+        content: ['AT', 'DE', 'CH']
+
+    - name: Adding invalid geoip
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_1_2_GEOIP3'
+        type: 'geoip'
+        content: "{{ item }}"
+      register: opngeoip1
+      failed_when: not opngeoip1.failed
+      loop:
+        - ['XXX']
 
     # cleanup
 
@@ -241,18 +265,21 @@
       register: opntypecleanup
       diff: false
       loop:
-        - 'ANSIBLE_TEST2_URLTABLE3'
-        - 'ANSIBLE_TEST2_URLTABLE2'
-        - 'ANSIBLE_TEST2_URLTABLE1'
-        - 'ANSIBLE_TEST2_URL1'
-        - 'ANSIBLE_TEST2_URL2'
-        - 'ANSIBLE_TEST2_URL3'
-        - 'ANSIBLE_TEST2_PORT1'
-        - 'ANSIBLE_TEST2_PORT2'
-        - 'ANSIBLE_TEST2_PORT3'
-        - 'ANSIBLE_TEST2_NET1'
-        - 'ANSIBLE_TEST2_NET2'
-        - 'ANSIBLE_TEST2_NET3'
-        - 'ANSIBLE_TEST2_HOST1'
-        - 'ANSIBLE_TEST2_HOST2'
-        - 'ANSIBLE_TEST2_HOST3'
+        - 'ANSIBLE_TEST_1_2_URLTABLE3'
+        - 'ANSIBLE_TEST_1_2_URLTABLE2'
+        - 'ANSIBLE_TEST_1_2_URLTABLE1'
+        - 'ANSIBLE_TEST_1_2_URL1'
+        - 'ANSIBLE_TEST_1_2_URL2'
+        - 'ANSIBLE_TEST_1_2_URL3'
+        - 'ANSIBLE_TEST_1_2_PORT1'
+        - 'ANSIBLE_TEST_1_2_PORT2'
+        - 'ANSIBLE_TEST_1_2_PORT3'
+        - 'ANSIBLE_TEST_1_2_NET1'
+        - 'ANSIBLE_TEST_1_2_NET2'
+        - 'ANSIBLE_TEST_1_2_NET3'
+        - 'ANSIBLE_TEST_1_2_HOST1'
+        - 'ANSIBLE_TEST_1_2_HOST2'
+        - 'ANSIBLE_TEST_1_2_HOST3'
+        - 'ANSIBLE_TEST_1_2_GEOIP1'
+        - 'ANSIBLE_TEST_1_2_GEOIP2'
+        - 'ANSIBLE_TEST_1_2_GEOIP3'

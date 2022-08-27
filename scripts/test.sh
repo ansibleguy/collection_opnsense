@@ -2,9 +2,24 @@
 
 set -e
 
-if [ -n "$1" ]
+echo ''
+
+if [ -z "$1" ] || [ -z "$2" ]
 then
-  source "$1"
+  echo 'Arguments:'
+  echo '  1: firewall'
+  echo '  2: api key file'
+  echo '  3: path to virtual environment (optional)'
+  echo ''
+  exit 1
+else
+  export TEST_FIREWALL="$1"
+  export TEST_API_KEY="$2"
+fi
+
+if [ -n "$3" ]
+then
+  source "$3/bin/activate"
 fi
 
 cd "$(dirname "$0")/.."
@@ -17,6 +32,14 @@ echo ''
 
 ansible-playbook tests/alias.yml --extra-vars="ansible_python_interpreter=$(which python)"
 ansible-playbook tests/alias.yml --check --extra-vars="ansible_python_interpreter=$(which python)"
+
+echo ''
+echo 'RUNNING TESTS for module MULTI_ALIAS'
+echo ''
+
+ansible-playbook tests/multi_alias.yml --extra-vars="ansible_python_interpreter=$(which python)"
+ansible-playbook tests/multi_alias.yml --check --extra-vars="ansible_python_interpreter=$(which python)"
+
 
 echo ''
 echo 'FINISHED TESTS!'
