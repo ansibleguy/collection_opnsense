@@ -28,9 +28,6 @@ def run_module():
         supports_check_mode=True,
     )
 
-    # if module.params['updatefreq_days'] is None:
-    #     module.params['updatefreq_days'] = ''
-
     alias = Alias(module=module, result=result)
     alias.check()
 

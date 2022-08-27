@@ -6,7 +6,7 @@
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.arg_spec import ModuleArgumentSpecValidator
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty, ensure_list
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_DEFAULTS, ALIAS_MOD_ARGS
@@ -62,6 +62,7 @@ def run_module():
 
     for _name, _config in module.params['aliases'].items():
         # build config and validate it the same way the module initialization would do
+        _config['content'] = ensure_list(_config['content'])
         alias_cnf = {
             **ALIAS_DEFAULTS,
             **_config,

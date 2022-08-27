@@ -20,7 +20,7 @@
     - name: Adding
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_1'
-        content: ['1.1.1.1']
+        content: '1.1.1.1'
       register: opn2
       failed_when: >
         not opn2.changed or
@@ -29,7 +29,7 @@
     - name: Nothing changed
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_1'
-        content: ['1.1.1.1']
+        content: '1.1.1.1'
       register: opn3
       failed_when: >
         opn3.changed or
@@ -48,7 +48,7 @@
     - name: Changing to other type - invalid
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_1'
-        content: ['https://test.ansibleguy.net']
+        content: 'https://test.ansibleguy.net'
       register: opn9
       failed_when: not opn9.failed
 
