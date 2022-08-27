@@ -23,7 +23,7 @@
           ANSIBLE_TEST_2_8:
           ANSIBLE_TEST_2_9:
           ANSIBLE_TEST_2_10:
-      state: 'absent'
+        state: 'absent'
       register: opn1
       failed_when: opn1.changed
 
@@ -113,4 +113,4 @@
           ANSIBLE_TEST_2_8:
           ANSIBLE_TEST_2_9:
           ANSIBLE_TEST_2_10:
-      state: 'absent'
+        state: 'absent'
