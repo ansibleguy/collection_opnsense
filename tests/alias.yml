@@ -253,6 +253,7 @@
         content: "{{ item }}"
       register: opngeoip1
       failed_when: not opngeoip1.failed
+      when: not ansible_check_mode  # no client-side validation
       loop:
         - ['XXX']
 
