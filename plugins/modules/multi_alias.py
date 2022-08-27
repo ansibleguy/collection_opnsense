@@ -62,7 +62,6 @@ def run_module():
 
     for _name, _config in module.params['aliases'].items():
         # build config and validate it the same way the module initialization would do
-        _config['content'] = ensure_list(_config['content'])
         alias_cnf = {
             **ALIAS_DEFAULTS,
             **_config,
@@ -72,6 +71,7 @@ def run_module():
             },
             **overrides,
         }
+        alias_cnf['content'] = list(map(str, ensure_list(alias_cnf['content'])))
         validation_result = validator.validate(parameters=alias_cnf)
 
         try:
