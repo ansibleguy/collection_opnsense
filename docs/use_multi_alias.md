@@ -8,7 +8,7 @@ It is faster than the 'alias' module as it reduces the needed api/http calls.
 
 **Config**:
 
-- Each alias has the attributes as defined in the [alias](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md) module
+- Each alias has the attributes as defined in the [alias](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md) module
 
 - To ensure valid configuration - the attributes of each alias get verified using ansible's built-in verifier
 

@@ -42,7 +42,7 @@ mv collection_opnsense/* $PLAYBOOK_DIR/collections/ansible_collections/ansiblegu
 
 #### Alias
 
-See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md)
+See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)
 
 State: testing - but usable
 
@@ -50,7 +50,7 @@ State: testing - but usable
 
 Faster if you need/want to mass-manage aliases.
 
-See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md)
+See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md)
 
 State: testing - but usable
 
@@ -119,7 +119,10 @@ If you are running the modules over hosts in your inventory - you would do it li
 - hosts: firewalls
   connection: local  # execute modules on controller
   gather_facts: no
-  ...
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.alias:
+        firewall: "{{ ansible_host }}"  # or use a per-host variable to store the FQDN..
 ```
 
 #### Vault

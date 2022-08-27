@@ -11,9 +11,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
 
-
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/_tmpl.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/_tmpl.md'
+DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/_tmpl.md'
+EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/_tmpl.md'
 
 
 def run_module():
