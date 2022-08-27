@@ -48,6 +48,7 @@
     - name: Changing to other type - invalid
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_1'
+        type: 'url'
         content: 'https://test.ansibleguy.net'
       register: opn9
       failed_when: not opn9.failed
