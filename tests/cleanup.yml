@@ -1,0 +1,48 @@
+---
+
+- name: Cleaning up firewall config
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.alias:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Cleanup
+      ansibleguy.opnsense.alias:
+        name: "{{ item }}"
+        state: 'absent'
+      diff: false
+      ignore_errors: true
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2_URLTABLE3'
+        - 'ANSIBLE_TEST_1_2_URLTABLE2'
+        - 'ANSIBLE_TEST_1_2_URLTABLE1'
+        - 'ANSIBLE_TEST_1_2_URL1'
+        - 'ANSIBLE_TEST_1_2_URL2'
+        - 'ANSIBLE_TEST_1_2_URL3'
+        - 'ANSIBLE_TEST_1_2_PORT1'
+        - 'ANSIBLE_TEST_1_2_PORT2'
+        - 'ANSIBLE_TEST_1_2_PORT3'
+        - 'ANSIBLE_TEST_1_2_NET1'
+        - 'ANSIBLE_TEST_1_2_NET2'
+        - 'ANSIBLE_TEST_1_2_NET3'
+        - 'ANSIBLE_TEST_1_2_HOST1'
+        - 'ANSIBLE_TEST_1_2_HOST2'
+        - 'ANSIBLE_TEST_1_2_HOST3'
+        - 'ANSIBLE_TEST_1_2_GEOIP1'
+        - 'ANSIBLE_TEST_1_2_GEOIP2'
+        - 'ANSIBLE_TEST_1_2_GEOIP3'
+        - 'ANSIBLE_TEST_2_1'
+        - 'ANSIBLE_TEST_2_2'
+        - 'ANSIBLE_TEST_2_3'
+        - 'ANSIBLE_TEST_2_4'
+        - 'ANSIBLE_TEST_2_5'
+        - 'ANSIBLE_TEST_2_6'
+        - 'ANSIBLE_TEST_2_7'
+        - 'ANSIBLE_TEST_2_8'
+        - 'ANSIBLE_TEST_2_9'
+        - 'ANSIBLE_TEST_2_10'

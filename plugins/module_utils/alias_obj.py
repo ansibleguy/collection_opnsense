@@ -38,8 +38,6 @@ class Alias:
             if self.cnf['content'] is None or len(self.cnf['content']) == 0:
                 self.m.fail_json('You need to provide values to create an alias!')
 
-            validate_values(error_func=self._error, cnf=self.cnf)
-
     def _error(self, msg: str):
         if self.fail:
             self.m.fail_json(msg)
@@ -54,8 +52,10 @@ class Alias:
 
     def create(self):
         # creating alias
+        validate_values(error_func=self._error, cnf=self.cnf)
         self.r['changed'] = True
         self.r['diff']['after'] = {self.cnf['name']: self.cnf['content']}
+
         if not self.m.check_mode:
             self.s.post(cnf={
                 **self.call_cnf, **{
@@ -74,9 +74,11 @@ class Alias:
 
     def update(self):
         # checking if alias changed
+        validate_values(error_func=self._error, cnf=self.cnf)
+
         if equal_type(existing=self.alias['type'], configured=self.cnf['type']):
-            _before = self.alias['content'].split(',')
-            _after = self.cnf['content']
+            _before = list(map(str, self.alias['content'].split(',')))
+            _after = list(map(str, self.cnf['content']))
             _before.sort()
             _after.sort()
             self.r['changed'] = _before != _after
@@ -111,6 +113,7 @@ class Alias:
 
     def delete(self):
         self.r['changed'] = True
+
         if not self.m.check_mode:
             # NOTE: there is currently no practical way to check if the alias is in use..
             alias_deletion = self._delete_call()

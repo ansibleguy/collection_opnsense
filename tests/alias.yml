@@ -264,7 +264,6 @@
       ansibleguy.opnsense.alias:
         name: "{{ item }}"
         state: 'absent'
-      register: opntypecleanup
       diff: false
       loop:
         - 'ANSIBLE_TEST_1_2_URLTABLE3'
