@@ -52,6 +52,7 @@
         content: 'https://test.ansibleguy.net'
       register: opn9
       failed_when: not opn9.failed
+      when: not ansible_check_mode  # will not work if does not exist
 
     - name: Disabling
       ansibleguy.opnsense.alias:
