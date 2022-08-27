@@ -36,6 +36,48 @@ mv collection_opnsense/* $PLAYBOOK_DIR/collections/ansible_collections/ansiblegu
 
 ---
 
+## Modules
+
+### Implemented
+
+#### Alias
+
+See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md)
+
+State: testing - but usable
+
+#### Multi-Alias
+
+Faster if you need/want to mass-manage aliases.
+
+See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md)
+
+State: testing - but usable
+
+### Roadmap
+
+**Core API**:
+
+- [Cron](https://docs.opnsense.org/development/api/core/cron.html)
+- [Firmware/Packages](https://docs.opnsense.org/development/api/core/firmware.html)
+- [IDS](https://docs.opnsense.org/development/api/core/ids.html)
+- [IPSec](https://docs.opnsense.org/development/api/core/ipsec.html)
+- [Monit](https://docs.opnsense.org/development/api/core/monit.html)
+- [Routes](https://docs.opnsense.org/development/api/core/routes.html)
+- [Syslog](https://docs.opnsense.org/development/api/core/syslog.html)
+- [Trafficshaper](https://docs.opnsense.org/development/api/core/trafficshaper.html)
+- [Unbound](https://docs.opnsense.org/development/api/core/unbound.html)
+
+**Plugins API**:
+
+- [Backup](https://docs.opnsense.org/development/api/plugins/backup.html)
+- [Firewall](https://docs.opnsense.org/development/api/plugins/firewall.html)
+- [WireGuard](https://docs.opnsense.org/development/api/plugins/wireguard.html)
+- [Zabbix Agent](https://docs.opnsense.org/development/api/plugins/zabbixagent.html)
+- [Zabbix Proxy](https://docs.opnsense.org/development/api/plugins/zabbixproxy.html)
+
+---
+
 ## Usage
 
 ### Prerequisites
@@ -107,29 +149,17 @@ ansible-playbook opnsense.yml --check
 
 ---
 
-### Modules
-
-#### Alias
-
-See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md)
-
-State: testing - but usable
-
-#### Multi-Alias
-
-Faster if you need/want to mass-manage aliases.
-
-See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md)
-
-State: testing - but usable
-
----
-
 ## Development
 
 The basic API interaction is handled in 'ansibleguy.opnsense.plugins.module_utils.api'.
 
-I kept is pretty generic - therefore all plugins should be able to function with it!
+It is a generic abstraction layer for interacting with the api - therefore all plugins should be able to function with it!
+
+### Module
+
+There is a [module-template](https://github.com/ansibleguy/collection_opnsense/blob/stable/plugins/modules/_tmpl.py) that can be copied - so you don't have to re-write the basic structure.
+
+### API
 
 One can choose to either:
 
