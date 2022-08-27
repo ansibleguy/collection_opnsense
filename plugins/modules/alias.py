@@ -5,8 +5,10 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_DEFAULTS, ALIAS_MOD_ARGS
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_MOD_ARGS
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_main import process_alias
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_alias.md'
@@ -32,27 +34,10 @@ def run_module():
     alias = Alias(module=module, result=result)
     alias.check()
 
-    if alias.cnf['state'] == 'absent':
-        if alias.exists:
-            alias.delete()
-
-    else:
-        if alias.cnf['content'] is not None and len(alias.cnf['content']) > 0:
-            if alias.exists:
-                alias.update()
-
-            else:
-                alias.create()
-
-        # dis-/enabling
-        if alias.exists:
-            if alias.cnf['enabled']:
-                alias.enable()
-
-            else:
-                alias.disable()
+    process_alias(alias=alias)
 
     alias.s.close()
+    result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 
 

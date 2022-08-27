@@ -6,9 +6,12 @@
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.arg_spec import ModuleArgumentSpecValidator
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_DEFAULTS, ALIAS_MOD_ARGS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_main import process_alias
 
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md'
@@ -17,18 +20,12 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_mu
 
 def run_module():
     module_args = dict(
-        firewall=dict(type='str', required=True),
         aliases=dict(type='dict', required=True),
-        api_key=dict(type='str', required=False),
-        api_secret=dict(type='str', required=False, no_log=True),
-        api_credential_file=dict(type='str', required=False),
-        ssl_verify=dict(type='bool', required=False, default=True),
-        ssl_ca_file=dict(type='str', required=False),
         fail_verification=dict(
             type='bool', required=False, default=False,
             description='Fail module if single alias fails the verification.'
         ),
-        debug=dict(type='bool', required=False, default=False),
+        **OPN_MOD_ARGS
     )
 
     result = dict(
@@ -98,24 +95,7 @@ def run_module():
             )
 
             alias.check(existing_aliases=existing_aliases)
-            if alias.cnf['state'] == 'absent':
-                if alias.exists:
-                    alias.delete()
-
-            else:
-                if alias.cnf['content'] is not None and len(alias.cnf['content']) > 0:
-                    if alias.exists:
-                        alias.update()
-
-                    else:
-                        alias.create()
-
-                if alias.exists:
-                    if alias.cnf['enabled']:
-                        alias.enable()
-
-                    else:
-                        alias.disable()
+            process_alias(alias=alias)
 
             if alias_result['changed']:
                 result['changed'] = True
@@ -123,6 +103,7 @@ def run_module():
                 result['diff']['after'].update(alias_result['diff']['after'])
 
     session.close()
+    result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 
 
