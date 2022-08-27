@@ -4,6 +4,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
     validate_values, get_alias, equal_type
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import ensure_list
 
 
 class Alias:
@@ -67,7 +68,7 @@ class Alias:
                             'name': self.cnf['name'],
                             'description': self.cnf['description'],
                             'type': self.cnf['type'],
-                            'content': '\n'.join(self.cnf['content']),
+                            'content': '\n'.join(ensure_list(self.cnf['content'])),
                             # 'updatefreq': module.params['updatefreq_days'],
                         }
                     },
@@ -98,7 +99,7 @@ class Alias:
                                 'name': self.cnf['name'],
                                 'description': self.cnf['description'],
                                 'type': self.cnf['type'],
-                                'content': '\n'.join(self.cnf['content']),
+                                'content': '\n'.join(ensure_list(self.cnf['content'])),
                             }
                         },
                     }
