@@ -116,7 +116,7 @@
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_2_HOST1'
         type: 'host'
-        content: ['1.1.1.1']
+        content: '1.1.1.1'
 
     - name: Adding multiple hosts
       ansibleguy.opnsense.alias:
@@ -140,7 +140,7 @@
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_2_NET1'
         type: 'network'
-        content: ['192.168.0.0/24']
+        content: '192.168.0.0/24'
 
     - name: Adding multiple networks
       ansibleguy.opnsense.alias:
@@ -164,13 +164,13 @@
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_2_PORT1'
         type: 'port'
-        content: ['9000']
+        content: 9000
 
     - name: Adding multiple ports
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_2_PORT2'
         type: 'port'
-        content: ['80', '443']
+        content: ['80', 443]
 
     - name: Adding invalid port
       ansibleguy.opnsense.alias:
@@ -188,7 +188,7 @@
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_2_URL1'
         type: 'url'
-        content: ['https://ansibleguy.net']
+        content: 'https://ansibleguy.net'
 
     - name: Adding multiple urls
       ansibleguy.opnsense.alias:
@@ -213,7 +213,7 @@
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_2_URLTABLE1'
         type: 'urltable'
-        content: ['https://www.spamhaus.org/drop/drop.txt']
+        content: 'https://www.spamhaus.org/drop/drop.txt'
 
     - name: Adding multiple urltables
       ansibleguy.opnsense.alias:
@@ -238,7 +238,7 @@
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_2_GEOIP1'
         type: 'geoip'
-        content: ['AT']
+        content: 'AT'
 
     - name: Adding multiple geoips
       ansibleguy.opnsense.alias:
