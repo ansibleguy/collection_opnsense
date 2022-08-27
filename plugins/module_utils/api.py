@@ -36,7 +36,6 @@ class Session:
             response=self.s.get(call_url)
         )
 
-        debug_output(module=self.m, msg=f"{response}")
         return response
 
     def post(self, cnf: dict) -> dict:
@@ -64,7 +63,6 @@ class Session:
             response=self.s.post(call_url, json=data, headers=headers)
         )
 
-        debug_output(module=self.m, msg=f"{response}")
         return response
 
     def close(self):
@@ -93,7 +91,6 @@ def single_get(module: AnsibleModule, cnf: dict) -> dict:
         )
     )
 
-    debug_output(module=module, msg=f"{response}")
     return response
 
 
@@ -129,5 +126,4 @@ def single_post(module: AnsibleModule, cnf: dict) -> dict:
         )
     )
 
-    debug_output(module=module, msg=f"{response}")
     return response

@@ -68,7 +68,24 @@ def ssl_verification(module: AnsibleModule) -> (ssl.SSLContext, bool):
     return context
 
 
+def get_params_path(cnf: dict) -> str:
+    params_path = ''
+
+    if 'params' in cnf and cnf['params'] is not None:
+        for param in cnf['params']:
+            params_path += f"/{param}"
+
+    return params_path
+
+
+def debug_output(module: AnsibleModule, msg: str):
+    if 'debug' in module.params and module.params['debug']:
+        module.warn(msg)
+
+
 def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
+    debug_output(module=module, msg=f"RESPONSE: {response}")
+
     if 'allowed_http_stati' not in cnf:
         cnf['allowed_http_stati'] = [200]
 
@@ -83,18 +100,3 @@ def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
         module.fail_json(msg=f"API call failed | Response: {response}")
 
     return json
-
-
-def get_params_path(cnf: dict) -> str:
-    params_path = ''
-
-    if 'params' in cnf and cnf['params'] is not None:
-        for param in cnf['params']:
-            params_path += f"/{param}"
-
-    return params_path
-
-
-def debug_output(module: AnsibleModule, msg: str):
-    if 'debug' in module.params and module.params['debug']:
-        module.warn(msg)
