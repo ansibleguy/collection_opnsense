@@ -40,19 +40,25 @@ mv collection_opnsense/* $PLAYBOOK_DIR/collections/ansible_collections/ansiblegu
 
 ### Implemented
 
-#### Alias
+* **Alias**
+* [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)
+* State: testing - but usable
 
-See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)
 
-State: testing - but usable
+* **Multi-Alias** (_Faster if you need/want to mass-manage aliases_)
+* [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md)
+* State: testing - but usable
 
-#### Multi-Alias
 
-Faster if you need/want to mass-manage aliases.
+* **Firewall Rules**
+* [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rules.md)
+* State: testing - early stage
 
-See: [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md)
 
-State: testing - but usable
+* **Firewall Savepoints**
+* [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_firewall_savepoint.md)
+* State: testing - early stage
+
 
 ### Roadmap
 
@@ -71,7 +77,7 @@ State: testing - but usable
 **Plugins API**:
 
 - [Backup](https://docs.opnsense.org/development/api/plugins/backup.html)
-- [Firewall](https://docs.opnsense.org/development/api/plugins/firewall.html)
+- [Firewall (Rules)](https://docs.opnsense.org/development/api/plugins/firewall.html)
 - [WireGuard](https://docs.opnsense.org/development/api/plugins/wireguard.html)
 - [Zabbix Agent](https://docs.opnsense.org/development/api/plugins/zabbixagent.html)
 - [Zabbix Proxy](https://docs.opnsense.org/development/api/plugins/zabbixproxy.html)

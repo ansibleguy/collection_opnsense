@@ -2,6 +2,10 @@
 
 **STATE**: testing - but usable
 
+**TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/multi_alias.yml)
+
+**API DOCS**: [Core - Firewall](https://docs.opnsense.org/development/api/core/firewall.html)
+
 This module allows you to manage multiple aliases.
 
 It is faster than the 'alias' module as it reduces the needed api/http calls.
@@ -12,6 +16,7 @@ It is faster than the 'alias' module as it reduces the needed api/http calls.
 
 - To ensure valid configuration - the attributes of each alias get verified using ansible's built-in verifier
 
+## Usage
 
 ```yaml
 - hosts: localhost
