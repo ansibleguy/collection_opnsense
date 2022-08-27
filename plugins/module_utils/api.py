@@ -33,7 +33,7 @@ class Session:
         response = check_response(
             module=self.m,
             cnf=cnf,
-            response=self.s.get(call_url).json()
+            response=self.s.get(call_url)
         )
 
         debug_output(module=self.m, msg=f"{response}")
@@ -61,7 +61,7 @@ class Session:
         response = check_response(
             module=self.m,
             cnf=cnf,
-            response=self.s.post(call_url, json=data, headers=headers).json()
+            response=self.s.post(call_url, json=data, headers=headers)
         )
 
         debug_output(module=self.m, msg=f"{response}")
@@ -74,21 +74,22 @@ class Session:
 def single_get(module: AnsibleModule, cnf: dict) -> dict:
     check_host(module=module)
     params_path = get_params_path(cnf=cnf)
-    call_url = f"https://{cnf['firewall']}/api/{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
+    call_url = f"https://{module.params['firewall']}/api/{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
 
     debug_output(
         module=module,
         msg=f"REQUEST: GET | URL: {call_url}"
     )
 
+    check_or_load_credentials(module=module)
     response = check_response(
         module=module,
         cnf=cnf,
         response=httpx.get(
             call_url,
-            auth=(cnf['api_key'], cnf['api_secret']),
+            auth=(module.params['api_key'], module.params['api_secret']),
             verify=ssl_verification(module=module),
-        ).json()
+        )
     )
 
     debug_output(module=module, msg=f"{response}")
@@ -98,29 +99,32 @@ def single_get(module: AnsibleModule, cnf: dict) -> dict:
 def single_post(module: AnsibleModule, cnf: dict) -> dict:
     headers = {}
     check_host(module=module)
+    data = None
 
-    if cnf['data'] is not None and len(cnf['data']) > 0:
+    if 'data' in cnf and cnf['data'] is not None and len(cnf['data']) > 0:
         headers = {'Content-Type': 'application/json'}
+        data = cnf['data']
 
     params_path = get_params_path(cnf=cnf)
-    call_url = f"https://{cnf['firewall']}/api/{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
+    call_url = f"https://{module.params['firewall']}/api/{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
 
     debug_output(
         module=module,
         msg=f"REQUEST: POST | "
             f"HEADERS: '{headers}' | "
             f"URL: {call_url} | "
-            f"DATA: {cnf['data']}"
+            f"DATA: {data}"
     )
 
+    check_or_load_credentials(module=module)
     response = check_response(
         module=module,
         cnf=cnf,
         response=httpx.post(
             call_url,
-            auth=(cnf['api_key'], cnf['api_secret']), verify=ssl_verification(module=module),
-            json=cnf['data'], headers=headers,
-        ).json()
+            auth=(module.params['api_key'], module.params['api_secret']), verify=ssl_verification(module=module),
+            json=data, headers=headers,
+        )
     )
 
     debug_output(module=module, msg=f"{response}")

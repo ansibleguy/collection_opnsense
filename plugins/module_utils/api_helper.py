@@ -68,14 +68,21 @@ def ssl_verification(module: AnsibleModule) -> (ssl.SSLContext, bool):
     return context
 
 
-def check_response(module: AnsibleModule, cnf: dict, response: dict) -> dict:
+def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
     if 'allowed_http_stati' not in cnf:
-        cnf['allowed_http_stati'] = [200, 'done']
+        cnf['allowed_http_stati'] = [200]
 
-    if ('status' in response and response['status'] not in cnf['allowed_http_stati']) or \
-            ('result' in response and response['result'] == 'failed'):
+    json = response.json()
+
+    if response.status_code not in cnf['allowed_http_stati']:
+        if f"{response}".find('Controller not found') != -1:
+            module.fail_json(
+                msg=f"API call failed | Needed plugin not installed! | Response: {response}"
+            )
+
         module.fail_json(msg=f"API call failed | Response: {response}")
-    return response
+
+    return json
 
 
 def get_params_path(cnf: dict) -> str:
