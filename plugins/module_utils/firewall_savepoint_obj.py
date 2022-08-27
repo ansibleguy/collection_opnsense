@@ -25,7 +25,7 @@ class SavePoint:
             )
 
             if 'revision' not in response:
-                self.m.fail_json(msg=f"Failed to create savepoint!")
+                self.m.fail_json(msg='Failed to create savepoint!')
 
             return response['revision']
 
