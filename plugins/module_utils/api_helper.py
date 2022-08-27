@@ -84,7 +84,7 @@ def debug_output(module: AnsibleModule, msg: str):
 
 
 def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
-    debug_output(module=module, msg=f"RESPONSE: {response}")
+    debug_output(module=module, msg=f"RESPONSE: {response.__dict__}")
 
     if 'allowed_http_stati' not in cnf:
         cnf['allowed_http_stati'] = [200]
@@ -92,11 +92,14 @@ def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
     json = response.json()
 
     if response.status_code not in cnf['allowed_http_stati']:
-        if f"{response}".find('Controller not found') != -1:
+        if f"{response.__dict__}".find('Controller not found') != -1:
             module.fail_json(
-                msg=f"API call failed | Needed plugin not installed! | Response: {response}"
+                msg=f"API call failed | Needed plugin not installed! | Response: {response.__dict__}"
             )
+        elif f"{response.__dict__}".find('Cannot delete alias. Currently in use') != -1:
+            json['in_use'] = True
 
-        module.fail_json(msg=f"API call failed | Response: {response}")
+        else:
+            module.fail_json(msg=f"API call failed | Response: {response.__dict__}")
 
     return json

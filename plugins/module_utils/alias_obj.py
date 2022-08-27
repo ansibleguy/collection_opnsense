@@ -118,7 +118,7 @@ class Alias:
             # NOTE: there is currently no practical way to check if the alias is in use..
             alias_deletion = self._delete_call()
 
-            if 'status' in alias_deletion and alias_deletion['status'] == 'failed':
+            if 'in_use' in alias_deletion:
                 self.r['changed'] = False
                 self.m.warn(f"Unable to delete alias '{self.cnf['name']}' as it is currently referenced!")
 
@@ -129,12 +129,7 @@ class Alias:
                 self.m.warn(f"{self.r['diff']}")
 
     def _delete_call(self) -> dict:
-        return self.s.post(cnf={
-            **self.call_cnf, **{
-                'command': 'delItem',
-                'allowed_http_stati': [200],  # allowing 'failed' to catch it with a warning
-            }
-        })
+        return self.s.post(cnf={**self.call_cnf, **{'command': 'delItem'}})
 
     def enable(self):
         if self.exists and self.alias['enabled'] != '1':
