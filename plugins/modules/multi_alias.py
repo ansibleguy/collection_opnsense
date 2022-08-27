@@ -62,6 +62,9 @@ def run_module():
 
     for _name, _config in module.params['aliases'].items():
         # build config and validate it the same way the module initialization would do
+        if _config is None:
+            _config = {}
+
         alias_cnf = {
             **ALIAS_DEFAULTS,
             **_config,
