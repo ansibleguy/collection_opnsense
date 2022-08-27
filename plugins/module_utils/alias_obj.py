@@ -22,20 +22,17 @@ class Alias:
         self.call_cnf = {  # config shared by all calls
             'module': 'firewall',
             'controller': 'alias',
-            'allowed_http_stati': [200, 'done'],
         }
 
     def check(self, existing_aliases: dict = None):
         # pulling alias info if it exists
         if existing_aliases is None:
-            existing_aliases = self.pull_call()
+            existing_aliases = self.search_call()
 
         self.alias = get_alias(aliases=existing_aliases['rows'], name=self.cnf['name'])
         self.exists = len(self.alias) > 0
         if self.exists:
-            self.call_cnf.update({
-                'params': [self.alias['uuid']],
-            })
+            self.call_cnf['params'] = [self.alias['uuid']]
 
         if not self.exists and self.cnf['state'] == 'present':
             if self.cnf['content'] is None or len(self.cnf['content']) == 0:
@@ -50,7 +47,7 @@ class Alias:
         else:
             self.m.warn(msg)
 
-    def pull_call(self) -> dict:
+    def search_call(self) -> dict:
         return self.s.get(cnf={
             **self.call_cnf, **{'command': 'searchItem'}
         })
@@ -87,7 +84,7 @@ class Alias:
             self.r['diff']['after'] = {self.cnf['name']: _after}
 
             if self.m.params['debug'] and self.r['changed']:
-                self.m.warn(self.r['diff'])
+                self.m.warn(f"{self.r['diff']}")
 
             if self.r['changed'] and not self.m.check_mode:
                 # updating alias
@@ -126,13 +123,13 @@ class Alias:
             self.r['diff']['before'] = {self.cnf['name']: self.alias['content'].split(',')}
 
             if self.m.params['debug']:
-                self.m.warn(self.r['diff'])
+                self.m.warn(f"{self.r['diff']}")
 
     def _delete_call(self) -> dict:
         return self.s.post(cnf={
             **self.call_cnf, **{
                 'command': 'delItem',
-                'allowed_http_stati': [200, 'failed'],  # allowing 'failed' to catch it with a warning
+                'allowed_http_stati': [200],  # allowing 'failed' to catch it with a warning
             }
         })
 

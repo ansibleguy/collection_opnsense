@@ -3,6 +3,8 @@
 # Copyright: (C) 2022, AnsibleGuy <guy@ansibleguy.net>
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
+# see: https://docs.opnsense.org/development/api/core/firewall.html
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.arg_spec import ModuleArgumentSpecValidator
 
@@ -50,7 +52,7 @@ def run_module():
                                             module.required_by)
 
     session = Session(module=module)
-    existing_aliases = Alias(module=module, session=session, result={}).pull_call()
+    existing_aliases = Alias(module=module, session=session, result={}).search_call()
 
     overrides = {}
 
