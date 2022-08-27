@@ -51,7 +51,7 @@ mv collection_opnsense/* $PLAYBOOK_DIR/collections/ansible_collections/ansiblegu
 
 
 * **Firewall Rules**
-* [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rules.md)
+* [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)
 * State: testing - early stage
 
 
