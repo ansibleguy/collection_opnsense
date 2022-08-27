@@ -9,9 +9,12 @@ def diff_remove_empty(diff: dict) -> dict:
     return d
 
 
-def ensure_list(data: (int, str, list)) -> list:
+def ensure_list(data: (int, str, list, None)) -> list:
     # if user supplied a string instead of a list => convert it to match our expectations
     if isinstance(data, list):
         return data
+
+    elif data is None:
+        return []
 
     return [data]
