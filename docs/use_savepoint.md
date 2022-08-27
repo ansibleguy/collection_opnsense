@@ -1,8 +1,8 @@
 # OPNSense - Firewall-Savepoint module
 
-**STATE**: testing - early stage
+**STATE**: testing
 
-**TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/firewall_savepoint.yml)
+**TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/savepoint.yml)
 
 **API DOCS**: [Plugins - Firewall](https://docs.opnsense.org/development/api/plugins/firewall.html)
 
@@ -25,35 +25,35 @@ It currently just works with the 'Firewall' plugin:
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.firewall_savepoint:
+    ansibleguy.opnsense.savepoint:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
   tasks:
     - name: Create a savepoint for firewall filters
-      ansibleguy.opnsense.firewall_savepoint:
+      ansibleguy.opnsense.savepoint:
         action: 'create'
         controller: 'filter'  # default
       register: filter_savepoint
 
     - name: Apply savepoint
-      ansibleguy.opnsense.firewall_savepoint:
+      ansibleguy.opnsense.savepoint:
         action: 'apply'
         revision: "{{ filter_savepoint.revision }}"
 
     - name: Revert savepoint
-      ansibleguy.opnsense.firewall_savepoint:
+      ansibleguy.opnsense.savepoint:
         action: 'revert'
         revision: "{{ filter_savepoint.revision }}"
 
     - name: Create a savepoint for source-nat filters
-      ansibleguy.opnsense.firewall_savepoint:
+      ansibleguy.opnsense.savepoint:
         action: 'create'
         controller: 'source_nat'
       register: snat_savepoint
 
     - name: Remove source-nat savepoint (else it will be reverted automatically)
-      ansibleguy.opnsense.firewall_savepoint:
+      ansibleguy.opnsense.savepoint:
         action: 'remove'
         controller: 'source_nat'
         revision: "{{ snat_savepoint.revision }}"

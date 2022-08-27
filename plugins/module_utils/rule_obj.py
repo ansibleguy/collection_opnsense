@@ -2,7 +2,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
-    get_rule, validate_values, diff_filter
+    get_rule, validate_values, diff_filter, get_any_change
 
 
 class Rule:
@@ -28,16 +28,23 @@ class Rule:
         if existing_rules is None:
             existing_rules = self.search_call()
 
+        # type handling because of inconsistent response types..
+        if len(existing_rules['filter']['rules']['rule']) == 1:
+            existing_rules = [existing_rules['filter']['rules']['rule']]
+
+        else:
+            existing_rules = existing_rules['filter']['rules']['rule']
+
+        if self.m.params['debug']:
+            self.m.warn(f"EXISTING RULES: {existing_rules}")
+
         self.rule = get_rule(
-            rules=existing_rules['filter']['rules'],
+            rules=existing_rules,
             cnf=self.cnf,
         )
         self.exists = len(self.rule) > 0
         if self.exists:
             self.call_cnf['params'] = [self.rule['uuid']]
-
-        if not self.exists and self.cnf['state'] == 'present':
-            validate_values(error_func=self._error, cnf=self.cnf)
 
     def _error(self, msg: str):
         if self.fail:
@@ -53,6 +60,7 @@ class Rule:
 
     def create(self):
         # creating rule
+        validate_values(error_func=self._error, cnf=self.cnf)
         self.r['changed'] = True
         self.r['diff']['after'] = diff_filter(self.cnf)
         if not self.m.check_mode:
@@ -67,9 +75,10 @@ class Rule:
 
     def update(self):
         # checking if rule changed
+        validate_values(error_func=self._error, cnf=self.cnf)
         _before = diff_filter(self.rule)
         _after = diff_filter(self.cnf)
-        self.r['changed'] = _before != _after
+        self.r['changed'] = get_any_change(before=_before, after=_after)
         self.r['diff']['before'] = _before
         self.r['diff']['after'] = _after
 
@@ -81,9 +90,7 @@ class Rule:
             self.s.post(cnf={
                 **self.call_cnf, **{
                     'command': 'setRule',
-                    'data': {
-                        'rule': self._build_rule()
-                    },
+                    'data': {'rule': self._build_rule()},
                 }
             })
 
@@ -111,9 +118,7 @@ class Rule:
 
     def _delete_call(self) -> dict:
         return self.s.post(cnf={
-            **self.call_cnf, **{
-                'command': 'delRule',
-            }
+            **self.call_cnf, **{'command': 'delRule'}
         })
 
     def enable(self):

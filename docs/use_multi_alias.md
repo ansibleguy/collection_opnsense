@@ -1,6 +1,6 @@
 # OPNSense - Multi-Alias module
 
-**STATE**: testing - but usable
+**STATE**: unstable
 
 **TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/multi_alias.yml)
 

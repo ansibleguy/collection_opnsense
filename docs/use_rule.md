@@ -1,6 +1,6 @@
 # OPNSense - Rule module
 
-**STATE**: testing - early stage
+**STATE**: testing
 
 **TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule.yml)
 
@@ -15,17 +15,30 @@ os-firewall
 
 You can also install it using the [package module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md).
 
+**BE AWARE**:
+
+This plugin does not seem to be working with aliases.
+
+
 ## Info
 
 You can prevent lockout-situations using the savepoint systems:
 
-- [Firewall - Savepoint](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_firewall_savepoint.md)
+- [Firewall - Savepoint](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)
 
 These rules are shown in the separate WEB-UI table.
 
 Menu: 'Firewall - Automation - Filter'
 
 ## Usage
+
+First you will have to know about **rule-matching**.
+
+The module somehow needs to link the configured and existing rules to manage them.
+
+You can modify how this matching is done by setting the 'match_fields' parameter!
+
+It is **recommended** to use/set **unique identifiers** like 'description' to make sure rules can be matched without overlapping.
 
 ```yaml
 - hosts: localhost
@@ -44,8 +57,6 @@ Menu: 'Firewall - Automation - Filter'
         protocol: 'TCP'  # for options see the WEB-UI
         description: 'Generic test'
         # match_fields: ['ip_protocol', 'source_invert', 'source_net', 'description']
-        #   Fields that are used to match configured rules with the running config - if any of those fields are changed, the module will think it's a new rule
-        #   you could also just use the 'sequence' numbers as unique IDs..
         # sequence: 1
         # action: 'pass'
         # interface: 'lan'

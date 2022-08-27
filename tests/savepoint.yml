@@ -1,0 +1,91 @@
+---
+
+- name: Testing Savepoints
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.savepoint:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Removing filter savepoint - does not exist
+      ansibleguy.opnsense.savepoint:
+        action: 'remove'
+        controller: 'filter'
+        revision: 'non-existent'
+
+    - name: Reverting filter savepoint - does not exist
+      ansibleguy.opnsense.savepoint:
+        action: 'revert'
+        controller: 'filter'
+        revision: 'non-existent'
+
+    - name: Creating filter savepoint
+      ansibleguy.opnsense.savepoint:
+        action: 'create'
+        controller: 'filter'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        'revision' not in opn1 or
+        not opn1.revision
+
+    - name: Applying filter savepoint
+      ansibleguy.opnsense.savepoint:
+        action: 'apply'
+        controller: 'filter'
+        revision: "{{ opn1.revision }}"
+      when: not ansible_check_mode  # will not work if does not exist
+
+    - name: Removing filter savepoint
+      ansibleguy.opnsense.savepoint:
+        action: 'remove'
+        controller: 'filter'
+        revision: "{{ opn1.revision }}"
+
+    - name: Creating filter savepoint - to be reverted
+      ansibleguy.opnsense.savepoint:
+        action: 'create'
+        controller: 'filter'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        'revision' not in opn2 or
+        not opn2.revision
+
+    - name: Applying filter savepoint - to be reverted
+      ansibleguy.opnsense.savepoint:
+        action: 'apply'
+        controller: 'filter'
+        revision: "{{ opn2.revision }}"
+
+    - name: Reverting filter savepoint
+      ansibleguy.opnsense.savepoint:
+        action: 'revert'
+        controller: 'filter'
+        revision: "{{ opn2.revision }}"
+
+    - name: Creating source-nat savepoint
+      ansibleguy.opnsense.savepoint:
+        action: 'create'
+        controller: 'source_nat'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        'revision' not in opn4 or
+        not opn4.revision
+
+    - name: Applying source-nat savepoint
+      ansibleguy.opnsense.savepoint:
+        action: 'apply'
+        controller: 'source_nat'
+        revision: "{{ opn4.revision }}"
+      when: not ansible_check_mode  # will not work if does not exist
+
+    - name: Removing source-nat savepoint
+      ansibleguy.opnsense.savepoint:
+        action: 'remove'
+        controller: 'source_nat'
+        revision: "{{ opn4.revision }}"

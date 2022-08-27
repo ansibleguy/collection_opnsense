@@ -10,7 +10,7 @@ class SavePoint:
         self.c = controller if controller is not None else self.m.params['controller']
         self.revision = self.m.params['revision']
         self.call_cnf = {  # config shared by all calls
-            'module': 'firewall',
+            'module': self.m.params['api_module'],
             'controller': self.c,
         }
 

@@ -2,20 +2,34 @@ from ipaddress import ip_address, ip_network
 import validators
 
 
-def get_rule(rules: dict, cnf: dict) -> dict:
+def get_rule(rules: (list, dict), cnf: dict) -> dict:
     rule = {}
 
-    for existing_raw in rules.values():
-        existing = _simplify_existing_rule(rule=existing_raw)
-        _matching = []
+    # type handling because of inconsistent response types..
+    if isinstance(rules, list):
+        for existing_raw in rules:
+            existing = _simplify_existing_rule(rule=existing_raw)
+            if _check_for_match(existing=existing, cnf=cnf):
+                rule = existing
+                break
 
-        for field in cnf['match_fields']:
-            _matching.append(existing[field] == cnf[field])
-
-        if all(_matching):
-            rule = existing
+    else:
+        for uuid, values in rules.items():
+            existing = _simplify_existing_rule(rule={uuid: values})
+            if _check_for_match(existing=existing, cnf=cnf):
+                rule = existing
+                break
 
     return rule
+
+
+def _check_for_match(existing: dict, cnf: dict) -> bool:
+    _matching = []
+
+    for field in cnf['match_fields']:
+        _matching.append(str(existing[field]) == str(cnf[field]))
+
+    return all(_matching)
 
 
 def _simplify_existing_rule(rule: dict) -> dict:
@@ -24,12 +38,13 @@ def _simplify_existing_rule(rule: dict) -> dict:
 
     copy_fields = [
         'sequence', 'source_net', 'source_not', 'source_port', 'destination_net',
-        'destination_not', 'destination_port', 'log', 'description'
+        'destination_not', 'destination_port', 'description'
     ]
 
     for uuid, values in rule.items():
         simple['uuid'] = uuid
         simple['enabled'] = values['enabled'] in [1, '1', True]
+        simple['log'] = values['log'] in [1, '1', True]
         simple['source_invert'] = values['source_not'] in [1, '1', True]
         simple['destination_invert'] = values['destination_not'] in [1, '1', True]
 
@@ -116,3 +131,12 @@ def diff_filter(cnf: dict) -> dict:
         diff[field] = cnf[field]
 
     return diff
+
+
+def get_any_change(before: dict, after: dict) -> bool:
+    matching = []
+
+    for b_k, b_v in before.items():
+        matching.append(str(b_v) == str(after[b_k]))
+
+    return not all(matching)

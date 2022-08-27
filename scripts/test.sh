@@ -51,5 +51,20 @@ ansible-playbook tests/multi_alias.yml --check --extra-vars="ansible_python_inte
 
 
 echo ''
+echo 'RUNNING TESTS for module RULE'
+echo ''
+
+ansible-playbook tests/rule.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/rule.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+echo ''
+echo 'RUNNING TESTS for module SAVEPOINT'
+echo ''
+
+ansible-playbook tests/savepoint.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/savepoint.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+
+echo ''
 echo 'FINISHED TESTS!'
 echo ''

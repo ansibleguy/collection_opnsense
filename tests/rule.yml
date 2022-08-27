@@ -1,0 +1,90 @@
+---
+
+- name: Testing Rules - basics
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.rule:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+
+  tasks:
+    - name: Deleting - does not exist
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.0.0/24'
+        destination_net: '192.168.1.0/24'
+        destination_port: 443
+        protocol: 'TCP'
+        state: 'absent'
+        description: 'ANSIBLE_TEST_1_1'
+        debug: false
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+
+    - name: Creating
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.0.0/24'
+        destination_net: '192.168.1.0/24'
+        destination_port: 443
+        protocol: 'TCP'
+        description: 'ANSIBLE_TEST_1_1'
+
+    - name: Updating - nothing changed
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.0.0/24'
+        destination_net: '192.168.1.0/24'
+        destination_port: 443
+        protocol: 'TCP'
+        description: 'ANSIBLE_TEST_1_1'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        opn2.changed
+      when: not ansible_check_mode  # will not work if does not exist
+
+    - name: Updating
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.0.0/24'
+        destination_net: '192.168.2.0/24'
+        destination_port: 443
+        protocol: 'TCP'
+        description: 'ANSIBLE_TEST_1_1'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+      when: not ansible_check_mode  # will not work if does not exist
+
+    - name: Updating more
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.0.0/24'
+        destination_net: '192.168.2.0/24'
+        destination_port: 8443
+        protocol: 'UDP'
+        description: 'ANSIBLE_TEST_1_1'
+        log: false
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode  # will not work if does not exist
+
+    - name: Creating block rule
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.1.0/24'
+        destination_invert: true
+        destination_net: '10.0.0.0/8'
+        description: 'ANSIBLE_TEST_1_2'
+        action: 'block'
+
+    - name: Cleanup
+      ansibleguy.opnsense.rule:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'

@@ -9,11 +9,11 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.firewall_savepoint_obj import SavePoint
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.savepoint_obj import SavePoint
 
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_firewall_savepoint.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_firewall_savepoint.md'
+DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md'
+EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md'
 
 
 def run_module():
@@ -26,6 +26,7 @@ def run_module():
             type='str', required=False, default='filter', description='Target API controller',
             choises=['source_nat', 'filter']
         ),
+        api_module=dict(type='str', required=False, default='firewall',  choises=['firewall']),
         **OPN_MOD_ARGS
     )
 

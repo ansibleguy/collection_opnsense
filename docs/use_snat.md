@@ -19,7 +19,7 @@ You can also install it using the [package module](https://github.com/ansibleguy
 
 You can prevent lockout-situations using the savepoint systems:
 
-- [Firewall - Savepoint](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_firewall_savepoint.md)
+- [Firewall - Savepoint](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)
 
 These rules are shown in the separate WEB-UI table.
 

@@ -38,26 +38,21 @@ mv collection_opnsense/* $PLAYBOOK_DIR/collections/ansible_collections/ansiblegu
 
 ## Modules
 
+**Development States**:
+
+not implemented => development => [testing](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests) => unstable => stable
+
 ### Implemented
 
-* **Alias**
-* [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)
-* State: testing - but usable
 
-
-* **Multi-Alias** (_Faster if you need/want to mass-manage aliases_)
-* [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md)
-* State: testing - but usable
-
-
-* **Firewall Rules**
-* [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)
-* State: testing - early stage
-
-
-* **Firewall Savepoints**
-* [Usage](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_firewall_savepoint.md)
-* State: testing - early stage
+| Module                  | Usage                                                                                         | State           |
+|:------------------------|:----------------------------------------------------------------------------------------------|:----------------|
+| **Alias**               | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)       | unstable        | 
+| **Multi-Alias**         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md) | unstable        |
+| **Firewall Rules**      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | testing         |
+| **Firewall Savepoints** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | testing         |
+| **Firewall Source NAT** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_snat.md)        | not implemented |
+| **Packages**            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | not implemented |
 
 
 ### Roadmap
