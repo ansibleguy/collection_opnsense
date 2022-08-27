@@ -68,7 +68,7 @@ class Alias:
                             'name': self.cnf['name'],
                             'description': self.cnf['description'],
                             'type': self.cnf['type'],
-                            'content': '\n'.join(ensure_list(self.cnf['content'])),
+                            'content': '\n'.join(map(str, ensure_list(self.cnf['content']))),
                             # 'updatefreq': module.params['updatefreq_days'],
                         }
                     },
@@ -99,7 +99,7 @@ class Alias:
                                 'name': self.cnf['name'],
                                 'description': self.cnf['description'],
                                 'type': self.cnf['type'],
-                                'content': '\n'.join(ensure_list(self.cnf['content'])),
+                                'content': '\n'.join(map(str, ensure_list(self.cnf['content']))),
                             }
                         },
                     }
