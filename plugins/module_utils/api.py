@@ -74,7 +74,8 @@ class Session:
 def single_get(module: AnsibleModule, cnf: dict) -> dict:
     check_host(module=module)
     params_path = get_params_path(cnf=cnf)
-    call_url = f"https://{module.params['firewall']}/api/{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
+    call_url = f"https://{module.params['firewall']}/api/" \
+               f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
 
     debug_output(
         module=module,
@@ -106,7 +107,8 @@ def single_post(module: AnsibleModule, cnf: dict) -> dict:
         data = cnf['data']
 
     params_path = get_params_path(cnf=cnf)
-    call_url = f"https://{module.params['firewall']}/api/{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
+    call_url = f"https://{module.params['firewall']}/api/" \
+               f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
 
     debug_output(
         module=module,

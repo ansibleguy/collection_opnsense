@@ -29,8 +29,7 @@ class SavePoint:
 
             return response['revision']
 
-        else:
-            self.m.fail_json(f"Unable to create savepoint - a revision ('{self.revision}') exists!")
+        self.m.fail_json(f"Unable to create savepoint - a revision ('{self.revision}') exists!")
 
     def _check_revision(self, action: str):
         if self.revision is None:

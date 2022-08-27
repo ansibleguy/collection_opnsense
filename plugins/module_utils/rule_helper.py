@@ -29,9 +29,9 @@ def _simplify_existing_rule(rule: dict) -> dict:
 
     for uuid, values in rule.items():
         simple['uuid'] = uuid
-        simple['enabled'] = True if values['enabled'] in [1, '1', True] else False
-        simple['source_invert'] = True if values['source_not'] in [1, '1', True] else False
-        simple['destination_invert'] = True if values['destination_not'] in [1, '1', True] else False
+        simple['enabled'] = values['enabled'] in [1, '1', True]
+        simple['source_invert'] = values['source_not'] in [1, '1', True]
+        simple['destination_invert'] = values['destination_not'] in [1, '1', True]
 
         if values['action']['block']['selected'] in [1, '1', True]:
             simple['action'] = 'block'

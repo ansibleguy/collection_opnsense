@@ -71,6 +71,10 @@ disable=print-statement,
         W0511,
         # similar lines because of ansible-module structure
         R0801,
+        # sometime we'll throw an error instead of returning data
+        R1710,
+        # elif/else after return if it has a reason
+        R1705,
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

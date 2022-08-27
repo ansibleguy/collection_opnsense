@@ -23,7 +23,10 @@ def run_module():
         action=dict(type='str', required=False, default='pass', choices=['pass', 'block', 'reject']),
         interface=dict(type='str', required=False),
         direction=dict(type='str', required=False, default='in', choices=['in', 'out']),
-        ip_protocol=dict(type='str', required=False, choices=['inet', 'inet6'], default='inet', description="IPv4 = 'inet', IPv6 = 'inet6'"),
+        ip_protocol=dict(
+            type='str', required=False, choices=['inet', 'inet6'], default='inet',
+            description="IPv4 = 'inet', IPv6 = 'inet6'"
+        ),
         protocol=dict(type='str', required=True, description="Protocol like 'TCP', 'UDP', 'TCP/UDP' and so on."),
         source_invert=dict(type='bool', required=False, default=False),
         source_net=dict(type='str', required=True, description="Host, network or 'any'"),
