@@ -3,7 +3,8 @@ import httpx
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api_helper \
-    import check_host, ssl_verification, check_response, get_params_path, debug_output
+    import check_host, ssl_verification, check_response, get_params_path, debug_output,\
+    check_or_load_credentials
 
 
 class Session:
@@ -13,6 +14,7 @@ class Session:
 
     def start(self):
         check_host(module=self.m)
+        check_or_load_credentials(module=self.m)
         return httpx.Client(
             base_url=f"https://{self.m.params['firewall']}/api",
             auth=(self.m.params['api_key'], self.m.params['api_secret']),

@@ -2,8 +2,6 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api_helper import \
-    check_or_load_credentials
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
     validate_values, get_alias, equal_type
 
@@ -15,7 +13,6 @@ class Alias:
     ):
         self.m = module
         self.r = result
-        check_or_load_credentials(module=module)
         self.s = Session(module=module) if session is None else session
         self.cnf = self.m.params if cnf is None else cnf  # to allow override by multi_alias
         self.fail = fail
