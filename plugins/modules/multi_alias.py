@@ -13,9 +13,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_main import process_alias
 
-
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/use_multi_alias.md'
+DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md'
+EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md'
 
 
 def run_module():
@@ -25,6 +24,8 @@ def run_module():
             type='bool', required=False, default=False,
             description='Fail module if single alias fails the verification.'
         ),
+        state=dict(type='str', default='unset', required=False, choices=['present', 'absent', 'unset']),
+        enabled=dict(type='bool', required=False, default=None),
         **OPN_MOD_ARGS
     )
 
@@ -51,15 +52,24 @@ def run_module():
     session = Session(module=module)
     existing_aliases = Alias(module=module, session=session, result={}).pull_call()
 
+    overrides = {}
+
+    if module.params['state'] != 'unset':
+        overrides['state'] = module.params['state']
+
+    if module.params['enabled'] is not None:
+        overrides['enabled'] = module.params['enabled']
+
     for _name, _config in module.params['aliases'].items():
         # build config and validate it the same way the module initialization would do
         alias_cnf = {
             **ALIAS_DEFAULTS,
+            **_config,
             **{
                 'name': _name,
-                'firewall': module.params['firewall']
+                'firewall': module.params['firewall'],
             },
-            **_config
+            **overrides,
         }
         validation_result = validator.validate(parameters=alias_cnf)
 
