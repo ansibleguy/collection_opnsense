@@ -16,7 +16,7 @@ If you want to mass-manage aliases - take a look at the [multi_alias](https://gi
         api_credential_file: '/home/guy/.secret/opn.key'
         name: 'ANSIBLE_TEST1'
         description: 'just a test'
-        content: ['1.1.1.1']
+        content: '1.1.1.1'
         state: 'present'
         # type: 'host'  # default
         # ssl_ca_file: '/etc/ssl/certs/custom/ca.crt'
@@ -30,7 +30,7 @@ If you want to mass-manage aliases - take a look at the [multi_alias](https://gi
         firewall: 'opnsense.template.ansibleguy.net'
         api_credential_file: '/home/guy/.secret/opn.key'
         name: 'ANSIBLE_TEST2'
-        content: ['192.168.1.1']
+        content: '192.168.1.1'
 
     - name: Changing
       ansibleguy.opnsense.alias:

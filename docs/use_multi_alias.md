@@ -26,20 +26,20 @@ It is faster than the 'alias' module as it reduces the needed api/http calls.
       ansibleguy.opnsense.multi_alias:
         aliases:
           test1:
-            content: ['1.1.1.1']
+            content: '1.1.1.1'
           test2:
-            content: ['1.1.1.1']
+            content: ['1.1.1.1', '1.1.1.2']
             description: 'to be deleted'
           test3:
             type: 'network'
-            content: ['10.0.0.0/24']
+            content: '10.0.0.0/24'
             description: 'to be disabled'
 
     - name: Example changes
       ansibleguy.opnsense.multi_alias:
         aliases:
           test1:
-            content: ['1.1.1.2']
+            content: ['1.1.1.3']
           test2:
             state: 'absent'
           test3:
