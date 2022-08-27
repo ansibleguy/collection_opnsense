@@ -63,6 +63,7 @@ def run_module():
                 #     'module': 'API-Module',
                 #     'controller': 'API-Controller',
                 #     'command': 'API-delete-command',
+                #     'params': ['uuid'],
                 # })
                 pass
 
@@ -78,6 +79,7 @@ def run_module():
                     #     'controller': 'API-Controller',
                     #     'command': 'API-update-command',
                     #     'data': {'tests'},
+                    #     'params': ['uuid'],
                     # })
                     pass
 
