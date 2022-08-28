@@ -215,6 +215,7 @@
       failed_when: >
         'rules' not in opn10 or
         opn10.rules | length != 0
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Creating rule 1
       ansibleguy.opnsense.rule:
@@ -265,6 +266,7 @@
         destination_net: '192.168.1.0/24'
         destination_port: 443
         protocol: 'UDP'
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Listing rules - after
       ansibleguy.opnsense.rule_list:
@@ -272,6 +274,7 @@
       failed_when: >
         'rules' not in opn11 or
         opn11.rules | length != 3
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Cleanup
       ansibleguy.opnsense.rule:
