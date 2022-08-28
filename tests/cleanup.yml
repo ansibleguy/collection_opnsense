@@ -46,6 +46,8 @@
         - 'ANSIBLE_TEST_2_8'
         - 'ANSIBLE_TEST_2_9'
         - 'ANSIBLE_TEST_2_10'
+        - 'ANSIBLE_TEST_3_1'
+        - 'ANSIBLE_TEST_3_2'
 
     - name: Cleanup Rules
       ansibleguy.opnsense.rule:
@@ -54,6 +56,12 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_1_3'
+        - 'ANSIBLE_TEST_1_4'
+        - 'ANSIBLE_TEST_1_5'
+        - 'ANSIBLE_TEST_1_6'
+        - 'ANSIBLE_TEST_1_7'
+        - 'ANSIBLE_TEST_1_7'  # matching test duplicate
 
     - name: Cleanup packages
       ansibleguy.opnsense.package:

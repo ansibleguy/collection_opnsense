@@ -21,6 +21,7 @@ def run_module():
     module_args = dict(
         sequence=dict(type='int', required=False, default='1'),
         action=dict(type='str', required=False, default='pass', choices=['pass', 'block', 'reject']),
+        quick=dict(type='bool', required=False, default=True),
         interface=dict(type='str', required=False, default='lan'),
         direction=dict(type='str', required=False, default='in', choices=['in', 'out']),
         ip_protocol=dict(
@@ -32,20 +33,24 @@ def run_module():
             description="Protocol like 'TCP', 'UDP', 'TCP/UDP' and so on."
         ),
         source_invert=dict(type='bool', required=False, default=False),
-        source_net=dict(type='str', required=False, description="Host, network or 'any'"),
-        source_port=dict(type='str', required=False, default='', description='Leave empty to allow all'),
+        source_net=dict(type='str', required=False, description="Host, network, alias or 'any'"),
+        source_port=dict(
+            type='str', required=False, default='',
+            description='Leave empty to allow all, alias not supported'
+        ),
         destination_invert=dict(type='bool', required=False, default=False),
-        destination_net=dict(type='str', required=False, description="Host, network or 'any'"),
-        destination_port=dict(type='str', required=False, default='', description='Leave empty to allow all'),
+        destination_net=dict(type='str', required=False, description="Host, network, alias or 'any'"),
+        destination_port=dict(
+            type='str', required=False, default='',
+            description='Leave empty to allow all, alias not supported'
+        ),
         gateway=dict(type='str', required=False, default='', description='Existing gateway to use'),
         log=dict(type='bool', required=False, default=True),
         description=dict(type='str', required=False, default=''),
         state=dict(type='str', default='present', required=False, choices=['present', 'absent']),
         enabled=dict(type='bool', required=False, default=True),
         match_fields=dict(
-            type='list', required=False, default=[
-                'ip_protocol', 'source_invert', 'source_net', 'description'
-            ],
+            type='list', required=True,
             description='Fields that are used to match configured rules with the running config - '
                         "if any of those fields are changed, the module will think it's a new rule",
             choises=[

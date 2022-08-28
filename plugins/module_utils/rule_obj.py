@@ -17,23 +17,18 @@ class Rule:
         self.fail = fail
         self.exists = False
         self.rule = None
-        self.log_name = self._build_log_name()
+        self.log_name = None
         self.call_cnf = {  # config shared by all calls
             'module': 'firewall',
             'controller': 'filter',
         }
 
     def check(self, existing_rules: dict = None):
+        self._build_log_name()
+
         # pulling rule info if it exists
         if existing_rules is None:
             existing_rules = self.search_call()
-
-        # type handling because of inconsistent response types..
-        if len(existing_rules['filter']['rules']['rule']) == 1:
-            existing_rules = [existing_rules['filter']['rules']['rule']]
-
-        else:
-            existing_rules = existing_rules['filter']['rules']['rule']
 
         if self.m.params['debug']:
             self.m.warn(f"EXISTING RULES: {existing_rules}")
@@ -56,7 +51,7 @@ class Rule:
     def search_call(self) -> dict:
         return self.s.get(cnf={
             **self.call_cnf, **{'command': 'get'}
-        })
+        })['filter']['rules']['rule']
 
     def create(self):
         # creating rule
@@ -159,6 +154,7 @@ class Rule:
         return {
             'sequence': self.cnf['sequence'],
             'action': self.cnf['action'],
+            'quick': 1 if self.cnf['quick'] else 0,
             'interface': self.cnf['interface'],
             'direction': self.cnf['direction'],
             'ip_protocol': self.cnf['ip_protocol'],

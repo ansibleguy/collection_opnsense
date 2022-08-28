@@ -44,7 +44,7 @@
       failed_when: >
         opn2.failed or
         opn2.changed
-      when: not ansible_check_mode  # will not work if does not exist
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Updating
       ansibleguy.opnsense.rule:
@@ -57,7 +57,7 @@
       failed_when: >
         opn3.failed or
         not opn3.changed
-      when: not ansible_check_mode  # will not work if does not exist
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Updating more
       ansibleguy.opnsense.rule:
@@ -71,7 +71,7 @@
       failed_when: >
         opn4.failed or
         not opn4.changed
-      when: not ansible_check_mode  # will not work if does not exist
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Creating block rule
       ansibleguy.opnsense.rule:
@@ -88,3 +88,197 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+
+- name: Testing Rules - aliases
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.rule:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+    ansibleguy.opnsense.alias:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Adding alias
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_3_1'
+        type: 'urltable'
+        content: 'https://www.spamhaus.org/drop/drop.txt'
+
+    - name: Adding port alias
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_3_2'
+        type: 'port'
+        content: 80
+
+    - name: Adding rule using alias-destination
+      ansibleguy.opnsense.rule:
+        destination_invert: true
+        destination_net: 'ANSIBLE_TEST_3_1'
+        description: 'ANSIBLE_TEST_1_3'
+        action: 'block'
+
+    - name: Adding rule using alias-port (not supported)
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.0.0/24'
+        destination_net: '192.168.1.0/24'
+        destination_port: 'ANSIBLE_TEST_3_2'
+        protocol: 'TCP'
+        description: 'ANSIBLE_TEST_1_4'
+      register: opn5
+      failed_when: not opn5.failed
+
+    - name: Cleanup rules
+      ansibleguy.opnsense.rule:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_3'
+        - 'ANSIBLE_TEST_1_4'
+
+    - name: Cleanup aliases
+      ansibleguy.opnsense.alias:
+        name: "{{ item }}"
+        state: 'absent'
+      diff: false
+      loop:
+        - 'ANSIBLE_TEST_3_1'
+        - 'ANSIBLE_TEST_3_2'
+
+- name: Testing Rules - listing
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.rule_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.rule:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+
+  tasks:
+    - name: Listing rules (none)
+      ansibleguy.opnsense.rule_list:
+      register: opn7
+      failed_when: "'rules' not in opn7"
+
+    - name: Creating dummy rule
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.1.0/24'
+        destination_invert: true
+        destination_net: '10.0.0.0/8'
+        description: 'ANSIBLE_TEST_1_5'
+        action: 'block'
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Listing rules
+      ansibleguy.opnsense.rule_list:
+      register: opn8
+      failed_when: >
+        'rules' not in opn8 or
+        opn8.rules | length != 1
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.rule:
+        description: 'ANSIBLE_TEST_1_5'
+        state: 'absent'
+
+- name: Testing Rules - matching
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.rule_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.rule:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['source_net', 'description']
+
+  tasks:
+    - name: Listing rules - before
+      ansibleguy.opnsense.rule_list:
+      register: opn10
+      failed_when: >
+        'rules' not in opn10 or
+        opn10.rules | length != 0
+
+    - name: Creating rule 1
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.0.0/24'
+        description: 'ANSIBLE_TEST_1_6'
+
+        destination_net: '192.168.1.0/24'
+        destination_port: 443
+        protocol: 'TCP'
+
+    - name: Modifying rule 1
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.0.0/24'
+        description: 'ANSIBLE_TEST_1_6'
+
+        destination_net: '192.168.10.0/24'
+        destination_port: 443
+        protocol: 'TCP'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Creating rule 2
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.0.0/24'
+        description: 'ANSIBLE_TEST_1_7'
+
+        destination_net: '192.168.1.0/24'
+        destination_port: 443
+        protocol: 'TCP'
+
+    - name: Creating rule 3
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.1.0/24'
+        description: 'ANSIBLE_TEST_1_7'
+
+        destination_net: '192.168.1.0/24'
+        destination_port: 443
+        protocol: 'TCP'
+
+    - name: Modifying rule 3
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.1.0/24'
+        description: 'ANSIBLE_TEST_1_7'
+
+        destination_net: '192.168.1.0/24'
+        destination_port: 443
+        protocol: 'UDP'
+
+    - name: Listing rules - after
+      ansibleguy.opnsense.rule_list:
+      register: opn11
+      failed_when: >
+        'rules' not in opn11 or
+        opn11.rules | length != 3
+
+    - name: Cleanup
+      ansibleguy.opnsense.rule:
+        description: "{{ item }}"
+        state: 'absent'
+        match_fields: ['description']
+      loop:
+        - 'ANSIBLE_TEST_1_6'
+        - 'ANSIBLE_TEST_1_7'
+        - 'ANSIBLE_TEST_1_7'

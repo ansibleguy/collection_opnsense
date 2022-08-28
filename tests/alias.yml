@@ -12,7 +12,7 @@
   tasks:
     - name: Removing - does not exist
       ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST_1__1_1'
+        name: 'ANSIBLE_TEST_1_1'
         state: 'absent'
       register: opn1
       failed_when: opn1.changed
@@ -52,7 +52,7 @@
         content: 'https://test.ansibleguy.net'
       register: opn9
       failed_when: not opn9.failed
-      when: not ansible_check_mode  # will not work if does not exist
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Disabling
       ansibleguy.opnsense.alias:
@@ -62,7 +62,7 @@
       failed_when: >
         not opn5.changed or
         opn5.failed
-      when: not ansible_check_mode  # will not work if does not exist
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Disabling - nothing changed
       ansibleguy.opnsense.alias:
@@ -81,7 +81,7 @@
       failed_when: >
         not opn6.changed or
         opn6.failed
-      when: not ansible_check_mode  # will not work if does not exist
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Enabling - nothing changed
       ansibleguy.opnsense.alias:

@@ -1,19 +1,10 @@
-from ipaddress import ip_address, ip_network
 import validators
 
 
 def get_rule(rules: (list, dict), cnf: dict) -> dict:
     rule = {}
 
-    # type handling because of inconsistent response types..
-    if isinstance(rules, list):
-        for existing_raw in rules:
-            existing = _simplify_existing_rule(rule=existing_raw)
-            if _check_for_match(existing=existing, cnf=cnf):
-                rule = existing
-                break
-
-    else:
+    if len(rules) > 0:
         for uuid, values in rules.items():
             existing = _simplify_existing_rule(rule={uuid: values})
             if _check_for_match(existing=existing, cnf=cnf):
@@ -45,6 +36,7 @@ def _simplify_existing_rule(rule: dict) -> dict:
         simple['uuid'] = uuid
         simple['enabled'] = values['enabled'] in [1, '1', True]
         simple['log'] = values['log'] in [1, '1', True]
+        simple['quick'] = values['quick'] in [1, '1', True]
         simple['source_invert'] = values['source_not'] in [1, '1', True]
         simple['destination_invert'] = values['destination_not'] in [1, '1', True]
 
@@ -93,17 +85,18 @@ def _simplify_existing_rule(rule: dict) -> dict:
 def validate_values(error_func, cnf: dict) -> None:
     error = "Value '%s' is invalid for the field '%s'!"
 
-    for field in ['source_net', 'destination_net']:
-        if cnf[field] not in [None, '', 'any']:
-            try:
-                ip_network(cnf[field])
-
-            except ValueError:
-                try:
-                    ip_address(cnf[field])
-
-                except ValueError:
-                    error_func(error % (cnf[field], field))
+    # can't validate as aliases are supported
+    # for field in ['source_net', 'destination_net']:
+    #     if cnf[field] not in [None, '', 'any']:
+    #         try:
+    #             ip_network(cnf[field])
+    #
+    #         except ValueError:
+    #             try:
+    #                 ip_address(cnf[field])
+    #
+    #             except ValueError:
+    #                 error_func(error % (cnf[field], field))
 
     for field in ['source_port', 'destination_port']:
         if cnf[field] not in [None, '']:
@@ -121,11 +114,14 @@ def validate_values(error_func, cnf: dict) -> None:
 def diff_filter(cnf: dict) -> dict:
     diff = {}
     relevant_fields = [
-        'sequence', 'action', 'interface', 'direction', 'ip_protocol', 'protocol',
+        'action', 'quick', 'interface', 'direction', 'ip_protocol', 'protocol',
         'source_invert', 'source_net', 'source_port',
         'destination_invert', 'destination_net', 'destination_port',
         'gateway', 'log', 'description'
     ]
+
+    # special case..
+    diff['sequence'] = str(cnf['sequence'])
 
     for field in relevant_fields:
         diff[field] = cnf[field]

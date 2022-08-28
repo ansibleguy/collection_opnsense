@@ -37,7 +37,7 @@
         action: 'apply'
         controller: 'filter'
         revision: "{{ opn1.revision }}"
-      when: not ansible_check_mode  # will not work if does not exist
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Removing filter savepoint
       ansibleguy.opnsense.savepoint:
@@ -82,7 +82,7 @@
         action: 'apply'
         controller: 'source_nat'
         revision: "{{ opn4.revision }}"
-      when: not ansible_check_mode  # will not work if does not exist
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Removing source-nat savepoint
       ansibleguy.opnsense.savepoint:
