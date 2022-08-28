@@ -36,6 +36,12 @@ rm -rf "~/.ansible/collections/ansible_collections/ansibleguy/opnsense"
 ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
 
 echo ''
+echo '##############################'
+echo 'STARTING TESTS!'
+echo '##############################'
+
+echo ''
+echo '##############################'
 echo 'RUNNING TESTS for module ALIAS'
 echo ''
 
@@ -43,14 +49,15 @@ ansible-playbook tests/alias.yml --extra-vars="ansible_python_interpreter=$(whic
 ansible-playbook tests/alias.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
 echo ''
+echo '##############################'
 echo 'RUNNING TESTS for module MULTI_ALIAS'
 echo ''
 
 ansible-playbook tests/multi_alias.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/multi_alias.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
-
 echo ''
+echo '##############################'
 echo 'RUNNING TESTS for module RULE'
 echo ''
 
@@ -58,22 +65,31 @@ ansible-playbook tests/rule.yml --extra-vars="ansible_python_interpreter=$(which
 ansible-playbook tests/rule.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
 echo ''
+echo '##############################'
 echo 'RUNNING TESTS for module SAVEPOINT'
 echo ''
 
 ansible-playbook tests/savepoint.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/savepoint.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
-
 echo ''
+echo '##############################'
 echo 'RUNNING TESTS for module PACKAGE'
 echo ''
 
 ansible-playbook tests/package.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/package.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
+echo ''
+echo '##############################'
+echo 'RUNNING TESTS for module SYSTEM'
+echo ''
 
+ansible-playbook tests/system.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/system.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
 echo ''
+echo '##############################'
 echo 'FINISHED TESTS!'
+echo '##############################'
 echo ''
