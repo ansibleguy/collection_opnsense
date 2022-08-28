@@ -15,10 +15,19 @@ os-firewall
 
 You can also install it using the [package module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md).
 
-**BE AWARE**:
+## Limitations
 
-This plugin does not seem to be working with aliases.
+This plugin has some major limitations you need to know of:
 
+* it does not work with aliases
+* every rule can only have one
+
+  * source network
+  * destination network
+  * ip-protocol
+  * protocol
+
+Here's a forum topic regarding these limitations: [LINK](https://forum.opnsense.org/index.php?topic=30077.0)
 
 ## Info
 
