@@ -60,7 +60,6 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 **Core API**:
 
 - [Cron](https://docs.opnsense.org/development/api/core/cron.html)
-- [Firmware/Packages](https://docs.opnsense.org/development/api/core/firmware.html)
 - [IDS](https://docs.opnsense.org/development/api/core/ids.html)
 - [IPSec](https://docs.opnsense.org/development/api/core/ipsec.html)
 - [Monit](https://docs.opnsense.org/development/api/core/monit.html)
@@ -72,7 +71,6 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 **Plugins API**:
 
 - [Backup](https://docs.opnsense.org/development/api/plugins/backup.html)
-- [Firewall (Rules)](https://docs.opnsense.org/development/api/plugins/firewall.html)
 - [WireGuard](https://docs.opnsense.org/development/api/plugins/wireguard.html)
 - [Zabbix Agent](https://docs.opnsense.org/development/api/plugins/zabbixagent.html)
 - [Zabbix Proxy](https://docs.opnsense.org/development/api/plugins/zabbixproxy.html)
