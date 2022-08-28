@@ -89,12 +89,6 @@ class Rule:
                 }
             })
 
-        if self.cnf['enabled']:
-            self.enable()
-
-        else:
-            self.disable()
-
     def delete(self):
         self.r['changed'] = True
         if not self.m.check_mode:
@@ -152,6 +146,7 @@ class Rule:
 
     def _build_rule(self) -> dict:
         return {
+            'enabled': 1 if self.cnf['enabled'] else 0,
             'sequence': self.cnf['sequence'],
             'action': self.cnf['action'],
             'quick': 1 if self.cnf['quick'] else 0,

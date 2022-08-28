@@ -62,6 +62,7 @@
         - 'ANSIBLE_TEST_1_6'
         - 'ANSIBLE_TEST_1_7'
         - 'ANSIBLE_TEST_1_7'  # matching test duplicate
+        - 'ANSIBLE_TEST_1_8'
 
     - name: Cleanup packages
       ansibleguy.opnsense.package:

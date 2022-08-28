@@ -188,10 +188,32 @@
         opn8.rules | length != 1
       when: not ansible_check_mode  # no use in check mode
 
+    - name: Creating dummy rule 2
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.1.0/24'
+        destination_invert: true
+        destination_net: '10.0.0.0/8'
+        description: 'ANSIBLE_TEST_1_8'
+        enabled: false
+        action: 'block'
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Listing rules
+      ansibleguy.opnsense.rule_list:
+        filter: 'disabled'
+      register: opn12
+      failed_when: >
+        'rules' not in opn12 or
+        opn12.rules | length != 1
+      when: not ansible_check_mode  # no use in check mode
+
     - name: Cleanup
       ansibleguy.opnsense.rule:
-        description: 'ANSIBLE_TEST_1_5'
+        description: "{{ item }}"
         state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_5'
+        - 'ANSIBLE_TEST_1_8'
 
 - name: Testing Rules - matching
   hosts: localhost

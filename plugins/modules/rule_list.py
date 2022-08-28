@@ -38,6 +38,20 @@ def run_module():
 
     result['rules'] = rule.search_call()
 
+    if module.params['filter'] is not None:
+        filtered_rules = {}
+
+        if len(result['rules']) > 0:
+            for _uuid, _rule in result['rules'].items():
+                if _rule['enabled'] in [1, '1', True]:
+                    if module.params['filter'] == 'enabled':
+                        filtered_rules[_uuid] = _rule
+
+                elif module.params['filter'] == 'disabled':
+                    filtered_rules[_uuid] = _rule
+
+        result['rules'] = filtered_rules
+
     rule.s.close()
     module.exit_json(**result)
 
