@@ -52,8 +52,8 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Firewall Rules**      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | testing         |
 | **Firewall Savepoints** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | testing         |
 | **Firewall Source NAT** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_snat.md)        | not implemented |
-| **Packages**            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | not implemented |
-
+| **Packages**            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | unstable |
+| **System**              | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | not implemented |
 
 ### Roadmap
 

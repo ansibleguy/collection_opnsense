@@ -5,6 +5,8 @@ from validators import domain
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import ensure_list
+
 
 def check_or_load_credentials(module: AnsibleModule):
     if module.params['api_key'] is None and module.params['api_credential_file'] is not None:
@@ -21,8 +23,14 @@ def check_or_load_credentials(module: AnsibleModule):
                 )
 
             with open(module.params['api_credential_file'], 'r') as file:
-                module.params['api_key'] = file.readline().split('=', 1)[1].strip()
-                module.params['api_secret'] = file.readline().split('=', 1)[1].strip()
+                for line in file.readlines():
+                    key, value = line.split('=', 1)
+
+                    if key == 'key':
+                        module.params['api_key'] = value.strip()
+
+                    elif key == 'secret':
+                        module.params['api_secret'] = value.strip()
 
         else:
             module.fail_json(
@@ -72,7 +80,7 @@ def get_params_path(cnf: dict) -> str:
     params_path = ''
 
     if 'params' in cnf and cnf['params'] is not None:
-        for param in cnf['params']:
+        for param in ensure_list(cnf['params']):
             params_path += f"/{param}"
 
     return params_path

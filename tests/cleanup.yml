@@ -10,7 +10,7 @@
       ssl_verify: false
 
   tasks:
-    - name: Cleanup
+    - name: Cleanup Aliases
       ansibleguy.opnsense.alias:
         name: "{{ item }}"
         state: 'absent'
@@ -46,3 +46,19 @@
         - 'ANSIBLE_TEST_2_8'
         - 'ANSIBLE_TEST_2_9'
         - 'ANSIBLE_TEST_2_10'
+
+    - name: Cleanup Rules
+      ansibleguy.opnsense.rule:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+
+    - name: Cleanup packages
+      ansibleguy.opnsense.package:
+        name: 'os-api-backup'
+        action: "{{ item }}"
+      loop:
+        - 'unlock'
+        - 'remove'

@@ -12,13 +12,14 @@ class Session:
         self.m = module
         self.s = self.start()
 
-    def start(self):
+    def start(self, timeout: float = None):
         check_host(module=self.m)
         check_or_load_credentials(module=self.m)
         return httpx.Client(
             base_url=f"https://{self.m.params['firewall']}/api",
             auth=(self.m.params['api_key'], self.m.params['api_secret']),
             verify=ssl_verification(module=self.m),
+            timeout=timeout,
         )
 
     def get(self, cnf: dict) -> dict:
@@ -69,7 +70,7 @@ class Session:
         self.s.close()
 
 
-def single_get(module: AnsibleModule, cnf: dict) -> dict:
+def single_get(module: AnsibleModule, cnf: dict, timeout: float = None) -> dict:
     check_host(module=module)
     params_path = get_params_path(cnf=cnf)
     call_url = f"https://{module.params['firewall']}/api/" \
@@ -88,13 +89,14 @@ def single_get(module: AnsibleModule, cnf: dict) -> dict:
             call_url,
             auth=(module.params['api_key'], module.params['api_secret']),
             verify=ssl_verification(module=module),
+            timeout=timeout,
         )
     )
 
     return response
 
 
-def single_post(module: AnsibleModule, cnf: dict) -> dict:
+def single_post(module: AnsibleModule, cnf: dict, timeout: float = None) -> dict:
     headers = {}
     check_host(module=module)
     data = None
@@ -123,6 +125,7 @@ def single_post(module: AnsibleModule, cnf: dict) -> dict:
             call_url,
             auth=(module.params['api_key'], module.params['api_secret']), verify=ssl_verification(module=module),
             json=data, headers=headers,
+            timeout=timeout,
         )
     )
 

@@ -66,5 +66,14 @@ ansible-playbook tests/savepoint.yml --check --extra-vars="ansible_python_interp
 
 
 echo ''
+echo 'RUNNING TESTS for module PACKAGE'
+echo ''
+
+ansible-playbook tests/package.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/package.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+
+
+echo ''
 echo 'FINISHED TESTS!'
 echo ''

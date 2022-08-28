@@ -1,0 +1,86 @@
+---
+
+- name: Testing Packages
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.package:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Installing - exists
+      ansibleguy.opnsense.package:
+        name: 'os-firewall'
+        action: 'install'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.package:
+        name: 'os-api-backup'
+        action: 'remove'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        opn2.changed
+
+    - name: Installing
+      ansibleguy.opnsense.package:
+        name: 'os-api-backup'
+        action: 'install'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+
+    - name: Locking
+      ansibleguy.opnsense.package:
+        name: 'os-api-backup'
+        action: 'lock'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Removing - locked
+      ansibleguy.opnsense.package:
+        name: 'os-api-backup'
+        action: 'remove'
+      register: opn5
+      failed_when: not opn5.failed
+      when: not ansible_check_mode
+
+    - name: Unlocking
+      ansibleguy.opnsense.package:
+        name: 'os-api-backup'
+        action: 'unlock'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Reinstall
+      ansibleguy.opnsense.package:
+        name: 'os-api-backup'
+        action: 'reinstall'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Removing
+      ansibleguy.opnsense.package:
+        name: 'os-api-backup'
+        action: 'remove'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
