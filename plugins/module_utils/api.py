@@ -16,7 +16,7 @@ class Session:
         check_host(module=self.m)
         check_or_load_credentials(module=self.m)
         return httpx.Client(
-            base_url=f"https://{self.m.params['firewall']}/api",
+            base_url=f"https://{self.m.params['firewall']}:{self.m.params['api_port']}/api",
             auth=(self.m.params['api_key'], self.m.params['api_secret']),
             verify=ssl_verification(module=self.m),
             timeout=timeout,
@@ -73,7 +73,7 @@ class Session:
 def single_get(module: AnsibleModule, cnf: dict, timeout: float = None) -> dict:
     check_host(module=module)
     params_path = get_params_path(cnf=cnf)
-    call_url = f"https://{module.params['firewall']}/api/" \
+    call_url = f"https://{module.params['firewall']}:{module.params['api_port']}/api/" \
                f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
 
     debug_output(
@@ -106,7 +106,7 @@ def single_post(module: AnsibleModule, cnf: dict, timeout: float = None) -> dict
         data = cnf['data']
 
     params_path = get_params_path(cnf=cnf)
-    call_url = f"https://{module.params['firewall']}/api/" \
+    call_url = f"https://{module.params['firewall']}:{module.params['api_port']}/api/" \
                f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
 
     debug_output(

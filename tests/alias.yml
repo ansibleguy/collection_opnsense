@@ -150,6 +150,7 @@
         type: 'network'
         content: ['192.168.0.0/24', '192.168.1.0/24']
 
+    # todo: not really sure how that fails after validation was disabled because of alias-support
     - name: Adding invalid network
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_2_NET3'

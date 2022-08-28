@@ -1,0 +1,31 @@
+---
+
+- name: Testing System
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.system:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Fetching updates
+      ansibleguy.opnsense.system:
+        action: 'update'
+
+    - name: Running audit
+      ansibleguy.opnsense.system:
+        action: 'audit'
+
+    - name: Rebooting with wait
+      ansibleguy.opnsense.system:
+        action: 'reboot'
+        wait: true
+        timeout: 90
+        poll_interval: 2
+
+    - name: Rebooting w/o wait
+      ansibleguy.opnsense.system:
+        action: 'reboot'
+        wait: false

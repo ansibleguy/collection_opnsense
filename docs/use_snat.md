@@ -1,4 +1,4 @@
-# OPNSense - Rule module
+# OPNSense - Source-NAT module
 
 **STATE**: not yet implemented
 

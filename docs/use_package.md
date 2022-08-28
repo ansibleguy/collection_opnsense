@@ -16,7 +16,7 @@ If the package cache is too old it will take some time as OPNSense automatically
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.savepoint:
+    ansibleguy.opnsense.package:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
   
