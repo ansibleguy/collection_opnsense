@@ -79,17 +79,19 @@ def run_module():
             result['locked'] = False
 
         result['changed'] = True
-        session.post(cnf={
-            'command': module.params['action'],
-            **call_cnf
-        })
+        if not module.check_mode:
+            session.post(cnf={
+                'command': module.params['action'],
+                **call_cnf
+            })
 
     elif not result['installed'] and module.params['action'] == 'install':
         result['changed'] = True
-        session.post(cnf={
-            'command': module.params['action'],
-            **call_cnf
-        })
+        if not module.check_mode:
+            session.post(cnf={
+                'command': module.params['action'],
+                **call_cnf
+            })
 
     session.close()
     module.exit_json(**result)
