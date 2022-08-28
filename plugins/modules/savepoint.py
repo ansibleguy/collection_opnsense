@@ -26,7 +26,7 @@ def run_module():
             type='str', required=False, default='filter', description='Target API controller',
             choises=['source_nat', 'filter']
         ),
-        api_module=dict(type='str', required=False, default='firewall',  choises=['firewall']),
+        api_module=dict(type='str', required=False, default='firewall', choises=['firewall']),
         **OPN_MOD_ARGS
     )
 

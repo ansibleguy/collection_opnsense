@@ -30,4 +30,3 @@ def wait_for_response(module: AnsibleModule) -> bool:
         sleep(module.params['poll_interval'])
 
     return False
-

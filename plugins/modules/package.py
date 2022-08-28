@@ -5,6 +5,8 @@
 
 # see: https://docs.opnsense.org/development/api/core/firmware.html
 
+from time import sleep
+
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
@@ -20,6 +22,10 @@ def run_module():
         action=dict(
             type='str', required=True,
             choices=['install', 'reinstall', 'remove', 'lock', 'unlock']
+        ),
+        wait_time=dict(
+            type='int', required=False, default=1,
+            description='The firewall needs some time to update package info'
         ),
         **OPN_MOD_ARGS
     )
@@ -72,14 +78,23 @@ def run_module():
     if result['installed'] and \
             module.params['action'] in ['reinstall', 'remove', 'lock', 'unlock']:
 
+        run = False
+
         if module.params['action'] == 'lock':
-            result['locked'] = True
+            if not result['locked']:
+                run = True
+                result['locked'] = True
 
         elif module.params['action'] == 'unlock':
-            result['locked'] = False
+            if result['locked']:
+                run = True
+                result['locked'] = False
+
+        else:
+            run = True
 
         result['changed'] = True
-        if not module.check_mode:
+        if not module.check_mode and run:
             session.post(cnf={
                 'command': module.params['action'],
                 **call_cnf
@@ -92,6 +107,9 @@ def run_module():
                 'command': module.params['action'],
                 **call_cnf
             })
+
+    if result['changed']:
+        sleep(module.params['wait_time'])  # time for the box to update package info
 
     session.close()
     module.exit_json(**result)
