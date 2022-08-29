@@ -27,14 +27,15 @@ class Alias:
             'module': 'firewall',
             'controller': 'alias',
         }
+        self.existing_aliases = None
         self.existing_rules = None  # used to check if alias is in use
 
-    def check(self, existing_aliases: dict = None):
+    def check(self):
         # pulling alias info if it exists
-        if existing_aliases is None:
-            existing_aliases = self.search_call()
+        if self.existing_aliases is None:
+            self.existing_aliases = self.search_call()
 
-        self.alias = get_alias(aliases=existing_aliases, name=self.cnf['name'])
+        self.alias = get_alias(aliases=self.existing_aliases, name=self.cnf['name'])
         self.exists = len(self.alias) > 0
         if self.exists:
             self.call_cnf['params'] = [self.alias['uuid']]

@@ -14,6 +14,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults impor
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_DEFAULTS, ALIAS_MOD_ARGS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_main import process_alias
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/tests/multi_alias.yml'
@@ -53,6 +54,7 @@ def run_module():
 
     session = Session(module=module)
     existing_aliases = Alias(module=module, session=session, result={}).search_call()
+    existing_rules = Rule(module=module, result={}, session=session).search_call()
 
     overrides = {}
 
@@ -109,8 +111,11 @@ def run_module():
                 session=session,
                 fail=module.params['fail_verification'],
             )
+            # save on requests
+            alias.existing_aliases = existing_aliases
+            alias.existing_rules = existing_rules
 
-            alias.check(existing_aliases=existing_aliases)
+            alias.check()
             process_alias(alias=alias)
 
             if alias_result['changed']:
