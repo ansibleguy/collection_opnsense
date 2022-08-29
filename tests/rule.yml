@@ -59,13 +59,14 @@
         not opn3.changed
       when: not ansible_check_mode  # no use in check mode
 
-    - name: Updating more
+    - name: Updating more - using list of interfaces
       ansibleguy.opnsense.rule:
         source_net: '192.168.0.0/24'
         destination_net: '192.168.2.0/24'
         destination_port: 8443
         protocol: 'UDP'
         description: 'ANSIBLE_TEST_1_1'
+        interface: ['lan', 'lo0']
         log: false
       register: opn4
       failed_when: >

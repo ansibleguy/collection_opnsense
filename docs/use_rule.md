@@ -22,11 +22,11 @@ This plugin has some limitations you need to know of:
 * ports don't support aliases
 * each of these parameters only takes ONE value per rule:
   * port
-  * protocol
+  * protocol (_or any_)
   * ip-protocol (_IPv4/IPv6_)
-  * interface (_any is not an option_)
   * direction
 * the ruleset managed by this plugin is SEPARATE from the default WEB-UI rules (_Firewall - Rules_) - combined usage might bring complications
+* interfaces must be provided as named in the network config => per example see: '/ui/diagnostics/interface/netstat'
 
 ## Info
 

@@ -7,8 +7,8 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import RULE_MOD_ARGS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_main import process_rule
 
@@ -18,50 +18,6 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 
 
 def run_module():
-    module_args = dict(
-        sequence=dict(type='int', required=False, default='1'),
-        action=dict(type='str', required=False, default='pass', choices=['pass', 'block', 'reject']),
-        quick=dict(type='bool', required=False, default=True),
-        interface=dict(type='str', required=False, default='lan'),
-        direction=dict(type='str', required=False, default='in', choices=['in', 'out']),
-        ip_protocol=dict(
-            type='str', required=False, choices=['inet', 'inet6'], default='inet',
-            description="IPv4 = 'inet', IPv6 = 'inet6'"
-        ),
-        protocol=dict(
-            type='str', required=False, default='any',
-            description="Protocol like 'TCP', 'UDP', 'TCP/UDP' and so on."
-        ),
-        source_invert=dict(type='bool', required=False, default=False),
-        source_net=dict(type='str', required=False, description="Host, network, alias or 'any'"),
-        source_port=dict(
-            type='str', required=False, default='',
-            description='Leave empty to allow all, alias not supported'
-        ),
-        destination_invert=dict(type='bool', required=False, default=False),
-        destination_net=dict(type='str', required=False, description="Host, network, alias or 'any'"),
-        destination_port=dict(
-            type='str', required=False, default='',
-            description='Leave empty to allow all, alias not supported'
-        ),
-        gateway=dict(type='str', required=False, default='', description='Existing gateway to use'),
-        log=dict(type='bool', required=False, default=True),
-        description=dict(type='str', required=False, default=''),
-        state=dict(type='str', default='present', required=False, choices=['present', 'absent']),
-        enabled=dict(type='bool', required=False, default=True),
-        match_fields=dict(
-            type='list', required=True,
-            description='Fields that are used to match configured rules with the running config - '
-                        "if any of those fields are changed, the module will think it's a new rule",
-            choises=[
-                'sequence', 'action', 'interface', 'direction', 'ip_protocol', 'protocol',
-                'source_invert', 'source_net', 'source_port', 'destination_invert', 'destination_net',
-                'destination_port', 'gateway', 'description',
-            ]
-        ),
-        **OPN_MOD_ARGS
-    )
-
     result = dict(
         changed=False,
         diff={
@@ -71,7 +27,7 @@ def run_module():
     )
 
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=RULE_MOD_ARGS,
         supports_check_mode=True,
     )
 

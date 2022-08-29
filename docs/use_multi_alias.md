@@ -34,6 +34,7 @@ For more detailed information on what alias types are supported - see [the docum
   tasks:
     - name: Creation
       ansibleguy.opnsense.multi_alias:
+        fail_verification: true  # default = false; Fail module if single alias fails the verification
         aliases:
           test1:
             content: '1.1.1.1'

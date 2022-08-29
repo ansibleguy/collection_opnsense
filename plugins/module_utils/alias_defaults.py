@@ -6,6 +6,7 @@ ALIAS_DEFAULTS = {
     'description': '',
     'type': 'host',
     'content': [],
+    'debug': False,
 }
 
 ALIAS_MOD_ARGS = dict(

@@ -52,10 +52,10 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Alias**               | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)       | unstable        | 
 | **Multi-Alias**         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md) | unstable        |
 | **Packages**            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | unstable        |
-| **Rules**      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | unstable         |
-| **Savepoints** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | unstable         |
-| **System**              | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | unstable         |
-| **Multi-Rule**          | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_rule.md)  | development         |
+| **Rules**      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | unstable        |
+| **Savepoints** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | unstable        |
+| **System**              | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | unstable        |
+| **Multi-Rule**          | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_rule.md)  | testing         |
 | **Source NAT** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_snat.md)        | not implemented |
 
 ### Roadmap
@@ -214,4 +214,6 @@ You can also use the 'debug' argument to enable verbose output of the api reques
   ansibleguy.opnsense.alias:
     debug: true
 ```
+
+'Multi' modules also support the 'debug' parameter on a per-item basis - so you don't get flooded.
 

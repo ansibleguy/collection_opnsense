@@ -9,6 +9,11 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.alias_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Removing - do not exist
       ansibleguy.opnsense.multi_alias:
@@ -25,7 +30,9 @@
           ANSIBLE_TEST_2_10:
         state: 'absent'
       register: opn1
-      failed_when: opn1.changed
+      failed_when: >
+        opn1.failed or
+        opn1.changed
 
     - name: Adding
       ansibleguy.opnsense.multi_alias:
@@ -100,7 +107,15 @@
         opn3.failed or
         not opn3.changed
 
-    - name: Removing - do not exist
+    - name: Listing aliases
+      ansibleguy.opnsense.alias_list:
+      register: opn4
+      failed_when: >
+        'aliases' not in opn4 or
+        opn4.aliases | length != 10
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Removing
       ansibleguy.opnsense.multi_alias:
         aliases:
           ANSIBLE_TEST_2_1:
@@ -114,3 +129,11 @@
           ANSIBLE_TEST_2_9:
           ANSIBLE_TEST_2_10:
         state: 'absent'
+
+    - name: Checking cleanup
+      ansibleguy.opnsense.alias_list:
+      register: opn5
+      failed_when: >
+        'aliases' not in opn5 or
+        opn5.aliases | length != 0
+      when: not ansible_check_mode  # no use in check mode

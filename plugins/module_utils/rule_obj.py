@@ -1,5 +1,6 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import ensure_list
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
     get_rule, validate_values, diff_filter, get_any_change
@@ -22,19 +23,20 @@ class Rule:
             'module': 'firewall',
             'controller': 'filter',
         }
+        self.existing_rules = None
 
-    def check(self, existing_rules: dict = None):
+    def check(self):
         self._build_log_name()
 
         # pulling rule info if it exists
-        if existing_rules is None:
-            existing_rules = self.search_call()
+        if self.existing_rules is None:
+            self.existing_rules = self.search_call()
 
         if self.m.params['debug']:
-            self.m.warn(f"EXISTING RULES: {existing_rules}")
+            self.m.warn(f"EXISTING RULES: {self.existing_rules}")
 
         self.rule = get_rule(
-            rules=existing_rules,
+            rules=self.existing_rules,
             cnf=self.cnf,
         )
         self.exists = len(self.rule) > 0
@@ -62,7 +64,7 @@ class Rule:
 
     def create(self):
         # creating rule
-        validate_values(error_func=self._error, cnf=self.cnf)
+        validate_values(error_func=self._error, module=self.m, cnf=self.cnf)
         self.r['changed'] = True
         self.r['diff']['after'] = diff_filter(self.cnf)
         if not self.m.check_mode:
@@ -77,7 +79,7 @@ class Rule:
 
     def update(self):
         # checking if rule changed
-        validate_values(error_func=self._error, cnf=self.cnf)
+        validate_values(error_func=self._error, module=self.m, cnf=self.cnf)
         _before = diff_filter(self.rule)
         _after = diff_filter(self.cnf)
         self.r['changed'] = get_any_change(before=_before, after=_after)
@@ -157,7 +159,7 @@ class Rule:
             'sequence': self.cnf['sequence'],
             'action': self.cnf['action'],
             'quick': 1 if self.cnf['quick'] else 0,
-            'interface': self.cnf['interface'],
+            'interface': '\n'.join(map(str, ensure_list(self.cnf['interface']))),
             'direction': self.cnf['direction'],
             'ip_protocol': self.cnf['ip_protocol'],
             'protocol': self.cnf['protocol'],

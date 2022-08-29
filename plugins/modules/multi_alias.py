@@ -6,15 +6,15 @@
 # see: https://docs.opnsense.org/development/api/core/firewall.html
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.common.arg_spec import ModuleArgumentSpecValidator
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty, ensure_list
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_DEFAULTS, ALIAS_MOD_ARGS
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty, ensure_list
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_main import process_alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.multi_helper import validate_single
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/tests/multi_alias.yml'
@@ -45,16 +45,9 @@ def run_module():
         supports_check_mode=True,
     )
 
-    validator = ModuleArgumentSpecValidator(ALIAS_MOD_ARGS,
-                                            module.mutually_exclusive,
-                                            module.required_together,
-                                            module.required_one_of,
-                                            module.required_if,
-                                            module.required_by)
-
     session = Session(module=module)
     existing_aliases = Alias(module=module, session=session, result={}).search_call()
-    existing_rules = Rule(module=module, result={}, session=session).search_call()
+    existing_rules = Rule(module=module, session=session, result={}).search_call()
 
     overrides = {}
 
@@ -64,64 +57,65 @@ def run_module():
     if module.params['enabled'] is not None:
         overrides['enabled'] = module.params['enabled']
 
-    for _name, _config in module.params['aliases'].items():
+    # build list of valid rules or fail if invalid config is not permitted
+    valid_aliases = []
+    for alias_name, alias_config in module.params['aliases'].items():
         # build config and validate it the same way the module initialization would do
-        if _config is None:
-            _config = {}
+        if alias_config is None:
+            alias_config = {}
 
-        alias_cnf = {
+        real_cnf = {
             **ALIAS_DEFAULTS,
-            **_config,
+            **alias_config,
             **{
-                'name': _name,
+                'name': alias_name,
                 'firewall': module.params['firewall'],
             },
             **overrides,
         }
-        alias_cnf['content'] = list(map(str, ensure_list(alias_cnf['content'])))
-        validation_result = validator.validate(parameters=alias_cnf)
+        real_cnf['content'] = list(map(str, ensure_list(real_cnf['content'])))
 
-        try:
-            validation_error = validation_result.errors[0]
+        if validate_single(
+            module=module, module_args=ALIAS_MOD_ARGS, log_mod='rule',
+            key=alias_name, cnf=real_cnf,
+        ):
+            valid_aliases.append(real_cnf)
 
-        except IndexError:
-            validation_error = None
+    for alias_config in valid_aliases:
+        # process single alias like in the 'alias' module
+        alias_result = dict(
+            changed=False,
+            diff={
+                'before': {},
+                'after': {},
+            }
+        )
+        module.params['debug'] = alias_config['debug']  # per rule switch
+        alias = Alias(
+            module=module,
+            result=alias_result,
+            cnf=alias_config,
+            session=session,
+            fail=module.params['fail_verification'],
+        )
+        # save on requests
+        alias.existing_aliases = existing_aliases
+        alias.existing_rules = existing_rules
 
-        if validation_error:
-            error_msg = validation_result.errors.msg
-            if module.params['fail_verification']:
-                module.fail_json(f"Got invalid config for alias '{_name}': {error_msg}")
+        alias.check()
+        process_alias(alias=alias)
 
-            else:
-                module.warn(f"Got invalid config for alias '{_name}': {error_msg}")
+        if alias_result['changed']:
+            result['changed'] = True
+            alias_result['diff'] = diff_remove_empty(alias_result['diff'])
 
-        else:
-            # process single alias like in the 'alias' module
-            alias_result = dict(
-                changed=False,
-                diff={
-                    'before': {},
-                    'after': {},
-                }
-            )
-            alias = Alias(
-                module=module,
-                result=alias_result,
-                cnf=alias_cnf,
-                session=session,
-                fail=module.params['fail_verification'],
-            )
-            # save on requests
-            alias.existing_aliases = existing_aliases
-            alias.existing_rules = existing_rules
-
-            alias.check()
-            process_alias(alias=alias)
-
-            if alias_result['changed']:
-                result['changed'] = True
+            if 'before' in alias_result['diff']:
                 result['diff']['before'].update(alias_result['diff']['before'])
+
+            if 'after' in alias_result['diff']:
                 result['diff']['after'].update(alias_result['diff']['after'])
+
+    # todo: add purging option => or create additional module for it
 
     session.close()
     result['diff'] = diff_remove_empty(result['diff'])

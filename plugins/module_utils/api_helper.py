@@ -99,7 +99,9 @@ def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
 
     json = response.json()
 
-    if response.status_code not in cnf['allowed_http_stati']:
+    if response.status_code not in cnf['allowed_http_stati'] or \
+            ('result' in json and json['result'] == 'failed'):
+        # sometimes an error 'hides' behind a 200-code
         if f"{response.__dict__}".find('Controller not found') != -1:
             module.fail_json(
                 msg=f"API call failed | Needed plugin not installed! | Response: {response.__dict__}"

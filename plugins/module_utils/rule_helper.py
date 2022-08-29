@@ -1,5 +1,7 @@
 import validators
 
+from ansible.module_utils.basic import AnsibleModule
+
 
 def get_rule(rules: (list, dict), cnf: dict) -> dict:
     rule = {}
@@ -52,12 +54,11 @@ def _simplify_existing_rule(rule: dict) -> dict:
         for field in copy_fields:
             simple[field] = values[field]
 
-        simple['interface'] = None
+        simple['interface'] = []
 
         for interface, interface_values in values['interface'].items():
             if interface_values['selected'] in [1, '1', True]:
-                simple['interface'] = interface
-                break
+                simple['interface'].append(interface)
 
         for direction, direction_values in values['direction'].items():
             if direction_values['selected'] in [1, '1', True]:
@@ -82,7 +83,7 @@ def _simplify_existing_rule(rule: dict) -> dict:
     return simple
 
 
-def validate_values(error_func, cnf: dict) -> None:
+def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
     error = "Value '%s' is invalid for the field '%s'!"
 
     # can't validate as aliases are supported
@@ -109,6 +110,13 @@ def validate_values(error_func, cnf: dict) -> None:
 
     if cnf['protocol'] in ['TCP/UDP']:
         error_func(error % (cnf['protocol'], 'protocol'))
+
+    # some recommendations - maybe the user overlooked something
+    if cnf['source_net'] == 'any' and cnf['destination_net'] == 'any':
+        module.warn(f"Configuring rules with 'any' source and 'any' destination is bad practise!")
+
+    elif cnf['destination_net'] == 'any' and cnf['destination_port'] == 'any' and cnf['protocol'] in ['TCP', 'UDP']:
+        module.warn(f"Configuring rules to 'any' destination using 'all' ports is bad practise!")
 
 
 def diff_filter(cnf: dict) -> dict:
