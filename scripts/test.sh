@@ -67,6 +67,15 @@ ansible-playbook tests/rule.yml --check --extra-vars="ansible_python_interpreter
 
 echo ''
 echo '##############################'
+echo 'RUNNING TESTS for module MULTI_RULE'
+echo ''
+
+ansible-playbook tests/multi_rule.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/multi_rule.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+
+echo ''
+echo '##############################'
 echo 'RUNNING TESTS for module SAVEPOINT'
 echo ''
 
