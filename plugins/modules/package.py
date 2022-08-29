@@ -103,6 +103,7 @@ def run_module():
 
             elif module.params['action'] == 'remove':
                 _after['installed'] = False
+                run = True
 
             else:
                 run = True
