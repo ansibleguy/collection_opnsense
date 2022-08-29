@@ -26,6 +26,11 @@ If the package cache is too old it will take some time as OPNSense automatically
         name: 'os-api-backup'
         action: 'install'
 
+    - name: Installing - multiple packages at once
+      ansibleguy.opnsense.package:
+        name: ['os-api-backup', 'os-dmidecode']
+        action: 'install'
+
     - name: Removing
       ansibleguy.opnsense.package:
         name: 'os-api-backup'

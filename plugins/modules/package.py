@@ -18,7 +18,7 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 
 def run_module():
     module_args = dict(
-        name=dict(type='str', required=True),
+        name=dict(type='list', required=True, description='Package or list of packages to process'),
         action=dict(
             type='str', required=True,
             choices=['install', 'reinstall', 'remove', 'lock', 'unlock']
@@ -33,8 +33,10 @@ def run_module():
     result = dict(
         changed=False,
         version=None,
-        installed=False,
-        locked=False,
+        diff={
+            'before': {},
+            'after': {},
+        }
     )
 
     module = AnsibleModule(
@@ -52,64 +54,78 @@ def run_module():
     # checking current state of package
     package_stati = session.get(cnf={'command': 'info', **call_cnf})['package']
 
-    for pkg in package_stati:
-        if pkg['name'] == module.params['name']:
-            if module.params['debug']:
-                module.warn(f"Package status: '{pkg}'")
+    for pkg_name in module.params['name']:
+        _before = {'installed': False, 'locked': False}
+        _changed = False
 
-            result['version'] = pkg['version']
+        for pkg_status in package_stati:
+            if pkg_status['name'] == pkg_name:
+                if module.params['debug']:
+                    module.warn(f"Package status: '{pkg_status}'")
 
-            if pkg['installed'] in ['1', 1, True]:
-                result['installed'] = True
+                _before['version'] = pkg_status['version']
 
-            if pkg['locked'] in ['1', 1, True]:
-                result['locked'] = True
+                if pkg_status['installed'] in ['1', 1, True]:
+                    _before['installed'] = True
 
-    # execute action if needed
-    call_cnf['params'] = [module.params['name']]
+                if pkg_status['locked'] in ['1', 1, True]:
+                    _before['locked'] = True
 
-    if module.params['action'] in ['reinstall', 'remove', 'install'] and \
-            result['locked']:
-        module.fail_json(
-            f"Unable to execute action '{module.params['action']}' - "
-            f"package is locked!"
-        )
+        _after = _before.copy()
 
-    if result['installed'] and \
-            module.params['action'] in ['reinstall', 'remove', 'lock', 'unlock']:
+        # execute action if needed
+        call_cnf['params'] = [pkg_name]
 
-        run = False
+        if module.params['action'] in ['reinstall', 'remove', 'install'] and \
+                _before['locked']:
+            module.fail_json(
+                f"Unable to execute action '{module.params['action']}' - "
+                f"package is locked!"
+            )
 
-        if module.params['action'] == 'lock':
-            if not result['locked']:
+        if _before['installed'] and \
+                module.params['action'] in ['reinstall', 'remove', 'lock', 'unlock']:
+
+            run = False
+
+            if module.params['action'] == 'lock':
+                if not _before['locked']:
+                    run = True
+                    _after['locked'] = True
+
+            elif module.params['action'] == 'unlock':
+                if _before['locked']:
+                    run = True
+                    _after['locked'] = False
+
+            elif module.params['action'] == 'remove':
+                _after['installed'] = False
+
+            else:
                 run = True
-                result['locked'] = True
 
-        elif module.params['action'] == 'unlock':
-            if result['locked']:
-                run = True
-                result['locked'] = False
+            _changed = True
+            if not module.check_mode and run:
+                session.post(cnf={
+                    'command': module.params['action'],
+                    **call_cnf
+                })
 
-        else:
-            run = True
+        elif not _before['installed'] and module.params['action'] == 'install':
+            _changed = True
+            _after['installed'] = True
+            if not module.check_mode:
+                session.post(cnf={
+                    'command': module.params['action'],
+                    **call_cnf
+                })
 
-        result['changed'] = True
-        if not module.check_mode and run:
-            session.post(cnf={
-                'command': module.params['action'],
-                **call_cnf
-            })
+        if _changed:
+            sleep(module.params['wait_time'])  # time for the box to update package info
+            result['changed'] = True
 
-    elif not result['installed'] and module.params['action'] == 'install':
-        result['changed'] = True
-        if not module.check_mode:
-            session.post(cnf={
-                'command': module.params['action'],
-                **call_cnf
-            })
-
-    if result['changed']:
-        sleep(module.params['wait_time'])  # time for the box to update package info
+        result['diff']['before'][pkg_name] = _before
+        result['diff']['after'][pkg_name] = _after
 
     session.close()
     module.exit_json(**result)

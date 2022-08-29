@@ -70,7 +70,7 @@
 
     - name: Cleanup packages
       ansibleguy.opnsense.package:
-        name: 'os-api-backup'
+        name: ['os-api-backup', 'os-dmidecode']
         action: "{{ item }}"
       loop:
         - 'unlock'

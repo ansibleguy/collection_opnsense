@@ -37,6 +37,15 @@
         opn3.failed or
         not opn3.changed
 
+    - name: Installing multiple
+      ansibleguy.opnsense.package:
+        name: ['os-api-backup', 'os-dmidecode']
+        action: 'install'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+
     - name: Locking
       ansibleguy.opnsense.package:
         name: 'os-api-backup'
@@ -75,9 +84,9 @@
         not opn7.changed
       when: not ansible_check_mode
 
-    - name: Removing
+    - name: Removing multiple
       ansibleguy.opnsense.package:
-        name: 'os-api-backup'
+        name: ['os-api-backup', 'os-dmidecode']
         action: 'remove'
       register: opn8
       failed_when: >
