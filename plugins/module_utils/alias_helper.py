@@ -18,7 +18,7 @@ def validate_values(error_func, cnf: dict) -> None:
                 error_func(value)
 
         elif v_type == 'port':
-            if value.find(':') != -1:
+            if str(value).find(':') != -1:
                 to_check = value.split(':')
 
             else:

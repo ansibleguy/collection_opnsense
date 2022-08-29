@@ -27,6 +27,7 @@
         - 'ANSIBLE_TEST_1_2_PORT1'
         - 'ANSIBLE_TEST_1_2_PORT2'
         - 'ANSIBLE_TEST_1_2_PORT3'
+        - 'ANSIBLE_TEST_1_2_PORT4'
         - 'ANSIBLE_TEST_1_2_NET1'
         - 'ANSIBLE_TEST_1_2_NET2'
         - 'ANSIBLE_TEST_1_2_NET3'
