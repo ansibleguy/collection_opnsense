@@ -38,6 +38,8 @@
         - 'ANSIBLE_TEST_1_2_GEOIP1'
         - 'ANSIBLE_TEST_1_2_GEOIP2'
         - 'ANSIBLE_TEST_1_2_GEOIP3'
+        - 'ANSIBLE_TEST_1_3_1'
+        - 'ANSIBLE_TEST_1_3_2'
         - 'ANSIBLE_TEST_2_1'
         - 'ANSIBLE_TEST_2_2'
         - 'ANSIBLE_TEST_2_3'
@@ -56,6 +58,7 @@
       ansibleguy.opnsense.rule:
         description: "{{ item }}"
         state: 'absent'
+      diff: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -72,6 +75,7 @@
       ansibleguy.opnsense.package:
         name: ['os-api-backup', 'os-dmidecode']
         action: "{{ item }}"
+      diff: false
       loop:
         - 'unlock'
         - 'remove'

@@ -85,6 +85,7 @@
       ansibleguy.opnsense.rule:
         description: "{{ item }}"
         state: 'absent'
+      diff: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -137,6 +138,7 @@
       ansibleguy.opnsense.rule:
         description: "{{ item }}"
         state: 'absent'
+      diff: false
       loop:
         - 'ANSIBLE_TEST_1_3'
         - 'ANSIBLE_TEST_1_4'
@@ -169,7 +171,9 @@
     - name: Listing rules (none)
       ansibleguy.opnsense.rule_list:
       register: opn7
-      failed_when: "'rules' not in opn7"
+      failed_when: >
+        'rules' not in opn7 or
+        opn7.rules | length != 0
 
     - name: Creating dummy rule
       ansibleguy.opnsense.rule:
@@ -211,6 +215,7 @@
       ansibleguy.opnsense.rule:
         description: "{{ item }}"
         state: 'absent'
+      diff: false
       loop:
         - 'ANSIBLE_TEST_1_5'
         - 'ANSIBLE_TEST_1_8'
@@ -310,6 +315,7 @@
         description: "{{ item }}"
         state: 'absent'
         match_fields: ['description']
+      diff: false
       loop:
         - 'ANSIBLE_TEST_1_6'
         - 'ANSIBLE_TEST_1_7'
@@ -370,12 +376,14 @@
       ansibleguy.opnsense.rule:
         description: 'ANSIBLE_TEST_1_9'
         state: 'absent'
+      diff: false
       when: not ansible_check_mode  # no use in check mode
 
     - name: Cleanup alias
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_3_3'
         state: 'absent'
+      diff: false
       when: not ansible_check_mode  # no use in check mode
 
     - name: Checking cleanup

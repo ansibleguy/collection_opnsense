@@ -8,3 +8,7 @@ OPN_MOD_ARGS = dict(
     ssl_ca_file=dict(type='str', required=False),
     debug=dict(type='bool', required=False, default=False),
 )
+BUILTIN_ALIASES = [
+    'bogons', 'bogonsv6', 'sshlockout', 'virusprot',
+]
+BUILTIN_INTERFACE_ALIASES_REG = '^__.*?_network$'  # auto-added interface aliases

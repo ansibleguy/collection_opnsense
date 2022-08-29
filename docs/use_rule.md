@@ -30,9 +30,17 @@ This plugin has some limitations you need to know of:
 
 ## Info
 
+### Savepoint
+
 You can prevent lockout-situations using the savepoint systems:
 
 - [Firewall - Savepoint](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)
+
+### Mass-Manage
+
+If you want to mass-manage rules - take a look at the [multi_rule](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_rule.md) module. It is scales better for that use-case!
+
+### Web-UI
 
 These rules are shown in the separate WEB-UI table.
 
@@ -59,8 +67,12 @@ It is **recommended** to use/set **unique identifiers** like 'description' to ma
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
+    ansibleguy.opnsense.rule_list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
   tasks:
-    - name: Test
+    - name: Example
       ansibleguy.opnsense.rule:
         source_net: '192.168.0.0/24'  # host, network, alias or 'any'
         destination_net: '192.168.10.0/24'
@@ -82,6 +94,14 @@ It is **recommended** to use/set **unique identifiers** like 'description' to ma
         # state: 'present'
         # enabled: true
         # debug: true
+
+    - name: Listing
+      ansibleguy.opnsense.rule_list:
+      register: existing_rules
+
+    - name: Printing rules
+      ansible.bultin.debug:
+        var: existing_rules.rules
 ```
 
 ### With inventory config

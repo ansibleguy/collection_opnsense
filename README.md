@@ -3,9 +3,13 @@
 [![Functional Test Status](https://badges.ansibleguy.net/opnsense.collection.test.svg)](https://github.com/ansibleguy/collection_opnsense/blob/stable/scripts/test.sh)
 [![Lint Test Status](https://badges.ansibleguy.net/opnsense.collection.lint.svg)](https://github.com/ansibleguy/collection_opnsense/blob/stable/scripts/lint.sh)
 
+---
+
 ## Contribute
 
 Feel free to contribute to this project using [pull-requests](https://github.com/ansibleguy/collection_opnsense/pulls), [issues](https://github.com/ansibleguy/collection_opnsense/issues) and [discussions](https://github.com/ansibleguy/collection_opnsense/discussions)!
+
+---
 
 ## Requirements
 
@@ -26,12 +30,10 @@ Then - install the collection itself:
 ```bash
 ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
 
-# or for local development
+# or for easier development
 
-mkdir -p $PLAYBOOK_DIR/collections/ansible_collections/ansibleguy/opnsense
-cd /tmp
-git clone https://github.com/ansibleguy/collection_opnsense.git
-mv collection_opnsense/* $PLAYBOOK_DIR/collections/ansible_collections/ansibleguy/opnsense
+cd $PLAYBOOK_DIR
+ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git -p ./collections
 ```
 
 ---
@@ -40,7 +42,7 @@ mv collection_opnsense/* $PLAYBOOK_DIR/collections/ansible_collections/ansiblegu
 
 **Development States**:
 
-not implemented => development => [testing](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests) => unstable => stable
+not implemented => development => [testing](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests) => unstable (_practical testing_) => stable
 
 ### Implemented
 
@@ -49,11 +51,12 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 |:------------------------|:----------------------------------------------------------------------------------------------|:----------------|
 | **Alias**               | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)       | unstable        | 
 | **Multi-Alias**         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md) | unstable        |
-| **Firewall Rules**      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | testing         |
-| **Firewall Savepoints** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | testing         |
-| **Firewall Source NAT** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_snat.md)        | not implemented |
 | **Packages**            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | unstable        |
-| **System**              | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | testing         |
+| **Rules**      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | unstable         |
+| **Savepoints** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | unstable         |
+| **System**              | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | unstable         |
+| **Multi-Rule**          | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_rule.md)  | development         |
+| **Source NAT** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_snat.md)        | not implemented |
 
 ### Roadmap
 
@@ -204,12 +207,11 @@ If you want to output something to ansible's runtime - use 'module.warn':
 module.warn(f"{before} != {after}")
 ```
 
-You can also add the 'debug' argument to the modules to allow verbose output for the api requests. 
+You can also use the 'debug' argument to enable verbose output of the api requests. 
 
-```python3
-module_args = dict(
-    debug=dict(type='bool', required=False, default=False),
-    ...
-)
+```yaml
+- name: Example
+  ansibleguy.opnsense.alias:
+    debug: true
 ```
 

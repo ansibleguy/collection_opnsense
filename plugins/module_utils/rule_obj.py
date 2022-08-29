@@ -49,9 +49,16 @@ class Rule:
             self.m.warn(msg)
 
     def search_call(self) -> dict:
-        return self.s.get(cnf={
+        # returns dict of rules
+        rules = self.s.get(cnf={
             **self.call_cnf, **{'command': 'get'}
         })['filter']['rules']['rule']
+
+        if isinstance(rules, list) and len(rules) == 0:
+            # I guess server-side PHP is interpreting the empty named-array as simple array
+            return {}
+
+        return rules
 
     def create(self):
         # creating rule

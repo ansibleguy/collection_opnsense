@@ -31,13 +31,13 @@ def run_module():
 
     module = AnsibleModule(
         argument_spec=module_args,
-        supports_check_mode=True,
+        supports_check_mode=True,  # practically not - but it will not change anything
     )
 
-    rule = Rule(module=module, result=result)
-
+    rule = Rule(module=module, result={})
     result['rules'] = rule.search_call()
 
+    # filtering output if needed
     if module.params['filter'] is not None:
         filtered_rules = {}
 

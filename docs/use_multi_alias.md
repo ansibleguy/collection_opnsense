@@ -32,7 +32,7 @@ For more detailed information on what alias types are supported - see [the docum
       api_credential_file: '/home/guy/.secret/opn.key'
   
   tasks:
-    - name: Example creation
+    - name: Creation
       ansibleguy.opnsense.multi_alias:
         aliases:
           test1:
@@ -45,7 +45,7 @@ For more detailed information on what alias types are supported - see [the docum
             content: '10.0.0.0/24'
             description: 'to be disabled'
 
-    - name: Example changes
+    - name: Changes
       ansibleguy.opnsense.multi_alias:
         aliases:
           test1:
@@ -54,4 +54,12 @@ For more detailed information on what alias types are supported - see [the docum
             state: 'absent'
           test3:
             enabled: false
+
+    - name: Change state of all
+      ansibleguy.opnsense.multi_alias:
+        aliases:
+          test1:
+          test3:
+        state: 'absent'
+        # enabled: true
 ```

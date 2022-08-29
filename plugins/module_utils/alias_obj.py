@@ -34,7 +34,7 @@ class Alias:
         if existing_aliases is None:
             existing_aliases = self.search_call()
 
-        self.alias = get_alias(aliases=existing_aliases['rows'], name=self.cnf['name'])
+        self.alias = get_alias(aliases=existing_aliases, name=self.cnf['name'])
         self.exists = len(self.alias) > 0
         if self.exists:
             self.call_cnf['params'] = [self.alias['uuid']]
@@ -50,10 +50,11 @@ class Alias:
         else:
             self.m.warn(msg)
 
-    def search_call(self) -> dict:
+    def search_call(self) -> list:
+        # returns list of alias-dicts
         return self.s.get(cnf={
             **self.call_cnf, **{'command': 'searchItem'}
-        })
+        })['rows']
 
     def create(self):
         # creating alias
