@@ -72,7 +72,7 @@ def alias_in_use_by_rule(rules: dict, alias: str) -> bool:
 
     if len(rules) > 0:
         for rule in rules.values():
-            if rule['source_net'] == alias or rule['destination_net'] == alias:
+            if alias in (rule['source_net'], rule['destination_net']):
                 in_use = True
                 break
 

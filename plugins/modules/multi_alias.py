@@ -76,8 +76,8 @@ def run_module():
         real_cnf['content'] = list(map(str, ensure_list(real_cnf['content'])))
 
         if validate_single(
-            module=module, module_args=ALIAS_MOD_ARGS, log_mod='rule',
-            key=alias_name, cnf=real_cnf,
+                module=module, module_args=ALIAS_MOD_ARGS, log_mod='rule',
+                key=alias_name, cnf=real_cnf,
         ):
             valid_aliases.append(real_cnf)
 

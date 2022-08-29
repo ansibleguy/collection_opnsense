@@ -3,6 +3,9 @@
 # Copyright: (C) 2022, AnsibleGuy <guy@ansibleguy.net>
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
+# pylint: disable=R0912,R0915
+# todo: clean up branching
+
 # see: https://docs.opnsense.org/development/api/core/firmware.html
 
 from time import sleep

@@ -84,8 +84,8 @@ def run_module():
             **overrides,
         }
         if validate_single(
-            module=module, module_args=RULE_MOD_ARGS, log_mod='rule',
-            key=rule_key, cnf=real_cnf,
+                module=module, module_args=RULE_MOD_ARGS, log_mod='rule',
+                key=rule_key, cnf=real_cnf,
         ):
             valid_rules[rule_key] = real_cnf
 

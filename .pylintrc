@@ -74,7 +74,7 @@ disable=print-statement,
         # sometime we'll throw an error instead of returning data
         R1710,
         # elif/else after return if it has a reason
-        R1705,
+        R1705, R1724,
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
