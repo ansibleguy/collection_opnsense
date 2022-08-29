@@ -2,7 +2,7 @@
 
 **STATE**: not yet implemented
 
-**TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule.yml)
+**TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/snat.yml)
 
 **API DOCS**: [Plugins - Firewall](https://docs.opnsense.org/development/api/plugins/firewall.html)
 

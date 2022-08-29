@@ -268,17 +268,16 @@
         type: 'geoip'
         content: ['AT', 'DE', 'CH']
 
-    # failing since 27.08. - can't seem to find why
-    #    - name: Adding invalid geoip
-    #      ansibleguy.opnsense.alias:
-    #        name: 'ANSIBLE_TEST_1_2_GEOIP3'
-    #        type: 'geoip'
-    #        content: "{{ item }}"
-    #      register: opngeoip1
-    #      failed_when: not opngeoip1.failed
-    #      when: not ansible_check_mode  # no client-side validation
-    #      loop:
-    #        - ['XXX']
+    - name: Adding invalid geoip
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_1_2_GEOIP3'
+        type: 'geoip'
+        content: "{{ item }}"
+      register: opngeoip1
+      failed_when: not opngeoip1.failed
+      when: not ansible_check_mode  # no client-side validation
+      loop:
+        - ['XXX']
 
     # cleanup
 
