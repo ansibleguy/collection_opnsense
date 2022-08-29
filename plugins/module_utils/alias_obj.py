@@ -3,8 +3,12 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
-    validate_values, get_alias, equal_type
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import ensure_list
+    validate_values, get_alias, equal_type, alias_in_use_by_rule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    ensure_list
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
+
+# todo: updatefreq - https://forum.opnsense.org/index.php?topic=29880.0
 
 
 class Alias:
@@ -23,6 +27,7 @@ class Alias:
             'module': 'firewall',
             'controller': 'alias',
         }
+        self.existing_rules = None  # used to check if alias is in use
 
     def check(self, existing_aliases: dict = None):
         # pulling alias info if it exists
@@ -114,15 +119,31 @@ class Alias:
     def delete(self):
         self.r['changed'] = True
 
-        if not self.m.check_mode:
-            # NOTE: there is currently no practical way to check if the alias is in use..
-            alias_deletion = self._delete_call()
+        if self.existing_rules is None:
+            self.existing_rules = Rule(
+                module=self.m,
+                result={},
+                session=self.s,
+            ).search_call()
 
-            if 'in_use' in alias_deletion:
-                self.r['changed'] = False
-                self.m.warn(f"Unable to delete alias '{self.cnf['name']}' as it is currently referenced!")
+        if alias_in_use_by_rule(rules=self.existing_rules, alias=self.cnf['name']):
+            # this is to fix lacking server-side checks for the automation-rules
+            # see: https://forum.opnsense.org/index.php?topic=30077.0
+            alias_deletion = 'in_use'
 
-        if self.r['changed']:
+        else:
+            if not self.m.check_mode:
+                # broad 'in-use' validation will be done on the server-side
+                alias_deletion = self._delete_call()
+
+            else:
+                alias_deletion = ''
+
+        if 'in_use' in alias_deletion:
+            self.r['changed'] = False
+            self._error(msg=f"Unable to delete alias '{self.cnf['name']}' as it is currently referenced!")
+
+        else:
             self.r['diff']['before'] = {self.cnf['name']: self.alias['content'].split(',')}
 
             if self.m.params['debug']:

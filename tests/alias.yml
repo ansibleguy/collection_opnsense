@@ -126,15 +126,28 @@
         type: 'host'
         content: ['1.1.1.1', '1.1.1.2']
 
-    - name: Adding invalid host
+    - name: Adding nested host
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_2_HOST3'
         type: 'host'
-        content: "{{ item }}"
-      register: opnhost1
-      failed_when: not opnhost1.failed
-      loop:
-        - ['1.1.1.n']
+        content: ['ANSIBLE_TEST_1_2_HOST2', 'ANSIBLE_TEST_1_2_HOST1']
+
+    - name: Adding ip range
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_1_2_HOST4'
+        type: 'host'
+        content: '1.1.1.1-1.1.1.4'
+
+    # unable to check because of alias-nesting support and ip-ranges
+    #    - name: Adding invalid host
+    #      ansibleguy.opnsense.alias:
+    #        name: 'ANSIBLE_TEST_1_2_HOST3'
+    #        type: 'host'
+    #        content: "{{ item }}"
+    #      register: opnhost1
+    #      failed_when: not opnhost1.failed
+    #      loop:
+    #        - ['1.1.1.n']
 
     # networks
 
@@ -281,9 +294,10 @@
         - 'ANSIBLE_TEST_1_2_NET1'
         - 'ANSIBLE_TEST_1_2_NET2'
         - 'ANSIBLE_TEST_1_2_NET3'
-        - 'ANSIBLE_TEST_1_2_HOST1'
-        - 'ANSIBLE_TEST_1_2_HOST2'
+        - 'ANSIBLE_TEST_1_2_HOST4'
         - 'ANSIBLE_TEST_1_2_HOST3'
+        - 'ANSIBLE_TEST_1_2_HOST2'
+        - 'ANSIBLE_TEST_1_2_HOST1'
         - 'ANSIBLE_TEST_1_2_GEOIP1'
         - 'ANSIBLE_TEST_1_2_GEOIP2'
         - 'ANSIBLE_TEST_1_2_GEOIP3'

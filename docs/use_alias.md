@@ -10,6 +10,10 @@ This module allows you to manage single aliases.
 
 If you want to mass-manage aliases - take a look at the [multi_alias](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md) module. It is scales better for that use-case!
 
+## Info
+
+For more detailed information on what alias types are supported - see [the documentation](https://docs.opnsense.org/manual/aliases.html).
+
 ## Usage
 
 ```yaml

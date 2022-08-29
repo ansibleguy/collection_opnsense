@@ -17,10 +17,15 @@ You can also install it using the [package module](https://github.com/ansibleguy
 
 ## Limitations
 
-This plugin has limitations you need to know of:
+This plugin has some limitations you need to know of:
 
 * ports don't support aliases
-* only one port can be set per rule
+* each of these parameters only takes ONE value per rule:
+  * port
+  * protocol
+  * ip-protocol (_IPv4/IPv6_)
+  * interface (_any is not an option_)
+  * direction
 * the ruleset managed by this plugin is SEPARATE from the default WEB-UI rules (_Firewall - Rules_) - combined usage might bring complications
 
 ## Info
@@ -183,7 +188,7 @@ If you want to delete all existing rules that are **NOT CONFIGURED**.
       register: existing_rules
 
     - name: Purging unconfigured rules
-      ansible.opnsenese.rule:
+      ansibleguy.opnsense.rule:
         state: 'absent'
         description: "{{ existing_rule_id }}"
 

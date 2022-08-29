@@ -30,9 +30,10 @@
         - 'ANSIBLE_TEST_1_2_NET1'
         - 'ANSIBLE_TEST_1_2_NET2'
         - 'ANSIBLE_TEST_1_2_NET3'
-        - 'ANSIBLE_TEST_1_2_HOST1'
-        - 'ANSIBLE_TEST_1_2_HOST2'
+        - 'ANSIBLE_TEST_1_2_HOST4'
         - 'ANSIBLE_TEST_1_2_HOST3'
+        - 'ANSIBLE_TEST_1_2_HOST2'
+        - 'ANSIBLE_TEST_1_2_HOST1'
         - 'ANSIBLE_TEST_1_2_GEOIP1'
         - 'ANSIBLE_TEST_1_2_GEOIP2'
         - 'ANSIBLE_TEST_1_2_GEOIP3'
@@ -48,6 +49,7 @@
         - 'ANSIBLE_TEST_2_10'
         - 'ANSIBLE_TEST_3_1'
         - 'ANSIBLE_TEST_3_2'
+        - 'ANSIBLE_TEST_3_3'
 
     - name: Cleanup Rules
       ansibleguy.opnsense.rule:
@@ -63,6 +65,7 @@
         - 'ANSIBLE_TEST_1_7'
         - 'ANSIBLE_TEST_1_7'  # matching test duplicate
         - 'ANSIBLE_TEST_1_8'
+        - 'ANSIBLE_TEST_1_9'
 
     - name: Cleanup packages
       ansibleguy.opnsense.package:

@@ -215,6 +215,13 @@
         - 'ANSIBLE_TEST_1_5'
         - 'ANSIBLE_TEST_1_8'
 
+    - name: Checking cleanup
+      ansibleguy.opnsense.rule_list:
+      register: opn14
+      failed_when: >
+        'rules' not in opn14 or
+        opn14.rules | length != 0
+
 - name: Testing Rules - matching
   hosts: localhost
   gather_facts: no
@@ -307,3 +314,73 @@
         - 'ANSIBLE_TEST_1_6'
         - 'ANSIBLE_TEST_1_7'
         - 'ANSIBLE_TEST_1_7'
+
+    - name: Checking cleanup
+      ansibleguy.opnsense.rule_list:
+      register: opn15
+      failed_when: >
+        'rules' not in opn15 or
+        opn15.rules | length != 0
+
+- name: Testing Rules - alias deletion if in use
+  # this is to fix lacking server-side checks for the automation-rules
+  # see: https://forum.opnsense.org/index.php?topic=30077.0
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.alias:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.rule:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+
+    ansibleguy.opnsense.rule_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Creating alias
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_3_3'
+        content: '192.168.0.1'
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Creating rule
+      ansibleguy.opnsense.rule:
+        source_net: 'ANSIBLE_TEST_3_3'
+        description: 'ANSIBLE_TEST_1_9'
+        protocol: 'TCP'
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Deleting alias - should fail
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_3_3'
+        state: 'absent'
+      register: opn13
+      failed_when: not opn13.failed
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Cleanup rule
+      ansibleguy.opnsense.rule:
+        description: 'ANSIBLE_TEST_1_9'
+        state: 'absent'
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Cleanup alias
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_3_3'
+        state: 'absent'
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Checking cleanup
+      ansibleguy.opnsense.rule_list:
+      register: opn16
+      failed_when: >
+        'rules' not in opn16 or
+        opn16.rules | length != 0
