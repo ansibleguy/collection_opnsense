@@ -2,21 +2,23 @@ import validators
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import ensure_list
+
 
 def get_rule(rules: (list, dict), cnf: dict) -> dict:
     rule = {}
 
     if len(rules) > 0:
         for uuid, values in rules.items():
-            existing = _simplify_existing_rule(rule={uuid: values})
-            if _check_for_match(existing=existing, cnf=cnf):
+            existing = simplify_existing_rule(rule={uuid: values})
+            if check_for_matching_rule(existing=existing, cnf=cnf):
                 rule = existing
                 break
 
     return rule
 
 
-def _check_for_match(existing: dict, cnf: dict) -> bool:
+def check_for_matching_rule(existing: dict, cnf: dict) -> bool:
     _matching = []
 
     for field in cnf['match_fields']:
@@ -25,7 +27,7 @@ def _check_for_match(existing: dict, cnf: dict) -> bool:
     return all(_matching)
 
 
-def _simplify_existing_rule(rule: dict) -> dict:
+def simplify_existing_rule(rule: dict) -> dict:
     # because the return of api/firewall/filter/get is too verbose for easy access
     simple = {}
 
@@ -129,14 +131,16 @@ def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
 def diff_filter(cnf: dict) -> dict:
     diff = {}
     relevant_fields = [
-        'action', 'quick', 'interface', 'direction', 'ip_protocol', 'protocol',
-        'source_invert', 'source_net', 'source_port',
-        'destination_invert', 'destination_net', 'destination_port',
+        'action', 'quick', 'direction', 'ip_protocol', 'protocol',
+        'source_invert', 'source_net', 'destination_invert', 'destination_net',
         'gateway', 'log', 'description'
     ]
 
     # special case..
     diff['sequence'] = str(cnf['sequence'])
+    diff['destination_port'] = str(cnf['destination_port'])
+    diff['source_port'] = str(cnf['source_port'])
+    diff['interface'] = ','.join(map(str, ensure_list(cnf['interface'])))
 
     for field in relevant_fields:
         diff[field] = cnf[field]
@@ -151,3 +155,50 @@ def get_any_change(before: dict, after: dict) -> bool:
         matching.append(str(b_v) == str(after[b_k]))
 
     return not all(matching)
+
+
+def check_purge_filter(module: AnsibleModule, existing_rule: dict) -> bool:
+    to_purge = True
+
+    for filter_key, filter_value in module.params['filters'].items():
+        if module.params['filter_invert']:
+            # purge all except matches
+            if module.params['filter_partial']:
+                if str(existing_rule[filter_key]).find(filter_value) != -1:
+                    to_purge = False
+                    break
+
+            else:
+                if existing_rule[filter_key] == filter_value:
+                    to_purge = False
+                    break
+
+        else:
+            # purge only matches
+            if module.params['filter_partial']:
+                if str(existing_rule[filter_key]).find(filter_value) == -1:
+                    to_purge = False
+                    break
+
+            else:
+                if existing_rule[filter_key] != filter_value:
+                    to_purge = False
+                    break
+
+    return to_purge
+
+
+def check_purge_configured(module: AnsibleModule, existing_rule: dict) -> bool:
+    to_purge = True
+
+    for rule_key, rule_config in module.params['rules'].items():
+        if rule_config is None:
+            rule_config = {}
+
+        rule_config['match_fields'] = module.params['match_fields']
+        rule_config[module.params['key_field']] = rule_key
+        if check_for_matching_rule(existing=existing_rule, cnf=rule_config):
+            to_purge = False
+            break
+
+    return to_purge

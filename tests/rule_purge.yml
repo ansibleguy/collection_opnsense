@@ -1,0 +1,207 @@
+---
+
+- name: Testing Purging of Rules
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.rule_multi:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+      key_field: 'description'
+
+    ansibleguy.opnsense.rule_purge:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+      key_field: 'description'
+
+    ansibleguy.opnsense.rule_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Adding 1
+      ansibleguy.opnsense.rule_multi:
+        rules:
+          ANSIBLE_TEST_3_1:
+            source_net: '192.168.1.0/24'
+            destination_invert: true
+            destination_net: '10.0.0.0/8'
+            action: 'block'
+          ANSIBLE_TEST_3_2:
+            source_net: '192.168.0.0/24'
+            destination_net: '192.168.10.0/24'
+            destination_port: 443
+            protocol: 'TCP'
+            interface: 'lan'
+          ANSIBLE_TEST_3_3:
+            source_invert: true
+            source_net: 'bogons'
+            action: 'block'
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Simple disable-purge
+      ansibleguy.opnsense.rule_purge:
+        rules:
+          ANSIBLE_TEST_3_1:
+        action: 'disable'
+      register: opn2
+      when: not ansible_check_mode  # no use in check mode
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+
+    - name: Simple purge
+      ansibleguy.opnsense.rule_purge:
+        rules:
+          ANSIBLE_TEST_3_1:
+      when: not ansible_check_mode  # no use in check mode
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+
+    - name: Listing rules
+      ansibleguy.opnsense.rule_list:
+      register: opn4
+      failed_when: >
+        'rules' not in opn4 or
+        opn4.rules | length != 1
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.rule_multi:
+        rules:
+          ANSIBLE_TEST_3_1:
+            source_net: '192.168.1.0/24'
+            destination_invert: true
+            destination_net: '192.168.10.0/24'
+            action: 'block'
+          ANSIBLE_TEST_3_2:
+            source_net: '192.168.0.0/24'
+            destination_net: '192.168.10.0/24'
+            destination_port: 443
+            protocol: 'TCP'
+            interface: 'lan'
+          ANSIBLE_TEST_3_3:
+            source_invert: true
+            source_net: 'bogons'
+            action: 'block'
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Filtered purge (single)
+      ansibleguy.opnsense.rule_purge:
+        filters:
+          destination_net: '192.168.10.0/24'
+      when: not ansible_check_mode  # no use in check mode
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Listing rules
+      ansibleguy.opnsense.rule_list:
+      register: opn5
+      failed_when: >
+        'rules' not in opn5 or
+        opn5.rules | length != 1
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Adding 3
+      ansibleguy.opnsense.rule_multi:
+        rules:
+          ANSIBLE_TEST_3_1:
+            source_net: '192.168.1.0/24'
+            destination_invert: true
+            destination_net: '192.168.10.0/24'
+            action: 'block'
+          ANSIBLE_TEST_3_2:
+            source_net: '192.168.0.0/24'
+            destination_net: '192.168.10.0/24'
+            destination_port: 443
+            protocol: 'TCP'
+            interface: 'lan'
+          ANSIBLE_TEST_3_3:
+            source_invert: true
+            source_net: 'bogons'
+            action: 'block'
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Filtered purge (single inverted)
+      ansibleguy.opnsense.rule_purge:
+        filters:
+          destination_net: '192.168.10.0/24'
+        filter_invert: true
+      when: not ansible_check_mode  # no use in check mode
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+
+    - name: Listing rules
+      ansibleguy.opnsense.rule_list:
+      register: opn7
+      failed_when: >
+        'rules' not in opn7 or
+        opn7.rules | length != 2
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Adding 4
+      ansibleguy.opnsense.rule_multi:
+        rules:
+          ANSIBLE_TEST_3_1:
+            source_net: '192.168.1.0/24'
+            destination_invert: true
+            destination_net: '192.168.10.0/24'
+            action: 'block'
+          ANSIBLE_TEST_3_2:
+            source_net: '192.168.0.0/24'
+            destination_net: '192.168.10.0/24'
+            destination_port: 443
+            protocol: 'TCP'
+            interface: 'lan'
+          ANSIBLE_TEST_3_3:
+            source_invert: true
+            source_net: 'bogons'
+            action: 'block'
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Filtered purge (multiple)
+      ansibleguy.opnsense.rule_purge:
+        filters:
+          ip_protocol: 'inet'
+          action: 'block'
+      when: not ansible_check_mode  # no use in check mode
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+
+    - name: Listing rules
+      ansibleguy.opnsense.rule_list:
+      register: opn9
+      failed_when: >
+        'rules' not in opn9 or
+        opn9.rules | length != 1
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Purge ALL
+      ansibleguy.opnsense.rule_purge:
+        force_all: true
+      when: not ansible_check_mode  # no use in check mode
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        not opn10.changed
+
+    - name: Checking cleanup
+      ansibleguy.opnsense.rule_list:
+      register: opn11
+      failed_when: >
+        'rules' not in opn11 or
+        opn11.rules | length != 0
+      when: not ansible_check_mode  # no use in check mode

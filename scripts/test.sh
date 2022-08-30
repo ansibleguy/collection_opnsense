@@ -73,6 +73,14 @@ echo ''
 ansible-playbook tests/rule_multi.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/rule_multi.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
+echo ''
+echo '##############################'
+echo 'RUNNING TESTS for module RULE_PURGE'
+echo ''
+
+ansible-playbook tests/rule_purge.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+# no task will be executed..
+# ansible-playbook tests/rule_purge.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
 echo ''
 echo '##############################'

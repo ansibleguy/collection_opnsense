@@ -9,6 +9,18 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.rule_purge:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+      key_field: 'description'
+
+    ansibleguy.opnsense.package:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Cleanup Aliases
       ansibleguy.opnsense.alias:
@@ -55,23 +67,8 @@
         - 'ANSIBLE_TEST_3_3'
 
     - name: Cleanup Rules
-      ansibleguy.opnsense.rule:
-        description: "{{ item }}"
-        state: 'absent'
-      diff: false
-      loop:
-        - 'ANSIBLE_TEST_1_1'
-        - 'ANSIBLE_TEST_1_2'
-        - 'ANSIBLE_TEST_1_3'
-        - 'ANSIBLE_TEST_1_4'
-        - 'ANSIBLE_TEST_1_5'
-        - 'ANSIBLE_TEST_1_6'
-        - 'ANSIBLE_TEST_1_7'
-        - 'ANSIBLE_TEST_1_7'  # matching test duplicate
-        - 'ANSIBLE_TEST_1_8'
-        - 'ANSIBLE_TEST_1_9'
-        - 'ANSIBLE_TEST_1_10'
-        - 'ANSIBLE_TEST_1_11'
+      ansibleguy.opnsense.rule_purge:
+        force_all: true
 
     - name: Cleanup packages
       ansibleguy.opnsense.package:

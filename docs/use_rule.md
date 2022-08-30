@@ -40,7 +40,7 @@ You can prevent lockout-situations using the savepoint systems:
 
 ### Mass-Manage
 
-If you want to mass-manage rules - take a look at the [rule_multi](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md) module. It is scales better for that use-case!
+If you want to mass-manage rules - take a look at the [rule_multi](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md) module. It scales better for that use-case!
 
 ### Web-UI
 
@@ -54,7 +54,7 @@ First you will have to know about **rule-matching**.
 
 The module somehow needs to link the configured and existing rules to manage them.
 
-Need to set how this matching is done by setting the 'match_fields' parameter!
+You need to set how this matching is done by setting the 'match_fields' parameter!
 
 It is **recommended** to use/set **unique identifiers** like 'description' to make sure rules can be matched without overlapping.
 

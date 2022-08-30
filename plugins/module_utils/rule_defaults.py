@@ -127,3 +127,10 @@ RULE_MOD_ARGS = dict(
     **RULE_MATCH_FIELDS_ARG,
     **OPN_MOD_ARGS,
 )
+
+RULE_MOD_ARG_KEY_FIELD = dict(
+    key_field=dict(
+        type='str', required=True, choises=['sequence', 'description'], aliases=['key'],
+        description='What field is used as key of the provided dictionary'
+    )
+)

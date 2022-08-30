@@ -10,7 +10,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import \
-    RULE_MOD_ARGS, RULE_DEFAULTS, RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_ALIASES
+    RULE_MOD_ARGS, RULE_DEFAULTS, RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_ALIASES, RULE_MOD_ARG_KEY_FIELD
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_main import process_rule
@@ -18,17 +18,13 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.multi_helper i
     validate_single, convert_aliases
 
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md'
+DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md'
+EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md'
 
 
 def run_module():
     module_args = dict(
         rules=dict(type='dict', required=True),
-        key_field=dict(
-            type='str', required=True, choises=['sequence', 'description'], aliases=['key'],
-            description='What field is used as key of the provided dictionary'
-        ),
         fail_verification=dict(
             type='bool', required=False, default=True, aliases=['fail'],
             description='Fail module if single rule fails the verification.'
@@ -42,6 +38,7 @@ def run_module():
         state=dict(type='str', required=False, choices=['present', 'absent']),
         enabled=dict(type='bool', required=False, default=None),
         output_info=dict(type='bool', required=False, default=False, aliases=['info']),
+        **RULE_MOD_ARG_KEY_FIELD,
         **RULE_MATCH_FIELDS_ARG,
         **OPN_MOD_ARGS,
     )
@@ -146,8 +143,6 @@ def run_module():
 
             if 'after' in rule_result['diff']:
                 result['diff']['after'][rule_key] = rule_result['diff']['after']
-
-    # todo: add purging option => or create additional module for it
 
     session.close()
     result['diff'] = diff_remove_empty(result['diff'])

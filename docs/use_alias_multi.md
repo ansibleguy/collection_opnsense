@@ -14,7 +14,7 @@ It is faster than the 'alias' module as it reduces the needed api/http calls.
 
 For more detailed information on what alias types are supported - see [the documentation](https://docs.opnsense.org/manual/aliases.html).
 
-**Config**:
+## Multi
 
 - Each alias has the attributes as defined in the [alias](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md) module
 

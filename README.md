@@ -47,16 +47,18 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 ### Implemented
 
 
-| Module                  | Usage                                                                                         | State           |
-|:------------------------|:----------------------------------------------------------------------------------------------|:----------------|
-| **Alias**               | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)       | unstable        | 
-| **Multi-Alias**         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) | unstable        |
-| **Packages**            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | unstable        |
-| **Rules**      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | unstable        |
-| **Savepoints** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | unstable        |
-| **System**              | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | unstable        |
-| **Multi-Rule**          | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)  | testing         |
-| **Source NAT** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_snat.md)        | not implemented |
+|Function | Module                          | Usage                                                                                         | State           |
+|:---------|:--------------------------------|:----------------------------------------------------------------------------------------------|:----------------|
+| **Alias**| ansibleguy.opnsense.alias       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)       | unstable        | 
+| **Alias** | ansibleguy.opnsense.alias_multi | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) | unstable        |
+| **Alias** | ansibleguy.opnsense.alias_purge | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) | development     |
+| **Rules** | ansibleguy.opnsense.rule        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | unstable        |
+| **Rules** | ansibleguy.opnsense.rule_multi  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)  | unstable        |
+| **Rules** | ansibleguy.opnsense.rule_purge  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)  | testing         |
+| **Savepoints** | ansibleguy.opnsense.savepoint   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | unstable        |
+| **Packages** | ansibleguy.opnsense.package     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | unstable        |
+| **System** | ansibleguy.opnsense.system      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | unstable        |
+| **Source NAT** | ansibleguy.opnsense.snat        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_snat.md)        | not implemented |
 
 ### Roadmap
 
@@ -170,7 +172,7 @@ One can choose to either:
 
 - create a http-session - faster if multiple calls are needed
 
-  p.e. _check current state => create/update/delete_)
+  p.e. _check current state => create/update/delete_
 
   ```python3
   from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
@@ -222,7 +224,7 @@ You can also use the 'debug' argument to enable verbose output of the api reques
 
 If you get error messages - you should at first check if there are any errors listed.
 
-Sometimes the error message can be pretty long, therefore you might want to copy its output into an editor of your choice and Strg+F/Search for the Terms 'Error:' or '_content'!
+Sometimes the error message can be pretty long, therefore you might want to copy its output into an editor of your choice and Strg+F/search for the terms 'Error:' or '_content'!
 
 Per example:
 
