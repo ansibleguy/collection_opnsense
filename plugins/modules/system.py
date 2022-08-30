@@ -35,6 +35,7 @@ def run_module():
     result = {
         'changed': True,
         'failed': False,
+        'timeout_exceeded': False,
     }
 
     if not module.check_mode:
@@ -52,6 +53,9 @@ def run_module():
                 module.warn(f"Waiting for firewall to complete '{module.params['action']}'!")
 
             result['failed'] = not wait_for_response(module=module)
+
+            if result['failed']:
+                result['timeout_exceeded'] = True
 
     module.exit_json(**result)
 
