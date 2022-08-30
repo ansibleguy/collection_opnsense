@@ -121,8 +121,8 @@ def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
 
         elif cnf['destination_net'] == 'any' and cnf['destination_port'] == 'any' and cnf['protocol'] in ['TCP', 'UDP']:
             module.warn(
-                f"Configuring allow-rules to 'any' destination "
-                f"using 'all' ports is bad practise!"
+                "Configuring allow-rules to 'any' destination "
+                "using 'all' ports is bad practise!"
             )
 
 
