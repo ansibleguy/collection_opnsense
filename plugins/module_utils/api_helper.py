@@ -110,6 +110,10 @@ def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
             json['in_use'] = True
 
         else:
-            module.fail_json(msg=f"API call failed | Response: {response.__dict__}")
+            if 'validations' in json:
+                module.fail_json(msg=f"API call failed | Error: {json['validations']} | Response: {response.__dict__}")
+
+            else:
+                module.fail_json(msg=f"API call failed | Response: {response.__dict__}")
 
     return json
