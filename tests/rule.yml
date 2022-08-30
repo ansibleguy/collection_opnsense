@@ -74,6 +74,28 @@
         not opn4.changed
       when: not ansible_check_mode  # no use in check mode
 
+    - name: Creating IPv6
+      ansibleguy.opnsense.rule:
+        destination_port: 443
+        protocol: 'TCP'
+        description: 'ANSIBLE_TEST_1_10'
+        ip_protocol: 'inet6'
+      register: opn17
+      failed_when: >
+        opn17.failed or
+        not opn17.changed
+
+    #    - name: Updating IPv4 - checking for IPv6 bug  # https://forum.opnsense.org/index.php?topic=30077.0
+    #      ansibleguy.opnsense.rule:
+    #        destination_port: 443
+    #        protocol: 'TCP'
+    #        description: 'ANSIBLE_TEST_1_10'
+    #      register: opn18
+    #      failed_when: >
+    #        opn18.failed or
+    #        not opn18.changed
+    #      when: not ansible_check_mode  # no use in check mode
+
     - name: Creating block rule
       ansibleguy.opnsense.rule:
         source_net: '192.168.1.0/24'
@@ -90,6 +112,7 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_1_10'
 
 - name: Testing Rules - aliases
   hosts: localhost

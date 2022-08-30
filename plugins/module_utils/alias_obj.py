@@ -19,7 +19,7 @@ class Alias:
         self.m = module
         self.r = result
         self.s = Session(module=module) if session is None else session
-        self.cnf = self.m.params if cnf is None else cnf  # to allow override by multi_alias
+        self.cnf = self.m.params if cnf is None else cnf  # to allow override by alias_multi
         self.fail = fail
         self.exists = False
         self.alias = None

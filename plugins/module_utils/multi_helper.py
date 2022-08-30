@@ -33,3 +33,22 @@ def validate_single(
         result = True
 
     return result
+
+
+def convert_aliases(cnf: dict, aliases: dict) -> dict:
+    # would be done by ansible-module in default-modules
+    converted = {}
+
+    for _param, _aliases in aliases.items():
+        value = cnf[_param] if _param in cnf else None
+
+        if value is None:
+            for alias in _aliases:
+                if alias in cnf:
+                    value = cnf[alias]
+                    break
+
+        if value is not None:
+            converted[_param] = value
+
+    return converted

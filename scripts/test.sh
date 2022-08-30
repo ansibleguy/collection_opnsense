@@ -51,11 +51,11 @@ ansible-playbook tests/alias.yml --check --extra-vars="ansible_python_interprete
 
 echo ''
 echo '##############################'
-echo 'RUNNING TESTS for module MULTI_ALIAS'
+echo 'RUNNING TESTS for module ALIAS_MULTI'
 echo ''
 
-ansible-playbook tests/multi_alias.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
-ansible-playbook tests/multi_alias.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/alias_multi.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/alias_multi.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
 echo ''
 echo '##############################'
@@ -67,11 +67,11 @@ ansible-playbook tests/rule.yml --check --extra-vars="ansible_python_interpreter
 
 echo ''
 echo '##############################'
-echo 'RUNNING TESTS for module MULTI_RULE'
+echo 'RUNNING TESTS for module RULE_MULTI'
 echo ''
 
-ansible-playbook tests/multi_rule.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
-ansible-playbook tests/multi_rule.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/rule_multi.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/rule_multi.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
 
 echo ''

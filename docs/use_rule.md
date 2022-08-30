@@ -24,9 +24,11 @@ This plugin has some limitations you need to know of:
   * port
   * protocol (_or any_)
   * ip-protocol (_IPv4/IPv6_)
+    * currently, unable to set IPv6 => seems to be a bug
   * direction
 * the ruleset managed by this plugin is SEPARATE from the default WEB-UI rules (_Firewall - Rules_) - combined usage might bring complications
-* interfaces must be provided as named in the network config => per example see: '/ui/diagnostics/interface/netstat'
+* interfaces must be provided as used in the network config
+  * per example see menu: 'Interface - Assignments - Interface ID (in brackets)'
 
 ## Info
 
@@ -38,7 +40,7 @@ You can prevent lockout-situations using the savepoint systems:
 
 ### Mass-Manage
 
-If you want to mass-manage rules - take a look at the [multi_rule](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_rule.md) module. It is scales better for that use-case!
+If you want to mass-manage rules - take a look at the [rule_multi](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md) module. It is scales better for that use-case!
 
 ### Web-UI
 

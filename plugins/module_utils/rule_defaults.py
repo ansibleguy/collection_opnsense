@@ -22,6 +22,27 @@ RULE_DEFAULTS = {
     'debug': False,
 }
 
+RULE_MOD_ARG_ALIASES = {
+    'sequence': ['seq'],
+    'action': ['a'],
+    'quick': ['q'],
+    'interface': ['int', 'i'],
+    'direction': ['dir'],
+    'ip_protocol': ['ip', 'ip_proto'],
+    'protocol': ['proto', 'p'],
+    'source_invert': ['src_inv', 'si', 'src_not'],
+    'source_net': ['src', 's'],
+    'source_port': ['src_port', 'sp'],
+    'destination_invert': ['dest_inv', 'di', 'dest_not'],
+    'destination_net': ['dest', 'd'],
+    'destination_port': ['dest_port', 'dp'],
+    'gateway': ['gw', 'g'],
+    'log': ['l'],
+    'description': ['desc'],
+    'state': ['st'],
+    'enabled': ['en'],
+}
+
 RULE_MATCH_FIELDS_ARG = dict(
     match_fields=dict(
         type='list', required=True,
@@ -36,50 +57,73 @@ RULE_MATCH_FIELDS_ARG = dict(
 )
 
 RULE_MOD_ARGS = dict(
-    sequence=dict(type='int', required=False, default=RULE_DEFAULTS['sequence']),
-    action=dict(type='str', required=False, default=RULE_DEFAULTS['action'], choices=['pass', 'block', 'reject']),
-    quick=dict(type='bool', required=False, default=RULE_DEFAULTS['quick']),
+    sequence=dict(
+        type='int', required=False, default=RULE_DEFAULTS['sequence'],
+        aliases=RULE_MOD_ARG_ALIASES['sequence']
+    ),
+    action=dict(
+        type='str', required=False, default=RULE_DEFAULTS['action'], choices=['pass', 'block', 'reject'],
+        aliases=RULE_MOD_ARG_ALIASES['action']
+    ),
+    quick=dict(type='bool', required=False, default=RULE_DEFAULTS['quick'], aliases=RULE_MOD_ARG_ALIASES['quick']),
     interface=dict(
-        type='list', required=False, default=RULE_DEFAULTS['interface'],
-        description='One or multiple interfaces use this rule on'
+        type='list', required=False, default=RULE_DEFAULTS['interface'], aliases=RULE_MOD_ARG_ALIASES['interface'],
+        description='One or multiple interfaces use this rule on',
     ),
     direction=dict(
-        type='str', required=False, default=RULE_DEFAULTS['direction'],
+        type='str', required=False, default=RULE_DEFAULTS['direction'], aliases=RULE_MOD_ARG_ALIASES['direction'],
         choices=['in', 'out']
     ),
     ip_protocol=dict(
-        type='str', required=False, choices=['inet', 'inet6'], default=RULE_DEFAULTS['ip_protocol'],
-        description="IPv4 = 'inet', IPv6 = 'inet6'"
+        type='str', required=False, choices=['inet', 'inet6'],
+        default=RULE_DEFAULTS['ip_protocol'], description="IPv4 = 'inet', IPv6 = 'inet6'",
+        aliases=RULE_MOD_ARG_ALIASES['ip_protocol'],
     ),
     protocol=dict(
-        type='str', required=False, default=RULE_DEFAULTS['protocol'],
+        type='str', required=False, default=RULE_DEFAULTS['protocol'], aliases=RULE_MOD_ARG_ALIASES['protocol'],
         description="Protocol like 'TCP', 'UDP', 'TCP/UDP' and so on."
     ),
-    source_invert=dict(type='bool', required=False, default=RULE_DEFAULTS['source_invert']),
+    source_invert=dict(
+        type='bool', required=False, default=RULE_DEFAULTS['source_invert'],
+        aliases=RULE_MOD_ARG_ALIASES['source_invert'],
+    ),
     source_net=dict(
-        type='str', required=False, default=RULE_DEFAULTS['source_net'],
+        type='str', required=False, default=RULE_DEFAULTS['source_net'], aliases=RULE_MOD_ARG_ALIASES['source_net'],
         description="Host, network, alias or 'any'"),
     source_port=dict(
-        type='str', required=False, default=RULE_DEFAULTS['source_port'],
+        type='str', required=False, default=RULE_DEFAULTS['source_port'], aliases=RULE_MOD_ARG_ALIASES['source_port'],
         description='Leave empty to allow all, alias not supported'
     ),
-    destination_invert=dict(type='bool', required=False, default=RULE_DEFAULTS['destination_invert']),
+    destination_invert=dict(
+        type='bool', required=False, default=RULE_DEFAULTS['destination_invert'],
+        aliases=RULE_MOD_ARG_ALIASES['destination_invert'],
+    ),
     destination_net=dict(
         type='str', required=False, default=RULE_DEFAULTS['destination_net'],
-        description="Host, network, alias or 'any'"
+        aliases=RULE_MOD_ARG_ALIASES['destination_net'], description="Host, network, alias or 'any'"
     ),
     destination_port=dict(
         type='str', required=False, default=RULE_DEFAULTS['destination_port'],
+        aliases=RULE_MOD_ARG_ALIASES['destination_port'],
         description='Leave empty to allow all, alias not supported'
     ),
     gateway=dict(
         type='str', required=False, default=RULE_DEFAULTS['gateway'],
-        description='Existing gateway to use'
+        aliases=RULE_MOD_ARG_ALIASES['gateway'], description='Existing gateway to use'
     ),
-    log=dict(type='bool', required=False, default=RULE_DEFAULTS['log']),
-    description=dict(type='str', required=False, default=RULE_DEFAULTS['description']),
-    state=dict(type='str', default=RULE_DEFAULTS['state'], required=False, choices=['present', 'absent']),
-    enabled=dict(type='bool', required=False, default=RULE_DEFAULTS['enabled']),
+    log=dict(type='bool', required=False, default=RULE_DEFAULTS['log'], aliases=RULE_MOD_ARG_ALIASES['log'],),
+    description=dict(
+        type='str', required=False, default=RULE_DEFAULTS['description'],
+        aliases=RULE_MOD_ARG_ALIASES['description']
+    ),
+    state=dict(
+        type='str', default=RULE_DEFAULTS['state'], required=False, choices=['present', 'absent'],
+        aliases=RULE_MOD_ARG_ALIASES['state'],
+    ),
+    enabled=dict(
+        type='bool', required=False, default=RULE_DEFAULTS['enabled'],
+        aliases=RULE_MOD_ARG_ALIASES['enabled']
+    ),
     **RULE_MATCH_FIELDS_ARG,
     **OPN_MOD_ARGS,
 )

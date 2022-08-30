@@ -4,7 +4,7 @@
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.multi_rule:
+    ansibleguy.opnsense.rule_multi:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
@@ -18,7 +18,7 @@
 
   tasks:
     - name: Removing - do not exist
-      ansibleguy.opnsense.multi_rule:
+      ansibleguy.opnsense.rule_multi:
         rules:
           ANSIBLE_TEST_2_1:
           ANSIBLE_TEST_2_2:
@@ -30,7 +30,7 @@
         opn1.changed
 
     - name: Adding
-      ansibleguy.opnsense.multi_rule:
+      ansibleguy.opnsense.rule_multi:
         rules:
           ANSIBLE_TEST_2_1:
             source_net: '192.168.1.0/24'
@@ -53,7 +53,7 @@
         not opn2.changed
 
     - name: Changing
-      ansibleguy.opnsense.multi_rule:
+      ansibleguy.opnsense.rule_multi:
         rules:
           ANSIBLE_TEST_2_1:
             source_net: '192.168.1.0/24'
@@ -78,7 +78,7 @@
         not opn3.changed
 
     - name: Fail on client-side validation
-      ansibleguy.opnsense.multi_rule:
+      ansibleguy.opnsense.rule_multi:
         rules:
           ANSIBLE_TEST_2_1:
           ANSIBLE_TEST_2_2:
@@ -88,7 +88,7 @@
       failed_when: not opn6.failed
 
     - name: Don't fail on client-side validation
-      ansibleguy.opnsense.multi_rule:
+      ansibleguy.opnsense.rule_multi:
         rules:
           ANSIBLE_TEST_2_1:
           ANSIBLE_TEST_2_2:
@@ -100,7 +100,7 @@
       when: ansible_check_mode  # else the server-side will reject it
 
     - name: Fail on server-side validation
-      ansibleguy.opnsense.multi_rule:
+      ansibleguy.opnsense.rule_multi:
         rules:
           ANSIBLE_TEST_2_1:
           ANSIBLE_TEST_2_2:
@@ -120,7 +120,7 @@
       when: not ansible_check_mode  # no use in check mode
 
     - name: Removing
-      ansibleguy.opnsense.multi_rule:
+      ansibleguy.opnsense.rule_multi:
         rules:
           ANSIBLE_TEST_2_1:
           ANSIBLE_TEST_2_2:

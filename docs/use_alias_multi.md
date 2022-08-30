@@ -2,7 +2,7 @@
 
 **STATE**: unstable
 
-**TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/multi_alias.yml)
+**TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias_multi.yml)
 
 **API DOCS**: [Core - Firewall](https://docs.opnsense.org/development/api/core/firewall.html)
 
@@ -27,13 +27,13 @@ For more detailed information on what alias types are supported - see [the docum
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.multi_alias:
+    ansibleguy.opnsense.alias_multi:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
   
   tasks:
     - name: Creation
-      ansibleguy.opnsense.multi_alias:
+      ansibleguy.opnsense.alias_multi:
         fail_verification: true  # default = false; Fail module if single alias fails the verification
         aliases:
           test1:
@@ -47,7 +47,7 @@ For more detailed information on what alias types are supported - see [the docum
             description: 'to be disabled'
 
     - name: Changes
-      ansibleguy.opnsense.multi_alias:
+      ansibleguy.opnsense.alias_multi:
         aliases:
           test1:
             content: ['1.1.1.3']
@@ -57,7 +57,7 @@ For more detailed information on what alias types are supported - see [the docum
             enabled: false
 
     - name: Change state of all
-      ansibleguy.opnsense.multi_alias:
+      ansibleguy.opnsense.alias_multi:
         aliases:
           test1:
           test3:

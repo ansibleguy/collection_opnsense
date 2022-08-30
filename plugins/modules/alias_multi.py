@@ -8,27 +8,30 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_DEFAULTS, ALIAS_MOD_ARGS
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import \
+    ALIAS_DEFAULTS, ALIAS_MOD_ARGS, ALIAS_MOD_ARG_ALIASES
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty, ensure_list
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_main import process_alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.multi_helper import validate_single
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.multi_helper import \
+    validate_single, convert_aliases
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/tests/multi_alias.yml'
+DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md'
+EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/tests/alias_multi.yml'
 
 
 def run_module():
     module_args = dict(
         aliases=dict(type='dict', required=True),
         fail_verification=dict(
-            type='bool', required=False, default=False,
+            type='bool', required=False, default=False, aliases=['fail'],
             description='Fail module if single alias fails the verification.'
         ),
-        state=dict(type='str', default='unset', required=False, choices=['present', 'absent', 'unset']),
+        state=dict(type='str', required=False, choices=['present', 'absent']),
         enabled=dict(type='bool', required=False, default=None),
+        output_info=dict(type='bool', required=False, default=False, aliases=['info']),
         **OPN_MOD_ARGS
     )
 
@@ -49,9 +52,9 @@ def run_module():
     existing_aliases = Alias(module=module, session=session, result={}).search_call()
     existing_rules = Rule(module=module, session=session, result={}).search_call()
 
-    overrides = {}
+    overrides = {'debug': module.params['debug']}
 
-    if module.params['state'] != 'unset':
+    if module.params['state'] is not None:
         overrides['state'] = module.params['state']
 
     if module.params['enabled'] is not None:
@@ -64,6 +67,8 @@ def run_module():
         if alias_config is None:
             alias_config = {}
 
+        alias_config = convert_aliases(cnf=alias_config, aliases=ALIAS_MOD_ARG_ALIASES)
+
         real_cnf = {
             **ALIAS_DEFAULTS,
             **alias_config,
@@ -74,6 +79,9 @@ def run_module():
             **overrides,
         }
         real_cnf['content'] = list(map(str, ensure_list(real_cnf['content'])))
+
+        if real_cnf['debug']:
+            module.warn(f"Validating alias: '{alias_config}'")
 
         if validate_single(
                 module=module, module_args=ALIAS_MOD_ARGS, log_mod='rule',
@@ -90,7 +98,12 @@ def run_module():
                 'after': {},
             }
         )
+
         module.params['debug'] = alias_config['debug']  # per rule switch
+
+        if module.params['debug'] or module.params['output_info']:
+            module.warn(f"Processing alias: '{alias_config}'")
+
         alias = Alias(
             module=module,
             result=alias_result,

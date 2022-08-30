@@ -14,7 +14,7 @@ class Rule:
         self.m = module
         self.r = result
         self.s = Session(module=module) if session is None else session
-        self.cnf = self.m.params if cnf is None else cnf  # to allow override by multi_rule
+        self.cnf = self.m.params if cnf is None else cnf  # to allow override by rule_multi
         self.fail = fail
         self.exists = False
         self.rule = None
@@ -159,7 +159,7 @@ class Rule:
             'sequence': self.cnf['sequence'],
             'action': self.cnf['action'],
             'quick': 1 if self.cnf['quick'] else 0,
-            'interface': '\n'.join(map(str, ensure_list(self.cnf['interface']))),
+            'interface': ','.join(map(str, ensure_list(self.cnf['interface']))),
             'direction': self.cnf['direction'],
             'ip_protocol': self.cnf['ip_protocol'],
             'protocol': self.cnf['protocol'],

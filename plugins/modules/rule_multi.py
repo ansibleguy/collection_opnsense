@@ -10,11 +10,12 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import \
-    RULE_MOD_ARGS, RULE_DEFAULTS, RULE_MATCH_FIELDS_ARG
+    RULE_MOD_ARGS, RULE_DEFAULTS, RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_ALIASES
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_main import process_rule
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.multi_helper import validate_single
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.multi_helper import \
+    validate_single, convert_aliases
 
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md'
@@ -25,15 +26,22 @@ def run_module():
     module_args = dict(
         rules=dict(type='dict', required=True),
         key_field=dict(
-            type='str', required=True, choises=['sequence', 'description'],
+            type='str', required=True, choises=['sequence', 'description'], aliases=['key'],
             description='What field is used as key of the provided dictionary'
         ),
         fail_verification=dict(
-            type='bool', required=False, default=True,
+            type='bool', required=False, default=True, aliases=['fail'],
             description='Fail module if single rule fails the verification.'
         ),
-        state=dict(type='str', default='unset', required=False, choices=['present', 'absent', 'unset']),
+        override=dict(
+            type='dict', required=False, default={}, description='Parameters to override for all rules'
+        ),
+        defaults=dict(
+            type='dict', required=False, default={}, description='Default values for all rules'
+        ),
+        state=dict(type='str', required=False, choices=['present', 'absent']),
         enabled=dict(type='bool', required=False, default=None),
+        output_info=dict(type='bool', required=False, default=False, aliases=['info']),
         **RULE_MATCH_FIELDS_ARG,
         **OPN_MOD_ARGS,
     )
@@ -58,9 +66,13 @@ def run_module():
         # edge case
         module.params['key_field'] = module.params['key_field'][0]
 
-    overrides = {'match_fields': module.params['match_fields']}
+    overrides = {
+        **module.params['override'],
+        'match_fields': module.params['match_fields'],
+        'debug': module.params['debug']
+    }
 
-    if module.params['state'] != 'unset':
+    if module.params['state'] is not None:
         overrides['state'] = module.params['state']
 
     if module.params['enabled'] is not None:
@@ -74,8 +86,11 @@ def run_module():
         if rule_config is None:
             rule_config = {}
 
+        rule_config = convert_aliases(cnf=rule_config, aliases=RULE_MOD_ARG_ALIASES)
+
         real_cnf = {
             **RULE_DEFAULTS,
+            **module.params['defaults'],
             **rule_config,
             **{
                 module.params['key_field']: rule_key,
@@ -83,6 +98,10 @@ def run_module():
             },
             **overrides,
         }
+
+        if real_cnf['debug']:
+            module.warn(f"Validating rule: '{rule_key} => {real_cnf}'")
+
         if validate_single(
                 module=module, module_args=RULE_MOD_ARGS, log_mod='rule',
                 key=rule_key, cnf=real_cnf,
@@ -99,7 +118,12 @@ def run_module():
                 'after': {},
             }
         )
+
         module.params['debug'] = rule_config['debug']  # per rule switch
+
+        if module.params['debug'] or module.params['output_info']:
+            module.warn(f"Processing rule: '{rule_key} => {rule_config}'")
+
         rule = Rule(
             module=module,
             result=rule_result,

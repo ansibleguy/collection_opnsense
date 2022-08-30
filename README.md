@@ -50,12 +50,12 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | Module                  | Usage                                                                                         | State           |
 |:------------------------|:----------------------------------------------------------------------------------------------|:----------------|
 | **Alias**               | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)       | unstable        | 
-| **Multi-Alias**         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_alias.md) | unstable        |
+| **Multi-Alias**         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) | unstable        |
 | **Packages**            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | unstable        |
 | **Rules**      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | unstable        |
 | **Savepoints** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | unstable        |
 | **System**              | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | unstable        |
-| **Multi-Rule**          | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_multi_rule.md)  | testing         |
+| **Multi-Rule**          | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)  | testing         |
 | **Source NAT** | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_snat.md)        | not implemented |
 
 ### Roadmap

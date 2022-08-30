@@ -4,7 +4,7 @@
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.multi_alias:
+    ansibleguy.opnsense.alias_multi:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
@@ -16,7 +16,7 @@
 
   tasks:
     - name: Removing - do not exist
-      ansibleguy.opnsense.multi_alias:
+      ansibleguy.opnsense.alias_multi:
         aliases:
           ANSIBLE_TEST_2_1:
           ANSIBLE_TEST_2_2:
@@ -35,7 +35,7 @@
         opn1.changed
 
     - name: Adding
-      ansibleguy.opnsense.multi_alias:
+      ansibleguy.opnsense.alias_multi:
         aliases:
           # hosts
           ANSIBLE_TEST_2_1:
@@ -83,7 +83,7 @@
         not opn2.changed
 
     - name: Changing
-      ansibleguy.opnsense.multi_alias:
+      ansibleguy.opnsense.alias_multi:
         aliases:
           ANSIBLE_TEST_2_2:
             content: ['192.168.1.1', '192.168.1.3']
@@ -116,7 +116,7 @@
       when: not ansible_check_mode  # no use in check mode
 
     - name: Removing
-      ansibleguy.opnsense.multi_alias:
+      ansibleguy.opnsense.alias_multi:
         aliases:
           ANSIBLE_TEST_2_1:
           ANSIBLE_TEST_2_2:
