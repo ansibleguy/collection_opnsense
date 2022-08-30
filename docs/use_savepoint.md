@@ -54,7 +54,7 @@ It currently just works with the 'Firewall' plugin:
 
     - name: Remove source-nat savepoint (else it will be reverted automatically)
       ansibleguy.opnsense.savepoint:
-        action: 'remove'
+        action: 'cancel_rollback'
         controller: 'source_nat'
         revision: "{{ snat_savepoint.revision }}"
 ```

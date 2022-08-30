@@ -19,9 +19,13 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 def run_module():
     module_args = dict(
         action=dict(
-            type='str', required=False, default='create', choises=['create', 'revert', 'apply', 'remove'],
+            type='str', required=False, default='create',
+            choises=['create', 'revert', 'apply', 'cancel_rollback'],
         ),
-        revision=dict(type='str', required=False, description='Savepoint revision to apply, revert or remove'),
+        revision=dict(
+            type='str', required=False,
+            description='Savepoint revision to apply, revert or cancel_rollback'
+        ),
         controller=dict(
             type='str', required=False, default='filter', description='Target API controller',
             choises=['source_nat', 'filter']
