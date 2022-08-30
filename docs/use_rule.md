@@ -24,7 +24,6 @@ This plugin has some limitations you need to know of:
   * port
   * protocol (_or any_)
   * ip-protocol (_IPv4/IPv6_)
-    * currently, unable to set IPv6 => seems to be a bug
   * direction
 * the ruleset managed by this plugin is SEPARATE from the default WEB-UI rules (_Firewall - Rules_) - combined usage might bring complications
 * interfaces must be provided as used in the network config

@@ -161,7 +161,7 @@ class Rule:
             'quick': 1 if self.cnf['quick'] else 0,
             'interface': ','.join(map(str, ensure_list(self.cnf['interface']))),
             'direction': self.cnf['direction'],
-            'ip_protocol': self.cnf['ip_protocol'],
+            'ipprotocol': self.cnf['ip_protocol'],
             'protocol': self.cnf['protocol'],
             'source_not': 1 if self.cnf['source_invert'] else 0,
             'source_net': self.cnf['source_net'],
