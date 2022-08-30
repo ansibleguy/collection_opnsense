@@ -26,7 +26,7 @@ ALIAS_MOD_ARGS = dict(
     ),
     content=dict(
         type='list', required=False, default=ALIAS_DEFAULTS['content'],
-        aliases=ALIAS_MOD_ARG_ALIASES['content']
+        aliases=ALIAS_MOD_ARG_ALIASES['content'], elements='str',
     ),
     type=dict(type='str', required=False, choices=[
         'host', 'network', 'port', 'url', 'urltable', 'geoip', 'networkgroup',

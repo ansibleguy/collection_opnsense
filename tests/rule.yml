@@ -96,6 +96,18 @@
     #        not opn18.changed
     #      when: not ansible_check_mode  # no use in check mode
 
+    - name: Triggering server-side validation error
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.0.0/24'
+        destination_net: '192.168.2.0/24'
+        destination_port: 443
+        protocol: 'TCP'
+        description: 'ANSIBLE_TEST_1_11'
+        interface: ['lan', 'does_not_exist']
+      register: opn19
+      failed_when: not opn19.failed
+      when: not ansible_check_mode  # no use in check mode
+
     - name: Creating block rule
       ansibleguy.opnsense.rule:
         source_net: '192.168.1.0/24'
@@ -113,6 +125,7 @@
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_1_10'
+        - 'ANSIBLE_TEST_1_11'
 
 - name: Testing Rules - aliases
   hosts: localhost

@@ -45,7 +45,7 @@ RULE_MOD_ARG_ALIASES = {
 
 RULE_MATCH_FIELDS_ARG = dict(
     match_fields=dict(
-        type='list', required=True,
+        type='list', required=True, elements='str',
         description='Fields that are used to match configured rules with the running config - '
                     "if any of those fields are changed, the module will think it's a new rule",
         choises=[
@@ -68,7 +68,7 @@ RULE_MOD_ARGS = dict(
     quick=dict(type='bool', required=False, default=RULE_DEFAULTS['quick'], aliases=RULE_MOD_ARG_ALIASES['quick']),
     interface=dict(
         type='list', required=False, default=RULE_DEFAULTS['interface'], aliases=RULE_MOD_ARG_ALIASES['interface'],
-        description='One or multiple interfaces use this rule on',
+        description='One or multiple interfaces use this rule on', elements='str',
     ),
     direction=dict(
         type='str', required=False, default=RULE_DEFAULTS['direction'], aliases=RULE_MOD_ARG_ALIASES['direction'],

@@ -19,7 +19,10 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 
 def run_module():
     module_args = dict(
-        name=dict(type='list', required=True, description='Package or list of packages to process'),
+        name=dict(
+            type='list', required=True, elements='str',
+            description='Package or list of packages to process'
+        ),
         action=dict(
             type='str', required=True,
             choices=['install', 'reinstall', 'remove', 'lock', 'unlock']

@@ -71,6 +71,7 @@
         - 'ANSIBLE_TEST_1_8'
         - 'ANSIBLE_TEST_1_9'
         - 'ANSIBLE_TEST_1_10'
+        - 'ANSIBLE_TEST_1_11'
 
     - name: Cleanup packages
       ansibleguy.opnsense.package:

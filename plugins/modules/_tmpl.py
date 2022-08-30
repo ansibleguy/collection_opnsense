@@ -19,7 +19,7 @@ def run_module():
     module_args = dict(
         name=dict(type='str', required=True),
         description=dict(type='str', required=False, default=''),
-        content=dict(type='list', required=False, default=[]),
+        content=dict(type='list', required=False, default=[], elements='str'),
         type=dict(type='str', required=False, choices=['1', '2'], default='1'),
         state=dict(type='str', default='present', required=False, choices=['present', 'absent']),
         enabled=dict(type='bool', required=False, default=True),
