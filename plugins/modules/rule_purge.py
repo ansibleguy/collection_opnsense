@@ -99,7 +99,7 @@ def run_module():
 
     if not module.params['force_all'] and len(module.params['rules']) == 0 and \
             len(module.params['filters']) == 0:
-        module.fail_json(f"You need to either provide 'rules' or 'filters'!")
+        module.fail_json("You need to either provide 'rules' or 'filters'!")
 
     if module.params['force_all'] and len(module.params['rules']) == 0 and \
             len(module.params['filters']) == 0:
