@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
-    validate_values, get_alias, equal_type, alias_in_use_by_rule
+    validate_values, get_alias, equal_type, alias_in_use_by_rule, compare_aliases
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
     ensure_list
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
@@ -85,11 +85,9 @@ class Alias:
         validate_values(error_func=self._error, cnf=self.cnf)
 
         if equal_type(existing=self.alias['type'], configured=self.cnf['type']):
-            _before = list(map(str, self.alias['content'].split(',')))
-            _after = list(map(str, self.cnf['content']))
-            _before.sort()
-            _after.sort()
-            self.r['changed'] = _before != _after
+            self.r['changed'], _before, _after = compare_aliases(
+                existing=self.alias, configured=self.cnf,
+            )
 
             if self.cnf['type'] == 'urltable':
                 if self.alias['updatefreq_days'] != self.cnf['updatefreq_days']:

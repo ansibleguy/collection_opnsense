@@ -1,0 +1,149 @@
+---
+
+- name: Testing Purging of Aliases
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.alias_multi:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.alias_purge:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.alias_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Adding 1
+      ansibleguy.opnsense.alias_multi:
+        aliases:
+          ANSIBLE_TEST_4_1:
+            content: ['192.168.1.1', '192.168.1.2']
+          ANSIBLE_TEST_4_2:
+            type: 'network'
+            content: '192.168.1.0/24'
+          ANSIBLE_TEST_4_3:
+            type: 'port'
+            content: [80, 443]
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Simple disable-purge
+      ansibleguy.opnsense.alias_purge:
+        aliases:
+          ANSIBLE_TEST_4_2:
+        action: 'disable'
+      register: opn1
+      when: not ansible_check_mode  # no use in check mode
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Simple purge
+      ansibleguy.opnsense.alias_purge:
+        aliases:
+          ANSIBLE_TEST_4_2:
+      when: not ansible_check_mode  # no use in check mode
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+
+    - name: Listing aliases
+      ansibleguy.opnsense.alias_list:
+      register: opn3
+      failed_when: >
+        'aliases' not in opn3 or
+        opn3.aliases | length != 1
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.alias_multi:
+        aliases:
+          ANSIBLE_TEST_4_1:
+            content: ['192.168.1.1', '192.168.1.2']
+          ANSIBLE_TEST_4_2:
+            type: 'network'
+            content: '192.168.1.0/24'
+          ANSIBLE_TEST_4_3:
+            type: 'port'
+            content: [80, 443]
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Filtered purge (single)
+      ansibleguy.opnsense.alias_purge:
+        filters:
+          type: 'port'
+      when: not ansible_check_mode  # no use in check mode
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+
+    - name: Listing aliases
+      ansibleguy.opnsense.alias_list:
+      register: opn5
+      failed_when: >
+        'aliases' not in opn5 or
+        opn5.aliases | length != 2
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Adding 3
+      ansibleguy.opnsense.alias_multi:
+        aliases:
+          ANSIBLE_TEST_4_1:
+            content: ['192.168.1.1', '192.168.1.2']
+          ANSIBLE_TEST_4_2:
+            type: 'network'
+            content: '192.168.1.0/24'
+          ANSIBLE_TEST_4_3:
+            type: 'port'
+            content: [80, 443]
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Filtered purge (single inverted)
+      ansibleguy.opnsense.alias_purge:
+        filters:
+          type: 'port'
+        filter_invert: true
+      when: not ansible_check_mode  # no use in check mode
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+
+    - name: Listing aliases
+      ansibleguy.opnsense.alias_list:
+      register: opn7
+      failed_when: >
+        'aliases' not in opn7 or
+        opn7.aliases | length != 1
+      when: not ansible_check_mode  # no use in check mode
+
+    - name: Purge ALL - not forced
+      ansibleguy.opnsense.alias_purge:
+      when: not ansible_check_mode  # no use in check mode
+      register: opn8
+      failed_when: not opn8.failed
+
+    - name: Purge ALL
+      ansibleguy.opnsense.alias_purge:
+        force_all: true
+      when: not ansible_check_mode  # no use in check mode
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+
+    - name: Checking cleanup
+      ansibleguy.opnsense.alias_list:
+      register: opn10
+      failed_when: >
+        'aliases' not in opn10 or
+        opn10.aliases | length != 0
+      when: not ansible_check_mode  # no use in check mode

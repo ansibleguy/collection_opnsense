@@ -157,37 +157,6 @@ def get_any_change(before: dict, after: dict) -> bool:
     return not all(matching)
 
 
-def check_purge_filter(module: AnsibleModule, existing_rule: dict) -> bool:
-    to_purge = True
-
-    for filter_key, filter_value in module.params['filters'].items():
-        if module.params['filter_invert']:
-            # purge all except matches
-            if module.params['filter_partial']:
-                if str(existing_rule[filter_key]).find(filter_value) != -1:
-                    to_purge = False
-                    break
-
-            else:
-                if existing_rule[filter_key] == filter_value:
-                    to_purge = False
-                    break
-
-        else:
-            # purge only matches
-            if module.params['filter_partial']:
-                if str(existing_rule[filter_key]).find(filter_value) == -1:
-                    to_purge = False
-                    break
-
-            else:
-                if existing_rule[filter_key] != filter_value:
-                    to_purge = False
-                    break
-
-    return to_purge
-
-
 def check_purge_configured(module: AnsibleModule, existing_rule: dict) -> bool:
     to_purge = True
 

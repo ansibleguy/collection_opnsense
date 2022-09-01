@@ -1,5 +1,11 @@
 from ipaddress import ip_network
+from re import match as regex_match
 import validators
+
+from ansible.module_utils.basic import AnsibleModule
+
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+    BUILTIN_ALIASES, BUILTIN_INTERFACE_ALIASES_REG
 
 
 def validate_values(error_func, cnf: dict) -> None:
@@ -62,9 +68,17 @@ def get_alias(name: str, aliases: list) -> dict:
     return alias
 
 
+def convert_existing_type(existing: str) -> str:
+    return existing.lower().replace(' ', '').split('(', 1)[0]
+
+
 def equal_type(existing: str, configured: str) -> bool:
-    e = existing.lower().replace(' ', '').split('(', 1)[0]
-    return configured == e
+    return configured == convert_existing_type(existing)
+
+
+def simplify_existing_alias(existing: dict) -> dict:
+    existing['type'] = convert_existing_type(existing['type'])
+    return existing
 
 
 def alias_in_use_by_rule(rules: dict, alias: str) -> bool:
@@ -77,3 +91,60 @@ def alias_in_use_by_rule(rules: dict, alias: str) -> bool:
                 break
 
     return in_use
+
+
+def check_purge_filter(module: AnsibleModule, existing_rule: dict) -> bool:
+    to_purge = True
+
+    for filter_key, filter_value in module.params['filters'].items():
+        if module.params['filter_invert']:
+            # purge all except matches
+            if module.params['filter_partial']:
+                if str(existing_rule[filter_key]).find(filter_value) != -1:
+                    to_purge = False
+                    break
+
+            else:
+                if existing_rule[filter_key] == filter_value:
+                    to_purge = False
+                    break
+
+        else:
+            # purge only matches
+            if module.params['filter_partial']:
+                if str(existing_rule[filter_key]).find(filter_value) == -1:
+                    to_purge = False
+                    break
+
+            else:
+                if existing_rule[filter_key] != filter_value:
+                    to_purge = False
+                    break
+
+    return to_purge
+
+
+def compare_aliases(existing: dict, configured: dict) -> tuple:
+    before = list(map(str, existing['content'].split(',')))
+    after = list(map(str, configured['content']))
+    before.sort()
+    after.sort()
+    return before != after, before, after
+
+
+def check_purge_configured(module: AnsibleModule, existing_alias: dict) -> bool:
+    to_purge = True
+    existing_name = existing_alias['name']
+
+    for alias_name in module.params['aliases'].keys():
+        if existing_name == alias_name:
+            to_purge = False
+            break
+
+    return to_purge
+
+
+def builtin_alias(name: str) -> bool:
+    # ignore built-in aliases
+    return name in BUILTIN_ALIASES or \
+           regex_match(BUILTIN_INTERFACE_ALIASES_REG, name) is not None

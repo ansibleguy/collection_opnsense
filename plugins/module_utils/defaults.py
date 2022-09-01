@@ -12,3 +12,27 @@ BUILTIN_ALIASES = [
     'bogons', 'bogonsv6', 'sshlockout', 'virusprot',
 ]
 BUILTIN_INTERFACE_ALIASES_REG = '^__.*?_network$'  # auto-added interface aliases
+
+PURGE_MOD_ARGS = dict(
+    action=dict(
+        type='str', required=False, default='delete', choises=['disable', 'delete'],
+        description='What to do with the matched rules'
+    ),
+    filters=dict(
+        type='dict', required=False, default={},
+        description='Field-value pairs to filter on - per example: {interface: lan} '
+                    '(to only purge rules that have only lan as interface)'
+    ),
+    filter_invert=dict(
+        type='bool', required=False, default=False,
+        description='If true - it will purge all but the filtered ones'
+    ),
+    filter_partial=dict(
+        type='bool', required=False, default=False,
+        description="If true - the filter will also match if it is just a partial value-match"
+    ),
+    force_all=dict(
+        type='bool', required=False, default=False,
+        description='If set to true and neither rules, nor filters are provided - all rules will be purged'
+    ),
+)

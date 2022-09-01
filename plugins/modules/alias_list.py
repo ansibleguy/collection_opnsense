@@ -5,13 +5,11 @@
 
 # see: https://docs.opnsense.org/development/api/core/firewall.html
 
-from re import match as regex_match
-
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
-    OPN_MOD_ARGS, BUILTIN_INTERFACE_ALIASES_REG, BUILTIN_ALIASES
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import builtin_alias
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias.yml'
@@ -45,9 +43,7 @@ def run_module():
         _values.pop('name')
 
         # filtering output if needed
-        if module.params['filter_builtin'] and \
-                (_alias['name'] in BUILTIN_ALIASES or
-                 regex_match(BUILTIN_INTERFACE_ALIASES_REG, _alias['name']) is not None):
+        if module.params['filter_builtin'] and builtin_alias(_alias['name']):
             # ignore built-in aliases
             continue
 

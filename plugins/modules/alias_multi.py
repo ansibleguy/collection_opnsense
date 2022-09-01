@@ -60,7 +60,7 @@ def run_module():
     if module.params['enabled'] is not None:
         overrides['enabled'] = module.params['enabled']
 
-    # build list of valid rules or fail if invalid config is not permitted
+    # build list of valid aliases or fail if invalid config is not permitted
     valid_aliases = []
     for alias_name, alias_config in module.params['aliases'].items():
         # build config and validate it the same way the module initialization would do
@@ -127,8 +127,6 @@ def run_module():
 
             if 'after' in alias_result['diff']:
                 result['diff']['after'].update(alias_result['diff']['after'])
-
-    # todo: add purging option => or create additional module for it
 
     session.close()
     result['diff'] = diff_remove_empty(result['diff'])
