@@ -14,10 +14,6 @@
       ansibleguy.opnsense.system:
         action: 'update'
 
-    - name: Running audit
-      ansibleguy.opnsense.system:
-        action: 'audit'
-
     - name: Rebooting with wait
       ansibleguy.opnsense.system:
         action: 'reboot'
@@ -25,7 +21,13 @@
         timeout: 90
         poll_interval: 2
 
-    - name: Rebooting w/o wait
+    - name: Upgrade with wait
       ansibleguy.opnsense.system:
-        action: 'reboot'
-        wait: false
+        action: 'upgrade'
+        wait: true
+        timeout: 120
+        poll_interval: 2
+
+    - name: Running audit
+      ansibleguy.opnsense.system:
+        action: 'audit'

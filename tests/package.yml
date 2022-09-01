@@ -41,10 +41,10 @@
       ansibleguy.opnsense.package:
         name: ['os-api-backup', 'os-dmidecode']
         action: 'install'
-      register: opn3
+      register: opn9
       failed_when: >
-        opn3.failed or
-        not opn3.changed
+        opn9.failed or
+        not opn9.changed
 
     - name: Locking
       ansibleguy.opnsense.package:

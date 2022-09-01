@@ -5,6 +5,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
 
 
 class Package:
+    UPGRADE_MSG = 'Installation out of date'
+
     def __init__(self, module: AnsibleModule, name: str, session: Session = None):
         self.m = module
         self.s = Session(module=module) if session is None else session
@@ -41,16 +43,34 @@ class Package:
                     self.r['diff']['before']['locked'] = True
 
         self.r['diff']['after'] = self.r['diff']['before'].copy()
-        self.lock_check()
+
+        if self.m.params['action'] in ['install', 'reinstall']:
+            self.check_system_up_to_date()
+
+        self.check_lock()
         self.call_cnf['params'] = [self.n]
 
-    def lock_check(self):
+    def check_lock(self):
         if self.m.params['action'] in ['reinstall', 'remove', 'install'] and \
                 self.r['diff']['before']['locked']:
             self.m.fail_json(
                 f"Unable to execute action '{self.m.params['action']}' - "
                 f"package is locked!"
             )
+
+    def check_system_up_to_date(self) -> bool:
+        status = self.s.get(cnf={
+            'command': 'upgradestatus',
+            **self.call_cnf
+        })
+
+        if str(status).find(self.UPGRADE_MSG) != -1:
+            self.m.fail_json(
+                f"Unable to execute action '{self.m.params['action']}' - "
+                f"system needs to be upgraded beforehand!"
+            )
+
+        return False
 
     def search_call(self) -> dict:
         return self.s.get(cnf={'command': 'info', **self.call_cnf})['package']
