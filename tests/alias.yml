@@ -235,6 +235,14 @@
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_2_URLTABLE1'
         type: 'urltable'
+        updatefreq_days: 2
+        content: 'https://www.spamhaus.org/drop/drop.txt'
+
+    - name: Updating urltable update-frequency
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_1_2_URLTABLE1'
+        type: 'urltable'
+        updatefreq_days: 6.5
         content: 'https://www.spamhaus.org/drop/drop.txt'
 
     - name: Adding multiple urltables

@@ -85,16 +85,16 @@
         opn17.failed or
         not opn17.changed
 
-    #    - name: Updating IPv4 - checking for IPv6 bug  # https://forum.opnsense.org/index.php?topic=30077.0
-    #      ansibleguy.opnsense.rule:
-    #        destination_port: 443
-    #        protocol: 'TCP'
-    #        description: 'ANSIBLE_TEST_1_10'
-    #      register: opn18
-    #      failed_when: >
-    #        opn18.failed or
-    #        not opn18.changed
-    #      when: not ansible_check_mode  # no use in check mode
+    - name: Updating IPv4
+      ansibleguy.opnsense.rule:
+        destination_port: 443
+        protocol: 'TCP'
+        description: 'ANSIBLE_TEST_1_10'
+      register: opn18
+      failed_when: >
+        opn18.failed or
+        not opn18.changed
+      when: not ansible_check_mode  # no use in check mode
 
     - name: Triggering server-side validation error
       ansibleguy.opnsense.rule:

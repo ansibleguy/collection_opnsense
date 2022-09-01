@@ -8,8 +8,6 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import 
     ensure_list
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
 
-# todo: updatefreq - https://forum.opnsense.org/index.php?topic=29880.0
-
 
 class Alias:
     def __init__(
@@ -39,6 +37,12 @@ class Alias:
         self.exists = len(self.alias) > 0
         if self.exists:
             self.call_cnf['params'] = [self.alias['uuid']]
+            if self.cnf['type'] == 'urltable':
+                try:
+                    self.alias['updatefreq_days'] = float(self.detail_call()['updatefreq'].strip())
+
+                except ValueError:
+                    self.alias['updatefreq_days'] = float(0)
 
         if not self.exists and self.cnf['state'] == 'present':
             if self.cnf['content'] is None or len(self.cnf['content']) == 0:
@@ -57,6 +61,11 @@ class Alias:
             **self.call_cnf, **{'command': 'searchItem'}
         })['rows']
 
+    def detail_call(self) -> dict:
+        return self.s.get(cnf={
+            **self.call_cnf, **{'command': 'getItem'}
+        })['alias']
+
     def create(self):
         # creating alias
         validate_values(error_func=self._error, cnf=self.cnf)
@@ -67,15 +76,7 @@ class Alias:
             self.s.post(cnf={
                 **self.call_cnf, **{
                     'command': 'addItem',
-                    'data': {
-                        'alias': {
-                            'name': self.cnf['name'],
-                            'description': self.cnf['description'],
-                            'type': self.cnf['type'],
-                            'content': '\n'.join(map(str, ensure_list(self.cnf['content']))),
-                            # 'updatefreq': module.params['updatefreq_days'],
-                        }
-                    },
+                    'data': self._build_alias(),
                 }
             })
 
@@ -89,6 +90,19 @@ class Alias:
             _before.sort()
             _after.sort()
             self.r['changed'] = _before != _after
+
+            if self.cnf['type'] == 'urltable':
+                if self.alias['updatefreq_days'] != self.cnf['updatefreq_days']:
+                    self.r['changed'] = True
+                    _before = {
+                        'content': _before,
+                        'updatefreq_days': round(self.alias['updatefreq_days'], 1)
+                    }
+                    _after = {
+                        'content': _after,
+                        'updatefreq_days': round(self.cnf['updatefreq_days'], 1)
+                    }
+
             self.r['diff']['before'] = {self.cnf['name']: _before}
             self.r['diff']['after'] = {self.cnf['name']: _after}
 
@@ -100,14 +114,7 @@ class Alias:
                 self.s.post(cnf={
                     **self.call_cnf, **{
                         'command': 'setItem',
-                        'data': {
-                            'alias': {
-                                'name': self.cnf['name'],
-                                'description': self.cnf['description'],
-                                'type': self.cnf['type'],
-                                'content': '\n'.join(map(str, ensure_list(self.cnf['content']))),
-                            }
-                        },
+                        'data': self._build_alias(),
                     }
                 })
 
@@ -117,6 +124,17 @@ class Alias:
                 f"Unable to update alias '{self.cnf['name']}' - it is not of the same type! "
                 f"You need to delete the current one first!"
             )
+
+    def _build_alias(self) -> dict:
+        return {
+            'alias': {
+                'name': self.cnf['name'],
+                'description': self.cnf['description'],
+                'type': self.cnf['type'],
+                'content': '\n'.join(map(str, ensure_list(self.cnf['content']))),
+                'updatefreq': self.cnf['updatefreq_days'],
+            }
+        }
 
     def delete(self):
         self.r['changed'] = True

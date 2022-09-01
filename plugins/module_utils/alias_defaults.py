@@ -40,7 +40,10 @@ ALIAS_MOD_ARGS = dict(
         type='bool', required=False, default=ALIAS_DEFAULTS['enabled'],
         aliases=ALIAS_MOD_ARG_ALIASES['enabled']
     ),
-    # todo: updatefreq not yet working (used by 'urltable')
-    # updatefreq_days=dict(type='int', required=False),
+    updatefreq_days=dict(
+        type='float', default=7.0, required=False,
+        description="Update frequency used by type 'urltable' in days - "
+                    "per example '0.5' for 12 hours"
+    ),
     **OPN_MOD_ARGS
 )

@@ -189,6 +189,12 @@
         opn9.rules | length != 1
       when: not ansible_check_mode  # no use in check mode
 
+    - name: Purge ALL - not forced
+      ansibleguy.opnsense.rule_purge:
+      when: not ansible_check_mode  # no use in check mode
+      register: opn12
+      failed_when: not opn12.failed
+
     - name: Purge ALL
       ansibleguy.opnsense.rule_purge:
         force_all: true
