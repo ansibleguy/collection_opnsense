@@ -28,7 +28,7 @@ def run_module():
             choices=['install', 'reinstall', 'remove', 'lock', 'unlock']
         ),
         wait_time=dict(
-            type='int', required=False, default=1,
+            type='int', required=False, default=3,
             description='The firewall needs some time to update package info'
         ),
         timeout=dict(type='float', required=False, default=30.0),
