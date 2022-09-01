@@ -59,6 +59,14 @@ ansible-playbook tests/alias_multi.yml --check --extra-vars="ansible_python_inte
 
 echo ''
 echo '##############################'
+echo 'RUNNING TESTS for module ALIAS_PURGE'
+echo ''
+
+ansible-playbook tests/alias_purge.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/alias_purge.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+echo ''
+echo '##############################'
 echo 'RUNNING TESTS for module RULE'
 echo ''
 
