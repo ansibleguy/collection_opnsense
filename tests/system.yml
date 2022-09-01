@@ -27,7 +27,3 @@
         wait: true
         timeout: 120
         poll_interval: 2
-
-    - name: Running audit
-      ansibleguy.opnsense.system:
-        action: 'audit'
