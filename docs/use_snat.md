@@ -25,7 +25,7 @@ These rules are shown in the separate WEB-UI table.
 
 Menu: 'Firewall - Automation - Source NAT'
 
-## Usage
+## Examples
 
 ```yaml
 -

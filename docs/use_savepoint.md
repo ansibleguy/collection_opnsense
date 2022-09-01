@@ -19,7 +19,7 @@ It currently just works with the 'Firewall' plugin:
 - [Firewall - Filter](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)
 - [Firewall - Source NAT](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_snat.md)
 
-## Usage
+## Examples
 
 ```yaml
 - hosts: localhost

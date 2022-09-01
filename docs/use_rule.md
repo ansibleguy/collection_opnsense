@@ -59,6 +59,7 @@ It is **recommended** to use/set **unique identifiers** like 'description' to ma
 
 You could also use the UUID of existing rules as ID - but you would have to pull (_rule_list_) and configure those manually. 
 
+## Examples
 
 ### Basic
 
@@ -125,11 +126,11 @@ You could also use the UUID of existing rules as ID - but you would have to pull
       wan_deny_tor_exit_nodes_ipv4:
         src: 'ALIAS_URLTABLE_TOR_EXIT_NODES'
         int: 'wan'
-        action: 'deny'
+        action: 'block'
       wan_deny_tor_exit_nodes_ipv6:
         src: 'ALIAS_URLTABLE_TOR_EXIT_NODES'
         int: 'wan'
-        action: 'deny'
+        action: 'block'
         ip_proto: 'inet6'
       lan_to_dmz_https:
         src: 'LAN_net'
@@ -189,6 +190,8 @@ You could also use the UUID of existing rules as ID - but you would have to pull
 ### Purging
 
 If you want to delete all existing rules that are **NOT CONFIGURED**.
+
+You can also use the [rule_purge](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md) module to do this in a cleaner way.
 
 ```yaml
 - hosts: localhost

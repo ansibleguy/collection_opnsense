@@ -21,7 +21,7 @@ To use GeoIP alias types - you need to configure a source for it first. See: [do
 If you want to mass-manage aliases - take a look at the [alias_multi](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) module. It is scales better for that use-case!
 
 
-## Usage
+## Examples
 
 ```yaml
 - hosts: localhost

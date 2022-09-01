@@ -6,7 +6,7 @@
 
 **API DOCS**: [Core - Firmware](https://docs.opnsense.org/development/api/core/firmware.html)
 
-## Usage
+## Examples
 
 ```yaml
 - hosts: localhost

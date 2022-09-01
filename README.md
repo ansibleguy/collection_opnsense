@@ -51,7 +51,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 |:---------|:--------------------------------|:----------------------------------------------------------------------------------------------|:----------------|
 | **Alias**| ansibleguy.opnsense.alias       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)       | unstable        | 
 | **Alias** | ansibleguy.opnsense.alias_multi | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) | unstable        |
-| **Alias** | ansibleguy.opnsense.alias_purge | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) | development     |
+| **Alias** | ansibleguy.opnsense.alias_purge | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) | testing         |
 | **Rules** | ansibleguy.opnsense.rule        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | unstable        |
 | **Rules** | ansibleguy.opnsense.rule_multi  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)  | unstable        |
 | **Rules** | ansibleguy.opnsense.rule_purge  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)  | testing         |
