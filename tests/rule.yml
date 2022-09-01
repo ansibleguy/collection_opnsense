@@ -229,6 +229,17 @@
         opn8.rules | length != 1
       when: not ansible_check_mode  # no use in check mode
 
+    - name: Modifying dummy rule 1 by uuid
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.1.0/24'
+        destination_invert: true
+        destination_net: '10.1.0.0/8'
+        description: 'ANSIBLE_TEST_1_5'
+        action: 'block'
+        match_fields: ['uuid']
+        uuid: "{{ opn8.rules | json_query('keys(@)[0]') }}"
+      when: not ansible_check_mode  # no use in check mode
+
     - name: Creating dummy rule 2
       ansibleguy.opnsense.rule:
         source_net: '192.168.1.0/24'

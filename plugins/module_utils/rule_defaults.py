@@ -51,7 +51,7 @@ RULE_MATCH_FIELDS_ARG = dict(
         choises=[
             'sequence', 'action', 'interface', 'direction', 'ip_protocol', 'protocol',
             'source_invert', 'source_net', 'source_port', 'destination_invert', 'destination_net',
-            'destination_port', 'gateway', 'description',
+            'destination_port', 'gateway', 'description', 'uuid',
         ]
     ),
 )
@@ -124,13 +124,14 @@ RULE_MOD_ARGS = dict(
         type='bool', required=False, default=RULE_DEFAULTS['enabled'],
         aliases=RULE_MOD_ARG_ALIASES['enabled']
     ),
+    uuid=dict(type='str', required=False, description='Optionally you can supply the uuid of an existing rule'),
     **RULE_MATCH_FIELDS_ARG,
     **OPN_MOD_ARGS,
 )
 
 RULE_MOD_ARG_KEY_FIELD = dict(
     key_field=dict(
-        type='str', required=True, choises=['sequence', 'description'], aliases=['key'],
+        type='str', required=True, choises=['sequence', 'description', 'uuid'], aliases=['key'],
         description='What field is used as key of the provided dictionary'
     )
 )

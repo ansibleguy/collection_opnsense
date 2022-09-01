@@ -57,6 +57,8 @@ You need to set how this matching is done by setting the 'match_fields' paramete
 
 It is **recommended** to use/set **unique identifiers** like 'description' to make sure rules can be matched without overlapping.
 
+You could also use the UUID of existing rules as ID - but you would have to pull (_rule_list_) and configure those manually. 
+
 
 ### Basic
 
@@ -94,6 +96,7 @@ It is **recommended** to use/set **unique identifiers** like 'description' to ma
         # gateway: 'LAN_GW'
         # state: 'present'
         # enabled: true
+        # uuid: 'a9d85c00-0aa2-4705-b855-96aae16e05d7'  # optionally use uuid to identify existing rules
         # debug: true
 
     - name: Listing
