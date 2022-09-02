@@ -53,7 +53,7 @@ def run_module():
 
     def obj_func(alias_to_purge: dict) -> Alias:
         if module.params['debug'] or module.params['output_info']:
-            module.warn(f"Purging alias '{alias['name']}'!")
+            module.warn(f"Purging alias '{alias_to_purge['name']}'!")
 
         _alias = Alias(
             module=module,

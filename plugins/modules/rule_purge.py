@@ -55,7 +55,7 @@ def run_module():
 
     def obj_func(rule_to_purge: dict) -> Rule:
         if module.params['debug'] or module.params['output_info']:
-            module.warn(f"Purging rule '{rule[module.params['key_field']]}'!")
+            module.warn(f"Purging rule '{rule_to_purge[module.params['key_field']]}'!")
 
         _rule = Rule(
             module=module,

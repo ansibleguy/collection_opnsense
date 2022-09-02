@@ -96,7 +96,7 @@ class Package:
             run = True
 
         self.r['changed'] = True
-        if not self.m.check_mode and run:
+        if run:
             self.execute()
 
     def execute(self):
