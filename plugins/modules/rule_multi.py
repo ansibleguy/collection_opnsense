@@ -8,7 +8,8 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+    OPN_MOD_ARGS, STATE_MOD_ARG, INFO_MOD_ARG
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import \
     RULE_MOD_ARGS, RULE_DEFAULTS, RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_ALIASES, RULE_MOD_ARG_KEY_FIELD
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
@@ -35,9 +36,8 @@ def run_module():
         defaults=dict(
             type='dict', required=False, default={}, description='Default values for all rules'
         ),
-        state=dict(type='str', required=False, choices=['present', 'absent']),
-        enabled=dict(type='bool', required=False, default=None),
-        output_info=dict(type='bool', required=False, default=False, aliases=['info']),
+        **STATE_MOD_ARG,
+        **INFO_MOD_ARG,
         **RULE_MOD_ARG_KEY_FIELD,
         **RULE_MATCH_FIELDS_ARG,
         **OPN_MOD_ARGS,

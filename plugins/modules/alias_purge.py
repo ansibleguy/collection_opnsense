@@ -8,7 +8,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
-    OPN_MOD_ARGS, PURGE_MOD_ARGS
+    OPN_MOD_ARGS, PURGE_MOD_ARGS, INFO_MOD_ARG
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
     check_purge_configured, simplify_existing_alias, builtin_alias
@@ -28,6 +28,7 @@ def run_module():
             type='dict', required=False, default={},
             description='Configured aliases - compared against existing ones'
         ),
+        **INFO_MOD_ARG,
         **PURGE_MOD_ARGS,
         **OPN_MOD_ARGS,
     )
@@ -51,6 +52,9 @@ def run_module():
     aliases_to_purge = []
 
     def obj_func(alias_to_purge: dict) -> Alias:
+        if module.params['debug'] or module.params['output_info']:
+            module.warn(f"Purging alias '{alias['name']}'!")
+
         _alias = Alias(
             module=module,
             result={'changed': False, 'diff': {'before': {}, 'after': {}}},
@@ -74,7 +78,7 @@ def run_module():
         for alias in existing_aliases:
             if not builtin_alias(name=alias['name']):
                 purge(
-                    module=module, result=result,
+                    module=module, result=result, diff_param='name',
                     obj_func=obj_func, item_to_purge=alias,
                 )
 
@@ -99,12 +103,8 @@ def run_module():
 
         for alias in aliases_to_purge:
             result['changed'] = True
-
-            if module.params['debug']:
-                module.warn(f"Purging alias '{alias[module.params['key_field']]}'!")
-
             purge(
-                module=module, result=result,
+                module=module, result=result, diff_param='name',
                 obj_func=obj_func, item_to_purge=alias,
             )
 

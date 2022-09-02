@@ -9,7 +9,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
-    OPN_MOD_ARGS, PURGE_MOD_ARGS
+    OPN_MOD_ARGS, PURGE_MOD_ARGS, INFO_MOD_ARG
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import \
     RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_KEY_FIELD
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
@@ -30,6 +30,7 @@ def run_module():
             description='Configured rules - compared against existing ones'
         ),
         **PURGE_MOD_ARGS,
+        **INFO_MOD_ARG,
         **RULE_MOD_ARG_KEY_FIELD,
         **RULE_MATCH_FIELDS_ARG,
         **OPN_MOD_ARGS,
@@ -53,6 +54,9 @@ def run_module():
     rules_to_purge = []
 
     def obj_func(rule_to_purge: dict) -> Rule:
+        if module.params['debug'] or module.params['output_info']:
+            module.warn(f"Purging rule '{rule[module.params['key_field']]}'!")
+
         _rule = Rule(
             module=module,
             result={'changed': False, 'diff': {'before': {}, 'after': {}}},
@@ -75,6 +79,7 @@ def run_module():
         for uuid, raw_existing_rule in existing_rules.items():
             purge(
                 module=module, result=result, obj_func=obj_func,
+                diff_param=module.params['key_field'],
                 item_to_purge=simplify_existing_rule(rule={uuid: raw_existing_rule}),
             )
 
@@ -98,11 +103,10 @@ def run_module():
 
         for rule in rules_to_purge:
             result['changed'] = True
-
-            if module.params['debug']:
-                module.warn(f"Purging rule '{rule[module.params['key_field']]}'!")
-
-            purge(module=module, result=result, obj_func=obj_func, item_to_purge=rule)
+            purge(
+                module=module, result=result, diff_param=module.params['key_field'],
+                obj_func=obj_func, item_to_purge=rule
+            )
 
     session.close()
     result['diff'] = diff_remove_empty(result['diff'])

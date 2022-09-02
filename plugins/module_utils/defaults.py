@@ -36,3 +36,12 @@ PURGE_MOD_ARGS = dict(
         description='If set to true and neither rules, nor filters are provided - all rules will be purged'
     ),
 )
+
+INFO_MOD_ARG = dict(
+    output_info=dict(type='bool', required=False, default=False, aliases=['info']),
+)
+
+STATE_MOD_ARG = dict(
+    state=dict(type='str', required=False, choices=['present', 'absent']),
+    enabled=dict(type='bool', required=False, default=None),
+)

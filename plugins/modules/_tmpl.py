@@ -9,7 +9,8 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+    OPN_MOD_ARGS, STATE_MOD_ARG
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/_tmpl.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/_tmpl.md'
@@ -21,9 +22,8 @@ def run_module():
         description=dict(type='str', required=False, default=''),
         content=dict(type='list', required=False, default=[], elements='str'),
         type=dict(type='str', required=False, choices=['1', '2'], default='1'),
-        state=dict(type='str', default='present', required=False, choices=['present', 'absent']),
-        enabled=dict(type='bool', required=False, default=True),
-        **OPN_MOD_ARGS
+        **STATE_MOD_ARG,
+        **OPN_MOD_ARGS,
     )
 
     result = dict(

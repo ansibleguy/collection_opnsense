@@ -159,7 +159,7 @@ To simplify troubleshooting of bad configuration there are some troubleshooting 
   ansibleguy.opnsense.rule_multi:
     rules: {...}
     fail_verification: true  # if the module should fail if one rule has a bad config (default behaviour)
-    output_info: true  # to output information of processed rules => also shown if the task is set to 'no_log: true'
+    output_info: true  # to output information of processed rules
     debug: true  # output verbose information about requests and processing
 ```
 

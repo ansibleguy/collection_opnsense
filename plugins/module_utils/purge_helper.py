@@ -1,16 +1,16 @@
 from ansible.module_utils.basic import AnsibleModule
 
 
-def purge(module: AnsibleModule, result: dict, item_to_purge: dict, obj_func):
+def purge(module: AnsibleModule, result: dict, item_to_purge: dict, diff_param: str, obj_func):
     result['changed'] = True
 
     if module.params['action'] == 'delete':
-        result['diff']['before'][item_to_purge['uuid']] = item_to_purge
-        result['diff']['after'][item_to_purge['uuid']] = None
+        result['diff']['before'][item_to_purge[diff_param]] = item_to_purge
+        result['diff']['after'][item_to_purge[diff_param]] = None
 
     else:
-        result['diff']['before'][item_to_purge['uuid']] = {'enabled': True}
-        result['diff']['after'][item_to_purge['uuid']] = {'enabled': False}
+        result['diff']['before'][item_to_purge[diff_param]] = {'enabled': True}
+        result['diff']['after'][item_to_purge[diff_param]] = {'enabled': False}
 
     if not module.check_mode:
         _obj = obj_func(item_to_purge)
