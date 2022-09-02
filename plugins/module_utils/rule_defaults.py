@@ -1,4 +1,5 @@
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+    OPN_MOD_ARGS, STATE_MOD_ARG
 
 RULE_DEFAULTS = {
     'sequence': 1,
@@ -116,15 +117,8 @@ RULE_MOD_ARGS = dict(
         type='str', required=False, default=RULE_DEFAULTS['description'],
         aliases=RULE_MOD_ARG_ALIASES['description']
     ),
-    state=dict(
-        type='str', default=RULE_DEFAULTS['state'], required=False, choices=['present', 'absent'],
-        aliases=RULE_MOD_ARG_ALIASES['state'],
-    ),
-    enabled=dict(
-        type='bool', required=False, default=RULE_DEFAULTS['enabled'],
-        aliases=RULE_MOD_ARG_ALIASES['enabled']
-    ),
     uuid=dict(type='str', required=False, description='Optionally you can supply the uuid of an existing rule'),
+    **STATE_MOD_ARG,
     **RULE_MATCH_FIELDS_ARG,
     **OPN_MOD_ARGS,
 )

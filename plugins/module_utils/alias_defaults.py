@@ -1,4 +1,5 @@
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+    OPN_MOD_ARGS, STATE_MOD_ARG
 
 ALIAS_DEFAULTS = {
     'state': 'present',
@@ -33,18 +34,11 @@ ALIAS_MOD_ARGS = dict(
         'host', 'network', 'port', 'url', 'urltable', 'geoip', 'networkgroup',
         'mac', 'dynipv6host', 'internal', 'external',
     ], default=ALIAS_DEFAULTS['type'], aliases=ALIAS_MOD_ARG_ALIASES['type']),
-    state=dict(
-        type='str', default=ALIAS_DEFAULTS['state'], required=False,
-        choices=['present', 'absent'], aliases=ALIAS_MOD_ARG_ALIASES['state']
-    ),
-    enabled=dict(
-        type='bool', required=False, default=ALIAS_DEFAULTS['enabled'],
-        aliases=ALIAS_MOD_ARG_ALIASES['enabled']
-    ),
     updatefreq_days=dict(
         type='float', default=ALIAS_DEFAULTS['updatefreq_days'], required=False,
         description="Update frequency used by type 'urltable' in days - "
                     "per example '0.5' for 12 hours"
     ),
-    **OPN_MOD_ARGS
+    **STATE_MOD_ARG,
+    **OPN_MOD_ARGS,
 )

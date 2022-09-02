@@ -19,6 +19,18 @@ It currently just works with the 'Firewall' plugin:
 - [Firewall - Filter](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)
 - [Firewall - Source NAT](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_snat.md)
 
+## Definition
+
+| Parameter | Type   | Required                                                               | Default value | Comment                                                                   |
+|:----------|:-------|:-----------------------------------------------------------------------|:--------------|:--------------------------------------------------------------------------|
+| name      | string | false                                                                  | 'create'      | Action to execute. One of: 'create', 'revert', 'apply', 'cancel_rollback' |
+| revision      | string | false, true if action is one of 'apply', 'revert' or 'cancel_rollback' | -             | Savepoint revision to apply, revert or cancel_rollback                    |
+| controller      | string | false                                                                  | 'filter'      | Controller to manage the savepoint of. One of: 'source_nat', 'filter'     |
+| api_module      | string | false                                                                  | 'firewall'      | Module to manage the savepoint of. Currently only supports 'firewall'               |
+
+For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
+
+
 ## Examples
 
 ```yaml

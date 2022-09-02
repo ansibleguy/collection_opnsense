@@ -27,7 +27,7 @@ def run_module():
             type='str', required=True,
             choices=['install', 'reinstall', 'remove', 'lock', 'unlock']
         ),
-        wait_time=dict(
+        post_sleep=dict(
             type='int', required=False, default=3,
             description='The firewall needs some time to update package info'
         ),
@@ -70,7 +70,7 @@ def run_module():
             pkg.install()
 
         if pkg.r['changed']:
-            sleep(module.params['wait_time'])  # time for the box to update package info
+            sleep(module.params['post_sleep'])  # time for the box to update package info
             result['changed'] = True
 
         result['diff']['before'][pkg_name] = pkg.r['diff']['before']

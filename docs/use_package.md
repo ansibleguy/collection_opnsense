@@ -10,6 +10,17 @@
 
 If the package cache is too old it will take some time as OPNSense automatically checks for updates beforehand.
 
+## Definition
+
+| Parameter | Type            | Required | Default value | Comment                                                                                           |
+|:----------|:----------------|:---------|:--------------|:--------------------------------------------------------------------------------------------------|
+| name      | list of strings | true     | -             | Package or list of packages to process                                                            |
+| action | string          | true     | -             | Action to execute. One of: 'install', 'reinstall', 'remove', 'lock', 'unlock'                     |
+| post_sleep | int             | false    | 3             | Seconds to sleep after executing the action. The firewall needs some time to update package info. |
+| timeout | float           | false    | 30.0          | Seconds until the action request times-out                                                        |
+
+For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
+
 ## Usage
 
 ```yaml

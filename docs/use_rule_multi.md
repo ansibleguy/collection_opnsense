@@ -16,6 +16,42 @@ For basic info, limitations and must-know to the rule-handling see the [rule](ht
 
 - To ensure valid configuration - the attributes of each rule get verified using ansible's built-in verifier
 
+## Definition
+
+For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
+
+### ansibleguy.opnsense.rule_multi
+
+| Parameter | Type       | Required | Default value | Aliases   | Comment                                                                                                                                                                                                                                                                                                                                                                                     |
+|:----------|:-----------|:---------|:--------------|:----------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| rules      | dictionary | true     | -             | -         | Dictionary of rules to manage/configure                                                                                                                                                                                                                                                                                                                                                     |
+| key_field      | string     | true     | -             | -         | What field is used as key of the provided dictionary. One of: 'sequence', 'description', 'uuid'                                                                                                                                                                                                                                                                                             |
+| match_fields     | list  | true     | -             | -                      | Fields that are used to match configured rules with the running config - if any of those fields are changed, the module will think it's a new rule. At least one of: 'sequence', 'action', 'interface', 'direction', 'ip_protocol', 'protocol', 'source_invert', 'source_net', 'source_port', 'destination_invert', 'destination_net', 'destination_port', 'gateway', 'description', 'uuid' |
+| fail_verification      | boolean    | false    | -             | fail      | Fail module if single rule fails the verification                                                                                                                                                                                                                                                                                                                                           |
+| override      | dictionary | false    | -             | -         | Parameters to override for all rules                                                                                                                                                                                                                                                                                                                                                        |
+| defaults      | dictionary | false    | -             | -         | Default values for all rules                                                                                                                                                                                                                                                                                                                                                                |
+| state | string     | false   |               | 'present' | Options: 'present', 'absent'                                                                                                                                                                                                                                                                                                                                                                |
+| enabled | boolean    | false | true          |           | If all rules should be en- or disabled                                                                                                                                                                                                                                                                                                                                                      |
+| output_info | boolean    | false | false         | info      | Enable to show some information on processing at runtime                                                                                                                                                                                                                                                                                                                                    |
+
+
+For rule parameters see: [Rules](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md#definition)
+
+### ansibleguy.opnsense.rule_purge
+
+| Parameter      | Type       | Required | Default value | Aliases | Comment                                                                                                              |
+|:---------------|:-----------|:---------|:--------------|:--------|:---------------------------------------------------------------------------------------------------------------------|
+| rules          | dictionary | true     | -             | -       | Configured rules - to exclude from purging                                                                           |
+| key_field      | string     | true     | -             | -         | What field is used as key of the provided dictionary. One of: 'sequence', 'description', 'uuid'                                                                                                                                                                                                                                                                                             |
+| match_fields     | list  | true     | -             | -                      | Fields that are used to match configured rules with the running config - if any of those fields are changed, the module will think it's a new rule. At least one of: 'sequence', 'action', 'interface', 'direction', 'ip_protocol', 'protocol', 'source_invert', 'source_net', 'source_port', 'destination_invert', 'destination_net', 'destination_port', 'gateway', 'description', 'uuid' |
+| output_info    | boolean    | false | false         | info    | Enable to show some information on processing at runtime                                                             |
+| action         | string     | false | 'delete'      | -       | What to do with the matched rules. One of: 'disable', 'delete'                                                       |
+| filters        | dictionary | false | -             | -       | Field-value pairs to filter on - per example: {interface: lan} (to only purge rules that have only lan as interface) |
+| filter_invert  | boolean | false | -             | -       | If true - it will purge all but the filtered ones                                                                    |
+| filter_partial | boolean | false | -             | -       | If true - the filter will also match if it is just a partial value-match                                             |
+| force_all      | boolean | false | -             | -       | 'If set to true and neither rules, nor filters are provided - all rules will be purged                               |
+
+
 ## Usage
 
 The 'rule_multi' module is meant to manage dictionaries of rules.

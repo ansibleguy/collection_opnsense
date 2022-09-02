@@ -21,6 +21,20 @@ To use GeoIP alias types - you need to configure a source for it first. See: [do
 If you want to mass-manage aliases - take a look at the [alias_multi](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) module. It is scales better for that use-case!
 
 
+## Definition
+
+| Parameter | Type        | Required                                   | Default value | Comment                                                                                                                                                          |
+|:----------|:------------|:-------------------------------------------|:--------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| name      | string      | true                                       | -             | Unique name of the alias                                                                                                                                         |
+| description | string      | false                                      | -             | Description for the alias                                                                                                                                        |
+| content | list        | true for creation, false for state changes | -             | Values the alias should hold                                                                                                                                     | 
+| type | string      | false                                      | 'host'        | Type of value the alias should hold. One of: 'host', 'network', 'port', 'url', 'urltable', 'geoip', 'networkgroup', 'mac', 'dynipv6host', 'internal', 'external' |
+| state | string      | false                                      | 'present'      | Options: 'present', 'absent'                                                                                                                                     |
+| enabled | boolean     | false | true | If the alias should be en- or disabled                                                                                                                           |
+| updatefreq_days | float       | false | 7.0 | Needed only for the alias-type 'urltable'. Interval to update its content. Per example: 0.5 for every 12 hours                                                   |
+
+For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
+
 ## Examples
 
 ```yaml

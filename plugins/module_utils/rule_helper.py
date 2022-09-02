@@ -115,7 +115,7 @@ def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
 
     # some recommendations - maybe the user overlooked something
     if cnf['action'] == 'pass':
-        if cnf['source_net'] == 'any' and cnf['destination_net'] == 'any':
+        if cnf['source_net'] == 'any' and cnf['destination_net'] == 'any' and cnf['protocol'] in ['TCP', 'UDP']:
             module.warn(
                 "Configuring allow-rules with 'any' source and "
                 "'any' destination is bad practise!"
