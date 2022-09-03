@@ -15,7 +15,7 @@ class CronJob:
     }
     API_KEY = 'job'
 
-    def __init__(self, module: AnsibleModule, result: dict,  session: Session = None):
+    def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
         self.p = module.params
         self.r = result
@@ -97,10 +97,8 @@ class CronJob:
 
     def update(self):
         # checking if changed
-        for field in [
-            'enabled', 'minutes', 'hours', 'days',
-            'months', 'weekdays', 'command', 'who', 'parameters',
-        ]:
+        for field in ['enabled', 'minutes', 'hours', 'days', 'months',
+                      'weekdays', 'command', 'who', 'parameters']:
             if str(self.cron[field]) != str(self.p[field]):
                 self.r['changed'] = True
                 break

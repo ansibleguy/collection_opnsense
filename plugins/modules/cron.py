@@ -49,7 +49,7 @@ def run_module():
             type='str', required=False, aliases=['cmd'],
             description="One of the pre-defined commands seen in the WEB-GUI. Per example: "
                         "'automatic firmware update', 'system remote backup' or 'ipsec restart' "
-                        "(always all-lowercase)"  # to get a list of available commands => add an initial cronjob manually
+                        "(always all-lowercase)"
         ),
         parameters=dict(
             type='str', required=False, default='', aliases=['params'],
