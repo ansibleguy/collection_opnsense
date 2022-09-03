@@ -8,7 +8,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
-    OPN_MOD_ARGS, INFO_MOD_ARG, STATE_MOD_ARG
+    OPN_MOD_ARGS, INFO_MOD_ARG, STATE_MOD_ARG_MULTI
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import \
     ALIAS_DEFAULTS, ALIAS_MOD_ARGS, ALIAS_MOD_ARG_ALIASES
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty, ensure_list
@@ -30,7 +30,7 @@ def run_module():
             type='bool', required=False, default=False, aliases=['fail'],
             description='Fail module if single alias fails the verification.'
         ),
-        **STATE_MOD_ARG,
+        **STATE_MOD_ARG_MULTI,
         **INFO_MOD_ARG,
         **OPN_MOD_ARGS,
     )
