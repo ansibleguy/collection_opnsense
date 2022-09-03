@@ -20,7 +20,7 @@ class Alias:
         'toggle': 'toggleItem',
     }
     API_KEY = 'alias'
-    
+
     def __init__(
             self, module: AnsibleModule, result: dict, cnf: dict = None,
             session: Session = None, fail: bool = True

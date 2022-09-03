@@ -21,10 +21,9 @@ class Rule:
             session: Session = None, fail: bool = True
     ):
         self.m = module
-        self.p = module.params
         self.r = result
         self.s = Session(module=module) if session is None else session
-        self.cnf = self.p if cnf is None else cnf  # to allow override by rule_multi
+        self.cnf = self.m.params if cnf is None else cnf  # to allow override by rule_multi
         self.fail = fail
         self.exists = False
         self.rule = None
@@ -54,7 +53,7 @@ class Rule:
         if self.existing_rules is None:
             self.existing_rules = self.search_call()
 
-        if self.p['debug']:
+        if self.m.params['debug']:
             self.m.warn(f"EXISTING RULES: {self.existing_rules}")
 
         self.rule = get_rule(
@@ -106,7 +105,7 @@ class Rule:
         self.r['diff']['before'] = _before
         self.r['diff']['after'] = _after
 
-        if self.p['debug'] and self.r['changed']:
+        if self.m.params['debug'] and self.r['changed']:
             self.m.warn(f"{self.r['diff']}")
 
         if self.r['changed'] and not self.m.check_mode:
@@ -131,7 +130,7 @@ class Rule:
         if self.r['changed']:
             self.r['diff']['before'] = self._build_diff(cnf=self.rule)
 
-            if self.p['debug']:
+            if self.m.params['debug']:
                 self.m.warn(f"{self.r['diff']}")
 
     def _delete_call(self) -> dict:
