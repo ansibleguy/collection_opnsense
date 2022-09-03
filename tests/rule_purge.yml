@@ -93,7 +93,7 @@
             action: 'block'
       when: not ansible_check_mode  # no use in check mode
 
-    - name: Filtered purge (single)alias_list
+    - name: Filtered purge (single)
       ansibleguy.opnsense.rule_purge:
         filters:
           destination_net: '192.168.10.0/24'

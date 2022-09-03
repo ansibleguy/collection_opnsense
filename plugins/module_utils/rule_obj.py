@@ -12,6 +12,7 @@ class Rule:
         'del': 'delRule',
         'set': 'setRule',
         'search': 'get',
+        'toggle': 'toggleRule',
     }
     API_KEY = 'rule'
 
@@ -136,6 +137,32 @@ class Rule:
     def _delete_call(self) -> dict:
         return self.s.post(cnf={
             **self.call_cnf, **{'command': self.CMDS['del']}
+        })
+
+    def enable(self):
+        if self.exists and self.rule['enabled'] not in [1, '1', True]:
+            self.r['changed'] = True
+            self.r['diff']['before'] = {'enabled': False}
+            self.r['diff']['after'] = {'enabled': True}
+
+            if not self.m.check_mode:
+                self._change_enabled_state(1)
+
+    def disable(self):
+        if (self.exists and self.rule['enabled'] not in [0, '0', False]) or not self.exists:
+            self.r['changed'] = True
+            self.r['diff']['before'] = {'enabled': True}
+            self.r['diff']['after'] = {'enabled': False}
+
+            if not self.m.check_mode:
+                self._change_enabled_state(0)
+
+    def _change_enabled_state(self, value: int):
+        self.s.post(cnf={
+            **self.call_cnf, **{
+                'command': self.CMDS['toggle'],
+                'params': [self.rule['uuid'], value],
+            }
         })
 
     @staticmethod

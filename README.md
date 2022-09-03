@@ -58,7 +58,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Savepoints** | ansibleguy.opnsense.savepoint   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | unstable |
 | **Packages**   | ansibleguy.opnsense.package     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | unstable |
 | **System**     | ansibleguy.opnsense.system      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | unstable |
-| **Cron**       | ansibleguy.opnsense.cron        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_cron.md)        | unstable |
+| **Cron-Jobs**  | ansibleguy.opnsense.cron        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_cron.md)        | unstable |
 
 
 ### Roadmap
