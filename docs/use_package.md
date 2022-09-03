@@ -8,7 +8,13 @@
 
 ## Info
 
-If the package cache is too old it will take some time as OPNSense automatically checks for updates beforehand.
+If:
+
+- the package cache is too old, it will take some time - as OPNSense automatically checks for updates beforehand
+- the target firewall runs an outdated version, the actions 'install' and 'reinstall' will fail as OPNSense prevents it
+
+  - in that case - you should run '[ansibleguy.opnsense.system](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)' with action 'upgrade'
+
 
 ## Definition
 

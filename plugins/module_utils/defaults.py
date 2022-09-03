@@ -16,12 +16,12 @@ BUILTIN_INTERFACE_ALIASES_REG = '^__.*?_network$'  # auto-added interface aliase
 PURGE_MOD_ARGS = dict(
     action=dict(
         type='str', required=False, default='delete', choises=['disable', 'delete'],
-        description='What to do with the matched rules'
+        description='What to do with the matched items'
     ),
     filters=dict(
         type='dict', required=False, default={},
-        description='Field-value pairs to filter on - per example: {interface: lan} '
-                    '(to only purge rules that have only lan as interface)'
+        description='Field-value pairs to filter on - per example: {param1: test} '
+                    "- to only purge items that have 'param1' set to 'test'"
     ),
     filter_invert=dict(
         type='bool', required=False, default=False,
@@ -33,7 +33,7 @@ PURGE_MOD_ARGS = dict(
     ),
     force_all=dict(
         type='bool', required=False, default=False,
-        description='If set to true and neither rules, nor filters are provided - all rules will be purged'
+        description='If set to true and neither items, nor filters are provided - all items will be purged'
     ),
 )
 

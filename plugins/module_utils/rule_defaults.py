@@ -82,7 +82,7 @@ RULE_MOD_ARGS = dict(
     ),
     protocol=dict(
         type='str', required=False, default=RULE_DEFAULTS['protocol'], aliases=RULE_MOD_ARG_ALIASES['protocol'],
-        description="Protocol like 'TCP', 'UDP', 'TCP/UDP' and so on."
+        description="Protocol like 'TCP', 'UDP', 'ICMP' and so on."
     ),
     source_invert=dict(
         type='bool', required=False, default=RULE_DEFAULTS['source_invert'],

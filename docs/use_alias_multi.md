@@ -26,28 +26,28 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
 ### ansibleguy.opnsense.alias_multi
 
-| Parameter | Type       | Required | Default value | Aliases   | Comment                                                  |
-|:----------|:-----------|:---------|:--------------|:----------|:---------------------------------------------------------|
-| aliases      | dictionary | true     | -             | -         | Dictionary of aliases to manage/configure                |
-| fail_verification      | boolean    | false    | -             | fail      | Fail module if single alias fails the verification       |
-| state | string      | false   |               | 'present' | Options: 'present', 'absent'                             |
-| enabled | boolean     | false | true          |           | If all aliases should be en- or disabled                 |
-| output_info | boolean     | false | false         | info      | Enable to show some information on processing at runtime |
+| Parameter | Type       | Required | Default value | Aliases | Comment                                                    |
+|:----------|:-----------|:---------|:--------------|:--------|:-----------------------------------------------------------|
+| aliases      | dictionary | true     | -             | -       | Dictionary of aliases to manage/configure                  |
+| fail_verification      | boolean    | false    | false         | fail    | Fail module if single alias fails the verification         |
+| state | string      | false   | 'present'     | -       | Options: 'present', 'absent'                               |
+| enabled | boolean     | false | true          | -       | If all aliases should be en- or disabled                   |
+| output_info | boolean     | false | false         | info    | Enable to show some information on processing at runtime. Will be hidden if the tasks 'no_log' parameter is set to 'true'. |
 
 
 For alias parameters see: [Alias](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md#definition)
 
 ### ansibleguy.opnsense.alias_purge
 
-| Parameter | Type       | Required | Default value | Aliases | Comment                                                         |
-|:----------|:-----------|:---------|:--------------|:--------|:----------------------------------------------------------------|
-| aliases      | dictionary | true     | -             | -       | Configured aliases - to exclude from purging                    |
-| output_info | boolean    | false | false         | info    | Enable to show some information on processing at runtime        |
-| action | string     | false | 'delete'      | -       | What to do with the matched rules. One of: 'disable', 'delete'  |
-| filters | dictionary | false | -             | -       | Field-value pairs to filter on - per example: {interface: lan} (to only purge rules that have only lan as interface) |
-| filter_invert | boolean | false | -             | -       | If true - it will purge all but the filtered ones |
-| filter_partial | boolean | false | -             | -       | If true - the filter will also match if it is just a partial value-match |
-| force_all | boolean | false | -             | -       | 'If set to true and neither rules, nor filters are provided - all rules will be purged |
+| Parameter | Type       | Required | Default value | Aliases | Comment                                                                                                                    |
+|:----------|:-----------|:---------|:--------------|:--------|:---------------------------------------------------------------------------------------------------------------------------|
+| aliases      | dictionary | true     | -             | -       | Configured aliases - to exclude from purging                                                                               |
+| output_info | boolean    | false | false         | info    | Enable to show some information on processing at runtime. Will be hidden if the tasks 'no_log' parameter is set to 'true'. |
+| action | string     | false | 'delete'      | -       | What to do with the matched aliases. One of: 'disable', 'delete'                                                           |
+| filters | dictionary | false | -             | -       | Field-value pairs to filter on - per example: {type: port} - to only purge aliases of type 'port'                          |
+| filter_invert | boolean | false | false         | -       | If true - it will purge all but the filtered ones                                                                          |
+| filter_partial | boolean | false | false         | -       | If true - the filter will also match if it is just a partial value-match                                                   |
+| force_all | boolean | false | false         | -       | If set to true and neither aliases, nor filters are provided - all non-builtin aliases will be purged                      |
 
 
 ## Examples

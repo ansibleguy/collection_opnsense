@@ -58,7 +58,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         action: 'revert'
         revision: "{{ filter_savepoint.revision }}"
 
-    - name: Create a savepoint for source-nat filters
+    - name: Create a savepoint for firewall source-nat
       ansibleguy.opnsense.savepoint:
         action: 'create'
         controller: 'source_nat'

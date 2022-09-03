@@ -8,12 +8,12 @@
 
 ## Definition
 
-| Parameter  | Type    | Required | Default value | Comment                                                                                  |
-|:-----------|:--------|:---------|:--------------|:-----------------------------------------------------------------------------------------|
-| action     | string  | true     | -             | Action to execute. One of: 'poweroff', 'reboot', 'update', 'upgrade', 'audit'            |
-| wait   | boolean | false    | true          | If the module should wait for the action to finish. Available for 'upgrade' and 'reboot' |
-| timeout | int     | false    | 90            | Seconds to wait for the action to finish - if 'wait' is enabled                          |
-| poll_interval | int  | false    | 2             | Interval in which to check if the firewall is online                                     |
+| Parameter  | Type    | Required | Default value | Comment                                                                                                                                                                                                                                 |
+|:-----------|:--------|:---------|:--------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| action     | string  | true     | -             | Action to execute. One of: 'poweroff', 'reboot', 'update', 'upgrade', 'audit'. **WARNING**: the target firewall will be temporarily unavailable if running action 'upgrade' or 'reboot', or permanently if running action 'poweroff' (; |
+| wait   | boolean | false    | true          | If the module should wait for the action to finish. Available for 'upgrade' and 'reboot'                                                                                                                                                |
+| timeout | int     | false    | 90            | Seconds to wait for the action to finish - if 'wait' is enabled                                                                                                                                                                         |
+| poll_interval | int  | false    | 2             | Interval in which to check if the firewall is online                                                                                                                                                                                    |
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
 
