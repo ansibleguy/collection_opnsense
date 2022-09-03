@@ -10,7 +10,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_MOD_ARGS
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_main import process_alias
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias.yml'
@@ -32,8 +31,7 @@ def run_module():
 
     alias = Alias(module=module, result=result)
     alias.check()
-
-    process_alias(alias=alias)
+    alias.process()
 
     alias.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

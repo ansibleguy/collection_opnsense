@@ -128,26 +128,6 @@ def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
             )
 
 
-def diff_filter(cnf: dict) -> dict:
-    diff = {}
-    relevant_fields = [
-        'action', 'quick', 'direction', 'ip_protocol', 'protocol',
-        'source_invert', 'source_net', 'destination_invert', 'destination_net',
-        'gateway', 'log', 'description'
-    ]
-
-    # special case..
-    diff['sequence'] = str(cnf['sequence'])
-    diff['destination_port'] = str(cnf['destination_port'])
-    diff['source_port'] = str(cnf['source_port'])
-    diff['interface'] = ','.join(map(str, ensure_list(cnf['interface'])))
-
-    for field in relevant_fields:
-        diff[field] = cnf[field]
-
-    return diff
-
-
 def get_any_change(before: dict, after: dict) -> bool:
     matching = []
 

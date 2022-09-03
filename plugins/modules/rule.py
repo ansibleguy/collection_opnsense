@@ -10,7 +10,6 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import RULE_MOD_ARGS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_main import process_rule
 
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md'
@@ -33,8 +32,7 @@ def run_module():
 
     rule = Rule(module=module, result=result)
     rule.check()
-
-    process_rule(rule=rule)
+    rule.process()
 
     rule.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

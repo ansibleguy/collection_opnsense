@@ -14,7 +14,6 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty, ensure_list
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_main import process_alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.multi_helper import \
     validate_single, convert_aliases
@@ -116,7 +115,7 @@ def run_module():
         alias.existing_rules = existing_rules
 
         alias.check()
-        process_alias(alias=alias)
+        alias.process()
 
         if alias_result['changed']:
             result['changed'] = True

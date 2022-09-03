@@ -38,3 +38,11 @@
       loop:
         - 'unlock'
         - 'remove'
+
+    - name: Cleanup cron jobs
+      ansibleguy.opnsense.cron:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1'
+        - 'ANSIBLE_TEST_2'

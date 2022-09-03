@@ -14,7 +14,6 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults 
     RULE_MOD_ARGS, RULE_DEFAULTS, RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_ALIASES, RULE_MOD_ARG_KEY_FIELD
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_main import process_rule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.multi_helper import \
     validate_single, convert_aliases
 
@@ -132,7 +131,7 @@ def run_module():
         rule.existing_rules = existing_rules
 
         rule.check()
-        process_rule(rule=rule)
+        rule.process()
 
         if rule_result['changed']:
             result['changed'] = True

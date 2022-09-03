@@ -10,6 +10,17 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj impor
 
 
 class Alias:
+    FIELD_ID = 'name'
+    CMDS = {
+        'add': 'addItem',
+        'del': 'delItem',
+        'set': 'setItem',
+        'search': 'searchItem',
+        'detail': 'getItem',
+        'toggle': 'toggleItem',
+    }
+    API_KEY = 'alias'
+    
     def __init__(
             self, module: AnsibleModule, result: dict, cnf: dict = None,
             session: Session = None, fail: bool = True
@@ -28,12 +39,34 @@ class Alias:
         self.existing_aliases = None
         self.existing_rules = None  # used to check if alias is in use
 
+    def process(self):
+        if self.cnf['state'] == 'absent':
+            if self.exists:
+                self.delete()
+
+        else:
+            if self.cnf['content'] is not None and len(self.cnf['content']) > 0:
+                if self.exists:
+                    self.update()
+
+                else:
+                    self.create()
+
+            else:
+                # allow en-/disabling without providing content
+                if self.exists:
+                    if self.cnf['enabled']:
+                        self.enable()
+
+                    else:
+                        self.disable()
+
     def check(self):
         # pulling alias info if it exists
         if self.existing_aliases is None:
             self.existing_aliases = self.search_call()
 
-        self.alias = get_alias(aliases=self.existing_aliases, name=self.cnf['name'])
+        self.alias = get_alias(aliases=self.existing_aliases, name=self.cnf[self.FIELD_ID])
         self.exists = len(self.alias) > 0
         if self.exists:
             self.call_cnf['params'] = [self.alias['uuid']]
@@ -58,25 +91,25 @@ class Alias:
     def search_call(self) -> list:
         # returns list of alias-dicts
         return self.s.get(cnf={
-            **self.call_cnf, **{'command': 'searchItem'}
+            **self.call_cnf, **{'command': self.CMDS['search']}
         })['rows']
 
     def detail_call(self) -> dict:
         return self.s.get(cnf={
-            **self.call_cnf, **{'command': 'getItem'}
-        })['alias']
+            **self.call_cnf, **{'command': self.CMDS['detail']}
+        })[self.API_KEY]
 
     def create(self):
         # creating alias
         validate_values(error_func=self._error, cnf=self.cnf)
         self.r['changed'] = True
-        self.r['diff']['after'] = {self.cnf['name']: self.cnf['content']}
+        self.r['diff']['after'] = {self.cnf[self.FIELD_ID]: self.cnf['content']}
 
         if not self.m.check_mode:
             self.s.post(cnf={
                 **self.call_cnf, **{
-                    'command': 'addItem',
-                    'data': self._build_alias(),
+                    'command': self.CMDS['add'],
+                    'data': self._build_request(),
                 }
             })
 
@@ -101,8 +134,8 @@ class Alias:
                         'updatefreq_days': round(self.cnf['updatefreq_days'], 1)
                     }
 
-            self.r['diff']['before'] = {self.cnf['name']: _before}
-            self.r['diff']['after'] = {self.cnf['name']: _after}
+            self.r['diff']['before'] = {self.cnf[self.FIELD_ID]: _before}
+            self.r['diff']['after'] = {self.cnf[self.FIELD_ID]: _after}
 
             if self.m.params['debug'] and self.r['changed']:
                 self.m.warn(f"{self.r['diff']}")
@@ -111,22 +144,22 @@ class Alias:
                 # updating alias
                 self.s.post(cnf={
                     **self.call_cnf, **{
-                        'command': 'setItem',
-                        'data': self._build_alias(),
+                        'command': self.CMDS['set'],
+                        'data': self._build_request(),
                     }
                 })
 
         else:
             self.r['changed'] = True
             self.m.fail_json(
-                f"Unable to update alias '{self.cnf['name']}' - it is not of the same type! "
+                f"Unable to update alias '{self.cnf[self.FIELD_ID]}' - it is not of the same type! "
                 f"You need to delete the current one first!"
             )
 
-    def _build_alias(self) -> dict:
+    def _build_request(self) -> dict:
         return {
-            'alias': {
-                'name': self.cnf['name'],
+            self.API_KEY: {
+                'name': self.cnf[self.FIELD_ID],
                 'description': self.cnf['description'],
                 'type': self.cnf['type'],
                 'content': '\n'.join(map(str, ensure_list(self.cnf['content']))),
@@ -144,7 +177,7 @@ class Alias:
                 session=self.s,
             ).search_call()
 
-        if alias_in_use_by_rule(rules=self.existing_rules, alias=self.cnf['name']):
+        if alias_in_use_by_rule(rules=self.existing_rules, alias=self.cnf[self.FIELD_ID]):
             # this is to fix lacking server-side checks for the automation-rules
             # see: https://forum.opnsense.org/index.php?topic=30077.0
             alias_deletion = 'in_use'
@@ -159,22 +192,22 @@ class Alias:
 
         if 'in_use' in alias_deletion:
             self.r['changed'] = False
-            self._error(msg=f"Unable to delete alias '{self.cnf['name']}' as it is currently referenced!")
+            self._error(msg=f"Unable to delete alias '{self.cnf[self.FIELD_ID]}' as it is currently referenced!")
 
         else:
-            self.r['diff']['before'] = {self.cnf['name']: self.alias['content'].split(',')}
+            self.r['diff']['before'] = {self.cnf[self.FIELD_ID]: self.alias['content'].split(',')}
 
             if self.m.params['debug']:
                 self.m.warn(f"{self.r['diff']}")
 
     def _delete_call(self) -> dict:
-        return self.s.post(cnf={**self.call_cnf, **{'command': 'delItem'}})
+        return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
 
     def enable(self):
         if self.exists and self.alias['enabled'] != '1':
             self.r['changed'] = True
-            self.r['diff']['before'] = {self.cnf['name']: {'enabled': False}}
-            self.r['diff']['after'] = {self.cnf['name']: {'enabled': True}}
+            self.r['diff']['before'] = {self.cnf[self.FIELD_ID]: {'enabled': False}}
+            self.r['diff']['after'] = {self.cnf[self.FIELD_ID]: {'enabled': True}}
 
             if not self.m.check_mode:
                 self._enable_call()
@@ -182,7 +215,7 @@ class Alias:
     def _enable_call(self):
         self.s.post(cnf={
             **self.call_cnf, **{
-                'command': 'toggleItem',
+                'command': self.CMDS['toggle'],
                 'params': [self.alias['uuid'], 1],
             }
         })
@@ -190,8 +223,8 @@ class Alias:
     def disable(self):
         if (self.exists and self.alias['enabled'] != '0') or not self.exists:
             self.r['changed'] = True
-            self.r['diff']['before'] = {self.cnf['name']: {'enabled': True}}
-            self.r['diff']['after'] = {self.cnf['name']: {'enabled': False}}
+            self.r['diff']['before'] = {self.cnf[self.FIELD_ID]: {'enabled': True}}
+            self.r['diff']['after'] = {self.cnf[self.FIELD_ID]: {'enabled': False}}
 
             if not self.m.check_mode:
                 self._disable_call()

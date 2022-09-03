@@ -9,6 +9,7 @@ class Package:
 
     def __init__(self, module: AnsibleModule, name: str, session: Session = None):
         self.m = module
+        self.p = module.params
         self.s = Session(module=module) if session is None else session
         self.n = name
         self.r = {
@@ -31,7 +32,7 @@ class Package:
 
         for pkg_status in self.package_stati:
             if pkg_status['name'] == self.n:
-                if self.m.params['debug']:
+                if self.p['debug']:
                     self.m.warn(f"Package status: '{pkg_status}'")
 
                 self.r['diff']['before']['version'] = pkg_status['version']
@@ -44,17 +45,17 @@ class Package:
 
         self.r['diff']['after'] = self.r['diff']['before'].copy()
 
-        if self.m.params['action'] in ['install', 'reinstall']:
+        if self.p['action'] in ['install', 'reinstall']:
             self.check_system_up_to_date()
 
         self.check_lock()
         self.call_cnf['params'] = [self.n]
 
     def check_lock(self):
-        if self.m.params['action'] in ['reinstall', 'remove', 'install'] and \
+        if self.p['action'] in ['reinstall', 'remove', 'install'] and \
                 self.r['diff']['before']['locked']:
             self.m.fail_json(
-                f"Unable to execute action '{self.m.params['action']}' - "
+                f"Unable to execute action '{self.p['action']}' - "
                 f"package is locked!"
             )
 
@@ -66,7 +67,7 @@ class Package:
 
         if str(status).find(self.UPGRADE_MSG) != -1:
             self.m.fail_json(
-                f"Unable to execute action '{self.m.params['action']}' - "
+                f"Unable to execute action '{self.p['action']}' - "
                 f"system needs to be upgraded beforehand!"
             )
 
@@ -78,17 +79,17 @@ class Package:
     def change_state(self):
         run = False
 
-        if self.m.params['action'] == 'lock':
+        if self.p['action'] == 'lock':
             if not self.r['diff']['before']['locked']:
                 run = True
                 self.r['diff']['after']['locked'] = True
 
-        elif self.m.params['action'] == 'unlock':
+        elif self.p['action'] == 'unlock':
             if self.r['diff']['before']['locked']:
                 run = True
                 self.r['diff']['after']['locked'] = False
 
-        elif self.m.params['action'] == 'remove':
+        elif self.p['action'] == 'remove':
             self.r['diff']['after']['installed'] = False
             run = True
 
@@ -102,7 +103,7 @@ class Package:
     def execute(self):
         if not self.m.check_mode:
             self.s.post(cnf={
-                'command': self.m.params['action'],
+                'command': self.p['action'],
                 **self.call_cnf
             })
 
