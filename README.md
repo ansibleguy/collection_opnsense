@@ -47,24 +47,24 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 ### Implemented
 
 
-|Function | Module                          | Usage                                                                                         | State           |
-|:---------|:--------------------------------|:----------------------------------------------------------------------------------------------|:----------------|
-| **Alias**| ansibleguy.opnsense.alias       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)       | unstable        | 
-| **Alias** | ansibleguy.opnsense.alias_multi | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) | unstable        |
-| **Alias** | ansibleguy.opnsense.alias_purge | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) | testing         |
-| **Rules** | ansibleguy.opnsense.rule        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | unstable        |
-| **Rules** | ansibleguy.opnsense.rule_multi  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)  | unstable        |
-| **Rules** | ansibleguy.opnsense.rule_purge  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)  | testing         |
-| **Savepoints** | ansibleguy.opnsense.savepoint   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | unstable        |
-| **Packages** | ansibleguy.opnsense.package     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | unstable        |
-| **System** | ansibleguy.opnsense.system      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | unstable        |
-| **Source NAT** | ansibleguy.opnsense.snat        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_snat.md)        | not implemented |
+| Function       | Module                          | Usage                                                                                         | State    |
+|:---------------|:--------------------------------|:----------------------------------------------------------------------------------------------|:---------|
+| **Alias**      | ansibleguy.opnsense.alias       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)       | unstable | 
+| **Alias**      | ansibleguy.opnsense.alias_multi | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) | unstable |
+| **Alias**      | ansibleguy.opnsense.alias_purge | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md) | unstable |
+| **Rules**      | ansibleguy.opnsense.rule        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)        | unstable |
+| **Rules**      | ansibleguy.opnsense.rule_multi  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)  | unstable |
+| **Rules**      | ansibleguy.opnsense.rule_purge  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)  | unstable |
+| **Savepoints** | ansibleguy.opnsense.savepoint   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_savepoint.md)   | unstable |
+| **Packages**   | ansibleguy.opnsense.package     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | unstable |
+| **System**     | ansibleguy.opnsense.system      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | unstable |
+| **Cron**       | ansibleguy.opnsense.cron        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_cron.md)        | unstable |
+
 
 ### Roadmap
 
 **Core API**:
 
-- [Cron](https://docs.opnsense.org/development/api/core/cron.html)
 - [IDS](https://docs.opnsense.org/development/api/core/ids.html)
 - [IPSec](https://docs.opnsense.org/development/api/core/ipsec.html)
 - [Monit](https://docs.opnsense.org/development/api/core/monit.html)

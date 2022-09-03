@@ -1,0 +1,117 @@
+---
+
+- name: Testing Cron
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.cron:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Removing - does not exist
+      ansibleguy.opnsense.cron:
+        description: 'ANSIBLE_TEST_1'
+        state: 'absent'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+
+    - name: Adding daily firmware update check
+      ansibleguy.opnsense.cron:
+        description: 'ANSIBLE_TEST_1'
+        command: 'firmware poll'
+        minutes: '0'
+        hours: '0'
+        days: '*'
+
+    - name: Adding 2
+      ansibleguy.opnsense.cron:
+        description: 'ANSIBLE_TEST_2'
+        command: 'system remote backup'
+        minutes: '26'
+        hours: '15'
+        days: '5,9,26'
+        months: '8'
+        weekdays: '4,5,7'
+        who: 'root'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.cron:
+        description: 'ANSIBLE_TEST_2'
+        command: 'system remote backup'
+        minutes: '26'
+        hours: '15'
+        days: '5,9,26'
+        months: '8'
+        weekdays: '4,5,7'
+        who: 'root'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 2
+      ansibleguy.opnsense.cron:
+        description: 'ANSIBLE_TEST_2'
+        command: 'system remote backup'
+        minutes: '26'
+        hours: '15'
+        days: '5,9,26'
+        months: '8'
+        weekdays: '4,5,7'
+        who: 'root'
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 2 - nothing changed
+      ansibleguy.opnsense.cron:
+        description: 'ANSIBLE_TEST_2'
+        command: 'system remote backup'
+        minutes: '26'
+        hours: '15'
+        days: '5,9,26'
+        months: '8'
+        weekdays: '4,5,7'
+        who: 'root'
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 2
+      ansibleguy.opnsense.cron:
+        description: 'ANSIBLE_TEST_2'
+        command: 'system remote backup'
+        minutes: '26'
+        hours: '15'
+        days: '5,9,26'
+        months: '8'
+        weekdays: '4,5,7'
+        who: 'root'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.cron:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1'
+        - 'ANSIBLE_TEST_2'
