@@ -154,6 +154,7 @@ echo ''
 ansible-playbook tests/unbound_domain.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/unbound_domain.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
+# todo: unbound_forward, unbound_host_alias
 
 echo ''
 echo '##############################'

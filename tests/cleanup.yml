@@ -118,6 +118,7 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_2_1'
 
     - name: Cleanup DNS domain-overrides
       ansibleguy.opnsense.unbound_domain:

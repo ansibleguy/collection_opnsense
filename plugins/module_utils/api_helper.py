@@ -1,5 +1,6 @@
 import ssl
 from pathlib import Path
+from json import JSONDecodeError
 from validators import domain
 
 from ansible.module_utils.basic import AnsibleModule
@@ -84,7 +85,11 @@ def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
     if 'allowed_http_stati' not in cnf:
         cnf['allowed_http_stati'] = [200]
 
-    json = response.json()
+    try:
+        json = response.json()
+
+    except JSONDecodeError:
+        json = {}
 
     if response.status_code not in cnf['allowed_http_stati'] or \
             ('result' in json and json['result'] == 'failed'):
