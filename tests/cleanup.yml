@@ -87,11 +87,11 @@
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
 
-    #    - name: Cleanup DNS-Forwardings
-    #      ansibleguy.opnsense.unbound_forward:
-    #        domain: "{{ item.d }}"
-    #        target: "{{ item.t }}"
-    #        state: 'absent'
-    #      loop:
-    #        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
-    #        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
+#    - name: Cleanup DNS-Forwardings
+#      ansibleguy.opnsense.unbound_forward:
+#        domain: "{{ item.d }}"
+#        target: "{{ item.t }}"
+#        state: 'absent'
+#      loop:
+#        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
+#        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}

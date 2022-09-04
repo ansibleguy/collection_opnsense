@@ -41,5 +41,5 @@ def valid_hostname(name: str) -> bool:
     _valid_domain = validators.domain(name)
     # see: https://en.wikipedia.org/wiki/Hostname#Restrictions_on_valid_host_names
     expr_hostname = r'^[a-zA-Z0-9-\.]{1,253}$'
-    _valid_hostname = True if regex_match(expr_hostname, name) is not None else False
+    _valid_hostname = regex_match(expr_hostname, name) is not None
     return all([_valid_domain, _valid_hostname])
