@@ -65,10 +65,11 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **DNS Forwarding**       | ansibleguy.opnsense.unbound_forward      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_forwarding.md) | testing  |
 | **DNS Forwarding**       | ansibleguy.opnsense.unbound_forward_list | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_forwarding.md) | unstable  |
 | **DNS over TLS**         | ansibleguy.opnsense.unbound_dot          | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_dot.md)        | unstable |
+| **DNS over TLS**         | ansibleguy.opnsense.unbound_dot_list     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_dot.md)        | unstable |
 | **DNS Host overrides**   | ansibleguy.opnsense.unbound_host         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host.md)       | unstable |
 | **DNS Host overrides**   | ansibleguy.opnsense.unbound_host_list    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host.md)        | unstable |
 | **DNS Domain overrides** | ansibleguy.opnsense.unbound_domain       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_domain.md)       | unstable |
-| **DNS Domain overrides**   | ansibleguy.opnsense.unbound_domain_list    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_domain.md)        | unstable |
+| **DNS Domain overrides**   | ansibleguy.opnsense.unbound_domain_list  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_domain.md)        | unstable |
 
 
 ### Roadmap
@@ -97,6 +98,34 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 You need to create API credentials as described in [the documentation](https://docs.opnsense.org/development/how-tos/api.html#creating-keys).
 
 **Menu**: System - Access - Users - Edit {admin user} - Add api key
+
+#### SSL Certificate
+
+If you use your firewall for non-testing purposes - you should **ALWAYS USE SSL VERIFICATION** for your connections!
+
+```yaml
+ssl_verify: true
+```
+
+To make a connection trusted you need either:
+
+- a valid public certificate for the DNS-Name your firewall has (_LetsEncrypt/ACME_)
+- an internal certificate authority that is used to create signed certificates
+  - you could create such internal certificates using OPNSense. See [documentation](https://docs.opnsense.org/manual/how-tos/self-signed-chain.html).
+  - if you do so - it is important that the IP-address and/or DNS-Name of your firewall is included in the 'Subject Alternative Name' (_SAN_) for it to be valid
+
+After you got a valid certificate - you need to import and activate it:
+- Import: 'System - Trust - Certificates - Import'
+- Make sure your DNS-Names are allowed: 'System - Settings - Administration - Alternate Hostnames'
+- Activate: 'System - Settings - Administration - SSL Certificate'
+
+If you are using an internal CA for your certificates - you have to provide its public key to the modules:
+
+```yaml
+ssl_ca_file: '/path/to/ca.pem'
+```
+
+---
 
 ### Basics
 
