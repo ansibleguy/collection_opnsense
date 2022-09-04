@@ -50,7 +50,6 @@ class Route:
 
         # checking if item exists
         self._find_route()
-        self.exists = len(self.route) > 0
         if self.exists:
             self.call_cnf['params'] = [self.route['uuid']]
 
@@ -73,6 +72,7 @@ class Route:
             if all(_matching):
                 self.route = route
                 self.r['diff']['before'] = self.route
+                self.exists = True
                 break
 
     def search_call(self) -> list:

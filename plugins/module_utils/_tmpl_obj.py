@@ -44,7 +44,6 @@ class TMPL:
     def check(self):
         # checking if item exists
         self._find_stuff()
-        self.exists = len(self.stuff) > 0
         if self.exists:
             self.call_cnf['params'] = [self.stuff['uuid']]
 
@@ -59,10 +58,18 @@ class TMPL:
         if self.existing_stuff is None:
             self.existing_stuff = self.search_call()
 
-        # check if configured is in existing
-        stuff = {}  # found existing stuff
-        self.stuff = self._simplify_existing(stuff)
-        self.r['diff']['before'] = self.stuff
+        for existing in self.existing_stuff:
+            _matching = []
+            existing = self._simplify_existing(existing)
+
+            for field in []:  # match_fields
+                _matching.append(existing[field] == self.p[field])
+
+            if all(_matching):
+                self.stuff = existing
+                self.r['diff']['before'] = self.stuff
+                self.exists = True
+                break
 
     def _error(self, msg: str):
         # for special handling of errors
@@ -91,25 +98,30 @@ class TMPL:
 
     def update(self):
         # checking if changed
+        for field in []:
+            if str(self.stuff[field]) != str(self.p[field]):
+                self.r['changed'] = True
+                break
 
         # update if changed
-        if self.r['changed'] and not self.m.check_mode:
-            self.s.post(cnf={
-                **self.call_cnf, **{
-                    'command': self.CMDS['set'],
-                    'data': self._build_request(),
-                }
-            })
-
+        if self.r['changed']:
             if self.p['debug']:
                 self.m.warn(f"{self.r['diff']}")
 
+            if not self.m.check_mode:
+                self.s.post(cnf={
+                    **self.call_cnf, **{
+                        'command': self.CMDS['set'],
+                        'data': self._build_request(),
+                    }
+                })
+
     @staticmethod
-    def _simplify_existing(route: dict) -> dict:
+    def _simplify_existing(stuff: dict) -> dict:
         # makes processing easier
         return {
-            'param1': route['param1'],
-            'param2': route['param2'],
+            'param1': stuff['param1'],
+            'param2': stuff['param2'],
         }
 
     def _build_diff_after(self) -> dict:

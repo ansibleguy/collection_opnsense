@@ -48,7 +48,6 @@ class CronJob:
 
         # checking if item exists
         self._find_cron()
-        self.exists = len(self.cron) > 0
         if self.exists:
             self.call_cnf['params'] = [self.cron['uuid']]
             self.r['diff']['after'] = self._build_diff_after()
@@ -77,6 +76,7 @@ class CronJob:
 
                 self.cron = existing_job
                 self.r['diff']['before'] = self.cron
+                self.exists = True
                 break
 
     def search_call(self) -> list:
