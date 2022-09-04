@@ -16,17 +16,13 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 
 
 def run_module():
-    module_args = dict(
-        **OPN_MOD_ARGS,
-    )
-
     result = dict(
         changed=False,
         routes=[]
     )
 
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=OPN_MOD_ARGS,
         supports_check_mode=True,  # practically not - but it will not change anything
     )
 

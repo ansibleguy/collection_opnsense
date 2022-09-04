@@ -27,7 +27,7 @@ class TMPL:
             'module': 'API-Module',
             'controller': 'API-Controller',
         }
-        self.existing_stuff = None
+        self.existing_stuffs = None
 
     def process(self):
         if self.p['state'] == 'absent':
@@ -55,15 +55,19 @@ class TMPL:
                 self.m.fail_json('You need to provide values to create stuff!')
 
     def _find_stuff(self):
-        if self.existing_stuff is None:
-            self.existing_stuff = self.search_call()
+        if self.existing_stuffs is None:
+            self.existing_stuffs = self.search_call()
 
-        for existing in self.existing_stuff:
+        for existing in self.existing_stuffs:
             _matching = []
             existing = self._simplify_existing(existing)
 
             for field in []:  # match_fields
                 _matching.append(existing[field] == self.p[field])
+
+                # troubleshooting
+                # if existing[field] != self.p[field]:
+                #     self.m.warn(f"NOT MATCHING: {existing[field]} != {self.p[field]}")
 
             if all(_matching):
                 self.stuff = existing

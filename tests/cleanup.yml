@@ -42,6 +42,12 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.unbound_host:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+
   tasks:
     - name: Cleanup Aliases
       ansibleguy.opnsense.alias_purge:
@@ -87,11 +93,22 @@
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
 
-#    - name: Cleanup DNS-Forwardings
-#      ansibleguy.opnsense.unbound_forward:
-#        domain: "{{ item.d }}"
-#        target: "{{ item.t }}"
-#        state: 'absent'
-#      loop:
-#        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
-#        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
+    #    - name: Cleanup DNS-Forwardings
+    #      ansibleguy.opnsense.unbound_forward:
+    #        domain: "{{ item.d }}"
+    #        target: "{{ item.t }}"
+    #        state: 'absent'
+    #      loop:
+    #        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
+    #        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
+
+    - name: Cleanup DNS host-overrides
+      ansibleguy.opnsense.unbound_host:
+        description: "{{ item }}"
+        hostname: 'dummy'
+        domain: 'dummy'
+        value: '192.168.0.1'
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'

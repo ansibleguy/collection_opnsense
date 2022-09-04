@@ -130,6 +130,23 @@ echo ''
 ansible-playbook tests/route.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/route.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
+echo ''
+echo '##############################'
+echo 'RUNNING TESTS for module UNBOUND-DOT'
+echo ''
+
+ansible-playbook tests/unbound_dot.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/unbound_dot.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+echo ''
+echo '##############################'
+echo 'RUNNING TESTS for module UNBOUND-HOST'
+echo ''
+
+ansible-playbook tests/unbound_host.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/unbound_host.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+
 
 echo ''
 echo '##############################'
