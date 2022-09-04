@@ -2,8 +2,6 @@ import validators
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import ensure_list
-
 
 def get_rule(rules: (list, dict), cnf: dict) -> dict:
     rule = {}

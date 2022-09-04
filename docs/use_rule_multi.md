@@ -1,6 +1,6 @@
 # OPNSense - Rule module
 
-**STATE**: testing
+**STATE**: unstable
 
 **TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule_multi.yml) | [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule_purge.yml)
 

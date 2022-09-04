@@ -1,6 +1,6 @@
 # OPNSense - System module
 
-**STATE**: testing
+**STATE**: unstable
 
 **TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/system.yml)
 

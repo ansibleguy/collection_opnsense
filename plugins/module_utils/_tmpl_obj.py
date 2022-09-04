@@ -47,7 +47,8 @@ class TMPL:
         self.exists = len(self.stuff) > 0
         if self.exists:
             self.call_cnf['params'] = [self.stuff['uuid']]
-            self.r['diff']['after'] = self._build_diff_after()
+
+        self.r['diff']['after'] = self._build_diff_after()
 
         # basic validation of conditional parameters
         if not self.exists and self.p['state'] == 'present':
@@ -59,7 +60,8 @@ class TMPL:
             self.existing_stuff = self.search_call()
 
         # check if configured is in existing
-        self.stuff = {}
+        stuff = {}  # found existing stuff
+        self.stuff = self._simplify_existing(stuff)
         self.r['diff']['before'] = self.stuff
 
     def _error(self, msg: str):
@@ -78,7 +80,6 @@ class TMPL:
 
     def create(self):
         self.r['changed'] = True
-        self.r['diff']['after'] = {self.p[self.FIELD_ID]: self.p['content']}
 
         if not self.m.check_mode:
             self.s.post(cnf={
@@ -103,6 +104,14 @@ class TMPL:
             if self.p['debug']:
                 self.m.warn(f"{self.r['diff']}")
 
+    @staticmethod
+    def _simplify_existing(route: dict) -> dict:
+        # makes processing easier
+        return {
+            'param1': route['param1'],
+            'param2': route['param2'],
+        }
+
     def _build_diff_after(self) -> dict:
         return {
             'param1': self.p['param1'],
@@ -119,6 +128,7 @@ class TMPL:
 
     def delete(self):
         self.r['changed'] = True
+        self.r['diff']['after'] = {}
 
         if not self.m.check_mode:
             self._delete_call()

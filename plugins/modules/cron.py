@@ -76,6 +76,7 @@ def run_module():
     job.check()
     job.process()
 
+    job.s.close()
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 
