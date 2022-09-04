@@ -22,7 +22,7 @@ def check_or_load_credentials(module: AnsibleModule):
                     f"(mode {cred_file_mode})!"
                 )
 
-            with open(module.params['api_credential_file'], 'r') as file:
+            with open(module.params['api_credential_file'], 'r', encoding='utf-8') as file:
                 for line in file.readlines():
                     key, value = line.split('=', 1)
 
