@@ -26,6 +26,12 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.route:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+
   tasks:
     - name: Cleanup Aliases
       ansibleguy.opnsense.alias_purge:
@@ -47,6 +53,16 @@
     - name: Cleanup cron jobs
       ansibleguy.opnsense.cron:
         description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1'
+        - 'ANSIBLE_TEST_2'
+
+    - name: Cleanup routes
+      ansibleguy.opnsense.route:
+        description: "{{ item }}"
+        network: '192.168.0.0/32'
+        gateway: 'LAN_GW'
         state: 'absent'
       loop:
         - 'ANSIBLE_TEST_1'

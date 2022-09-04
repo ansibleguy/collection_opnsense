@@ -1,0 +1,108 @@
+---
+
+- name: Testing Routes
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.route:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+
+    ansibleguy.opnsense.route_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Removing - does not exist
+      ansibleguy.opnsense.route:
+        description: 'ANSIBLE_TEST_1'
+        network: '4.4.4.4/32'
+        gateway: 'LAN_GW'
+        state: 'absent'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+
+    - name: Adding 1
+      ansibleguy.opnsense.route:
+        description: 'ANSIBLE_TEST_1'
+        network: '4.4.4.1/32'
+        gateway: 'LAN_GW'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+
+    - name: Adding 2
+      ansibleguy.opnsense.route:
+        description: 'ANSIBLE_TEST_2'
+        network: '4.4.4.2/32'
+        gateway: 'LAN_GW'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.route:
+        description: 'ANSIBLE_TEST_1'
+        network: '4.4.4.1/32'
+        gateway: 'LAN_GW'
+        enabled: false
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.route:
+        description: 'ANSIBLE_TEST_1'
+        network: '4.4.4.1/32'
+        gateway: 'LAN_GW'
+        enabled: false
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        opn7.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.route:
+        description: 'ANSIBLE_TEST_1'
+        network: '4.4.4.1/32'
+        gateway: 'LAN_GW'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Listing rules
+      ansibleguy.opnsense.route_list:
+      register: opn1
+      failed_when: >
+        opn1.changed or
+        opn1.routes | length != 2
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.route:
+        description: "{{ item }}"
+        network: '4.4.4.1/32'
+        gateway: 'LAN_GW'
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1'
+        - 'ANSIBLE_TEST_2'
+
+    - name: Listing rules
+      ansibleguy.opnsense.route_list:
+      register: opn2
+      failed_when: >
+        opn2.changed or
+        opn2.routes | length != 0

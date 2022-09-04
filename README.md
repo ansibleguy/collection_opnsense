@@ -59,6 +59,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Packages**   | ansibleguy.opnsense.package     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)     | unstable |
 | **System**     | ansibleguy.opnsense.system      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)      | unstable |
 | **Cron-Jobs**  | ansibleguy.opnsense.cron        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_cron.md)        | unstable |
+| **Routes**     | ansibleguy.opnsense.route       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_route.md)       | unstable |
 
 
 ### Roadmap
@@ -68,7 +69,6 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 - [IDS](https://docs.opnsense.org/development/api/core/ids.html)
 - [IPSec](https://docs.opnsense.org/development/api/core/ipsec.html)
 - [Monit](https://docs.opnsense.org/development/api/core/monit.html)
-- [Routes](https://docs.opnsense.org/development/api/core/routes.html)
 - [Syslog](https://docs.opnsense.org/development/api/core/syslog.html)
 - [Trafficshaper](https://docs.opnsense.org/development/api/core/trafficshaper.html)
 - [Unbound](https://docs.opnsense.org/development/api/core/unbound.html)
@@ -158,69 +158,11 @@ ansible-playbook opnsense.yml --check
 
 ## Development
 
-The basic API interaction is handled in 'ansibleguy.opnsense.plugins.module_utils.api'.
+See: [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/develop.md)
 
-It is a generic abstraction layer for interacting with the api - therefore all plugins should be able to function with it!
+---
 
-### Module
-
-There is a [module-template](https://github.com/ansibleguy/collection_opnsense/blob/stable/plugins/modules/_tmpl.py) that can be copied - so you don't have to re-write the basic structure.
-
-### API
-
-One can choose to either:
-
-- create a http-session - faster if multiple calls are needed
-
-  p.e. _check current state => create/update/delete_
-
-  ```python3
-  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
-  session = Session(module=module)
-  session.get(cnf={'controller': 'alias', 'command': 'addItem', 'data': {'name': 'dummy', ...}})
-  session.post(cnf={'controller': 'alias', 'command': 'delItem', 'params': [uuid]})
-  session.close()
-  ```
-
-- use a single call - if only one is needed
-
-  p.e. toggle a cronjob or restart a service
-
-  ```python3
-  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import single_get, single_post
-  single_get(
-      module=module, 
-      cnf={'controller': 'alias', 'command': 'addItem', 'data': {'name': 'dummy', ...}}
-  )
-  single_post(
-      module=module, 
-      cnf={'controller': 'alias', 'command': 'delItem', 'params': [uuid]}
-  )
-  ```
-
-For the controller/command/params/data definition - check the [OPNSense API Docs](https://docs.opnsense.org/development/api.html#core-api)!
-
-
-### Debugging
-
-#### Verbose output
-If you want to output something to ansible's runtime - use 'module.warn':
-
-```python3
-module.warn(f"{before} != {after}")
-```
-
-You can also use the 'debug' argument to enable verbose output of the api requests. 
-
-```yaml
-- name: Example
-  ansibleguy.opnsense.alias:
-    debug: true
-```
-
-'Multi' modules also support the 'debug' parameter on a per-item basis - so you don't get flooded.
-
-#### Error messages
+## Errors
 
 If you get error messages - you should at first check if there are any errors listed.
 
