@@ -32,6 +32,16 @@
       ssl_verify: false
       match_fields: ['description']
 
+    ansibleguy.opnsense.unbound_dot:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.unbound_forward:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Cleanup Aliases
       ansibleguy.opnsense.alias_purge:
@@ -67,3 +77,21 @@
       loop:
         - 'ANSIBLE_TEST_1'
         - 'ANSIBLE_TEST_2'
+
+    - name: Cleanup DNS-over-TLS
+      ansibleguy.opnsense.unbound_dot:
+        domain: "{{ item.d }}"
+        target: "{{ item.t }}"
+        state: 'absent'
+      loop:
+        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
+        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
+
+    #    - name: Cleanup DNS-Forwardings
+    #      ansibleguy.opnsense.unbound_forward:
+    #        domain: "{{ item.d }}"
+    #        target: "{{ item.t }}"
+    #        state: 'absent'
+    #      loop:
+    #        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
+    #        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}

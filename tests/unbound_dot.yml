@@ -1,0 +1,135 @@
+---
+
+- name: Testing Unbound DNS-over-TLS
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.unbound_dot:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.unbound_dot_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Listing dots
+      ansibleguy.opnsense.unbound_dot_list:
+      register: opn10
+      failed_when: >
+        opn10.changed or
+        opn10.dots | length != 0
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.unbound_dot:
+        domain: 'dot.opnsense.test.ansibleguy.net'
+        target: '1.1.1.1'
+        verify: 'dot.opnsense.test.ansibleguy.net'
+        state: 'absent'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+
+    - name: Adding 1 - failing because of invalid verfiy-content
+      ansibleguy.opnsense.unbound_dot:
+        domain: 'dot.opnsense.test.ansibleguy.net'
+        target: '1.1.1.1'
+        verify: 'Some CN'
+      register: opn11
+      failed_when: not opn11.failed
+
+    - name: Adding 1
+      ansibleguy.opnsense.unbound_dot:
+        domain: 'dot.opnsense.test.ansibleguy.net'
+        target: '1.1.1.1'
+        verify: 'dot.opnsense.test.ansibleguy.net'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+
+    - name: Adding 2
+      ansibleguy.opnsense.unbound_dot:
+        domain: 'dot.opnsense.test.ansibleguy.net'
+        target: '1.1.1.2'
+        verify: 'dot.opnsense.test.ansibleguy.net'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Disabling 2
+      ansibleguy.opnsense.unbound_dot:
+        domain: 'dot.opnsense.test.ansibleguy.net'
+        target: '1.1.1.2'
+        verify: 'dot.opnsense.test.ansibleguy.net'
+        enabled: false
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 2 - nothing changed
+      ansibleguy.opnsense.unbound_dot:
+        domain: 'dot.opnsense.test.ansibleguy.net'
+        target: '1.1.1.2'
+        verify: 'dot.opnsense.test.ansibleguy.net'
+        enabled: false
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 2
+      ansibleguy.opnsense.unbound_dot:
+        domain: 'dot.opnsense.test.ansibleguy.net'
+        target: '1.1.1.2'
+        verify: 'dot.opnsense.test.ansibleguy.net'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.unbound_dot:
+        domain: 'dot.opnsense.test.ansibleguy.net'
+        target: '1.1.1.2'
+        verify: 'dot.opnsense.test.ansibleguy.net'
+        state: 'absent'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Listing dots
+      ansibleguy.opnsense.unbound_dot_list:
+      register: opn3
+      failed_when: >
+        opn3.changed or
+        opn3.dots | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.unbound_dot:
+        domain: "{{ item.d }}"
+        target: "{{ item.t }}"
+        state: 'absent'
+      loop:
+        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
+        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
+      when: not ansible_check_mode
+
+    - name: Listing dots
+      ansibleguy.opnsense.unbound_dot_list:
+      register: opn2
+      failed_when: >
+        opn2.changed or
+        opn2.dots | length != 0
+      when: not ansible_check_mode

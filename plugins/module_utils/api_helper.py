@@ -1,11 +1,11 @@
 import ssl
-from ipaddress import ip_address
 from pathlib import Path
 from validators import domain
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import ensure_list
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    ensure_list, is_ip
 
 
 def check_or_load_credentials(module: AnsibleModule):
@@ -40,19 +40,6 @@ def check_or_load_credentials(module: AnsibleModule):
 
     elif module.params['api_key'] is None and module.params['api_secret'] is None:
         module.fail_json("Neither 'api_key' & 'api_secret' nor 'api_credential_file' were provided!")
-
-
-def is_ip(host: str) -> bool:
-    valid_ip = False
-
-    try:
-        ip_address(host)
-        valid_ip = True
-
-    except ValueError:
-        pass
-
-    return valid_ip
 
 
 def check_host(module: AnsibleModule) -> None:
