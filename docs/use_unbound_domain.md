@@ -12,12 +12,12 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
 ### ansibleguy.opnsense.unbound_domain
 
-| Parameter  | Type   | Required | Default value | Aliases        | Comment                                                                                                                                                        |
-|:-----------|:-------|:---------|:--------------|:---------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| match_fields     | string | false    | ['domain', 'server']              | -              | Fields that are used to match configured domain-overrides with the running config - if any of those fields are changed, the module will think it's a new entry |
-| domain     | string | true     | -             | dom, d         | Domain to override                                                                                                                                             |
-| server   | string | true     | -             | value, srv | Target server                                                                                                                                                  |
-| description | string | false    | -             | desc           | Optional description for the domain-override. Could be used as unique-identifier when set as only 'match_field'.                                               |
+| Parameter  | Type   | Required | Default value | Aliases        | Comment                                                                                                                                                                           |
+|:-----------|:-------|:---------|:--------------|:---------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| match_fields     | string | false    | ['domain', 'server']              | -              | Fields that are used to match configured domain-overrides with the running config - if any of those fields are changed, the module will think it's a new entry. At least one of: 'domain', 'server', 'description' |
+| domain     | string | true     | -             | dom, d         | Domain to override                                                                                                                                                                |
+| server   | string | true     | -             | value, srv | Target server                                                                                                                                                                     |
+| description | string | false    | -             | desc           | Optional description for the domain-override. Could be used as unique-identifier when set as only 'match_field'.                                                                  |
 
 ### ansibleguy.opnsense.unbound_domain_list
 
@@ -27,7 +27,7 @@ Only basic parameters needed.
 
 This module manages DNS domain-overrides configuration that can be found in the WEB-UI menu: 'Services - Unbound DNS - Overrides - Domain overrides'
 
-Entries like these  override an entire domain by specifying an authoritative DNS server to be queried for that domain.
+Entries like these override an entire domain by specifying an authoritative DNS server to be queried for that domain.
 
 ## Usage
 

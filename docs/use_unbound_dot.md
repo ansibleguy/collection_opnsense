@@ -12,12 +12,12 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
 ### ansibleguy.opnsense.unbound_dot
 
-| Parameter  | Type    | Required | Default value | Aliases                   | Comment                                                                                                                                                                                                                                 |
-|:-----------|:--------|:---------|:---------------|:--------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| domain     | string  | true     | -            | dom, d                    | Action to execute. One of: 'poweroff', 'reboot', 'update', 'upgrade', 'audit'. **WARNING**: the target firewall will be temporarily unavailable if running action 'upgrade' or 'reboot', or permanently if running action 'poweroff' (; |
-| target   | string | true    | -            | server, srv, tgt          | DNS target server                                                                                                                                                                                                                       |
-| port | string     | false    | 53          | p                         | DNS port of the target server                                                                                                                                                                                                           |
-| verify | string  | false    | -             | common_name, cn, hostname | Verify if CN in certificate matches this value, **if not set - certificate verification will not be performed**! Must be a valid IP-Address or hostname.                                                                                |
+| Parameter  | Type    | Required | Default value | Aliases                   | Comment                                                                                                                                                  |
+|:-----------|:--------|:---------|:---------------|:--------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| domain     | string  | true     | -            | dom, d                    | Domain of the DNS-over-TLS entry                                                                                                                         |
+| target   | string | true    | -            | server, srv, tgt          | DNS target server                                                                                                                                        |
+| port | string     | false    | 53          | p                         | DNS port of the target server                                                                                                                            |
+| verify | string  | false    | -             | common_name, cn, hostname | Verify if CN in certificate matches this value, **if not set - certificate verification will not be performed**! Must be a valid IP-Address or hostname. |
 
 ### ansibleguy.opnsense.unbound_dot_list
 

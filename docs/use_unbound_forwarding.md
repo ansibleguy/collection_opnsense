@@ -12,15 +12,21 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
 ### ansibleguy.opnsense.unbound_forward
 
-| Parameter  | Type    | Required | Default value | Aliases                   | Comment                                                                                                                                                                                                                                 |
-|:-----------|:--------|:---------|:---------------|:--------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| domain     | string  | true     | -            | dom, d                    | Action to execute. One of: 'poweroff', 'reboot', 'update', 'upgrade', 'audit'. **WARNING**: the target firewall will be temporarily unavailable if running action 'upgrade' or 'reboot', or permanently if running action 'poweroff' (; |
-| target   | string | true    | -            | server, srv, tgt          | DNS target server                                                                                                                                                                                                                       |
-| port | string     | false    | 53          | p                         | DNS port of the target server                                                                                                                                                                                                           |
+| Parameter  | Type    | Required | Default value | Aliases                   | Comment                       |
+|:-----------|:--------|:---------|:---------------|:--------------------------|:------------------------------|
+| domain     | string  | true     | -            | dom, d                    | Domain to forward queries of  |
+| target   | string | true    | -            | server, srv, tgt          | DNS target server             |
+| port | string     | false    | 53          | p                         | DNS port of the target server |
 
 ### ansibleguy.opnsense.unbound_forward_list
 
 Only basic parameters needed.
+
+## Known issues
+
+Creation/management not yet working - see: [Forum](https://forum.opnsense.org/index.php?topic=30077.0)
+
+Will need to test using 'Referer' header.
 
 ## Info
 
