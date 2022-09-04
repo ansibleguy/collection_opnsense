@@ -71,11 +71,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
     - name: Listing
       ansibleguy.opnsense.alias_list:
-      register: existing_aliases
+      register: existing_entries
       
     - name: Printing aliases
       ansible.builtin.debug:
-        var: existing_aliases.aliases
+        var: existing_entries.aliases
 
     - name: Changing
       ansibleguy.opnsense.alias:

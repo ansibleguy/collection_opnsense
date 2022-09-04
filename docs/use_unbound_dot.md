@@ -60,9 +60,9 @@ This module manages DNS-over-TLS configuration that can be found in the WEB-UI m
 
     - name: Listing dots
       ansibleguy.opnsense.unbound_dot_list:
-      register: existing_dot_entries
+      register: existing_entries
 
     - name: Printing DNS-over-TLS entries
       ansible.builtin.debug:
-        var: existing_dot_entries.dots
+        var: existing_entries.dots
 ```

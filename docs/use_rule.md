@@ -132,11 +132,11 @@ You could also use the UUID of existing rules as ID - but you would have to pull
 
     - name: Listing
       ansibleguy.opnsense.rule_list:
-      register: existing_rules
+      register: existing_entries
 
     - name: Printing rules
       ansible.bultin.debug:
-        var: existing_rules.rules
+        var: existing_entries.rules
 ```
 
 ### With inventory config
@@ -242,7 +242,7 @@ You can also use the [rule_purge](https://github.com/ansibleguy/collection_opnse
   tasks:
     - name: Pulling existing rules
       ansibleguy.opnsense.rule_list:
-      register: existing_rules
+      register: existing_entries
 
     - name: Purging unconfigured rules
       ansibleguy.opnsense.rule:
@@ -256,5 +256,5 @@ You can also use the [rule_purge](https://github.com/ansibleguy/collection_opnse
       
       loop_control:
         loop_var: existing_rule_item
-      with_dict: "{{ existing_rules }}"
+      with_dict: "{{ existing_entries }}"
 ```

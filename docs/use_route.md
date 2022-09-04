@@ -77,11 +77,11 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
 
     - name: Listing routes
       ansibleguy.opnsense.route_list:
-      register: existing_routes
+      register: existing_entries
 
     - name: Printing routes
       ansible.builtin.debug:
-        var: existing_routes.routes
+        var: existing_entries.routes
 
     - name: Removing route 'test3'
       ansibleguy.opnsense.route:

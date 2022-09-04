@@ -19,7 +19,7 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/_
 def run_module():
     module_args = dict(
         name=dict(type='str', required=True),
-        description=dict(type='str', required=False, default=''),
+        description=dict(type='str', required=False, default='', aliases=['desc']),
         content=dict(type='list', required=False, default=[], elements='str'),
         type=dict(type='str', required=False, choices=['1', '2'], default='1'),
         **STATE_MOD_ARG,

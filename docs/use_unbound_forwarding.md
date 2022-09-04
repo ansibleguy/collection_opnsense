@@ -58,9 +58,9 @@ This module manages DNS-Forwardings that can be found in the WEB-UI menu: 'Servi
 
     - name: Listing forwardings
       ansibleguy.opnsense.unbound_forward_list:
-      register: existing_fwds
+      register: existing_entries
 
     - name: Printing DNS-Forwardings
       ansible.builtin.debug:
-        var: existing_fwds.forwardings
+        var: existing_entries.forwardings
 ```

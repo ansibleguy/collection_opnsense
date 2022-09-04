@@ -12,15 +12,15 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
 ### ansibleguy.opnsense.unbound_host
 
-| Parameter  | Type   | Required | Default value | Aliases      | Comment                                                                                                                                                      |
-|:-----------|:-------|:---------|:--------------|:-------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| match_fields     | string | false    | ['hostname', 'domain', 'record_type', 'value', 'prio']              | -            | Fields that are used to match configured host-overrides with the running config - if any of those fields are changed, the module will think it's a new entry |
-| hostname     | string | true     | -             | host, h      | Hostname of the record                                                                                                                                       |
-| domain     | string | true     | -             | dom, d       | Domain of the record                                                                                                                                         |
-| record_type   | string | true     | 'A'           | type, rr, rt | Record type. One of: 'A', 'AAAA', 'MX'                                                                                                                       |
-| value   | string | true     | -             | server, mx   | Value the record should hold                                                                                                                                 |
-| prio | int    | false    | 10            | mxprio       | Priority that is only used for MX record types                                                                                                               |
-| description | string | false    | -             | desc         | Verify if CN in certificate matches this value, **if not set - certificate verification will not be performed**! Must be a valid IP-Address or hostname.     |
+| Parameter  | Type   | Required | Default value | Aliases         | Comment                                                                                                                                                      |
+|:-----------|:-------|:---------|:--------------|:----------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| match_fields     | string | false    | ['hostname', 'domain', 'record_type', 'value', 'prio']              | -               | Fields that are used to match configured host-overrides with the running config - if any of those fields are changed, the module will think it's a new entry |
+| hostname     | string | true     | -             | host, h         | Hostname of the record                                                                                                                                       |
+| domain     | string | true     | -             | dom, d          | Domain of the record                                                                                                                                         |
+| record_type   | string | true     | 'A'           | type, rr, rt    | Record type. One of: 'A', 'AAAA', 'MX'                                                                                                                       |
+| value   | string | true     | -             | server, srv, mx | Value the record should hold                                                                                                                                 |
+| prio | int    | false    | 10            | mxprio          | Priority that is only used for MX record types                                                                                                               |
+| description | string | false    | -             | desc            | Verify if CN in certificate matches this value, **if not set - certificate verification will not be performed**! Must be a valid IP-Address or hostname.     |
 
 ### ansibleguy.opnsense.unbound_host_list
 
@@ -28,7 +28,13 @@ Only basic parameters needed.
 
 ## Info
 
-This module manages DNS-over-TLS configuration that can be found in the WEB-UI menu: 'Services - Unbound DNS - DNS over TLS'
+This module manages DNS host-overrides configuration that can be found in the WEB-UI menu: 'Services - Unbound DNS - Overrides - Host overrides'
+
+Entries like these override individual results from the forwarders.
+
+Use these for changing DNS results or for adding custom DNS records.
+
+Keep in mind that all resource record types (i.e. A, AAAA, MX, etc. records) of a specified host below are being overwritten.
 
 ## Usage
 
@@ -100,9 +106,9 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
 
     - name: Listing hosts
       ansibleguy.opnsense.unbound_host_list:
-      register: existing_host_entries
+      register: existing_entries
 
     - name: Printing entries
       ansible.builtin.debug:
-        var: existing_host_entries.hosts
+        var: existing_entries.hosts
 ```

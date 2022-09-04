@@ -103,11 +103,11 @@ For alias parameters see: [Alias](https://github.com/ansibleguy/collection_opnse
 
     - name: Listing
       ansibleguy.opnsense.alias_list:
-      register: existing_aliases
+      register: existing_entries
 
     - name: Printing aliases
       ansible.builtin.debug:
-        var: existing_aliases.aliases
+        var: existing_entries.aliases
 
     - name: Purging all non-configured aliases
       ansibleguy.opnsense.alias_purge:

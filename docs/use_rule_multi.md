@@ -114,11 +114,11 @@ You could either invoke this module:
 
     - name: Pulling existing rules
       ansibleguy.opnsense.rule_list:
-      register: existing_rules
+      register: existing_entries
 
     - name: Printing rules
       ansible.builtin.debug:
-        var: existing_rules.rules
+        var: existing_entries.rules
 
     - name: Purging all non-configured rules
       ansibleguy.opnsense.rule_purge:
