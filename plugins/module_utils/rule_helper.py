@@ -128,10 +128,17 @@ def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
             )
 
 
-def get_any_change(before: dict, after: dict) -> bool:
+def get_state_change(before: dict, after: dict) -> bool:
+    return before['enabled'] != after['enabled']
+
+
+def get_config_change(before: dict, after: dict) -> bool:
     matching = []
 
     for b_k, b_v in before.items():
+        if b_k == 'enabled':
+            continue
+
         matching.append(str(b_v) == str(after[b_k]))
 
     return not all(matching)

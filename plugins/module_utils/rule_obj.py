@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import ensure_list
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
-    get_rule, validate_values, get_any_change
+    get_rule, validate_values, get_state_change, get_config_change
 
 
 class Rule:
@@ -41,7 +41,16 @@ class Rule:
 
         else:
             if self.exists:
-                self.update()
+                config_changed, state_changed = self._changed()
+                if config_changed:
+                    self.update()
+
+                elif state_changed:
+                    if self.cnf['enabled']:
+                        self.enable()
+
+                    else:
+                        self.disable()
 
             else:
                 self.create()
@@ -96,18 +105,24 @@ class Rule:
                 }
             })
 
-    def update(self):
-        # checking if rule changed
+    def _changed(self) -> tuple:
+        # check if config changed
         validate_values(error_func=self._error, module=self.m, cnf=self.cnf)
         _before = self._build_diff(cnf=self.rule)
         _after = self._build_diff(cnf=self.cnf)
-        self.r['changed'] = get_any_change(before=_before, after=_after)
         self.r['diff']['before'] = _before
         self.r['diff']['after'] = _after
 
-        if self.m.params['debug'] and self.r['changed']:
-            self.m.warn(f"{self.r['diff']}")
+        config_changed = get_config_change(before=_before, after=_after)
+        state_changed = get_state_change(before=_before, after=_after)
+        self.r['changed'] = any([config_changed, state_changed])
 
+        if self.m.params['debug'] and self.r['changed']:
+            self.m.warn(f"{self.r['diff']} {config_changed} {state_changed}")
+
+        return config_changed, state_changed
+
+    def update(self):
         if self.r['changed'] and not self.m.check_mode:
             # updating rule
             self.s.post(cnf={
@@ -170,7 +185,7 @@ class Rule:
         relevant_fields = [
             'action', 'quick', 'direction', 'ip_protocol', 'protocol',
             'source_invert', 'source_net', 'destination_invert', 'destination_net',
-            'gateway', 'log', 'description'
+            'gateway', 'log', 'description', 'enabled',
         ]
 
         # special case..
