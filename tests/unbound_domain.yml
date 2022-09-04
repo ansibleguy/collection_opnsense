@@ -1,0 +1,153 @@
+---
+
+- name: Testing Unbound Domain overrides
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.unbound_domain:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+
+    ansibleguy.opnsense.unbound_domain_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.unbound_domain_list:
+      register: opn10
+      failed_when: >
+        opn10.changed or
+        opn10.domains | length != 0
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: '192.168.0.1'
+        state: 'absent'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+
+    - name: Adding 1 - failing because of invalid value
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: 'INVALID-IP'
+      register: opn11
+      failed_when: not opn11.failed
+
+    - name: Adding 1 - failing because of invalid domain
+      ansibleguy.opnsense.unbound_domain:
+        domain: '!INVALID-DOMAIN!'
+        server: 'INVALID-IP'
+      register: opn12
+      failed_when: not opn12.failed
+
+    - name: Adding 1
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: '192.168.0.1'
+        description: 'ANSIBLE_TEST_1_1'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: '192.168.0.1'
+        description: 'ANSIBLE_TEST_1_1'
+        enabled: false
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: '192.168.0.1'
+        description: 'ANSIBLE_TEST_1_1'
+        enabled: false
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: '192.168.0.1'
+        description: 'ANSIBLE_TEST_1_1'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: '192.168.1.1'
+        description: 'ANSIBLE_TEST_1_2'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: '192.168.1.1'
+        description: 'ANSIBLE_TEST_1_2'
+      register: opn13
+      failed_when: >
+        opn13.failed or
+        opn13.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.unbound_domain:
+        description: 'ANSIBLE_TEST_1_2'
+        domain: 'dummy.local'
+        server: '192.168.1.1'
+        state: 'absent'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.unbound_domain_list:
+      register: opn3
+      failed_when: >
+        opn3.changed or
+        opn3.domains | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.unbound_domain:
+        description: "{{ item }}"
+        domain: 'dummy.local'
+        server: '192.168.0.1'
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.unbound_domain_list:
+      register: opn2
+      failed_when: >
+        opn2.changed or
+        opn2.domains | length != 0
+      when: not ansible_check_mode

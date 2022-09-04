@@ -4,18 +4,17 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import is_ip
 
 
-class Forward:
-    FIELD_ID = 'fwd_name'
+class Domain:
     CMDS = {
-        'add': 'addForward',
-        'del': 'delForward',
-        'set': 'setForward',
+        'add': 'addDomainOverride',
+        'del': 'delDomainOverride',
+        'set': 'setDomainOverride',
         'search': 'get',
-        'toggle': 'toggleForward',
     }
-    API_KEY = 'dot'
+    API_KEY = 'domain'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -23,12 +22,12 @@ class Forward:
         self.r = result
         self.s = Session(module=module) if session is None else session
         self.exists = False
-        self.fwd = {}
+        self.domain = {}
         self.call_cnf = {  # config shared by all calls
             'module': 'unbound',
             'controller': 'settings',
         }
-        self.existing_fwds = None
+        self.existing_domains = None
 
     def process(self):
         if self.p['state'] == 'absent':
@@ -46,47 +45,39 @@ class Forward:
         if not validators.domain(self.p['domain']):
             self.m.fail_json(f"Value '{self.p['domain']}' is an invalid domain!")
 
-        if not validators.between(int(self.p['port']), 1, 65535):
-            self.m.fail_json(f"Value '{self.p['port']}' is an invalid port!")
+        if not is_ip(self.p['server']):
+            self.m.fail_json(f"Server-value '{self.p['server']}' not a valid IP-address!")
 
         # checking if item exists
-        self._find_fwd()
+        self._find_domain()
         if self.exists:
-            self.call_cnf['params'] = [self.fwd['uuid']]
+            self.call_cnf['params'] = [self.domain['uuid']]
 
         self.r['diff']['after'] = self._build_diff_after()
 
-    def _find_fwd(self):
-        if self.existing_fwds is None:
-            self.existing_fwds = self.search_call()
+    def _find_domain(self):
+        if self.existing_domains is None:
+            self.existing_domains = self.search_call()
 
-        for existing in self.existing_fwds:
-            _matching = []
-            existing = self._simplify_existing(existing)
+        if len(self.existing_domains) > 0:
+            for uuid, existing in self.existing_domains.items():
+                _matching = []
+                existing = self._simplify_existing(existing)
 
-            for field in ['domain', 'target']:
-                _matching.append(existing[field] == self.p[field])
+                for field in self.p['match_fields']:
+                    _matching.append(existing[field] == self.p[field])
 
-            if all(_matching):
-                self.fwd = existing
-                self.r['diff']['before'] = self.fwd
-                self.exists = True
-                break
+                if all(_matching):
+                    existing['uuid'] = uuid
+                    self.domain = existing
+                    self.r['diff']['before'] = self.domain
+                    self.exists = True
+                    break
 
-    def search_call(self) -> list:
-        fwds = []
-        raw = self.s.get(cnf={
+    def search_call(self) -> dict:
+        return self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
-        })['unbound']['dots'][self.API_KEY]
-
-        if len(raw) > 0:
-            for uuid, dot in raw.items():
-                if dot['type']['forward']['selected'] in [1, '1', True]:
-                    dot.pop('type')
-                    dot['uuid'] = uuid
-                    fwds.append(dot)
-
-        return fwds
+        })['unbound']['domains'][self.API_KEY]
 
     def create(self):
         self.r['changed'] = True
@@ -101,8 +92,10 @@ class Forward:
 
     def update(self):
         # checking if changed
-        for field in ['domain', 'target', 'enabled', 'port']:
-            if self.fwd[field] != self.p[field]:
+        check_fields = ['domain', 'server', 'description', 'enabled']
+
+        for field in set(check_fields) - set(self.p['match_fields']):
+            if str(self.domain[field]) != str(self.p[field]):
                 self.r['changed'] = True
                 break
 
@@ -120,35 +113,31 @@ class Forward:
                 })
 
     @staticmethod
-    def _simplify_existing(fwd: dict) -> dict:
+    def _simplify_existing(domain: dict) -> dict:
         # makes processing easier
         return {
-            'uuid': fwd['uuid'],
-            'domain': fwd['domain'],
-            'target': fwd['server'],
-            'port': fwd['port'],
-            'enabled': fwd['enabled'] in [1, '1', True],
+            'enabled': domain['enabled'] in [1, '1', True],
+            'domain': domain['domain'],
+            'server': domain['server'],
+            'description': domain['description'],
         }
 
     def _build_diff_after(self) -> dict:
         return {
-            'uuid': self.fwd['uuid'] if 'uuid' in self.fwd else None,
-            'domain': self.p['domain'],
-            'target': self.p['target'],
-            'port': self.p['port'],
+            'uuid': self.domain['uuid'] if 'uuid' in self.domain else None,
             'enabled': self.p['enabled'],
+            'domain': self.p['domain'],
+            'server': self.p['server'],
+            'description': self.p['description'],
         }
 
     def _build_request(self) -> dict:
-        # todo: need to set 'f"https://{self.p['firewall']}:{self.p['api_port']}/ui/unbound/forward"' as referer header
-        # else the type will always be 'dns-over-tls': https://github.com/opnsense/core/commit/6832fd75a0b41e376e80f287f8ad3cfe599ea3d1
         return {
             self.API_KEY: {
-                'type': 'forward',
                 'enabled': 1 if self.p['enabled'] else 0,
                 'domain': self.p['domain'],
-                'server': self.p['target'],
-                'port': self.p['port'],
+                'server': self.p['server'],
+                'description': self.p['description'],
             }
         }
 
