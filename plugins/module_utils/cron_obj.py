@@ -44,7 +44,7 @@ class CronJob:
     def check(self):
         # basic validation of conditional parameters
         if self.p['state'] == 'present' and self.p['command'] is None:
-            self.m.fail_json(f"You need to provide a 'command' if you want to create a cron-job!")
+            self.m.fail_json("You need to provide a 'command' if you want to create a cron-job!")
 
         # checking if item exists
         self._find_cron()
