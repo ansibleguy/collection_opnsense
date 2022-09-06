@@ -1,10 +1,10 @@
-import validators
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import is_ip
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
+    validate_domain
 
 
 class Domain:
@@ -42,9 +42,7 @@ class Domain:
                 self.create()
 
     def check(self):
-        if not validators.domain(self.p['domain']):
-            self.m.fail_json(f"Value '{self.p['domain']}' is an invalid domain!")
-
+        validate_domain(module=self.m, domain=self.p['domain'])
         if not is_ip(self.p['server']):
             self.m.fail_json(f"Server-value '{self.p['server']}' not a valid IP-address!")
 

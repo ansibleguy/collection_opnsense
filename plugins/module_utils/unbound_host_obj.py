@@ -4,6 +4,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
     is_ip, valid_hostname
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
+    validate_domain
 
 
 class Host:
@@ -50,6 +52,8 @@ class Host:
 
             if not is_ip(self.p['value']):
                 self.m.fail_json(f"Value '{self.p['value']}' is not a valid IP-address!")
+
+        validate_domain(module=self.m, domain=self.p['domain'])
 
         # checking if item exists
         self._find_host()

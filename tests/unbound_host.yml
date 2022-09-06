@@ -148,6 +148,17 @@
         opn3.hosts | length != 1
       when: not ansible_check_mode
 
+    - name: Adding 3 - TLD-domain
+      ansibleguy.opnsense.unbound_host:
+        hostname: 'host'
+        domain: 'local'
+        value: '192.168.0.1'
+        description: 'ANSIBLE_TEST_1_3'
+      register: opn14
+      failed_when: >
+        opn14.failed or
+        not opn14.changed
+
     - name: Cleanup
       ansibleguy.opnsense.unbound_host:
         description: "{{ item }}"
@@ -158,6 +169,7 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_1_3'
       when: not ansible_check_mode
 
     - name: Listing

@@ -1,9 +1,9 @@
-import validators
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
+    validate_domain
 
 
 class Alias:
@@ -43,8 +43,7 @@ class Alias:
                 self.create()
 
     def check(self):
-        if not validators.domain(self.p['domain']):
-            self.m.fail_json(f"Value '{self.p['domain']}' is an invalid domain!")
+        validate_domain(module=self.m, domain=self.p['domain'])
 
         # checking if item exists
         self._find_alias()

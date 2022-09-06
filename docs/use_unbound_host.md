@@ -20,7 +20,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | record_type   | string | true     | 'A'           | type, rr, rt    | Record type. One of: 'A', 'AAAA', 'MX'                                                                                                                                                                                                             |
 | value   | string | true     | -             | server, srv, mx | Value the record should hold                                                                                                                                                                                                                       |
 | prio | int    | false    | 10            | mxprio          | Priority that is only used for MX record types                                                                                                                                                                                                     |
-| description | string | false    | -             | desc            | Verify if CN in certificate matches this value, **if not set - certificate verification will not be performed**! Must be a valid IP-Address or hostname.                                                                                           |
+| description | string | false    | -             | desc            | Optional description for the host-override. Could be used as unique-identifier when set as only 'match_field'.                                                                                                                                     |
 
 ### ansibleguy.opnsense.unbound_host_list
 
