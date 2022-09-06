@@ -39,12 +39,14 @@ class Session:
 
         return response
 
-    def post(self, cnf: dict) -> dict:
-        headers = {}
+    def post(self, cnf: dict, headers: dict = None) -> dict:
+        if headers is None:
+            headers = {}
+
         data = None
 
         if 'data' in cnf and cnf['data'] is not None and len(cnf['data']) > 0:
-            headers = {'Content-Type': 'application/json'}
+            headers['Content-Type'] = 'application/json'
             data = cnf['data']
 
         params_path = get_params_path(cnf=cnf)
@@ -96,13 +98,16 @@ def single_get(module: AnsibleModule, cnf: dict, timeout: float = None) -> dict:
     return response
 
 
-def single_post(module: AnsibleModule, cnf: dict, timeout: float = None) -> dict:
-    headers = {}
+def single_post(module: AnsibleModule, cnf: dict, timeout: float = None, headers: dict = None) -> dict:
     check_host(module=module)
+
+    if headers is None:
+        headers = {}
+
     data = None
 
     if 'data' in cnf and cnf['data'] is not None and len(cnf['data']) > 0:
-        headers = {'Content-Type': 'application/json'}
+        headers['Content-Type'] = 'application/json'
         data = cnf['data']
 
     params_path = get_params_path(cnf=cnf)
