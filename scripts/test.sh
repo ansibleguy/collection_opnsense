@@ -140,6 +140,14 @@ ansible-playbook tests/unbound_dot.yml --check --extra-vars="ansible_python_inte
 
 echo ''
 echo '##############################'
+echo 'RUNNING TESTS for module UNBOUND-FORWARDING'
+echo ''
+
+ansible-playbook tests/unbound_forward.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/unbound_forward.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+echo ''
+echo '##############################'
 echo 'RUNNING TESTS for module UNBOUND-HOST'
 echo ''
 
@@ -154,7 +162,7 @@ echo ''
 ansible-playbook tests/unbound_domain.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/unbound_domain.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
-# todo: unbound_forward, unbound_host_alias
+# todo: unbound_host_alias
 
 echo ''
 echo '##############################'
