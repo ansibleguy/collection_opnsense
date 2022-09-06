@@ -28,6 +28,10 @@ def run_module():
             type='dict', required=False, default={},
             description='Configured aliases - compared against existing ones'
         ),
+        fail_verification=dict(
+            type='bool', required=False, default=False, aliases=['fail'],
+            description='Fail module if single alias fails the be purged.'
+        ),
         **INFO_MOD_ARG,
         **PURGE_MOD_ARGS,
         **OPN_MOD_ARGS,
@@ -47,7 +51,8 @@ def run_module():
     )
 
     session = Session(module=module)
-    existing_aliases = Alias(module=module, session=session, result={}).search_call()
+    meta_alias = Alias(module=module, session=session, result={})
+    existing_aliases = meta_alias.search_call()
     existing_rules = Rule(module=module, session=session, result={}).search_call()
     aliases_to_purge = []
 
@@ -60,6 +65,7 @@ def run_module():
             result={'changed': False, 'diff': {'before': {}, 'after': {}}},
             cnf=alias_to_purge,
             session=session,
+            fail=module.params['fail_verification']
         )
         _alias.alias = alias_to_purge
         _alias.existing_rules = existing_rules
@@ -107,6 +113,9 @@ def run_module():
                 module=module, result=result, diff_param='name',
                 obj_func=obj_func, item_to_purge=alias,
             )
+
+    if result['changed']:
+        meta_alias.reconfigure()
 
     session.close()
     result['diff'] = diff_remove_empty(result['diff'])

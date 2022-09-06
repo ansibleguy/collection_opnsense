@@ -32,6 +32,8 @@ def run_module():
     alias = Alias(module=module, result=result)
     alias.check()
     alias.process()
+    if result['changed']:
+        alias.reconfigure()
 
     alias.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

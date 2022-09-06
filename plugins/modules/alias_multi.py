@@ -48,7 +48,8 @@ def run_module():
     )
 
     session = Session(module=module)
-    existing_aliases = Alias(module=module, session=session, result={}).search_call()
+    meta_alias = Alias(module=module, session=session, result={})
+    existing_aliases = meta_alias.search_call()
     existing_rules = Rule(module=module, session=session, result={}).search_call()
 
     overrides = {'debug': module.params['debug']}
@@ -126,6 +127,9 @@ def run_module():
 
             if 'after' in alias_result['diff']:
                 result['diff']['after'].update(alias_result['diff']['after'])
+
+    if result['changed']:
+        meta_alias.reconfigure()
 
     session.close()
     result['diff'] = diff_remove_empty(result['diff'])

@@ -236,3 +236,10 @@ class Alias:
                 'params': [self.alias['uuid'], 0],
             }
         })
+
+    def reconfigure(self):
+        # reload the aliases to apply changes
+        if not self.m.check_mode:
+            self.s.post(cnf={
+                **self.call_cnf, **{'command': 'reconfigure', 'params': []}
+            })
