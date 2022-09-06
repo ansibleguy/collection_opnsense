@@ -135,7 +135,7 @@ class Alias:
 
         if len(alias['host']) > 0:
             simple['target'] = [v['value'] for v in alias['host'].values()][0]
-            simple['uuid'] = [k for k in alias['host'].keys()][0]
+            simple['uuid'] = list(alias['host'].keys())[0]
 
         return simple
 
