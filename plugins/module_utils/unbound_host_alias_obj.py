@@ -76,10 +76,11 @@ class Alias:
                     break
 
     def _find_target(self):
-        for uuid, host in self.existing_hosts.items():
-            if f"{host['hostname']}.{host['domain']}" == self.p['target']:
-                self.target = uuid
-                break
+        if len(self.existing_hosts) > 0:
+            for uuid, host in self.existing_hosts.items():
+                if f"{host['hostname']}.{host['domain']}" == self.p['target']:
+                    self.target = uuid
+                    break
 
     def search_call(self) -> dict:
         unbound = self.s.get(cnf={
@@ -102,7 +103,7 @@ class Alias:
 
     def update(self):
         # checking if changed
-        check_fields = ['target', 'domain', 'alias',  'description']
+        check_fields = ['target', 'domain', 'alias',  'description', 'enabled']
 
         for field in set(check_fields) - set(self.p['match_fields']):
             if str(self.alias[field]) != str(self.p[field]):
@@ -125,13 +126,18 @@ class Alias:
     @staticmethod
     def _simplify_existing(alias: dict) -> dict:
         # makes processing easier
-        return {
+        simple = {
             'enabled': alias['enabled'] in [1, '1', True],
             'domain': alias['domain'],
             'alias': alias['hostname'],
             'description': alias['description'],
-            'target': alias['host'],
         }
+
+        if len(alias['host']) > 0:
+            simple['target'] = [v['value'] for v in alias['host'].values()][0]
+            simple['uuid'] = [k for k in alias['host'].keys()][0]
+
+        return simple
 
     def _build_diff_after(self) -> dict:
         return {
@@ -174,3 +180,13 @@ class Alias:
 
     def _delete_call(self) -> dict:
         return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
+
+    def reconfigure(self):
+        # reload running config
+        if not self.m.check_mode:
+            self.s.post(cnf={
+                'module': self.call_cnf['module'],
+                'controller': 'service',
+                'command': 'reconfigure',
+                'params': []
+            })

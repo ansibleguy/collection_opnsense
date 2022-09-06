@@ -27,18 +27,7 @@
       register: opn10
       failed_when: >
         opn10.changed or
-        opn10.hosts | length != 0
-
-    - name: Removing - does not exist
-      ansibleguy.opnsense.unbound_host_alias:
-        hostname: 'host'
-        domain: 'opnsense.test.ansibleguy.net'
-        value: '192.168.0.1'
-        state: 'absent'
-      register: opn1
-      failed_when: >
-        opn1.failed or
-        opn1.changed
+        opn10.aliases | length != 0
 
     - name: Adding alias to link
       ansibleguy.opnsense.unbound_host:
@@ -46,8 +35,19 @@
         domain: 'opnsense.test.ansibleguy.net'
         value: '192.168.0.1'
         description: 'ANSIBLE_TEST_2_1'
-      register: opn14
-      failed_when: not opn14.failed
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.unbound_host_alias:
+        alias: 'e'
+        domain: 'opnsense.test.ansibleguy.net'
+        target: 'host.opnsense.test.ansibleguy.net'
+        description: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+      when: not ansible_check_mode
 
     - name: Adding 1 - failing because of invalid target
       ansibleguy.opnsense.unbound_host_alias:
@@ -75,6 +75,7 @@
       failed_when: >
         opn4.failed or
         not opn4.changed
+      when: not ansible_check_mode
 
     - name: Disabling 1
       ansibleguy.opnsense.unbound_host_alias:
@@ -124,6 +125,7 @@
       failed_when: >
         opn5.failed or
         not opn5.changed
+      when: not ansible_check_mode
 
     - name: Adding 2 - nothing changed
       ansibleguy.opnsense.unbound_host_alias:
@@ -137,6 +139,7 @@
         opn13.changed
       when: not ansible_check_mode
 
+    # todo: bug deletion not working and getting jsonDecodeError (?!)
     - name: Removing 2
       ansibleguy.opnsense.unbound_host_alias:
         description: 'ANSIBLE_TEST_1_2'
@@ -155,7 +158,7 @@
       register: opn3
       failed_when: >
         opn3.changed or
-        opn3.hosts | length != 1
+        opn3.aliases | length != 1
       when: not ansible_check_mode
 
     - name: Cleanup
@@ -183,5 +186,5 @@
       register: opn2
       failed_when: >
         opn2.changed or
-        opn2.hosts | length != 0
+        opn2.aliases | length != 0
       when: not ansible_check_mode
