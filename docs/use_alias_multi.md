@@ -48,6 +48,7 @@ For alias parameters see: [Alias](https://github.com/ansibleguy/collection_opnse
 | filter_invert | boolean | false | false         | -       | If true - it will purge all but the filtered ones                                                                          |
 | filter_partial | boolean | false | false         | -       | If true - the filter will also match if it is just a partial value-match                                                   |
 | force_all | boolean | false | false         | -       | If set to true and neither aliases, nor filters are provided - all non-builtin aliases will be purged                      |
+| fail_all      | boolean    | false    | false         | fail    | Fail module if single alias fails to be purged                                                                             |
 
 
 ## Examples

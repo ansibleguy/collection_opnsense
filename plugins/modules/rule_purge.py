@@ -29,6 +29,10 @@ def run_module():
             type='dict', required=False, default={},
             description='Configured rules - compared against existing ones'
         ),
+        fail_all=dict(
+            type='bool', required=False, default=False, aliases=['fail'],
+            description='Fail module if single rule fails the be purged.'
+        ),
         **PURGE_MOD_ARGS,
         **INFO_MOD_ARG,
         **RULE_MOD_ARG_KEY_FIELD,
@@ -62,6 +66,7 @@ def run_module():
             result={'changed': False, 'diff': {'before': {}, 'after': {}}},
             cnf=rule_to_purge,
             session=session,
+            fail=module.params['fail_all']
         )
         _rule.rule = rule_to_purge
         _rule.call_cnf['params'] = [rule_to_purge['uuid']]

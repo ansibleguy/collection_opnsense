@@ -28,7 +28,7 @@ def run_module():
             type='dict', required=False, default={},
             description='Configured aliases - compared against existing ones'
         ),
-        fail_verification=dict(
+        fail_all=dict(
             type='bool', required=False, default=False, aliases=['fail'],
             description='Fail module if single alias fails the be purged.'
         ),
@@ -65,7 +65,7 @@ def run_module():
             result={'changed': False, 'diff': {'before': {}, 'after': {}}},
             cnf=alias_to_purge,
             session=session,
-            fail=module.params['fail_verification']
+            fail=module.params['fail_all']
         )
         _alias.alias = alias_to_purge
         _alias.existing_rules = existing_rules
