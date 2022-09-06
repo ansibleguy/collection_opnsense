@@ -4,16 +4,17 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    get_matching
 
 
 class Forward:
     FIELD_ID = 'fwd_name'
     CMDS = {
-        'add': 'addForward',
-        'del': 'delForward',
-        'set': 'setForward',
+        'add': 'addDot',
+        'del': 'delDot',
+        'set': 'setDot',
         'search': 'get',
-        'toggle': 'toggleForward',
     }
     API_KEY = 'dot'
 
@@ -65,18 +66,15 @@ class Forward:
         if self.existing_fwds is None:
             self.existing_fwds = self.search_call()
 
-        for existing in self.existing_fwds:
-            _matching = []
-            existing = self._simplify_existing(existing)
-
-            for field in ['domain', 'target']:
-                _matching.append(existing[field] == self.p[field])
-
-            if all(_matching):
-                self.fwd = existing
-                self.r['diff']['before'] = self.fwd
-                self.exists = True
-                break
+        match = get_matching(
+            module=self.m, existing_items=self.existing_fwds,
+            compare_item=self.p, match_fields=['domain', 'target'],
+            simplify_func=self._simplify_existing,
+        )
+        if match is not None:
+            self.fwd = match
+            self.r['diff']['before'] = self.fwd
+            self.exists = True
 
     def search_call(self) -> list:
         fwds = []
@@ -137,7 +135,7 @@ class Forward:
             'uuid': fwd['uuid'],
             'domain': fwd['domain'],
             'target': fwd['server'],
-            'port': fwd['port'],
+            'port': int(fwd['port']),
             'enabled': fwd['enabled'] in [1, '1', True],
         }
 

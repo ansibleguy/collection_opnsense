@@ -124,12 +124,17 @@ class TMPL:
     def _simplify_existing(stuff: dict) -> dict:
         # makes processing easier
         return {
+            'enabled': stuff['enabled'] in [1, '1', True],
+            'description': stuff['description'],
             'param1': stuff['param1'],
             'param2': stuff['param2'],
         }
 
     def _build_diff_after(self) -> dict:
         return {
+            'uuid': self.stuff['uuid'] if 'uuid' in self.stuff else None,
+            'enabled': self.p['enabled'],
+            'description': self.p['description'],
             'param1': self.p['param1'],
             'param2': self.p['param2'],
         }
@@ -137,6 +142,8 @@ class TMPL:
     def _build_request(self) -> dict:
         return {
             self.API_KEY: {
+                'enabled': 1 if self.p['enabled'] else 0,
+                'description': self.p['description'],
                 'param1': self.p['param1'],
                 'param2': self.p['param2'],
             }

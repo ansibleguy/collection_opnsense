@@ -22,12 +22,6 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
 Only basic parameters needed.
 
-## Known issues
-
-Creation/management not yet working - see: [Forum](https://forum.opnsense.org/index.php?topic=30077.0)
-
-Will need to test using 'Referer' header.
-
 ## Info
 
 This module manages DNS-Forwardings that can be found in the WEB-UI menu: 'Services - Unbound DNS - Query Forwardings'

@@ -62,7 +62,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **System**               | ansibleguy.opnsense.system                  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)             | unstable |
 | **Cron-Jobs**            | ansibleguy.opnsense.cron                    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_cron.md)               | unstable |
 | **Routes**               | ansibleguy.opnsense.route                   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_route.md)              | unstable |
-| **DNS Forwarding**       | ansibleguy.opnsense.unbound_forward         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_forwarding.md) | testing  |
+| **DNS Forwarding**       | ansibleguy.opnsense.unbound_forward         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_forwarding.md) | unstable  |
 | **DNS Forwarding**       | ansibleguy.opnsense.unbound_forward_list    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_forwarding.md) | unstable |
 | **DNS over TLS**         | ansibleguy.opnsense.unbound_dot             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_dot.md)        | unstable |
 | **DNS over TLS**         | ansibleguy.opnsense.unbound_dot_list        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_dot.md)        | unstable |
