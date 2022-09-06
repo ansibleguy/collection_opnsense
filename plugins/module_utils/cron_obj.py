@@ -158,3 +158,13 @@ class CronJob:
 
     def _delete_call(self) -> dict:
         return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
+
+    def reconfigure(self):
+        # reload the active jobs
+        if not self.m.check_mode:
+            self.s.post(cnf={
+                'module': self.call_cnf['module'],
+                'controller': 'service',
+                'command': 'reconfigure',
+                'params': []
+            })

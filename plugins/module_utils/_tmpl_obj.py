@@ -180,3 +180,10 @@ class TMPL:
                 'params': [self.stuff['uuid'], value],
             }
         })
+
+    def reconfigure(self):
+        # reload the running config
+        if not self.m.check_mode:
+            self.s.post(cnf={
+                **self.call_cnf, **{'command': 'reconfigure', 'params': []}
+            })

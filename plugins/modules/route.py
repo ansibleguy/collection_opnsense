@@ -54,8 +54,10 @@ def run_module():
     route = Route(module=module, result=result)
     route.check()
     route.process()
-    route.s.close()
+    if result['changed']:
+        route.reconfigure()
 
+    route.s.close()
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 

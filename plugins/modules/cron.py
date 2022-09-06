@@ -75,6 +75,8 @@ def run_module():
     job = CronJob(module=module, result=result)
     job.check()
     job.process()
+    if result['changed']:
+        job.reconfigure()
 
     job.s.close()
     result['diff'] = diff_remove_empty(result['diff'])
