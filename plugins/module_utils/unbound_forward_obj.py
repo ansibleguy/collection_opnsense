@@ -28,6 +28,11 @@ class Forward:
             'module': 'unbound',
             'controller': 'settings',
         }
+        self.call_headers = {
+            'Referer': f"https://{self.p['firewall']}:{self.p['api_port']}/ui/unbound/forward",
+        }
+        # else the type will always be 'dns-over-tls':
+        #   https://github.com/opnsense/core/commit/6832fd75a0b41e376e80f287f8ad3cfe599ea3d1
         self.existing_fwds = None
 
     def process(self):
@@ -92,12 +97,15 @@ class Forward:
         self.r['changed'] = True
 
         if not self.m.check_mode:
-            self.s.post(cnf={
-                **self.call_cnf, **{
-                    'command': self.CMDS['add'],
-                    'data': self._build_request(),
-                }
-            })
+            self.s.post(
+                cnf={
+                    **self.call_cnf, **{
+                        'command': self.CMDS['add'],
+                        'data': self._build_request(),
+                    }
+                },
+                headers=self.call_headers,
+            )
 
     def update(self):
         # checking if changed
@@ -112,12 +120,15 @@ class Forward:
                 self.m.warn(f"{self.r['diff']}")
 
             if not self.m.check_mode:
-                self.s.post(cnf={
-                    **self.call_cnf, **{
-                        'command': self.CMDS['set'],
-                        'data': self._build_request(),
-                    }
-                })
+                self.s.post(
+                    cnf={
+                        **self.call_cnf, **{
+                            'command': self.CMDS['set'],
+                            'data': self._build_request(),
+                        }
+                    },
+                    headers=self.call_headers,
+                )
 
     @staticmethod
     def _simplify_existing(fwd: dict) -> dict:
@@ -140,9 +151,8 @@ class Forward:
         }
 
     def _build_request(self) -> dict:
-        # todo: need to set 'f"https://{self.p['firewall']}:{self.p['api_port']}/ui/unbound/forward"' as referer header
-        # else the type will always be 'dns-over-tls':
-        # https://github.com/opnsense/core/commit/6832fd75a0b41e376e80f287f8ad3cfe599ea3d1
+        # todo: need to set '' as referer header
+        #
         return {
             self.API_KEY: {
                 'type': 'forward',
@@ -164,4 +174,17 @@ class Forward:
                 self.m.warn(f"{self.r['diff']}")
 
     def _delete_call(self) -> dict:
-        return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
+        return self.s.post(
+            cnf={**self.call_cnf, **{'command': self.CMDS['del']}},
+            headers=self.call_headers,
+        )
+
+    def reconfigure(self):
+        # reload running config
+        if not self.m.check_mode:
+            self.s.post(cnf={
+                'module': self.call_cnf['module'],
+                'controller': 'service',
+                'command': 'reconfigure',
+                'params': []
+            })

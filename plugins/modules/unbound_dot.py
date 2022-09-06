@@ -53,6 +53,8 @@ def run_module():
 
     dot.check()
     dot.process()
+    if result['changed']:
+        dot.reconfigure()
 
     dot.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

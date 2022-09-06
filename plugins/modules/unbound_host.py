@@ -62,6 +62,8 @@ def run_module():
 
     host.check()
     host.process()
+    if result['changed']:
+        host.reconfigure()
 
     host.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

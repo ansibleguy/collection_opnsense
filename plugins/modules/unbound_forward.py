@@ -48,6 +48,8 @@ def run_module():
 
     fwd.check()
     fwd.process()
+    if result['changed']:
+        fwd.reconfigure()
 
     fwd.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

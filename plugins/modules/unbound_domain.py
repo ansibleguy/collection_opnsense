@@ -50,6 +50,8 @@ def run_module():
 
     dom.check()
     dom.process()
+    if result['changed']:
+        dom.reconfigure()
 
     dom.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

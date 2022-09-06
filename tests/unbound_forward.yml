@@ -15,12 +15,12 @@
       ssl_verify: false
 
   tasks:
-    - name: Listing dots
+    - name: Listing
       ansibleguy.opnsense.unbound_forward_list:
       register: opn10
       failed_when: >
         opn10.changed or
-        opn10.dots | length != 0
+        opn10.forwardings | length != 0
 
     - name: Removing - does not exist
       ansibleguy.opnsense.unbound_forward:
@@ -36,6 +36,7 @@
       ansibleguy.opnsense.unbound_forward:
         domain: 'dot.opnsense.test.ansibleguy.net'
         target: '1.1.1.1'
+        debug: true
       register: opn4
       failed_when: >
         opn4.failed or
@@ -93,12 +94,12 @@
         not opn8.changed
       when: not ansible_check_mode
 
-    - name: Listing dots
+    - name: Listing
       ansibleguy.opnsense.unbound_forward_list:
       register: opn3
       failed_when: >
         opn3.changed or
-        opn3.dots | length != 1
+        opn3.forwardings | length != 1
       when: not ansible_check_mode
 
     - name: Cleanup
@@ -111,10 +112,10 @@
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
       when: not ansible_check_mode
 
-    - name: Listing dots
+    - name: Listing
       ansibleguy.opnsense.unbound_forward_list:
       register: opn2
       failed_when: >
         opn2.changed or
-        opn2.dots | length != 0
+        opn2.forwardings | length != 0
       when: not ansible_check_mode
