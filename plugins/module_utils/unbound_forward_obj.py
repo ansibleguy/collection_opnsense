@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
-    validate_domain
+    validate_domain, reconfigure
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
     get_matching, validate_port
 
@@ -178,10 +178,4 @@ class Forward:
 
     def reconfigure(self):
         # reload running config
-        if not self.m.check_mode:
-            self.s.post(cnf={
-                'module': self.call_cnf['module'],
-                'controller': self.API_CONT_REL,
-                'command': 'reconfigure',
-                'params': []
-            })
+        reconfigure(self)

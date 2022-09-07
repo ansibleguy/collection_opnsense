@@ -15,6 +15,9 @@ class TMPL:
         'toggle': 'togglestuff',
     }
     API_KEY = 'stuff'
+    API_MOD = 'API_Module'
+    API_CONT = 'API_Controller'
+    API_CONT_REL = 'API_Controller_reconfigure'  # if other
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -24,8 +27,8 @@ class TMPL:
         self.exists = False
         self.stuff = {}
         self.call_cnf = {  # config shared by all calls
-            'module': 'API-Module',
-            'controller': 'API-Controller',
+            'module': self.API_MOD,
+            'controller': self.API_CONT,
         }
         self.existing_stuffs = None
 

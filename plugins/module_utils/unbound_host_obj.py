@@ -3,9 +3,9 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_ip, valid_hostname
+    is_ip, valid_hostname, get_matching
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
-    validate_domain
+    validate_domain, reconfigure
 
 
 class Host:
@@ -16,6 +16,9 @@ class Host:
         'search': 'get',
     }
     API_KEY = 'host'
+    API_MOD = 'unbound'
+    API_CONT = 'settings'
+    API_CONT_REL = 'service'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -25,8 +28,8 @@ class Host:
         self.exists = False
         self.host = {}
         self.call_cnf = {  # config shared by all calls
-            'module': 'unbound',
-            'controller': 'settings',
+            'module': self.API_MOD,
+            'controller': self.API_CONT,
         }
         self.existing_hosts = None
 
@@ -66,20 +69,15 @@ class Host:
         if self.existing_hosts is None:
             self.existing_hosts = self.search_call()
 
-        if len(self.existing_hosts) > 0:
-            for uuid, existing in self.existing_hosts.items():
-                _matching = []
-                existing = self._simplify_existing(existing)
-
-                for field in self.p['match_fields']:
-                    _matching.append(existing[field] == self.p[field])
-
-                if all(_matching):
-                    existing['uuid'] = uuid
-                    self.host = existing
-                    self.r['diff']['before'] = self.host
-                    self.exists = True
-                    break
+        match = get_matching(
+            module=self.m, existing_items=self.existing_hosts,
+            compare_item=self.p, match_fields=self.p['match_fields'],
+            simplify_func=self._simplify_existing,
+        )
+        if match is not None:
+            self.host = match
+            self.r['diff']['before'] = self.host
+            self.exists = True
 
     def search_call(self) -> dict:
         return self.s.get(cnf={
@@ -127,6 +125,7 @@ class Host:
         data = {
             'enabled': host['enabled'] in [1, '1', True],
             'hostname': host['hostname'],
+            'uuid': host['uuid'],
             'domain': host['domain'],
             'description': host['description'],
         }
@@ -192,10 +191,4 @@ class Host:
 
     def reconfigure(self):
         # reload running config
-        if not self.m.check_mode:
-            self.s.post(cnf={
-                'module': self.call_cnf['module'],
-                'controller': 'service',
-                'command': 'reconfigure',
-                'params': []
-            })
+        reconfigure(self)

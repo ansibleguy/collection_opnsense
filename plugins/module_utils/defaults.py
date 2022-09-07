@@ -58,3 +58,12 @@ RELOAD_MOD_ARG = dict(
                     'will take some time'
     )
 )
+
+RELOAD_MOD_ARG_DEF_FALSE = dict(
+    reload=dict(
+        type='bool', required=False, default=False,
+        description='If the running config should be reloaded on change - '
+                    'will take some time'
+    )
+)
+

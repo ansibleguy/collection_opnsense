@@ -2,9 +2,10 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import is_ip
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    is_ip, get_matching
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
-    validate_domain
+    validate_domain, reconfigure
 
 
 class Domain:
@@ -15,6 +16,9 @@ class Domain:
         'search': 'get',
     }
     API_KEY = 'domain'
+    API_MOD = 'unbound'
+    API_CONT = 'settings'
+    API_CONT_REL = 'service'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -24,8 +28,8 @@ class Domain:
         self.exists = False
         self.domain = {}
         self.call_cnf = {  # config shared by all calls
-            'module': 'unbound',
-            'controller': 'settings',
+            'module': self.API_MOD,
+            'controller': self.API_CONT,
         }
         self.existing_domains = None
 
@@ -57,20 +61,15 @@ class Domain:
         if self.existing_domains is None:
             self.existing_domains = self.search_call()
 
-        if len(self.existing_domains) > 0:
-            for uuid, existing in self.existing_domains.items():
-                _matching = []
-                existing = self._simplify_existing(existing)
-
-                for field in self.p['match_fields']:
-                    _matching.append(existing[field] == self.p[field])
-
-                if all(_matching):
-                    existing['uuid'] = uuid
-                    self.domain = existing
-                    self.r['diff']['before'] = self.domain
-                    self.exists = True
-                    break
+        match = get_matching(
+            module=self.m, existing_items=self.existing_domains,
+            compare_item=self.p, match_fields=self.p['match_fields'],
+            simplify_func=self._simplify_existing,
+        )
+        if match is not None:
+            self.domain = match
+            self.r['diff']['before'] = self.domain
+            self.exists = True
 
     def search_call(self) -> dict:
         return self.s.get(cnf={
@@ -115,6 +114,7 @@ class Domain:
         # makes processing easier
         return {
             'enabled': domain['enabled'] in [1, '1', True],
+            'uuid': domain['uuid'],
             'domain': domain['domain'],
             'server': domain['server'],
             'description': domain['description'],
@@ -154,10 +154,4 @@ class Domain:
 
     def reconfigure(self):
         # reload running config
-        if not self.m.check_mode:
-            self.s.post(cnf={
-                'module': self.call_cnf['module'],
-                'controller': 'service',
-                'command': 'reconfigure',
-                'params': []
-            })
+        reconfigure(self)

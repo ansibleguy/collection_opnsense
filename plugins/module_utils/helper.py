@@ -83,3 +83,8 @@ def get_matching(
                 break
 
     return matching
+
+
+def validate_port(module: AnsibleModule, port: (int, str)):
+    if not validators.between(int(port), 1, 65535):
+        module.fail_json(f"Value '{port}' is an invalid port!")

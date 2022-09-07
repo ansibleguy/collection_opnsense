@@ -2,8 +2,10 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    get_matching
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
-    validate_domain
+    validate_domain, reconfigure
 
 
 class Alias:
@@ -14,6 +16,9 @@ class Alias:
         'search': 'get',
     }
     API_KEY = 'alias'
+    API_MOD = 'unbound'
+    API_CONT = 'settings'
+    API_CONT_REL = 'service'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -23,8 +28,8 @@ class Alias:
         self.exists = False
         self.alias = {}
         self.call_cnf = {  # config shared by all calls
-            'module': 'unbound',
-            'controller': 'settings',
+            'module': self.API_MOD,
+            'controller': self.API_CONT,
         }
         self.existing_aliases = None
         self.existing_hosts = None
@@ -60,20 +65,15 @@ class Alias:
         if self.existing_aliases is None:
             self.existing_aliases = self.search_call()
 
-        if len(self.existing_aliases) > 0:
-            for uuid, existing in self.existing_aliases.items():
-                _matching = []
-                existing = self._simplify_existing(existing)
-
-                for field in self.p['match_fields']:
-                    _matching.append(existing[field] == self.p[field])
-
-                if all(_matching):
-                    existing['uuid'] = uuid
-                    self.alias = existing
-                    self.r['diff']['before'] = self.alias
-                    self.exists = True
-                    break
+        match = get_matching(
+            module=self.m, existing_items=self.existing_aliases,
+            compare_item=self.p, match_fields=self.p['match_fields'],
+            simplify_func=self._simplify_existing,
+        )
+        if match is not None:
+            self.alias = match
+            self.r['diff']['before'] = self.alias
+            self.exists = True
 
     def _find_target(self):
         if len(self.existing_hosts) > 0:
@@ -129,6 +129,7 @@ class Alias:
         simple = {
             'enabled': alias['enabled'] in [1, '1', True],
             'domain': alias['domain'],
+            'uuid': alias['uuid'],
             'alias': alias['hostname'],
             'description': alias['description'],
         }
@@ -183,10 +184,4 @@ class Alias:
 
     def reconfigure(self):
         # reload running config
-        if not self.m.check_mode:
-            self.s.post(cnf={
-                'module': self.call_cnf['module'],
-                'controller': 'service',
-                'command': 'reconfigure',
-                'params': []
-            })
+        reconfigure(self)

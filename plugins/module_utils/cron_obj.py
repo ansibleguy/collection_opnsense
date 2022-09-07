@@ -60,24 +60,25 @@ class CronJob:
         if self.existing_jobs is None:
             self.existing_jobs = self.search_call()
 
-        for uuid, existing_job in self.existing_jobs.items():
-            if existing_job[self.FIELD_ID] == self.p[self.FIELD_ID]:
-                self.exists = True
-                existing_job.pop('origin')
-                existing_job['uuid'] = uuid
-                existing_job['enabled'] = existing_job['enabled'] in [1, '1', True]
+        if len(self.existing_jobs) > 0:
+            for uuid, existing_job in self.existing_jobs.items():
+                if existing_job[self.FIELD_ID] == self.p[self.FIELD_ID]:
+                    self.exists = True
+                    existing_job.pop('origin')
+                    existing_job['uuid'] = uuid
+                    existing_job['enabled'] = existing_job['enabled'] in [1, '1', True]
 
-                for cmd, cmd_values in existing_job['command'].items():
-                    self.available_commands.append(cmd)
+                    for cmd, cmd_values in existing_job['command'].items():
+                        self.available_commands.append(cmd)
 
-                    if cmd_values['selected'] in [1, '1', True]:
-                        existing_job['command'] = cmd
-                        break
+                        if cmd_values['selected'] in [1, '1', True]:
+                            existing_job['command'] = cmd
+                            break
 
-                self.cron = existing_job
-                self.r['diff']['before'] = self.cron
-                self.exists = True
-                break
+                    self.cron = existing_job
+                    self.r['diff']['before'] = self.cron
+                    self.exists = True
+                    break
 
     def search_call(self) -> list:
         return self.s.get(cnf={
