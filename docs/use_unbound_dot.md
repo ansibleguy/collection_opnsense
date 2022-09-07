@@ -18,6 +18,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | target   | string | true    | -            | server, srv, tgt          | DNS target server                                                                                                                                        |
 | port | string     | false    | 53          | p                         | DNS port of the target server                                                                                                                            |
 | verify | string  | false    | -             | common_name, cn, hostname | Verify if CN in certificate matches this value, **if not set - certificate verification will not be performed**! Must be a valid IP-Address or hostname. |
+| reload       | boolean | false    | true                 | -                         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 ### ansibleguy.opnsense.unbound_dot_list
 

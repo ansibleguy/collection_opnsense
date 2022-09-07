@@ -19,7 +19,7 @@
 | months | string    | false    | '*'           | month, M | Value needs to be between 1 and 12 or JAN to DEC, multiple values, ranges, steps and asterisk are supported (ex. JAN,2,10 or 3-8).                                                                                                                                                                                                              |
 | weekdays | string | false    | '*'           | wd       | Value needs to be between 0 and 7 (Sunday to Sunday), multiple values, ranges, steps and asterisk are supported (ex. 1,2,4 or 0-4).                                                                                                                                                                                                             |
 | who | string | false    | 'root'        | -        | User who should run the command                                                                                                                                                                                                                                                                                                                 |
-
+| reload       | boolean | false    | true                 | -        | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
 

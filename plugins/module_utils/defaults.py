@@ -50,3 +50,11 @@ STATE_MOD_ARG_MULTI = dict(
     state=dict(type='str', required=False, choices=['present', 'absent']),
     enabled=dict(type='bool', required=False, default=None),  # override only if set
 )
+
+RELOAD_MOD_ARG = dict(
+    reload=dict(
+        type='bool', required=False, default=True,
+        description='If the running config should be reloaded on change - '
+                    'will take some time'
+    )
+)

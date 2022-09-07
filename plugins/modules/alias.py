@@ -7,15 +7,28 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_MOD_ARGS
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+    module_dependency_error, MODULE_EXCEPTIONS
+
+try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import RELOAD_MOD_ARG
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_MOD_ARGS
+
+except MODULE_EXCEPTIONS:
+    module_dependency_error()
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias.yml'
 
 
 def run_module():
+    module_args = dict(
+        **RELOAD_MOD_ARG,
+        **ALIAS_MOD_ARGS
+    )
+
     result = dict(
         changed=False,
         diff={
@@ -25,14 +38,14 @@ def run_module():
     )
 
     module = AnsibleModule(
-        argument_spec=ALIAS_MOD_ARGS,
+        argument_spec=module_args,
         supports_check_mode=True,
     )
 
     alias = Alias(module=module, result=result)
     alias.check()
     alias.process()
-    if result['changed']:
+    if result['changed'] and module.params['reload']:
         alias.reconfigure()
 
     alias.s.close()

@@ -32,6 +32,7 @@ If you want to mass-manage aliases - take a look at the [alias_multi](https://gi
 | state | string      | false                                      | 'present'      | Options: 'present', 'absent'                                                                                                                                     |
 | enabled | boolean     | false | true | If the alias should be en- or disabled                                                                                                                           |
 | updatefreq_days | float       | false | 7.0 | Needed only for the alias-type 'urltable'. Interval to update its content. Per example: 0.5 for every 12 hours                                                   |
+| reload       | boolean | false    | true                 | -                                                                                                                                                                | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
 

@@ -7,10 +7,17 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
-    OPN_MOD_ARGS, STATE_MOD_ARG
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.route_obj import Route
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+    module_dependency_error, MODULE_EXCEPTIONS
+
+try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+        OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.route_obj import Route
+
+except MODULE_EXCEPTIONS:
+    module_dependency_error()
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_route.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_route.md'
@@ -34,6 +41,7 @@ def run_module():
             choises=['network', 'gateway', 'description'],
             default=['network', 'gateway'],
         ),
+        **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,
     )
@@ -54,7 +62,7 @@ def run_module():
     route = Route(module=module, result=result)
     route.check()
     route.process()
-    if result['changed']:
+    if result['changed'] and module.params['reload']:
         route.reconfigure()
 
     route.s.close()

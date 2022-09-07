@@ -12,11 +12,12 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
 ### ansibleguy.opnsense.unbound_forward
 
-| Parameter  | Type    | Required | Default value | Aliases                   | Comment                       |
-|:-----------|:--------|:---------|:---------------|:--------------------------|:------------------------------|
-| domain     | string  | true     | -            | dom, d                    | Domain to forward queries of  |
-| target   | string | true    | -            | server, srv, tgt          | DNS target server             |
-| port | string     | false    | 53          | p                         | DNS port of the target server |
+| Parameter  | Type    | Required | Default value | Aliases          | Comment                       |
+|:-----------|:--------|:---------|:---------------|:-----------------|:------------------------------|
+| domain     | string  | true     | -            | dom, d           | Domain to forward queries of  |
+| target   | string | true    | -            | server, srv, tgt | DNS target server             |
+| port | string     | false    | 53          | p                | DNS port of the target server |
+| reload       | boolean | false    | true                 | -                | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 ### ansibleguy.opnsense.unbound_forward_list
 

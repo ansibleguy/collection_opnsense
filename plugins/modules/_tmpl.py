@@ -7,10 +7,17 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
-    OPN_MOD_ARGS, STATE_MOD_ARG
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+    module_dependency_error, MODULE_EXCEPTIONS
+
+try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+        OPN_MOD_ARGS, STATE_MOD_ARG
+
+except MODULE_EXCEPTIONS:
+    module_dependency_error()
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/_tmpl.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/_tmpl.md'
@@ -93,6 +100,8 @@ def run_module():
                 #     'data': {'tests'},
                 # })
                 pass
+
+    # don't forget to call the 'reconfigure' endpoint to activate the changes (if available/needed)
 
     # cleanup and exit
 

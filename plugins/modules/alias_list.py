@@ -7,9 +7,16 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import builtin_alias
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+    module_dependency_error, MODULE_EXCEPTIONS
+
+try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import builtin_alias
+
+except MODULE_EXCEPTIONS:
+    module_dependency_error()
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias.yml'

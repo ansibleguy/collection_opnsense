@@ -7,10 +7,17 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
-    OPN_MOD_ARGS, STATE_MOD_ARG
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.cron_obj import CronJob
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+    module_dependency_error, MODULE_EXCEPTIONS
+
+try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+        OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.cron_obj import CronJob
+
+except MODULE_EXCEPTIONS:
+    module_dependency_error()
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_cron.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_cron.md'
@@ -55,6 +62,7 @@ def run_module():
             type='str', required=False, default='', aliases=['params'],
             description='Enter parameters for this job if required'
         ),
+        **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,
     )
@@ -75,7 +83,7 @@ def run_module():
     job = CronJob(module=module, result=result)
     job.check()
     job.process()
-    if result['changed']:
+    if result['changed'] and module.params['reload']:
         job.reconfigure()
 
     job.s.close()

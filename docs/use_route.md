@@ -18,6 +18,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | network      | string          | true     | -                     | nw, net | Network to route. The network ip protocol (_IPv4/IPv6_) must be the same!                                                                                                                                                                                |
 | description  | string          | false    | -                     | desc    | Optional description for the route. Could be used as unique-identifier when set as only 'match_field'. |                                                                                                                                                  |
 | match_fields | list of strings | false    | ['network', 'gateway'] | -       | Fields that are used to match configured routes with the running config - if any of those fields are changed, the module will think it's a new route |
+| reload       | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 ### ansibleguy.opnsense.route
 

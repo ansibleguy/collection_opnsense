@@ -7,16 +7,23 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
-    OPN_MOD_ARGS, INFO_MOD_ARG, STATE_MOD_ARG_MULTI
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import \
-    ALIAS_DEFAULTS, ALIAS_MOD_ARGS, ALIAS_MOD_ARG_ALIASES
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty, ensure_list
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.multi_helper import \
-    validate_single, convert_aliases
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+    module_dependency_error, MODULE_EXCEPTIONS
+
+try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+        OPN_MOD_ARGS, INFO_MOD_ARG, STATE_MOD_ARG_MULTI, RELOAD_MOD_ARG
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import \
+        ALIAS_DEFAULTS, ALIAS_MOD_ARGS, ALIAS_MOD_ARG_ALIASES
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty, ensure_list
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.multi_helper import \
+        validate_single, convert_aliases
+
+except MODULE_EXCEPTIONS:
+    module_dependency_error()
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/tests/alias_multi.yml'
@@ -29,6 +36,7 @@ def run_module():
             type='bool', required=False, default=False, aliases=['fail'],
             description='Fail module if single alias fails the verification.'
         ),
+        **RELOAD_MOD_ARG,
         **STATE_MOD_ARG_MULTI,
         **INFO_MOD_ARG,
         **OPN_MOD_ARGS,
@@ -128,7 +136,7 @@ def run_module():
             if 'after' in alias_result['diff']:
                 result['diff']['after'].update(alias_result['diff']['after'])
 
-    if result['changed']:
+    if result['changed'] and module.params['reload']:
         meta_alias.reconfigure()
 
     session.close()

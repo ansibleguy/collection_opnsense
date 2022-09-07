@@ -7,10 +7,17 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
-    OPN_MOD_ARGS, STATE_MOD_ARG
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_host_alias_obj import Alias
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+    module_dependency_error, MODULE_EXCEPTIONS
+
+try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+        OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_host_alias_obj import Alias
+
+except MODULE_EXCEPTIONS:
+    module_dependency_error()
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host_alias.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host_alias.md'
@@ -29,6 +36,7 @@ def run_module():
             choises=['hostname', 'domain', 'alias',  'description'],
             default=['alias', 'domain'],
         ),
+        **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,
     )
@@ -50,7 +58,7 @@ def run_module():
 
     alias.check()
     alias.process()
-    if result['changed']:
+    if result['changed'] and module.params['reload']:
         alias.reconfigure()
 
     alias.s.close()

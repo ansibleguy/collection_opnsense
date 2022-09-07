@@ -7,16 +7,23 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
-    OPN_MOD_ARGS, PURGE_MOD_ARGS, INFO_MOD_ARG
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
-    check_purge_configured, simplify_existing_alias, builtin_alias
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.purge_helper import \
-    purge, check_purge_filter
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+    module_dependency_error, MODULE_EXCEPTIONS
+
+try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+        OPN_MOD_ARGS, PURGE_MOD_ARGS, INFO_MOD_ARG, RELOAD_MOD_ARG
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
+        check_purge_configured, simplify_existing_alias, builtin_alias
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.purge_helper import \
+        purge, check_purge_filter
+
+except MODULE_EXCEPTIONS:
+    module_dependency_error()
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/tests/alias_multi.yml'
@@ -32,6 +39,7 @@ def run_module():
             type='bool', required=False, default=False, aliases=['fail'],
             description='Fail module if single alias fails the be purged.'
         ),
+        **RELOAD_MOD_ARG,
         **INFO_MOD_ARG,
         **PURGE_MOD_ARGS,
         **OPN_MOD_ARGS,
@@ -114,7 +122,7 @@ def run_module():
                 obj_func=obj_func, item_to_purge=alias,
             )
 
-    if result['changed']:
+    if result['changed'] and module.params['reload']:
         meta_alias.reconfigure()
 
     session.close()

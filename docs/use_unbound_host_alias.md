@@ -19,6 +19,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | domain       | string | true     | -             | dom, d    | Domain to override                                                                                                                                                                                                             |
 | target       | string | true     | -             | tgt, host | Existing host override record                                                                                                                                                                                                  |
 | description  | string | false    | -             | desc      | Optional description for the host-alias. Could be used as unique-identifier when set as only 'match_field'.                                                                                                                    |
+| reload       | boolean | false    | true                 | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 ### ansibleguy.opnsense.unbound_host_alias_list
 

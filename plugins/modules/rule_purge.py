@@ -7,17 +7,24 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
-    OPN_MOD_ARGS, PURGE_MOD_ARGS, INFO_MOD_ARG
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import \
-    RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_KEY_FIELD
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
-    simplify_existing_rule, check_purge_configured
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.purge_helper import \
-    purge, check_purge_filter
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+    module_dependency_error, MODULE_EXCEPTIONS
+
+try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+        OPN_MOD_ARGS, PURGE_MOD_ARGS, INFO_MOD_ARG
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import \
+        RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_KEY_FIELD
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
+        simplify_existing_rule, check_purge_configured
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.purge_helper import \
+        purge, check_purge_filter
+
+except MODULE_EXCEPTIONS:
+    module_dependency_error()
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md'
