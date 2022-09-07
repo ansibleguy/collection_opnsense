@@ -10,8 +10,6 @@
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
 
-### ansibleguy.opnsense.unbound_domain
-
 | Parameter    | Type    | Required | Default value        | Aliases    | Comment                                                                                                                                                                                                                                                                                |
 |:-------------|:--------|:---------|:---------------------|:-----------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | match_fields | string  | false    | ['domain', 'server'] | -          | Fields that are used to match configured domain-overrides with the running config - if any of those fields are changed, the module will think it's a new entry. At least one of: 'domain', 'server', 'description'                                                                     |
@@ -19,10 +17,6 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | server       | string  | true     | -                    | value, srv | Target server                                                                                                                                                                                                                                                                          |
 | description  | string  | false    | -                    | desc       | Optional description for the domain-override. Could be used as unique-identifier when set as only 'match_field'.                                                                                                                                                                       |
 | reload       | boolean | false    | true                 | -          | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
-
-### ansibleguy.opnsense.unbound_domain_list
-
-Only basic parameters needed.
 
 ## Info
 
@@ -54,9 +48,10 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
       api_credential_file: '/home/guy/.secret/opn.key'
       # match_fields: ['description']
 
-    ansibleguy.opnsense.unbound_domain_list:
+    ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'unbound_domain'
 
   tasks:
     - name: Example
@@ -93,10 +88,11 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         description: 'test1'
 
     - name: Listing domains
-      ansibleguy.opnsense.unbound_domain_list:
+      ansibleguy.opnsense.list:
+      #  target: 'unbound_domain'
       register: existing_entries
 
     - name: Printing entries
       ansible.builtin.debug:
-        var: existing_entries.domains
+        var: existing_entries.data
 ```

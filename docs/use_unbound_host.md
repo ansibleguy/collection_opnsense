@@ -10,8 +10,6 @@
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
 
-### ansibleguy.opnsense.unbound_host
-
 | Parameter  | Type   | Required | Default value | Aliases         | Comment                                                                                                                                                                                                                                            |
 |:-----------|:-------|:---------|:--------------|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | match_fields     | string | false    | ['hostname', 'domain', 'record_type', 'value', 'prio']              | -               | Fields that are used to match configured host-overrides with the running config - if any of those fields are changed, the module will think it's a new entry. At least one of: 'hostname', 'domain', 'record_type', 'value', 'prio', 'description' |
@@ -22,8 +20,6 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | prio | int    | false    | 10            | mxprio          | Priority that is only used for MX record types                                                                                                                                                                                                     |
 | description | string | false    | -             | desc            | Optional description for the host-override. Could be used as unique-identifier when set as only 'match_field'.                                                                                                                                     |
 | reload       | boolean | false    | true                 | -               | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
-
-### ansibleguy.opnsense.unbound_host_list
 
 Only basic parameters needed.
 
@@ -61,9 +57,10 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
       api_credential_file: '/home/guy/.secret/opn.key'
       # match_fields: ['description']
 
-    ansibleguy.opnsense.unbound_host_list:
+    ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'unbound_host'
 
   tasks:
     - name: Example
@@ -106,10 +103,11 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         description: 'test2'
 
     - name: Listing hosts
-      ansibleguy.opnsense.unbound_host_list:
+      ansibleguy.opnsense.list:
+      #  target: 'unbound_host'
       register: existing_entries
 
     - name: Printing entries
       ansible.builtin.debug:
-        var: existing_entries.hosts
+        var: existing_entries.data
 ```

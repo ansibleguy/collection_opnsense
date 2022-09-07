@@ -10,8 +10,6 @@
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
 
-### ansibleguy.opnsense.route
-
 | Parameter    | Type            | Required | Default value         | Aliases | Comment                                                                                                                                                                                                                                                  |
 |:-------------|:----------------|:---------|:----------------------|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | gateway      | string          | true     | -                     | gw      | An existing gateway that should be used as target for the network. The network ip protocol (_IPv4/IPv6_) must be the same! **WARNING**: You need to supply the gateways short-name as can be seen in the WEB-UI menu 'System - Gateways - Single - Name' |
@@ -19,10 +17,6 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | description  | string          | false    | -                     | desc    | Optional description for the route. Could be used as unique-identifier when set as only 'match_field'. |                                                                                                                                                  |
 | match_fields | list of strings | false    | ['network', 'gateway'] | -       | Fields that are used to match configured routes with the running config - if any of those fields are changed, the module will think it's a new route |
 | reload       | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
-
-### ansibleguy.opnsense.route
-
-Only basic parameters needed.
 
 ## Usage
 
@@ -48,9 +42,10 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
       api_credential_file: '/home/guy/.secret/opn.key'
       # match_fields: ['description']
 
-    ansibleguy.opnsense.route_list:
+    ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'rule'
 
   tasks:
     - name: Example
@@ -77,12 +72,13 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         enabled: false
 
     - name: Listing routes
-      ansibleguy.opnsense.route_list:
+      ansibleguy.opnsense.list:
+      #  target: 'rule'
       register: existing_entries
 
     - name: Printing routes
       ansible.builtin.debug:
-        var: existing_entries.routes
+        var: existing_entries.data
 
     - name: Removing route 'test3'
       ansibleguy.opnsense.route:

@@ -9,7 +9,20 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.list:
+      target: 'cron'
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
+    - name: Listing (none)
+      ansibleguy.opnsense.list:
+      register: opn7
+      failed_when: >
+        'data' not in opn7 or
+        opn7.data | length != 0
+
     - name: Removing - does not exist
       ansibleguy.opnsense.cron:
         description: 'ANSIBLE_TEST_1'
@@ -106,6 +119,14 @@
       failed_when: >
         opn4.failed or
         not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn8
+      failed_when: >
+        'data' not in opn8 or
+        opn8.data | length != 2
       when: not ansible_check_mode
 
     - name: Cleanup

@@ -10,10 +10,11 @@
       ssl_verify: false
       match_fields: ['description']
 
-    ansibleguy.opnsense.route_list:
+    ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+      target: 'route'
 
   tasks:
     - name: Removing - does not exist
@@ -83,11 +84,11 @@
       when: not ansible_check_mode
 
     - name: Listing rules
-      ansibleguy.opnsense.route_list:
+      ansibleguy.opnsense.list:
       register: opn1
       failed_when: >
-        opn1.changed or
-        opn1.routes | length != 2
+        'data' not in opn1 or
+        opn1.data | length != 2
       when: not ansible_check_mode
 
     - name: Cleanup
@@ -101,8 +102,8 @@
         - 'ANSIBLE_TEST_2'
 
     - name: Listing rules
-      ansibleguy.opnsense.route_list:
+      ansibleguy.opnsense.list:
       register: opn2
       failed_when: >
-        opn2.changed or
-        opn2.routes | length != 0
+        'data' not in opn2 or
+        opn2.data | length != 0

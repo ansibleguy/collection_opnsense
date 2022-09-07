@@ -148,3 +148,14 @@ def builtin_alias(name: str) -> bool:
     # ignore built-in aliases
     return name in BUILTIN_ALIASES or \
            regex_match(BUILTIN_INTERFACE_ALIASES_REG, name) is not None
+
+
+def filter_builtin_alias(aliases: dict) -> list:
+    filtered = []
+
+    for alias in aliases:
+        # ignore built-in aliases
+        if not builtin_alias(alias['name']):
+            filtered.append(alias)
+
+    return filtered

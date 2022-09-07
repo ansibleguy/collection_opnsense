@@ -136,6 +136,7 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
       match_fields: ['description']
+
     ansibleguy.opnsense.alias:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
@@ -193,10 +194,11 @@
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.rule_list:
+    ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+      target: 'rule'
 
     ansibleguy.opnsense.rule:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
@@ -206,11 +208,11 @@
 
   tasks:
     - name: Listing rules (none)
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn7
       failed_when: >
-        'rules' not in opn7 or
-        opn7.rules | length != 0
+        'data' not in opn7 or
+        opn7.data | length != 0
 
     - name: Creating dummy rule
       ansibleguy.opnsense.rule:
@@ -222,11 +224,11 @@
       when: not ansible_check_mode  # no use in check mode
 
     - name: Listing rules
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn8
       failed_when: >
-        'rules' not in opn8 or
-        opn8.rules | length != 1
+        'data' not in opn8 or
+        opn8.data | length != 1
       when: not ansible_check_mode  # no use in check mode
 
     - name: Modifying dummy rule 1 by uuid
@@ -237,7 +239,7 @@
         description: 'ANSIBLE_TEST_1_5'
         action: 'block'
         match_fields: ['uuid']
-        uuid: "{{ opn8.rules | json_query('keys(@)[0]') }}"
+        uuid: "{{ opn8.data | json_query('keys(@)[0]') }}"
       when: not ansible_check_mode  # no use in check mode
 
     - name: Creating dummy rule 2
@@ -250,15 +252,6 @@
         action: 'block'
       when: not ansible_check_mode  # no use in check mode
 
-    - name: Listing rules
-      ansibleguy.opnsense.rule_list:
-        filter: 'disabled'
-      register: opn12
-      failed_when: >
-        'rules' not in opn12 or
-        opn12.rules | length != 1
-      when: not ansible_check_mode  # no use in check mode
-
     - name: Cleanup
       ansibleguy.opnsense.rule:
         description: "{{ item }}"
@@ -269,20 +262,21 @@
         - 'ANSIBLE_TEST_1_8'
 
     - name: Checking cleanup
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn14
       failed_when: >
-        'rules' not in opn14 or
-        opn14.rules | length != 0
+        'data' not in opn14 or
+        opn14.data | length != 0
 
 - name: Testing Rules - matching
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.rule_list:
+    ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+      target: 'rule'
 
     ansibleguy.opnsense.rule:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
@@ -292,11 +286,11 @@
 
   tasks:
     - name: Listing rules - before
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn10
       failed_when: >
-        'rules' not in opn10 or
-        opn10.rules | length != 0
+        'data' not in opn10 or
+        opn10.data | length != 0
       when: not ansible_check_mode  # no use in check mode
 
     - name: Creating rule 1
@@ -351,11 +345,11 @@
       when: not ansible_check_mode  # no use in check mode
 
     - name: Listing rules - after
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn11
       failed_when: >
-        'rules' not in opn11 or
-        opn11.rules | length != 3
+        'data' not in opn11 or
+        opn11.data | length != 3
       when: not ansible_check_mode  # no use in check mode
 
     - name: Cleanup
@@ -370,11 +364,11 @@
         - 'ANSIBLE_TEST_1_7'
 
     - name: Checking cleanup
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn15
       failed_when: >
-        'rules' not in opn15 or
-        opn15.rules | length != 0
+        'data' not in opn15 or
+        opn15.data | length != 0
 
 - name: Testing Rules - alias deletion if in use
   # this is to fix lacking server-side checks for the automation-rules
@@ -393,10 +387,11 @@
       ssl_verify: false
       match_fields: ['description']
 
-    ansibleguy.opnsense.rule_list:
+    ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+      target: 'rule'
 
   tasks:
     - name: Creating alias
@@ -435,8 +430,8 @@
       when: not ansible_check_mode  # no use in check mode
 
     - name: Checking cleanup
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn16
       failed_when: >
-        'rules' not in opn16 or
-        opn16.rules | length != 0
+        'data' not in opn16 or
+        opn16.data | length != 0

@@ -10,8 +10,6 @@
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
 
-### ansibleguy.opnsense.unbound_host_alias
-
 | Parameter    | Type   | Required | Default value | Aliases   | Comment                                                                                                                                                                                                                        |
 |:-------------|:-------|:---------|:--------------|:----------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | match_fields | string | false    | ['alias', 'domain']              | -         | Fields that are used to match configured domain-overrides with the running config - if any of those fields are changed, the module will think it's a new entry. At least one of: 'hostname', 'domain', 'alias',  'description' |
@@ -21,7 +19,6 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | description  | string | false    | -             | desc      | Optional description for the host-alias. Could be used as unique-identifier when set as only 'match_field'.                                                                                                                    |
 | reload       | boolean | false    | true                 | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
-### ansibleguy.opnsense.unbound_host_alias_list
 
 Only basic parameters needed.
 
@@ -63,9 +60,10 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
       api_credential_file: '/home/guy/.secret/opn.key'
       # match_fields: ['description']
 
-    ansibleguy.opnsense.unbound_host_alias_list:
+    ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'unbound_host_alias'
 
   tasks:
     - name: Example
@@ -106,10 +104,11 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         description: 'test1'
 
     - name: Listing aliases
-      ansibleguy.opnsense.unbound_host_alias_list:
+      ansibleguy.opnsense.list:
+      #  target: 'unbound_host_alias'
       register: existing_entries
 
     - name: Printing entries
       ansible.builtin.debug:
-        var: existing_entries.aliases
+        var: existing_entries.data
 ```

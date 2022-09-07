@@ -10,18 +10,19 @@
       ssl_verify: false
       match_fields: ['description']
 
-    ansibleguy.opnsense.unbound_host_list:
+    ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+      target: 'unbound_host'
 
   tasks:
     - name: Listing
-      ansibleguy.opnsense.unbound_host_list:
+      ansibleguy.opnsense.list:
       register: opn10
       failed_when: >
-        opn10.changed or
-        opn10.hosts | length != 0
+        'data' not in opn10 or
+        opn10.data | length != 0
 
     - name: Removing - does not exist
       ansibleguy.opnsense.unbound_host:
@@ -141,11 +142,11 @@
       when: not ansible_check_mode
 
     - name: Listing
-      ansibleguy.opnsense.unbound_host_list:
+      ansibleguy.opnsense.list:
       register: opn3
       failed_when: >
-        opn3.changed or
-        opn3.hosts | length != 1
+        'data' not in opn3 or
+        opn3.data | length != 1
       when: not ansible_check_mode
 
     - name: Adding 3 - TLD-domain
@@ -173,9 +174,9 @@
       when: not ansible_check_mode
 
     - name: Listing
-      ansibleguy.opnsense.unbound_host_list:
+      ansibleguy.opnsense.list:
       register: opn2
       failed_when: >
-        opn2.changed or
-        opn2.hosts | length != 0
+        'data' not in opn2 or
+        opn2.data | length != 0
       when: not ansible_check_mode

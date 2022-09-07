@@ -77,9 +77,10 @@ You could either invoke this module:
       match_fields: ['description']
       key_field: 'description'  # rule-field that is used as key of the 'rules' dictionary
 
-    ansibleguy.opnsense.rule_list:
+    ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      target: 'rule'
 
     ansibleguy.opnsense.rule_purge:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
@@ -114,12 +115,13 @@ You could either invoke this module:
             state: 'absent'
 
     - name: Pulling existing rules
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
+      #  target: 'rule'
       register: existing_entries
 
     - name: Printing rules
       ansible.builtin.debug:
-        var: existing_entries.rules
+        var: existing_entries.data
 
     - name: Purging all non-configured rules
       ansibleguy.opnsense.rule_purge:

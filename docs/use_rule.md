@@ -87,7 +87,7 @@ You need to set how this matching is done by setting the 'match_fields' paramete
 
 It is **recommended** to use/set **unique identifiers** like 'description' to make sure rules can be matched without overlapping.
 
-You could also use the UUID of existing rules as ID - but you would have to pull (_rule_list_) and configure those manually. 
+You could also use the UUID of existing rules as ID - but you would have to pull (_list_) and configure those manually. 
 
 ## Examples
 
@@ -101,9 +101,10 @@ You could also use the UUID of existing rules as ID - but you would have to pull
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
-    ansibleguy.opnsense.rule_list:
+    ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'rule'
 
   tasks:
     - name: Example
@@ -131,12 +132,13 @@ You could also use the UUID of existing rules as ID - but you would have to pull
         # debug: true
 
     - name: Listing
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
+      #  target: 'rule'
       register: existing_entries
 
     - name: Printing rules
       ansible.bultin.debug:
-        var: existing_entries.rules
+        var: existing_entries.data
 ```
 
 ### With inventory config
@@ -227,9 +229,10 @@ You can also use the [rule_purge](https://github.com/ansibleguy/collection_opnse
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.rule_list:
+    ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'rule'
 
     ansibleguy.opnsense.rule:
       firewall: 'opnsense.template.ansibleguy.net'
@@ -241,7 +244,8 @@ You can also use the [rule_purge](https://github.com/ansibleguy/collection_opnse
 
   tasks:
     - name: Pulling existing rules
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
+      #  target: 'rule'
       register: existing_entries
 
     - name: Purging unconfigured rules
@@ -256,5 +260,5 @@ You can also use the [rule_purge](https://github.com/ansibleguy/collection_opnse
       
       loop_control:
         loop_var: existing_rule_item
-      with_dict: "{{ existing_entries }}"
+      with_dict: "{{ existing_entries.data }}"
 ```

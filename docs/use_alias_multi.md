@@ -61,9 +61,10 @@ For alias parameters see: [Alias](https://github.com/ansibleguy/collection_opnse
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
-    ansibleguy.opnsense.alias_list:
+    ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      target: 'alias'
 
     ansibleguy.opnsense.alias_purge:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
@@ -103,12 +104,13 @@ For alias parameters see: [Alias](https://github.com/ansibleguy/collection_opnse
         # enabled: true
 
     - name: Listing
-      ansibleguy.opnsense.alias_list:
+      ansibleguy.opnsense.list:
+      #  target: 'alias'
       register: existing_entries
 
     - name: Printing aliases
       ansible.builtin.debug:
-        var: existing_entries.aliases
+        var: existing_entries.data
 
     - name: Purging all non-configured aliases
       ansibleguy.opnsense.alias_purge:

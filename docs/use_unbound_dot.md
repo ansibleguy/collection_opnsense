@@ -10,8 +10,6 @@
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
 
-### ansibleguy.opnsense.unbound_dot
-
 | Parameter  | Type    | Required | Default value | Aliases                   | Comment                                                                                                                                                  |
 |:-----------|:--------|:---------|:---------------|:--------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
 | domain     | string  | true     | -            | dom, d                    | Domain of the DNS-over-TLS entry                                                                                                                         |
@@ -20,9 +18,6 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | verify | string  | false    | -             | common_name, cn, hostname | Verify if CN in certificate matches this value, **if not set - certificate verification will not be performed**! Must be a valid IP-Address or hostname. |
 | reload       | boolean | false    | true                 | -                         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
-### ansibleguy.opnsense.unbound_dot_list
-
-Only basic parameters needed.
 
 ## Info
 
@@ -38,9 +33,10 @@ This module manages DNS-over-TLS configuration that can be found in the WEB-UI m
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
-    ansibleguy.opnsense.unbound_dot_list:
+    ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'unbound_dot'
 
   tasks:
     - name: Example
@@ -60,10 +56,11 @@ This module manages DNS-over-TLS configuration that can be found in the WEB-UI m
         verify: 'dot.template.ansibleguy.net'
 
     - name: Listing dots
-      ansibleguy.opnsense.unbound_dot_list:
+      ansibleguy.opnsense.list:
+      #  target: 'unbound_dot'
       register: existing_entries
 
     - name: Printing DNS-over-TLS entries
       ansible.builtin.debug:
-        var: existing_entries.dots
+        var: existing_entries.data
 ```

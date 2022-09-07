@@ -9,18 +9,19 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
-    ansibleguy.opnsense.unbound_dot_list:
+    ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+      target: 'unbound_dot'
 
   tasks:
     - name: Listing dots
-      ansibleguy.opnsense.unbound_dot_list:
+      ansibleguy.opnsense.list:
       register: opn10
       failed_when: >
-        opn10.changed or
-        opn10.dots | length != 0
+        'data' not in opn10 or
+        opn10.data | length != 0
 
     - name: Removing - does not exist
       ansibleguy.opnsense.unbound_dot:
@@ -109,11 +110,11 @@
       when: not ansible_check_mode
 
     - name: Listing dots
-      ansibleguy.opnsense.unbound_dot_list:
+      ansibleguy.opnsense.list:
       register: opn3
       failed_when: >
-        opn3.changed or
-        opn3.dots | length != 1
+        'data' not in opn3 or
+        opn3.data | length != 1
       when: not ansible_check_mode
 
     - name: Cleanup
@@ -127,9 +128,9 @@
       when: not ansible_check_mode
 
     - name: Listing dots
-      ansibleguy.opnsense.unbound_dot_list:
+      ansibleguy.opnsense.list:
       register: opn2
       failed_when: >
-        opn2.changed or
-        opn2.dots | length != 0
+        'data' not in opn2 or
+        opn2.data | length != 0
       when: not ansible_check_mode

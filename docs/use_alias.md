@@ -46,9 +46,15 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
-    ansibleguy.opnsense.alias_list:
+    ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'alias'
+
+    ansibleguy.opnsense.reload:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'alias'
 
   tasks:
     - name: Example
@@ -71,12 +77,13 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         content: '192.168.1.1'
 
     - name: Listing
-      ansibleguy.opnsense.alias_list:
+      ansibleguy.opnsense.list:
+      #  target: 'alias'
       register: existing_entries
-      
+
     - name: Printing aliases
       ansible.builtin.debug:
-        var: existing_entries.aliases
+        var: existing_entries.data  # type = list of dicts
 
     - name: Changing
       ansibleguy.opnsense.alias:
@@ -125,4 +132,8 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         name: 'ANSIBLE_TEST_1_2_GEOIP2'
         type: 'geoip'
         content: ['AT', 'DE', 'CH']
+
+    - name: Reloading running config
+      ansibleguy.opnsense.reload:
+      #  target: 'alias'
 ```

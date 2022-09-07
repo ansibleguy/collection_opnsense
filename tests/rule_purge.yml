@@ -18,10 +18,11 @@
       match_fields: ['description']
       key_field: 'description'
 
-    ansibleguy.opnsense.rule_list:
+    ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+      target: 'rule'
 
   tasks:
     - name: Adding 1
@@ -66,11 +67,11 @@
         not opn3.changed
 
     - name: Listing rules
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn4
       failed_when: >
-        'rules' not in opn4 or
-        opn4.rules | length != 1
+        'data' not in opn4 or
+        opn4.data | length != 1
       when: not ansible_check_mode  # no use in check mode
 
     - name: Adding 2
@@ -104,11 +105,11 @@
         not opn1.changed
 
     - name: Listing rules
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn5
       failed_when: >
-        'rules' not in opn5 or
-        opn5.rules | length != 1
+        'data' not in opn5 or
+        opn5.data | length != 1
       when: not ansible_check_mode  # no use in check mode
 
     - name: Adding 3
@@ -143,11 +144,11 @@
         not opn6.changed
 
     - name: Listing rules
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn7
       failed_when: >
-        'rules' not in opn7 or
-        opn7.rules | length != 2
+        'data' not in opn7 or
+        opn7.data | length != 2
       when: not ansible_check_mode  # no use in check mode
 
     - name: Adding 4
@@ -182,11 +183,11 @@
         not opn8.changed
 
     - name: Listing rules
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn9
       failed_when: >
-        'rules' not in opn9 or
-        opn9.rules | length != 1
+        'data' not in opn9 or
+        opn9.data | length != 1
       when: not ansible_check_mode  # no use in check mode
 
     - name: Purge ALL - not forced
@@ -205,9 +206,9 @@
         not opn10.changed
 
     - name: Checking cleanup
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn11
       failed_when: >
-        'rules' not in opn11 or
-        opn11.rules | length != 0
+        'data' not in opn11 or
+        opn11.data | length != 0
       when: not ansible_check_mode  # no use in check mode

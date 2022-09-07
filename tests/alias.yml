@@ -325,18 +325,19 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
-    ansibleguy.opnsense.alias_list:
+    ansibleguy.opnsense.list:
+      target: 'alias'
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
   tasks:
     - name: Listing aliases (none)
-      ansibleguy.opnsense.alias_list:
+      ansibleguy.opnsense.list:
       register: opn10
       failed_when: >
-        'aliases' not in opn10 or
-        opn10.aliases | length != 0
+        'data' not in opn10 or
+        opn10.data | length != 0
 
     - name: Adding dummy alias
       ansibleguy.opnsense.alias:
@@ -345,11 +346,11 @@
       when: not ansible_check_mode  # no use in check mode
 
     - name: Listing aliases
-      ansibleguy.opnsense.alias_list:
+      ansibleguy.opnsense.list:
       register: opn11
       failed_when: >
-        'aliases' not in opn11 or
-        opn11.aliases | length != 1
+        'data' not in opn11 or
+        opn11.data | length != 1
       when: not ansible_check_mode  # no use in check mode
 
     - name: Adding dummy alias 2
@@ -359,11 +360,11 @@
       when: not ansible_check_mode  # no use in check mode
 
     - name: Listing aliases
-      ansibleguy.opnsense.alias_list:
+      ansibleguy.opnsense.list:
       register: opn12
       failed_when: >
-        'aliases' not in opn12 or
-        opn12.aliases | length != 2
+        'data' not in opn12 or
+        opn12.data | length != 2
       when: not ansible_check_mode  # no use in check mode
 
     - name: Cleanup

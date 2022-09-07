@@ -11,7 +11,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import RELOAD_MOD_ARG
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import RELOAD_MOD_ARG_DEF_FALSE
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import ALIAS_MOD_ARGS
@@ -25,7 +25,7 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/
 
 def run_module():
     module_args = dict(
-        **RELOAD_MOD_ARG,
+        **RELOAD_MOD_ARG_DEF_FALSE,  # default-true takes pretty long sometimes (urltables and so on)
         **ALIAS_MOD_ARGS
     )
 

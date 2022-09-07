@@ -11,10 +11,11 @@
       match_fields: ['description']
       key_field: 'description'
 
-    ansibleguy.opnsense.rule_list:
+    ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+      target: 'rule'
 
   tasks:
     - name: Removing - do not exist
@@ -112,11 +113,11 @@
       failed_when: not opn8.failed
 
     - name: Listing rules
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn4
       failed_when: >
-        'rules' not in opn4 or
-        opn4.rules | length != 3
+        'data' not in opn4 or
+        opn4.data | length != 3
       when: not ansible_check_mode  # no use in check mode
 
     - name: Removing
@@ -128,9 +129,9 @@
         state: 'absent'
 
     - name: Checking cleanup
-      ansibleguy.opnsense.rule_list:
+      ansibleguy.opnsense.list:
       register: opn5
       failed_when: >
-        'rules' not in opn5 or
-        opn5.rules | length != 0
+        'data' not in opn5 or
+        opn5.data | length != 0
       when: not ansible_check_mode  # no use in check mode

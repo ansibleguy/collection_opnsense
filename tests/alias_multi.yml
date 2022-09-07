@@ -9,10 +9,11 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
-    ansibleguy.opnsense.alias_list:
+    ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+      target: 'alias'
 
   tasks:
     - name: Removing - do not exist
@@ -108,11 +109,11 @@
         not opn3.changed
 
     - name: Listing aliases
-      ansibleguy.opnsense.alias_list:
+      ansibleguy.opnsense.list:
       register: opn4
       failed_when: >
-        'aliases' not in opn4 or
-        opn4.aliases | length != 10
+        'data' not in opn4 or
+        opn4.data | length != 10
       when: not ansible_check_mode  # no use in check mode
 
     - name: Removing
@@ -131,9 +132,9 @@
         state: 'absent'
 
     - name: Checking cleanup
-      ansibleguy.opnsense.alias_list:
+      ansibleguy.opnsense.list:
       register: opn5
       failed_when: >
-        'aliases' not in opn5 or
-        opn5.aliases | length != 0
+        'data' not in opn5 or
+        opn5.data | length != 0
       when: not ansible_check_mode  # no use in check mode
