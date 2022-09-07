@@ -153,6 +153,7 @@ disable=E0611, E0401, W0611,  # ansible modules will not be found
         R0801,  # similar lines because of ansible-module structure
         R1710,  # sometime we'll throw an error instead of returning data
         R1705, R1724,  # elif/else after return if it has a reason
+        C0415,  # list/reload modules
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

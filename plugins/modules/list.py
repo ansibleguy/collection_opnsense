@@ -12,7 +12,6 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import
 
 try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_dot_obj import DnsOverTls
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
