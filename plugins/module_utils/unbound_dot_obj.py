@@ -1,15 +1,14 @@
-import validators
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_ip, valid_hostname
+    is_ip, valid_hostname, get_matching, validate_port
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
+    validate_domain
 
 
 class DnsOverTls:
-    FIELD_ID = 'dot_name'
     CMDS = {
         'add': 'addForward',
         'del': 'delForward',
@@ -18,6 +17,9 @@ class DnsOverTls:
         'toggle': 'toggleForward',
     }
     API_KEY = 'dot'
+    API_MOD = 'unbound'
+    API_CONT = 'settings'
+    API_CONT_REL = 'service'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -27,8 +29,8 @@ class DnsOverTls:
         self.exists = False
         self.dot = {}
         self.call_cnf = {  # config shared by all calls
-            'module': 'unbound',
-            'controller': 'settings',
+            'module': self.API_MOD,
+            'controller': self.API_CONT,
         }
         self.existing_dots = None
 
@@ -45,17 +47,16 @@ class DnsOverTls:
                 self.create()
 
     def check(self):
-        if not validators.domain(self.p['domain']):
-            self.m.fail_json(f"Value '{self.p['domain']}' is an invalid domain!")
-
-        if not validators.between(int(self.p['port']), 1, 65535):
-            self.m.fail_json(f"Value '{self.p['port']}' is an invalid port!")
+        validate_domain(module=self.m, domain=self.p['domain'])
+        validate_port(module=self.m, port=self.p['port'])
 
         if self.p['verify'] not in ['', None] and \
                 not is_ip(self.p['verify']) and \
                 not valid_hostname(self.p['verify']):
-            self.m.fail_json(f"Value '{self.p['verify']}' neither a valid IP-Address "
-                             f"nor a valid hostname!")
+            self.m.fail_json(
+                f"Verify-value '{self.p['verify']}' is neither a valid IP-Address "
+                f"nor a valid hostname!"
+            )
 
         # checking if item exists
         self._find_dot()
@@ -68,18 +69,15 @@ class DnsOverTls:
         if self.existing_dots is None:
             self.existing_dots = self.search_call()
 
-        for existing in self.existing_dots:
-            _matching = []
-            existing = self._simplify_existing(existing)
-
-            for field in ['domain', 'target']:
-                _matching.append(existing[field] == self.p[field])
-
-            if all(_matching):
-                self.dot = existing
-                self.r['diff']['before'] = self.dot
-                self.exists = True
-                break
+        match = get_matching(
+            module=self.m, existing_items=self.existing_dots,
+            compare_item=self.p, match_fields=['domain', 'target'],
+            simplify_func=self._simplify_existing,
+        )
+        if match is not None:
+            self.dot = match
+            self.r['diff']['before'] = self.dot
+            self.exists = True
 
     def search_call(self) -> list:
         dots = []
@@ -179,7 +177,7 @@ class DnsOverTls:
         if not self.m.check_mode:
             self.s.post(cnf={
                 'module': self.call_cnf['module'],
-                'controller': 'service',
+                'controller': self.API_CONT_REL,
                 'command': 'reconfigure',
                 'params': []
             })

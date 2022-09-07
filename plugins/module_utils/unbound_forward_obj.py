@@ -1,15 +1,14 @@
-import validators
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
+    validate_domain
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    get_matching
+    get_matching, validate_port
 
 
 class Forward:
-    FIELD_ID = 'fwd_name'
     CMDS = {
         'add': 'addDot',
         'del': 'delDot',
@@ -17,6 +16,9 @@ class Forward:
         'search': 'get',
     }
     API_KEY = 'dot'
+    API_MOD = 'unbound'
+    API_CONT = 'settings'
+    API_CONT_REL = 'service'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -26,8 +28,8 @@ class Forward:
         self.exists = False
         self.fwd = {}
         self.call_cnf = {  # config shared by all calls
-            'module': 'unbound',
-            'controller': 'settings',
+            'module': self.API_MOD,
+            'controller': self.API_CONT,
         }
         self.call_headers = {
             'Referer': f"https://{self.p['firewall']}:{self.p['api_port']}/ui/unbound/forward",
@@ -49,11 +51,8 @@ class Forward:
                 self.create()
 
     def check(self):
-        if not validators.domain(self.p['domain']):
-            self.m.fail_json(f"Value '{self.p['domain']}' is an invalid domain!")
-
-        if not validators.between(int(self.p['port']), 1, 65535):
-            self.m.fail_json(f"Value '{self.p['port']}' is an invalid port!")
+        validate_domain(module=self.m, domain=self.p['domain'])
+        validate_port(module=self.m, port=self.p['port'])
 
         # checking if item exists
         self._find_fwd()
@@ -182,7 +181,7 @@ class Forward:
         if not self.m.check_mode:
             self.s.post(cnf={
                 'module': self.call_cnf['module'],
-                'controller': 'service',
+                'controller': self.API_CONT_REL,
                 'command': 'reconfigure',
                 'params': []
             })
