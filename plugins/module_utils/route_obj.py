@@ -2,6 +2,7 @@ from ipaddress import ip_network
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import is_true
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 
@@ -120,7 +121,7 @@ class Route:
             'network': route['network'],
             'gateway': route['gateway'].rsplit('-', 1)[0].strip(),
             'description': route['descr'],
-            'enabled': not route['disabled'] in [1, '1', True],
+            'enabled': not is_true(route['disabled']),
         }
 
     def _build_diff_after(self) -> dict:

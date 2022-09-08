@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_ip, get_matching
+    is_ip, get_matching, is_true, to_digit
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
     validate_domain, reconfigure
 
@@ -113,7 +113,7 @@ class Domain:
     def _simplify_existing(domain: dict) -> dict:
         # makes processing easier
         return {
-            'enabled': domain['enabled'] in [1, '1', True],
+            'enabled': is_true(domain['enabled']),
             'uuid': domain['uuid'],
             'domain': domain['domain'],
             'server': domain['server'],
@@ -132,7 +132,7 @@ class Domain:
     def _build_request(self) -> dict:
         return {
             self.API_KEY: {
-                'enabled': 1 if self.p['enabled'] else 0,
+                'enabled': to_digit(self.p['enabled']),
                 'domain': self.p['domain'],
                 'server': self.p['server'],
                 'description': self.p['description'],

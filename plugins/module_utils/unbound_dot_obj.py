@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_ip, valid_hostname, get_matching, validate_port
+    is_ip, valid_hostname, get_matching, validate_port, is_true, to_digit
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
@@ -86,7 +86,7 @@ class DnsOverTls:
 
         if len(raw) > 0:
             for uuid, dot in raw.items():
-                if dot['type']['dot']['selected'] in [1, '1', True]:
+                if is_true(dot['type']['dot']['selected']):
                     dot.pop('type')
                     dot['uuid'] = uuid
                     dots.append(dot)
@@ -133,7 +133,7 @@ class DnsOverTls:
             'target': dot['server'],
             'port': int(dot['port']),
             'verify': dot['verify'],
-            'enabled': dot['enabled'] in [1, '1', True],
+            'enabled': is_true(dot['enabled']),
         }
 
     def _build_diff_after(self) -> dict:
@@ -150,7 +150,7 @@ class DnsOverTls:
         return {
             self.API_KEY: {
                 'type': 'dot',
-                'enabled': 1 if self.p['enabled'] else 0,
+                'enabled': to_digit(self.p['enabled']),
                 'domain': self.p['domain'],
                 'server': self.p['target'],
                 'verify': self.p['verify'],

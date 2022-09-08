@@ -2,6 +2,9 @@ import validators
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    get_selected, get_selected_list, is_true
+
 
 def get_rule(rules: (list, dict), cnf: dict) -> dict:
     rule = {}
@@ -35,50 +38,23 @@ def simplify_existing_rule(rule: dict) -> dict:
     ]
 
     for uuid, values in rule.items():
-        simple['uuid'] = uuid
-        simple['enabled'] = values['enabled'] in [1, '1', True]
-        simple['log'] = values['log'] in [1, '1', True]
-        simple['quick'] = values['quick'] in [1, '1', True]
-        simple['source_invert'] = values['source_not'] in [1, '1', True]
-        simple['destination_invert'] = values['destination_not'] in [1, '1', True]
-
-        if values['action']['block']['selected'] in [1, '1', True]:
-            simple['action'] = 'block'
-
-        elif values['action']['reject']['selected'] in [1, '1', True]:
-            simple['action'] = 'reject'
-
-        else:
-            simple['action'] = 'pass'
+        simple = {
+            'uuid': uuid,
+            'enabled': is_true(values['enabled']),
+            'log': is_true(values['log']),
+            'quick': is_true(values['quick']),
+            'source_invert': is_true(values['source_not']),
+            'destination_invert': is_true(values['destination_not']),
+            'action': get_selected(data=values['action']),
+            'interface': get_selected_list(data=values['interface']),
+            'direction': get_selected(data=values['direction']),
+            'ip_protocol': get_selected(data=values['ipprotocol']),
+            'protocol': get_selected(data=values['protocol']),
+            'gateway': get_selected(data=values['gateway']),
+        }
 
         for field in copy_fields:
             simple[field] = values[field]
-
-        simple['interface'] = []
-
-        for interface, interface_values in values['interface'].items():
-            if interface_values['selected'] in [1, '1', True]:
-                simple['interface'].append(interface)
-
-        for direction, direction_values in values['direction'].items():
-            if direction_values['selected'] in [1, '1', True]:
-                simple['direction'] = direction
-                break
-
-        for proto_name, proto_values in values['ipprotocol'].items():
-            if proto_values['selected'] in [1, '1', True]:
-                simple['ip_protocol'] = proto_name
-                break
-
-        for proto_name, proto_values in values['protocol'].items():
-            if proto_values['selected'] in [1, '1', True]:
-                simple['protocol'] = proto_name
-                break
-
-        for gw, gw_values in values['gateway'].items():
-            if gw_values['selected'] in [1, '1', True]:
-                simple['gateway'] = gw
-                break
 
     return simple
 

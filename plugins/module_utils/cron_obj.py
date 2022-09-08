@@ -1,5 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    is_true, to_digit
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 
@@ -69,12 +71,12 @@ class CronJob:
                     self.exists = True
                     existing_job.pop('origin')
                     existing_job['uuid'] = uuid
-                    existing_job['enabled'] = existing_job['enabled'] in [1, '1', True]
+                    existing_job['enabled'] = is_true(existing_job['enabled'])
 
                     for cmd, cmd_values in existing_job['command'].items():
                         self.available_commands.append(cmd)
 
-                        if cmd_values['selected'] in [1, '1', True]:
+                        if is_true(cmd_values['selected']):
                             existing_job['command'] = cmd
                             break
 
@@ -137,7 +139,7 @@ class CronJob:
     def _build_request(self) -> dict:
         return {
             self.API_KEY: {
-                'enabled': 1 if self.p['enabled'] else 0,
+                'enabled': to_digit(self.p['enabled']),
                 'minutes': self.p['minutes'],
                 'hours': self.p['hours'],
                 'days': self.p['days'],

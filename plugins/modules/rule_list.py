@@ -13,6 +13,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import
 try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import is_true
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -49,7 +50,7 @@ def run_module():
 
         if len(result['rules']) > 0:
             for _uuid, _rule in result['rules'].items():
-                if _rule['enabled'] in [1, '1', True]:
+                if is_true(_rule['enabled']):
                     if module.params['filter'] == 'enabled':
                         filtered_rules[_uuid] = _rule
 

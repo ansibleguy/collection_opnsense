@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    get_matching
+    get_matching, is_true, to_digit
 
 
 class TMPL:
@@ -123,7 +123,7 @@ class TMPL:
     def _simplify_existing(stuff: dict) -> dict:
         # makes processing easier
         return {
-            'enabled': stuff['enabled'] in [1, '1', True],
+            'enabled': is_true(stuff['enabled']),
             'description': stuff['description'],
             'param1': stuff['param1'],
             'param2': stuff['param2'],
@@ -141,7 +141,7 @@ class TMPL:
     def _build_request(self) -> dict:
         return {
             self.API_KEY: {
-                'enabled': 1 if self.p['enabled'] else 0,
+                'enabled': to_digit(self.p['enabled']),
                 'description': self.p['description'],
                 'param1': self.p['param1'],
                 'param2': self.p['param2'],

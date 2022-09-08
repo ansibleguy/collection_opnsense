@@ -6,7 +6,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_ip, get_matching, validate_port, get_selected, get_selected_list
+    is_ip, get_matching, validate_port, get_selected, get_selected_list, is_true, to_digit
 
 
 class Syslog:
@@ -162,8 +162,8 @@ class Syslog:
     def _simplify_existing(dest: dict) -> dict:
         # makes processing easier
         return {
-            'enabled': dest['enabled'] in [1, '1', True],
-            'rfc5424': dest['rfc5424'] in [1, '1', True],
+            'enabled': is_true(dest['enabled']),
+            'rfc5424': is_true(dest['rfc5424']),
             'target': dest['hostname'],
             'description': dest['description'],
             'port': int(dest['port']),
@@ -193,8 +193,8 @@ class Syslog:
     def _build_request(self) -> dict:
         return {
             self.API_KEY: {
-                'rfc5424': 1 if self.p['rfc5424'] else 0,
-                'enabled': 1 if self.p['enabled'] else 0,
+                'rfc5424': to_digit(self.p['rfc5424']),
+                'enabled': to_digit(self.p['enabled']),
                 'transport': self.p['transport'],
                 'description': self.p['description'],
                 'program': ','.join(self.p['program']),

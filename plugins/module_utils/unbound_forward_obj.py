@@ -5,7 +5,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
     validate_domain, reconfigure
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    get_matching, validate_port
+    get_matching, validate_port, is_true, to_digit
 
 
 class Forward:
@@ -83,7 +83,7 @@ class Forward:
 
         if len(raw) > 0:
             for uuid, dot in raw.items():
-                if dot['type']['forward']['selected'] in [1, '1', True]:
+                if is_true(dot['type']['forward']['selected']):
                     dot.pop('type')
                     dot['uuid'] = uuid
                     fwds.append(dot)
@@ -135,7 +135,7 @@ class Forward:
             'domain': fwd['domain'],
             'target': fwd['server'],
             'port': int(fwd['port']),
-            'enabled': fwd['enabled'] in [1, '1', True],
+            'enabled': is_true(fwd['enabled']),
         }
 
     def _build_diff_after(self) -> dict:
@@ -153,7 +153,7 @@ class Forward:
         return {
             self.API_KEY: {
                 'type': 'forward',
-                'enabled': 1 if self.p['enabled'] else 0,
+                'enabled': to_digit(self.p['enabled']),
                 'domain': self.p['domain'],
                 'server': self.p['target'],
                 'port': self.p['port'],

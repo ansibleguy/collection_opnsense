@@ -1,6 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import ensure_list
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    ensure_list, is_true, to_digit
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
     get_rule, validate_values, get_state_change, get_config_change
@@ -156,7 +157,7 @@ class Rule:
         })
 
     def enable(self):
-        if self.exists and self.rule['enabled'] not in [1, '1', True]:
+        if self.exists and not is_true(self.rule['enabled']):
             self.r['changed'] = True
             self.r['diff']['before'] = {'enabled': False}
             self.r['diff']['after'] = {'enabled': True}
@@ -204,21 +205,21 @@ class Rule:
     def _build_request(self) -> dict:
         return {
             self.API_KEY: {
-                'enabled': 1 if self.cnf['enabled'] else 0,
+                'enabled': to_digit(self.cnf['enabled']),
                 'sequence': self.cnf['sequence'],
                 'action': self.cnf['action'],
-                'quick': 1 if self.cnf['quick'] else 0,
+                'quick': to_digit(self.cnf['quick']),
                 'interface': ','.join(map(str, ensure_list(self.cnf['interface']))),
                 'direction': self.cnf['direction'],
                 'ipprotocol': self.cnf['ip_protocol'],
                 'protocol': self.cnf['protocol'],
-                'source_not': 1 if self.cnf['source_invert'] else 0,
+                'source_not': to_digit(self.cnf['source_invert']),
                 'source_net': self.cnf['source_net'],
                 'source_port': '' if self.cnf['source_port'] is None else self.cnf['source_port'],
-                'destination_not': 1 if self.cnf['destination_invert'] else 0,
+                'destination_not': to_digit(self.cnf['destination_invert']),
                 'destination_net': self.cnf['destination_net'],
                 'destination_port': '' if self.cnf['destination_port'] is None else self.cnf['destination_port'],
-                'log': 1 if self.cnf['log'] else 0,
+                'log': to_digit(self.cnf['log']),
                 'description': self.cnf['description'],
             }
         }

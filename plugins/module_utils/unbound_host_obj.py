@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_ip, valid_hostname, get_matching
+    is_ip, valid_hostname, get_matching, get_selected, is_true, to_digit
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
     validate_domain, reconfigure
 
@@ -123,16 +123,13 @@ class Host:
     def _simplify_existing(self, host: dict) -> dict:
         # makes processing easier
         data = {
-            'enabled': host['enabled'] in [1, '1', True],
+            'enabled': is_true(host['enabled']),
             'hostname': host['hostname'],
             'uuid': host['uuid'],
             'domain': host['domain'],
             'description': host['description'],
+            'record_type': get_selected(host['rr']),
         }
-        for record_type, rr_values in host['rr'].items():
-            if rr_values['selected'] in [1, '1', True]:
-                data['record_type'] = record_type
-                break
 
         if self.p['record_type'] == 'MX':
             data['prio'] = host['mxprio']
@@ -158,7 +155,7 @@ class Host:
 
     def _build_request(self) -> dict:
         data = {
-            'enabled': 1 if self.p['enabled'] else 0,
+            'enabled': to_digit(self.p['enabled']),
             'hostname': self.p['hostname'],
             'domain': self.p['domain'],
             'rr': self.p['record_type'],  # A/AAAA/MX

@@ -90,17 +90,25 @@ def validate_port(module: AnsibleModule, port: (int, str)):
         module.fail_json(f"Value '{port}' is an invalid port!")
 
 
+def is_true(data: (str, int, bool)) -> bool:
+    return data in [1, '1', True]
+
+
 def get_selected(data: dict) -> str:
     for key, values in data.items():
-        if values['selected'] in [1, '1', True]:
+        if is_true(values['selected']):
             return key
 
 
 def get_selected_list(data: dict) -> list:
     selected = []
     for key, values in data.items():
-        if values['selected'] in [1, '1', True]:
+        if is_true(values['selected']):
             selected.append(key)
 
     selected.sort()
     return selected
+
+
+def to_digit(data: bool) -> int:
+    return 1 if data else 0
