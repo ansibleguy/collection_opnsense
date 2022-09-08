@@ -54,10 +54,6 @@ class Route:
 
         # checking if item exists
         self._find_route()
-        if self.exists:
-            self.call_cnf['params'] = [self.route['uuid']]
-
-        self.r['diff']['after'] = self._build_diff_after()
 
     def _find_route(self):
         if self.existing_routes is None:
@@ -70,8 +66,10 @@ class Route:
         )
 
         if self.route is not None:
-            self.r['diff']['before'] = self.route
             self.exists = True
+            self.r['diff']['before'] = self.route
+            self.r['diff']['after'] = self._build_diff_after()
+            self.call_cnf['params'] = [self.route['uuid']]
 
     def search_call(self) -> list:
         return self.s.get(cnf={
