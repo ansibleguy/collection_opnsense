@@ -21,6 +21,11 @@
         timeout: 90
         poll_interval: 2
 
+    - name: Wait for system to start
+      ansible.builtin.pause:
+        seconds: 10
+      when: not ansible_check_mode
+
     - name: Upgrade with wait
       ansibleguy.opnsense.system:
         action: 'upgrade'
