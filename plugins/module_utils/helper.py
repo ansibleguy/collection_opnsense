@@ -69,7 +69,7 @@ def get_matching(
                 existing = simplify_func(existing)
 
             for field in match_fields:
-                _matching.append(existing[field] == compare_item[field])
+                _matching.append(str(existing[field]) == str(compare_item[field]))
 
                 if module.params['debug']:
                     if existing[field] != compare_item[field]:
