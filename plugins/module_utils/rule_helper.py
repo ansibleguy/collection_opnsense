@@ -2,6 +2,9 @@ import validators
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    get_matching
+
 
 def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
     error = "Value '%s' is invalid for the field '%s'!"
@@ -63,16 +66,16 @@ def get_config_change(before: dict, after: dict) -> bool:
 
 
 def check_purge_configured(module: AnsibleModule, existing_rule: dict) -> bool:
-    to_purge = True
+    configured_rules = []
 
     for rule_key, rule_config in module.params['rules'].items():
         if rule_config is None:
             rule_config = {}
 
-        rule_config['match_fields'] = module.params['match_fields']
         rule_config[module.params['key_field']] = rule_key
-        if check_for_matching_rule(existing=existing_rule, cnf=rule_config):
-            to_purge = False
-            break
+        configured_rules.append(rule_config)
 
-    return to_purge
+    return get_matching(
+        module=module, existing_items=configured_rules,
+        compare_item=existing_rule, match_fields=module.params['match_fields'],
+    ) is None

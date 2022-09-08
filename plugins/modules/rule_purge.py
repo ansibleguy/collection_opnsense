@@ -17,7 +17,7 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import \
         RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_KEY_FIELD
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
-        simplify_existing_rule, check_purge_configured
+        check_purge_configured
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.purge_helper import \
@@ -61,7 +61,8 @@ def run_module():
     )
 
     session = Session(module=module)
-    existing_rules = Rule(module=module, session=session, result={}).search_call()
+    meta_rule = Rule(module=module, session=session, result={})
+    existing_rules = meta_rule.search_call()
     rules_to_purge = []
 
     def obj_func(rule_to_purge: dict) -> Rule:
@@ -89,16 +90,18 @@ def run_module():
         module.warn('Forced to purge ALL RULES!')
 
         for uuid, raw_existing_rule in existing_rules.items():
+            raw_existing_rule['uuid'] = uuid
             purge(
                 module=module, result=result, obj_func=obj_func,
                 diff_param=module.params['key_field'],
-                item_to_purge=simplify_existing_rule(rule={uuid: raw_existing_rule}),
+                item_to_purge=meta_rule.simplify_existing(raw_existing_rule),
             )
 
     else:
         # checking if existing rule should be purged
         for uuid, raw_existing_rule in existing_rules.items():
-            existing_rule = simplify_existing_rule(rule={uuid: raw_existing_rule})
+            raw_existing_rule['uuid'] = uuid
+            existing_rule = meta_rule.simplify_existing(raw_existing_rule)
             to_purge = check_purge_configured(module=module, existing_rule=existing_rule)
 
             if to_purge:

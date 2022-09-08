@@ -71,7 +71,7 @@ class Rule:
         self.rule = get_matching(
             module=self.m, existing_items=self.existing_rules,
             compare_item=self.cnf, match_fields=self.cnf['match_fields'],
-            simplify_func=self._simplify_existing,
+            simplify_func=self.simplify_existing,
         )
 
         if self.rule is not None:
@@ -79,7 +79,7 @@ class Rule:
             self.call_cnf['params'] = [self.rule['uuid']]
 
     @staticmethod
-    def _simplify_existing(rule):
+    def simplify_existing(rule):
         # because the return of api/firewall/filter/get is too verbose for easy access
         simple = {
             'uuid': rule['uuid'],
