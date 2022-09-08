@@ -77,11 +77,11 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 - [IDS](https://docs.opnsense.org/development/api/core/ids.html)
 - [IPSec](https://docs.opnsense.org/development/api/core/ipsec.html)
 - [Monit](https://docs.opnsense.org/development/api/core/monit.html)
-- [Syslog](https://docs.opnsense.org/development/api/core/syslog.html)
 - [Trafficshaper](https://docs.opnsense.org/development/api/core/trafficshaper.html)
 
 **Plugins API**:
 
+- [Source-NAT](https://docs.opnsense.org/development/api/plugins/firewall.html)
 - [Backup](https://docs.opnsense.org/development/api/plugins/backup.html)
 - [WireGuard](https://docs.opnsense.org/development/api/plugins/wireguard.html)
 - [Zabbix Agent](https://docs.opnsense.org/development/api/plugins/zabbixagent.html)
@@ -234,4 +234,4 @@ fatal: [localhost]: FAILED! => {"changed": false, "msg": "API call failed | Erro
   
   **What to do about it?**
 
-  If you are calling a module **in a loop** for multiple items - it might be faster to use the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md).
+  If you are calling a module **in a loop** for multiple items - it might be faster to use the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md) instead.
