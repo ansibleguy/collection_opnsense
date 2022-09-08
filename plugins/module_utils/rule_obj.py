@@ -15,6 +15,8 @@ class Rule:
         'toggle': 'toggleRule',
     }
     API_KEY = 'rule'
+    API_MOD = 'firewall'
+    API_CONT = 'filter'
 
     def __init__(
             self, module: AnsibleModule, result: dict, cnf: dict = None,
@@ -29,8 +31,8 @@ class Rule:
         self.rule = None
         self.log_name = None
         self.call_cnf = {  # config shared by all calls
-            'module': 'firewall',
-            'controller': 'filter',
+            'module': self.API_MOD,
+            'controller': self.API_CONT,
         }
         self.existing_rules = None
 

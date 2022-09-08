@@ -6,6 +6,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
 
 class Package:
     UPGRADE_MSG = 'Installation out of date'
+    API_MOD = 'core'
+    API_CONT = 'firmware'
 
     def __init__(self, module: AnsibleModule, name: str, session: Session = None):
         self.m = module
@@ -16,14 +18,10 @@ class Package:
             'changed': False, 'version': None,
             'diff': {'before': {'installed': False, 'locked': False}}
         }
-        self.call_cnf = {  # config shared by all calls
-            'module': 'firewall',
-            'controller': 'alias',
-        }
         self.package_stati = None
         self.call_cnf = {
-            'module': 'core',
-            'controller': 'firmware',
+            'module': self.API_MOD,
+            'controller': self.API_CONT,
         }
 
     def check(self):

@@ -20,6 +20,8 @@ class Alias:
         'toggle': 'toggleItem',
     }
     API_KEY = 'alias'
+    API_MOD = 'firewall'
+    API_CONT = 'alias'
 
     def __init__(
             self, module: AnsibleModule, result: dict, cnf: dict = None,
@@ -33,8 +35,8 @@ class Alias:
         self.exists = False
         self.alias = None
         self.call_cnf = {  # config shared by all calls
-            'module': 'firewall',
-            'controller': 'alias',
+            'module': self.API_MOD,
+            'controller': self.API_CONT,
         }
         self.existing_aliases = None
         self.existing_rules = None  # used to check if alias is in use

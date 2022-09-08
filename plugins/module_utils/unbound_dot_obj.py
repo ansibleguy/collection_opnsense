@@ -14,7 +14,6 @@ class DnsOverTls:
         'del': 'delForward',
         'set': 'setForward',
         'search': 'get',
-        'toggle': 'toggleForward',
     }
     API_KEY = 'dot'
     API_MOD = 'unbound'

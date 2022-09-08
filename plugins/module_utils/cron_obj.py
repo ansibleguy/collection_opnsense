@@ -14,6 +14,9 @@ class CronJob:
         'toggle': 'toggleJob',
     }
     API_KEY = 'job'
+    API_MOD = 'cron'
+    API_CONT = 'settings'
+    API_CONT_REL = 'service'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -23,8 +26,8 @@ class CronJob:
         self.exists = False
         self.cron = {}
         self.call_cnf = {  # config shared by all calls
-            'module': 'cron',
-            'controller': 'settings',
+            'module': self.API_MOD,
+            'controller': self.API_CONT,
         }
         self.existing_jobs = None
         self.available_commands = []
@@ -165,7 +168,7 @@ class CronJob:
         if not self.m.check_mode:
             self.s.post(cnf={
                 'module': self.call_cnf['module'],
-                'controller': 'service',
+                'controller': self.API_CONT_REL,
                 'command': 'reconfigure',
                 'params': []
             })

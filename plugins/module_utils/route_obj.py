@@ -15,6 +15,8 @@ class Route:
         'search': 'searchroute',
     }
     API_KEY = 'route'
+    API_MOD = 'routes'
+    API_CONT = 'routes'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -24,8 +26,8 @@ class Route:
         self.exists = False
         self.route = {}
         self.call_cnf = {  # config shared by all calls
-            'module': 'routes',
-            'controller': 'routes',
+            'module': self.API_MOD,
+            'controller': self.API_CONT,
         }
         self.existing_routes = None
 
