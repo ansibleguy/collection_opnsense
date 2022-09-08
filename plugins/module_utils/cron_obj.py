@@ -65,13 +65,14 @@ class CronJob:
         if self.existing_jobs is None:
             self.existing_jobs = self.search_call()
 
-        self.cron = get_matching(
+        match = get_matching(
             module=self.m, existing_items=self.existing_jobs,
             compare_item=self.p, match_fields=[self.FIELD_ID],
             simplify_func=self._simplify_existing,
         )
 
-        if self.cron is not None:
+        if match is not None:
+            self.cron = match
             self.r['diff']['before'] = self.cron
             self.exists = True
 

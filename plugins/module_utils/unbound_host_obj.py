@@ -60,24 +60,23 @@ class Host:
 
         # checking if item exists
         self._find_host()
-        if self.exists:
-            self.call_cnf['params'] = [self.host['uuid']]
-
         self.r['diff']['after'] = self._build_diff_after()
 
     def _find_host(self):
         if self.existing_hosts is None:
             self.existing_hosts = self.search_call()
 
-        self.host = get_matching(
+        match = get_matching(
             module=self.m, existing_items=self.existing_hosts,
             compare_item=self.p, match_fields=self.p['match_fields'],
             simplify_func=self._simplify_existing,
         )
 
-        if self.host is not None:
-            self.r['diff']['before'] = self.host
+        if match is not None:
+            self.host = match
             self.exists = True
+            self.r['diff']['before'] = self.host
+            self.call_cnf['params'] = [self.host['uuid']]
 
     def search_call(self) -> dict:
         return self.s.get(cnf={

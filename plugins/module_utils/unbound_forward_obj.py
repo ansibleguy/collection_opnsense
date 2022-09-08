@@ -56,24 +56,23 @@ class Forward:
 
         # checking if item exists
         self._find_fwd()
-        if self.exists:
-            self.call_cnf['params'] = [self.fwd['uuid']]
-
         self.r['diff']['after'] = self._build_diff_after()
 
     def _find_fwd(self):
         if self.existing_fwds is None:
             self.existing_fwds = self.search_call()
 
-        self.fwd = get_matching(
+        match = get_matching(
             module=self.m, existing_items=self.existing_fwds,
             compare_item=self.p, match_fields=['domain', 'target'],
             simplify_func=self._simplify_existing,
         )
 
-        if self.fwd is not None:
-            self.r['diff']['before'] = self.fwd
+        if match is not None:
+            self.fwd = match
             self.exists = True
+            self.r['diff']['before'] = self.fwd
+            self.call_cnf['params'] = [self.fwd['uuid']]
 
     def search_call(self) -> list:
         fwds = []

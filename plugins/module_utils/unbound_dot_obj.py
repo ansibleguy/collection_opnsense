@@ -59,24 +59,23 @@ class DnsOverTls:
 
         # checking if item exists
         self._find_dot()
-        if self.exists:
-            self.call_cnf['params'] = [self.dot['uuid']]
-
         self.r['diff']['after'] = self._build_diff_after()
 
     def _find_dot(self):
         if self.existing_dots is None:
             self.existing_dots = self.search_call()
 
-        self.dot = get_matching(
+        match = get_matching(
             module=self.m, existing_items=self.existing_dots,
             compare_item=self.p, match_fields=['domain', 'target'],
             simplify_func=self._simplify_existing,
         )
 
-        if self.dot is not None:
-            self.r['diff']['before'] = self.dot
+        if match is not None:
+            self.dot = match
             self.exists = True
+            self.r['diff']['before'] = self.dot
+            self.call_cnf['params'] = [self.dot['uuid']]
 
     def search_call(self) -> list:
         dots = []

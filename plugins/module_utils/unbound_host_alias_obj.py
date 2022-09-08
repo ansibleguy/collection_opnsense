@@ -52,9 +52,6 @@ class Alias:
 
         # checking if item exists
         self._find_alias()
-        if self.exists:
-            self.call_cnf['params'] = [self.alias['uuid']]
-
         self._find_target()
         if self.target is None:
             self.m.fail_json(f"Alias-target '{self.p['target']}' was not found!")
@@ -65,15 +62,17 @@ class Alias:
         if self.existing_aliases is None:
             self.existing_aliases = self.search_call()
 
-        self.alias = get_matching(
+        match = get_matching(
             module=self.m, existing_items=self.existing_aliases,
             compare_item=self.p, match_fields=self.p['match_fields'],
             simplify_func=self._simplify_existing,
         )
 
-        if self.alias is not None:
-            self.r['diff']['before'] = self.alias
+        if match is not None:
+            self.alias = match
             self.exists = True
+            self.r['diff']['before'] = self.alias
+            self.call_cnf['params'] = [self.alias['uuid']]
 
     def _find_target(self):
         if len(self.existing_hosts) > 0:

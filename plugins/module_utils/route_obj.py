@@ -54,21 +54,22 @@ class Route:
 
         # checking if item exists
         self._find_route()
+        self.r['diff']['after'] = self._build_diff_after()
 
     def _find_route(self):
         if self.existing_routes is None:
             self.existing_routes = self.search_call()
 
-        self.route = get_matching(
+        match = get_matching(
             module=self.m, existing_items=self.existing_routes,
             compare_item=self.p, match_fields=self.p['match_fields'],
             simplify_func=self._simplify_existing,
         )
 
-        if self.route is not None:
+        if match is not None:
+            self.route = match
             self.exists = True
             self.r['diff']['before'] = self.route
-            self.r['diff']['after'] = self._build_diff_after()
             self.call_cnf['params'] = [self.route['uuid']]
 
     def search_call(self) -> list:
