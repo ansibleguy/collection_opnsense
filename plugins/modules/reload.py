@@ -45,29 +45,33 @@ def run_module():
 
     target = None
 
-    if module.params['target'] == 'alias':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
-        target = Alias(module=module, result=result)
+    try:
+        if module.params['target'] == 'alias':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
+            target = Alias(module=module, result=result)
 
-    elif module.params['target'] == 'rule':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
-        target = Rule(module=module, result=result)
+        elif module.params['target'] == 'rule':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
+            target = Rule(module=module, result=result)
 
-    elif module.params['target'] == 'route':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.route_obj import Route
-        target = Route(module=module, result=result)
+        elif module.params['target'] == 'route':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.route_obj import Route
+            target = Route(module=module, result=result)
 
-    elif module.params['target'] == 'cron':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.cron_obj import CronJob
-        target = CronJob(module=module, result=result)
+        elif module.params['target'] == 'cron':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.cron_obj import CronJob
+            target = CronJob(module=module, result=result)
 
-    elif module.params['target'] == 'unbound':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_host_obj import Host
-        target = Host(module=module, result=result)
+        elif module.params['target'] == 'unbound':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_host_obj import Host
+            target = Host(module=module, result=result)
 
-    elif module.params['target'] == 'syslog':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.syslog_obj import Syslog
-        target = Syslog(module=module, result=result)
+        elif module.params['target'] == 'syslog':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.syslog_obj import Syslog
+            target = Syslog(module=module, result=result)
+
+    except MODULE_EXCEPTIONS:
+        module_dependency_error()
 
     if target is not None:
         result['changed'] = True

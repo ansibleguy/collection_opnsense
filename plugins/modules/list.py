@@ -4,6 +4,7 @@
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
 # module to reload running config
+# pylint: disable=R0912,R0915
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -47,54 +48,58 @@ def run_module():
     target = None
     filter_func = None
 
-    if module.params['target'] == 'alias':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
-            filter_builtin_alias
-        target = Alias(module=module, result=result)
-        filter_func = filter_builtin_alias
+    try:
+        if module.params['target'] == 'alias':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
+                filter_builtin_alias
+            target = Alias(module=module, result=result)
+            filter_func = filter_builtin_alias
 
-    elif module.params['target'] == 'rule':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
-        target = Rule(module=module, result=result)
+        elif module.params['target'] == 'rule':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
+            target = Rule(module=module, result=result)
 
-    elif module.params['target'] == 'route':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.route_obj import Route
-        target = Route(module=module, result=result)
+        elif module.params['target'] == 'route':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.route_obj import Route
+            target = Route(module=module, result=result)
 
-    elif module.params['target'] == 'cron':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.cron_obj import CronJob
-        target = CronJob(module=module, result=result)
+        elif module.params['target'] == 'cron':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.cron_obj import CronJob
+            target = CronJob(module=module, result=result)
 
-    elif module.params['target'] == 'unbound_host':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_host_obj import Host
-        target = Host(module=module, result=result)
+        elif module.params['target'] == 'unbound_host':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_host_obj import Host
+            target = Host(module=module, result=result)
 
-    elif module.params['target'] == 'unbound_host_alias':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_host_alias_obj import Alias
-        target = Alias(module=module, result=result)
+        elif module.params['target'] == 'unbound_host_alias':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_host_alias_obj import Alias
+            target = Alias(module=module, result=result)
 
-    elif module.params['target'] == 'unbound_domain':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_domain_obj import Domain
-        target = Domain(module=module, result=result)
+        elif module.params['target'] == 'unbound_domain':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_domain_obj import Domain
+            target = Domain(module=module, result=result)
 
-    elif module.params['target'] == 'unbound_dot':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_dot_obj import DnsOverTls
-        target = DnsOverTls(module=module, result=result)
+        elif module.params['target'] == 'unbound_dot':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_dot_obj import DnsOverTls
+            target = DnsOverTls(module=module, result=result)
 
-    elif module.params['target'] == 'unbound_forward':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_forward_obj import Forward
-        target = Forward(module=module, result=result)
+        elif module.params['target'] == 'unbound_forward':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_forward_obj import Forward
+            target = Forward(module=module, result=result)
 
-    elif module.params['target'] == 'syslog':
-        from ansible_collections.ansibleguy.opnsense.plugins.module_utils.syslog_obj import Syslog
-        target = Syslog(module=module, result=result)
+        elif module.params['target'] == 'syslog':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.syslog_obj import Syslog
+            target = Syslog(module=module, result=result)
 
-    elif module.params['target'] == 'package':
-        # todo: add package list-functionality to return list of installed packages (+version)
-        # from ansible_collections.ansibleguy.opnsense.plugins.module_utils.package_obj import Package
-        # target = Package(module=module, result=result)
-        pass
+        elif module.params['target'] == 'package':
+            # todo: add package list-functionality to return list of installed packages (+version)
+            # from ansible_collections.ansibleguy.opnsense.plugins.module_utils.package_obj import Package
+            # target = Package(module=module, result=result)
+            pass
+
+    except MODULE_EXCEPTIONS:
+        module_dependency_error()
 
     result['data'] = None
 

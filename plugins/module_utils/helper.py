@@ -75,7 +75,7 @@ def get_matching(
                     if existing[field] != compare_item[field]:
                         module.warn(
                             f"NOT MATCHING: "
-                            f"{existing[field]} != {compare_item[field]}"
+                            f"'{existing[field]}' != '{compare_item[field]}'"
                         )
 
             if all(_matching):
@@ -88,3 +88,19 @@ def get_matching(
 def validate_port(module: AnsibleModule, port: (int, str)):
     if not validators.between(int(port), 1, 65535):
         module.fail_json(f"Value '{port}' is an invalid port!")
+
+
+def get_selected(data: dict) -> str:
+    for key, values in data.items():
+        if values['selected'] in [1, '1', True]:
+            return key
+
+
+def get_selected_list(data: dict) -> list:
+    selected = []
+    for key, values in data.items():
+        if values['selected'] in [1, '1', True]:
+            selected.append(key)
+
+    selected.sort()
+    return selected

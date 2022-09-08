@@ -67,6 +67,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **DNS Host overrides**   | ansibleguy.opnsense.unbound_host       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host.md)       | unstable |
 | **DNS Domain overrides** | ansibleguy.opnsense.unbound_domain     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_domain.md)     | unstable |
 | **DNS Host-Aliases**     | ansibleguy.opnsense.unbound_host_alias | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host_alias.md) | testing  |
+| **Syslog**               | ansibleguy.opnsense.syslog             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_syslog.md)             | unstable  |
 
 
 ### Roadmap
@@ -216,3 +217,21 @@ fatal: [localhost]: FAILED! => {"changed": false, "msg": "API call failed | Erro
 
 - 'option not in list' => an invalid option was provided for this parameter
 - 'port only allowed for tcp/udp' => any protocol except 'TCP' or 'UDP' provided
+
+**Known issues**:
+
+
+- **Module-call taking long**
+
+  Many of the modules need to 'apply' its configuration after a change happened.
+
+  Sometimes this 'reload' takes some time as the firewall needs to process some information.
+
+  Per example:
+
+  - URL-Table alias needs to be populated
+  - Syslog needs to resolve its DNS-target (_if not able to resolve_)
+  
+  **What to do about it?**
+
+  If you are calling a module **in a loop** for multiple items - it might be faster to use the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md).

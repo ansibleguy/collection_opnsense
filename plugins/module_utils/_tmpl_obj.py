@@ -2,6 +2,8 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    get_matching
 
 
 class TMPL:
@@ -61,22 +63,16 @@ class TMPL:
         if self.existing_stuffs is None:
             self.existing_stuffs = self.search_call()
 
-        for existing in self.existing_stuffs:
-            _matching = []
-            existing = self._simplify_existing(existing)
+        match = get_matching(
+            module=self.m, existing_items=self.existing_stuffs,
+            compare_item=self.p, match_fields=['domain', 'target'],  # or match_fields
+            simplify_func=self._simplify_existing,
+        )
 
-            for field in []:  # match_fields
-                _matching.append(existing[field] == self.p[field])
-
-                # troubleshooting
-                # if existing[field] != self.p[field]:
-                #     self.m.warn(f"NOT MATCHING: {existing[field]} != {self.p[field]}")
-
-            if all(_matching):
-                self.stuff = existing
-                self.r['diff']['before'] = self.stuff
-                self.exists = True
-                break
+        if match is not None:
+            self.stuff = match
+            self.r['diff']['before'] = self.stuff
+            self.exists = True
 
     def _error(self, msg: str):
         # for special handling of errors

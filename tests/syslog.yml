@@ -1,0 +1,128 @@
+---
+
+- name: Testing Syslog
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.syslog:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'syslog'
+
+  tasks:
+    - name: Removing - does not exist
+      ansibleguy.opnsense.syslog:
+        description: 'ANSIBLE_TEST_1'
+        target: '192.168.0.1'
+        state: 'absent'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+
+    - name: Adding 1
+      ansibleguy.opnsense.syslog:
+        description: 'ANSIBLE_TEST_1'
+        target: '192.168.0.1'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+
+    - name: Failing tls validition
+      ansibleguy.opnsense.syslog:
+        description: 'ANSIBLE_TEST_3'
+        target: '192.168.0.2'
+        transport: 'tls4'
+      register: opn9
+      failed_when: not opn9.failed
+
+    - name: Failing IPv4 validition
+      ansibleguy.opnsense.syslog:
+        description: 'ANSIBLE_TEST_3'
+        target: 'd563:4c4e:1919:0914:3489:1d43:6264:ac73'
+        transport: 'tcp4'
+      register: opn10
+      failed_when: not opn10.failed
+
+    - name: Failing IPv6 validition
+      ansibleguy.opnsense.syslog:
+        description: 'ANSIBLE_TEST_3'
+        target: '192.168.0.1'
+        transport: 'tcp6'
+      register: opn11
+      failed_when: not opn11.failed
+
+    - name: Adding 2 - DNS target
+      ansibleguy.opnsense.syslog:
+        description: 'ANSIBLE_TEST_2'
+        target: 'test.local'
+        transport: 'tcp6'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.syslog:
+        description: 'ANSIBLE_TEST_1'
+        target: '192.168.0.1'
+        enabled: false
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.syslog:
+        description: 'ANSIBLE_TEST_1'
+        target: '192.168.0.1'
+        enabled: false
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        opn7.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.syslog:
+        description: 'ANSIBLE_TEST_1'
+        target: '192.168.0.1'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn1
+      failed_when: >
+        'data' not in opn1 or
+        opn1.data | length != 2
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.syslog:
+        description: "{{ item }}"
+        target: '192.168.0.1'
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1'
+        - 'ANSIBLE_TEST_2'
+        - 'ANSIBLE_TEST_3'
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn2
+      failed_when: >
+        'data' not in opn2 or
+        opn2.data | length != 0

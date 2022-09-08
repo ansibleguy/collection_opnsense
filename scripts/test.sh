@@ -166,6 +166,15 @@ ansible-playbook tests/unbound_domain.yml --check --extra-vars="ansible_python_i
 
 echo ''
 echo '##############################'
+echo 'RUNNING TESTS for module SYSLOG'
+echo ''
+
+ansible-playbook tests/syslog.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/syslog.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+
+echo ''
+echo '##############################'
 echo 'FINISHED TESTS!'
 echo '##############################'
 echo ''
