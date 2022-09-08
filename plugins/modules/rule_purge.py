@@ -85,43 +85,44 @@ def run_module():
             len(module.params['filters']) == 0:
         module.fail_json("You need to either provide 'rules' or 'filters'!")
 
-    if module.params['force_all'] and len(module.params['rules']) == 0 and \
-            len(module.params['filters']) == 0:
-        module.warn('Forced to purge ALL RULES!')
+    if len(existing_rules) > 0:
+        if module.params['force_all'] and len(module.params['rules']) == 0 and \
+                len(module.params['filters']) == 0:
+            module.warn('Forced to purge ALL RULES!')
 
-        for uuid, raw_existing_rule in existing_rules.items():
-            raw_existing_rule['uuid'] = uuid
-            purge(
-                module=module, result=result, obj_func=obj_func,
-                diff_param=module.params['key_field'],
-                item_to_purge=meta_rule.simplify_existing(raw_existing_rule),
-            )
+            for uuid, raw_existing_rule in existing_rules.items():
+                raw_existing_rule['uuid'] = uuid
+                purge(
+                    module=module, result=result, obj_func=obj_func,
+                    diff_param=module.params['key_field'],
+                    item_to_purge=meta_rule.simplify_existing(raw_existing_rule),
+                )
 
-    else:
-        # checking if existing rule should be purged
-        for uuid, raw_existing_rule in existing_rules.items():
-            raw_existing_rule['uuid'] = uuid
-            existing_rule = meta_rule.simplify_existing(raw_existing_rule)
-            to_purge = check_purge_configured(module=module, existing_rule=existing_rule)
+        else:
+            # checking if existing rule should be purged
+            for uuid, raw_existing_rule in existing_rules.items():
+                raw_existing_rule['uuid'] = uuid
+                existing_rule = meta_rule.simplify_existing(raw_existing_rule)
+                to_purge = check_purge_configured(module=module, existing_rule=existing_rule)
 
-            if to_purge:
-                to_purge = check_purge_filter(module=module, item=existing_rule)
+                if to_purge:
+                    to_purge = check_purge_filter(module=module, item=existing_rule)
 
-            if to_purge:
-                if module.params['debug']:
-                    module.warn(
-                        f"Existing rule '{existing_rule[module.params['key_field']]}' "
-                        f"will be purged!"
-                    )
+                if to_purge:
+                    if module.params['debug']:
+                        module.warn(
+                            f"Existing rule '{existing_rule[module.params['key_field']]}' "
+                            f"will be purged!"
+                        )
 
-                rules_to_purge.append(existing_rule)
+                    rules_to_purge.append(existing_rule)
 
-        for rule in rules_to_purge:
-            result['changed'] = True
-            purge(
-                module=module, result=result, diff_param=module.params['key_field'],
-                obj_func=obj_func, item_to_purge=rule
-            )
+            for rule in rules_to_purge:
+                result['changed'] = True
+                purge(
+                    module=module, result=result, diff_param=module.params['key_field'],
+                    obj_func=obj_func, item_to_purge=rule
+                )
 
     session.close()
     result['diff'] = diff_remove_empty(result['diff'])
