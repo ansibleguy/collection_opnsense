@@ -1,5 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    is_true
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 
@@ -35,10 +37,10 @@ class Package:
 
                 self.r['diff']['before']['version'] = pkg_status['version']
 
-                if pkg_status['installed'] in ['1', 1, True]:
+                if is_true(pkg_status['installed']):
                     self.r['diff']['before']['installed'] = True
 
-                if pkg_status['locked'] in ['1', 1, True]:
+                if is_true(pkg_status['locked']):
                     self.r['diff']['before']['locked'] = True
 
         self.r['diff']['after'] = self.r['diff']['before'].copy()

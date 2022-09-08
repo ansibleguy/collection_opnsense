@@ -61,13 +61,13 @@ class Domain:
         if self.existing_domains is None:
             self.existing_domains = self.search_call()
 
-        match = get_matching(
+        self.domain = get_matching(
             module=self.m, existing_items=self.existing_domains,
             compare_item=self.p, match_fields=self.p['match_fields'],
             simplify_func=self._simplify_existing,
         )
-        if match is not None:
-            self.domain = match
+
+        if self.domain is not None:
             self.r['diff']['before'] = self.domain
             self.exists = True
 

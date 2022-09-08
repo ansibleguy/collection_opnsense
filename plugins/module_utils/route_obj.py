@@ -2,7 +2,8 @@ from ipaddress import ip_network
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import is_true
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+    is_true, get_matching
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 
@@ -62,21 +63,15 @@ class Route:
         if self.existing_routes is None:
             self.existing_routes = self.search_call()
 
-        # check if configured is in existing
-        for route in self.existing_routes:
-            route = self._simplify_existing(route)
-            _matching = []
-            for field in self.p['match_fields']:
-                _matching.append(route[field] == self.p[field])
+        self.route = get_matching(
+            module=self.m, existing_items=self.existing_routes,
+            compare_item=self.p, match_fields=self.p['match_fields'],
+            simplify_func=self._simplify_existing,
+        )
 
-                if self.p['debug'] and field == 'gateway' and route[field] != self.p[field]:
-                    self.m.warn(f"GW NOT MATCHED: {route[field]} != {self.p[field]}")
-
-            if all(_matching):
-                self.route = route
-                self.r['diff']['before'] = self.route
-                self.exists = True
-                break
+        if self.route is not None:
+            self.r['diff']['before'] = self.route
+            self.exists = True
 
     def search_call(self) -> list:
         return self.s.get(cnf={

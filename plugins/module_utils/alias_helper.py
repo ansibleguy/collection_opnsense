@@ -57,17 +57,6 @@ def validate_values(error_func, cnf: dict) -> None:
         #             error_func(error)
 
 
-def get_alias(name: str, aliases: list) -> dict:
-    alias = {}
-
-    for existing in aliases:
-        if existing['name'] == name:
-            alias = existing
-            break
-
-    return alias
-
-
 def convert_existing_type(existing: str) -> str:
     return existing.lower().replace(' ', '').split('(', 1)[0]
 

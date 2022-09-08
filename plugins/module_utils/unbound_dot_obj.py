@@ -68,13 +68,13 @@ class DnsOverTls:
         if self.existing_dots is None:
             self.existing_dots = self.search_call()
 
-        match = get_matching(
+        self.dot = get_matching(
             module=self.m, existing_items=self.existing_dots,
             compare_item=self.p, match_fields=['domain', 'target'],
             simplify_func=self._simplify_existing,
         )
-        if match is not None:
-            self.dot = match
+
+        if self.dot is not None:
             self.r['diff']['before'] = self.dot
             self.exists = True
 

@@ -65,13 +65,13 @@ class Forward:
         if self.existing_fwds is None:
             self.existing_fwds = self.search_call()
 
-        match = get_matching(
+        self.fwd = get_matching(
             module=self.m, existing_items=self.existing_fwds,
             compare_item=self.p, match_fields=['domain', 'target'],
             simplify_func=self._simplify_existing,
         )
-        if match is not None:
-            self.fwd = match
+
+        if self.fwd is not None:
             self.r['diff']['before'] = self.fwd
             self.exists = True
 

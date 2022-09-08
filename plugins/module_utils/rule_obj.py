@@ -1,10 +1,10 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    ensure_list, is_true, to_digit
+    ensure_list, is_true, to_digit, get_selected_list, get_selected, get_matching
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
-    get_rule, validate_values, get_state_change, get_config_change
+    validate_values, get_state_change, get_config_change
 
 
 class Rule:
@@ -68,13 +68,41 @@ class Rule:
         if self.m.params['debug']:
             self.m.warn(f"EXISTING RULES: {self.existing_rules}")
 
-        self.rule = get_rule(
-            rules=self.existing_rules,
-            cnf=self.cnf,
+        self.rule = get_matching(
+            module=self.m, existing_items=self.existing_rules,
+            compare_item=self.cnf, match_fields=self.cnf['match_fields'],
+            simplify_func=self._simplify_existing,
         )
-        self.exists = len(self.rule) > 0
-        if self.exists:
+
+        if self.rule is not None:
+            self.exists = True
             self.call_cnf['params'] = [self.rule['uuid']]
+
+    @staticmethod
+    def _simplify_existing(rule):
+        # because the return of api/firewall/filter/get is too verbose for easy access
+        simple = {
+            'uuid': rule['uuid'],
+            'enabled': is_true(rule['enabled']),
+            'log': is_true(rule['log']),
+            'quick': is_true(rule['quick']),
+            'source_invert': is_true(rule['source_not']),
+            'destination_invert': is_true(rule['destination_not']),
+            'action': get_selected(data=rule['action']),
+            'interface': get_selected_list(data=rule['interface']),
+            'direction': get_selected(data=rule['direction']),
+            'ip_protocol': get_selected(data=rule['ipprotocol']),
+            'protocol': get_selected(data=rule['protocol']),
+            'gateway': get_selected(data=rule['gateway']),
+        }
+
+        for field in [
+            'sequence', 'source_net', 'source_not', 'source_port', 'destination_net',
+            'destination_not', 'destination_port', 'description'
+        ]:
+            simple[field] = rule[field]
+
+        return simple
 
     def _error(self, msg: str):
         if self.fail:
@@ -83,17 +111,11 @@ class Rule:
         else:
             self.m.warn(msg)
 
-    def search_call(self) -> dict:
+    def search_call(self) -> (dict, list):
         # returns dict of rules
-        rules = self.s.get(cnf={
+        return self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['filter']['rules'][self.API_KEY]
-
-        if isinstance(rules, list) and len(rules) == 0:
-            # I guess server-side PHP is interpreting the empty named-array as simple array
-            return {}
-
-        return rules
 
     def create(self):
         # creating rule

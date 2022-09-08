@@ -3,9 +3,9 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
-    validate_values, get_alias, equal_type, alias_in_use_by_rule, compare_aliases
+    validate_values, equal_type, alias_in_use_by_rule, compare_aliases
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    ensure_list
+    ensure_list, get_matching
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
 
 
@@ -68,9 +68,13 @@ class Alias:
         if self.existing_aliases is None:
             self.existing_aliases = self.search_call()
 
-        self.alias = get_alias(aliases=self.existing_aliases, name=self.cnf[self.FIELD_ID])
-        self.exists = len(self.alias) > 0
-        if self.exists:
+        self.alias = get_matching(
+            module=self.m, existing_items=self.existing_aliases,
+            compare_item=self.cnf, match_fields=[self.FIELD_ID],
+        )
+
+        if self.alias is not None:
+            self.exists = True
             self.call_cnf['params'] = [self.alias['uuid']]
             if self.cnf['type'] == 'urltable':
                 try:
@@ -79,7 +83,7 @@ class Alias:
                 except ValueError:
                     self.alias['updatefreq_days'] = float(0)
 
-        if not self.exists and self.cnf['state'] == 'present':
+        elif self.cnf['state'] == 'present':
             if self.cnf['content'] is None or len(self.cnf['content']) == 0:
                 self.m.fail_json('You need to provide values to create an alias!')
 

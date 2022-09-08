@@ -65,13 +65,13 @@ class Alias:
         if self.existing_aliases is None:
             self.existing_aliases = self.search_call()
 
-        match = get_matching(
+        self.alias = get_matching(
             module=self.m, existing_items=self.existing_aliases,
             compare_item=self.p, match_fields=self.p['match_fields'],
             simplify_func=self._simplify_existing,
         )
-        if match is not None:
-            self.alias = match
+
+        if self.alias is not None:
             self.r['diff']['before'] = self.alias
             self.exists = True
 

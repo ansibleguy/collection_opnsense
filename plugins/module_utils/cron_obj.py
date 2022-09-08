@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_true, to_digit
+    is_true, to_digit, get_matching
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 
@@ -65,25 +65,36 @@ class CronJob:
         if self.existing_jobs is None:
             self.existing_jobs = self.search_call()
 
-        if len(self.existing_jobs) > 0:
-            for uuid, existing_job in self.existing_jobs.items():
-                if existing_job[self.FIELD_ID] == self.p[self.FIELD_ID]:
-                    self.exists = True
-                    existing_job.pop('origin')
-                    existing_job['uuid'] = uuid
-                    existing_job['enabled'] = is_true(existing_job['enabled'])
+        self.cron = get_matching(
+            module=self.m, existing_items=self.existing_jobs,
+            compare_item=self.p, match_fields=[self.FIELD_ID],
+            simplify_func=self._simplify_existing,
+        )
 
-                    for cmd, cmd_values in existing_job['command'].items():
-                        self.available_commands.append(cmd)
+        if self.cron is not None:
+            self.r['diff']['before'] = self.cron
+            self.exists = True
 
-                        if is_true(cmd_values['selected']):
-                            existing_job['command'] = cmd
-                            break
+    def _simplify_existing(self, existing: dict) -> dict:
+        simple = existing
+        simple.pop('origin')
+        existing['enabled'] = is_true(existing['enabled'])
 
-                    self.cron = existing_job
-                    self.r['diff']['before'] = self.cron
-                    self.exists = True
+        # to get full list of commands
+        init_cmds = False
+        if len(self.available_commands) == 0:
+            init_cmds = True
+
+        for cmd, cmd_values in existing['command'].items():
+            if cmd not in self.available_commands:
+                self.available_commands.append(cmd)
+
+            if is_true(cmd_values['selected']):
+                existing['command'] = cmd
+                if not init_cmds:
                     break
+
+        return simple
 
     def search_call(self) -> list:
         return self.s.get(cnf={

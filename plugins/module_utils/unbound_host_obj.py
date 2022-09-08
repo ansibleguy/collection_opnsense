@@ -69,13 +69,13 @@ class Host:
         if self.existing_hosts is None:
             self.existing_hosts = self.search_call()
 
-        match = get_matching(
+        self.host = get_matching(
             module=self.m, existing_items=self.existing_hosts,
             compare_item=self.p, match_fields=self.p['match_fields'],
             simplify_func=self._simplify_existing,
         )
-        if match is not None:
-            self.host = match
+
+        if self.host is not None:
             self.r['diff']['before'] = self.host
             self.exists = True
 
