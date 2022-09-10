@@ -68,7 +68,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **DNS Domain overrides** | ansibleguy.opnsense.unbound_domain     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_domain.md)     | unstable |
 | **DNS Host-Aliases**     | ansibleguy.opnsense.unbound_host_alias | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host_alias.md) | unstable  |
 | **Syslog**               | ansibleguy.opnsense.syslog             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_syslog.md)             | unstable  |
-| **IPSec Certificates**   | ansibleguy.opnsense.ipsec_cert         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/ipsec.md)                  | unstable  |
+| **IPSec Certificates**   | ansibleguy.opnsense.ipsec_cert         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_ipsec.md)              | unstable  |
 
 
 ### Roadmap
