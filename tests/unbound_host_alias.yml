@@ -140,7 +140,6 @@
         opn13.changed
       when: not ansible_check_mode
 
-    # todo: bug deletion not working and getting jsonDecodeError (?!)
     - name: Removing 2
       ansibleguy.opnsense.unbound_host_alias:
         description: 'ANSIBLE_TEST_1_2'

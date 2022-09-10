@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    get_matching, is_true, to_digit
+    get_matching, is_true, to_digit, get_simple_existing
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
     validate_domain, reconfigure
 
@@ -11,7 +11,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper
 class Alias:
     CMDS = {
         'add': 'addHostAlias',
-        'del': 'delDHostAlias',
+        'del': 'delHostAlias',
         'set': 'setHostAlias',
         'search': 'get',
     }
@@ -53,14 +53,14 @@ class Alias:
         # checking if item exists
         self._find_alias()
         self._find_target()
-        if self.target is None:
+        if self.p['state'] == 'present' and self.target is None:
             self.m.fail_json(f"Alias-target '{self.p['target']}' was not found!")
 
         self.r['diff']['after'] = self._build_diff_after()
 
     def _find_alias(self):
         if self.existing_aliases is None:
-            self.existing_aliases = self.search_call()
+            self.existing_aliases = self._search_call()
 
         match = get_matching(
             module=self.m, existing_items=self.existing_aliases,
@@ -81,12 +81,17 @@ class Alias:
                     self.target = uuid
                     break
 
-    def search_call(self) -> dict:
+    def get_existing(self) -> list:
+        return get_simple_existing(
+            entries=self._search_call(),
+            simplify_func=self._simplify_existing
+        )
+
+    def _search_call(self) -> dict:
         unbound = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['unbound']
         self.existing_hosts = unbound['hosts']['host']
-        # raise SystemExit(self.existing_hosts)
         return unbound['aliases'][self.API_KEY]
 
     def create(self):
@@ -135,7 +140,6 @@ class Alias:
 
         if len(alias['host']) > 0:
             simple['target'] = [v['value'] for v in alias['host'].values()][0]
-            simple['uuid'] = list(alias['host'].keys())[0]
 
         return simple
 
@@ -161,22 +165,14 @@ class Alias:
         }
 
     def delete(self):
-        # todo: bug deletion not working and getting jsonDecodeError (?!)
-        bug = True
+        self.r['changed'] = True
+        self.r['diff']['after'] = {}
 
-        if bug:
-            self.p['enabled'] = False
-            self.update()
+        if not self.m.check_mode:
+            self._delete_call()
 
-        else:
-            self.r['changed'] = True
-            self.r['diff']['after'] = {}
-
-            if not self.m.check_mode:
-                self._delete_call()
-
-                if self.p['debug']:
-                    self.m.warn(f"{self.r['diff']}")
+            if self.p['debug']:
+                self.m.warn(f"{self.r['diff']}")
 
     def _delete_call(self) -> dict:
         return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})

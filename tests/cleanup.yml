@@ -42,6 +42,12 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.unbound_host_alias:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+
     ansibleguy.opnsense.unbound_host:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
@@ -113,6 +119,17 @@
       loop:
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
+
+    - name: Cleanup DNS host-override aliases
+      ansibleguy.opnsense.unbound_host_alias:
+        description: "{{ item }}"
+        alias: 'dummy'
+        domain: 'dummy'
+        target: 'dummy.local'
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
 
     - name: Cleanup DNS host-overrides
       ansibleguy.opnsense.unbound_host:

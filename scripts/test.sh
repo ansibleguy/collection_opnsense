@@ -162,7 +162,14 @@ echo ''
 ansible-playbook tests/unbound_domain.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/unbound_domain.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
-# todo: unbound_host_alias
+echo ''
+echo '##############################'
+echo 'RUNNING TESTS for module UNBOUND-HOST-ALIAS'
+echo ''
+
+ansible-playbook tests/unbound_host_alias.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/unbound_host_alias.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
 
 echo ''
 echo '##############################'

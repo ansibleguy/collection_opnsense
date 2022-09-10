@@ -19,10 +19,6 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | description  | string | false    | -             | desc      | Optional description for the host-alias. Could be used as unique-identifier when set as only 'match_field'.                                                                                                                    |
 | reload       | boolean | false    | true                 | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
-## Known issues
-
-Deletion (_state: 'absent'_) not working for some unknown reason.
-
 ## Info
 
 This module manages DNS host-alias override configuration that can be found in the WEB-UI menu: 'Services - Unbound DNS - Overrides - Host overrides - Aliases'
