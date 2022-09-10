@@ -46,7 +46,7 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
     ansibleguy.opnsense.unbound_domain:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
-      # match_fields: ['description']
+      match_fields: ['description']
 
     ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
@@ -70,6 +70,7 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         server: '192.168.0.1'
         match_fields: ['description']
         description: 'test1'
+        # match_fields: ['description']
 
     - name: Disabling
       ansibleguy.opnsense.unbound_domain:
@@ -78,14 +79,15 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         match_fields: ['description']
         description: 'test1'
         enabled: false
+        # match_fields: ['description']
 
     - name: Removing
       ansibleguy.opnsense.unbound_domain:
         domain: 'opnsense.template.ansibleguy.net'
         server: '192.168.0.1'
         state: 'absent'
-        match_fields: ['description']
         description: 'test1'
+        # match_fields: ['description']
 
     - name: Listing domains
       ansibleguy.opnsense.list:

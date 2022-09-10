@@ -40,7 +40,7 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
     ansibleguy.opnsense.route:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
-      # match_fields: ['description']
+      match_fields: ['description']
 
     ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
@@ -63,6 +63,7 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         description: 'test2'
         network: '10.206.0.0/16'
         gateway: 'VPN_GW'
+        # match_fields: ['description']
 
     - name: Disabling route
       ansibleguy.opnsense.route:
@@ -70,6 +71,7 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         network: '10.55.0.0/16'
         gateway: 'VPN_GW'
         enabled: false
+        # match_fields: ['description']
 
     - name: Listing routes
       ansibleguy.opnsense.list:

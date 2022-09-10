@@ -113,6 +113,8 @@ You could either invoke this module:
             action: 'block'
             ip_proto: 'inet6'
             state: 'absent'
+        # match_fields: ['description']
+        # key_field: 'description'
 
     - name: Pulling existing rules
       ansibleguy.opnsense.list:
@@ -127,6 +129,8 @@ You could either invoke this module:
       ansibleguy.opnsense.rule_purge:
         aliases: {...}
         # action: 'disable'  # default = remove
+        # match_fields: ['description']
+        # key_field: 'description'
 
     - name: Purging allow-rules on interface opt2 that use IPv4
       ansibleguy.opnsense.rule_purge:
@@ -135,6 +139,8 @@ You could either invoke this module:
           action: 'allow'
           interface: ['opt2']
         # filter_invert: true  # purge all non-port rules
+        # match_fields: ['description']
+        # key_field: 'description'
 ```
 
 ### Options
@@ -158,6 +164,9 @@ You can also override all rule parameters as needed.
     defaults:
       action: 'block'
       sequence: 50
+
+    # match_fields: ['description']
+    # key_field: 'description'
 ```
 
 To simplify the modules usage and config - you can also use shorter parameter aliases.
@@ -183,6 +192,9 @@ To simplify the modules usage and config - you can also use shorter parameter al
         p: 'TCP'  # protocol
         i: ['lan', 'opt1']  # interface
         en: false  # enabled
+
+    # match_fields: ['description']
+    # key_field: 'description'
 ```
 
 ### Troubleshooting

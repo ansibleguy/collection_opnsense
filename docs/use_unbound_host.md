@@ -21,8 +21,6 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | description | string | false    | -             | desc            | Optional description for the host-override. Could be used as unique-identifier when set as only 'match_field'.                                                                                                                                     |
 | reload       | boolean | false    | true                 | -               | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
-Only basic parameters needed.
-
 ## Info
 
 This module manages DNS host-overrides configuration that can be found in the WEB-UI menu: 'Services - Unbound DNS - Overrides - Host overrides'
@@ -55,7 +53,7 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
     ansibleguy.opnsense.unbound_host:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
-      # match_fields: ['description']
+      match_fields: ['description']
 
     ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
@@ -81,8 +79,8 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         hostname: 'host'
         domain: 'opnsense.template.ansibleguy.net'
         value: '192.168.0.1'
-        match_fields: ['description']
         description: 'test1'
+        # match_fields: ['description']
 
     - name: Removing
       ansibleguy.opnsense.unbound_host:
@@ -90,8 +88,8 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         domain: 'opnsense.template.ansibleguy.net'
         value: '192.168.0.1'
         state: 'absent'
-        match_fields: ['description']
         description: 'test1'
+        # match_fields: ['description']
 
     - name: Adding MX record
       ansibleguy.opnsense.unbound_host:
@@ -99,8 +97,8 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         domain: 'opnsense.template.ansibleguy.net'
         value: 'host.opnsense.template.ansibleguy.net'
         record_type: 'MX'
-        match_fields: ['description']
         description: 'test2'
+        # match_fields: ['description']
 
     - name: Listing hosts
       ansibleguy.opnsense.list:

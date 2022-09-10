@@ -50,7 +50,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | Function                 | Module                                 | Usage                                                                                                | State    |
 |:-------------------------|:---------------------------------------|:-----------------------------------------------------------------------------------------------------|:---------|
 | **Base**                 | ansibleguy.opnsense.list               | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_list.md)               | unstable  |
-| **Base**                 | ansibleguy.opnsense.reload             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md)             | testing  |
+| **Base**                 | ansibleguy.opnsense.reload             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md)             | unstable  |
 | **Alias**                | ansibleguy.opnsense.alias              | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)              | unstable | 
 | **Alias**                | ansibleguy.opnsense.alias_multi        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md)        | unstable |
 | **Alias**                | ansibleguy.opnsense.alias_purge        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md)        | unstable |

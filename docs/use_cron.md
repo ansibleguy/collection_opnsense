@@ -69,7 +69,7 @@ To add custom cron-job scripts - see: [Documentation](https://docs.opnsense.org/
     - name: Removing some job
       ansibleguy.opnsense.cron:
         description: 'test3'
-      state: 'absent'
+        state: 'absent'
 
     - name: Adding monthly firmware upgrade
       ansibleguy.opnsense.cron:

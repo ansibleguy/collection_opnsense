@@ -19,9 +19,6 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | description  | string | false    | -             | desc      | Optional description for the host-alias. Could be used as unique-identifier when set as only 'match_field'.                                                                                                                    |
 | reload       | boolean | false    | true                 | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
-
-Only basic parameters needed.
-
 ## Known issues
 
 Deletion (_state: 'absent'_) not working for some unknown reason.
@@ -58,7 +55,7 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
     ansibleguy.opnsense.unbound_host_alias:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
-      # match_fields: ['description']
+      match_fields: ['description']
 
     ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
@@ -82,17 +79,17 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         alias: 'test1'
         domain: 'local'
         target: 'test.local'
-        match_fields: ['description']
         description: 'test1'
+        # match_fields: ['description']
 
     - name: Disabling
       ansibleguy.opnsense.unbound_host_alias:
         alias: 'test1'
         domain: 'local'
         target: 'test.local'
-        match_fields: ['description']
         description: 'test1'
         enabled: false
+        # match_fields: ['description']
 
     - name: Removing
       ansibleguy.opnsense.unbound_host_alias:
@@ -100,8 +97,8 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
         domain: 'local'
         target: 'test.local'
         state: 'absent'
-        match_fields: ['description']
         description: 'test1'
+        # match_fields: ['description']
 
     - name: Listing aliases
       ansibleguy.opnsense.list:

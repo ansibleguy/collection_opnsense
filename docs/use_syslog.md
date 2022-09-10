@@ -33,7 +33,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
-      # match_fields: ['description']
+      match_fields: ['description']
 
   tasks:
     - name: Example
@@ -53,4 +53,5 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
       ansibleguy.opnsense.syslog:
         description: 'test1'
         target: '192.168.0.1'
+        # match_fields: ['description']
 ```
