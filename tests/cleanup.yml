@@ -66,6 +66,11 @@
       ssl_verify: false
       match_fields: ['description']
 
+    ansibleguy.opnsense.ipsec_cert:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Cleanup Aliases
       ansibleguy.opnsense.alias_purge:
@@ -163,3 +168,11 @@
         - 'ANSIBLE_TEST_1'
         - 'ANSIBLE_TEST_2'
         - 'ANSIBLE_TEST_3'
+
+    - name: Cleanup ipsec certs
+      ansibleguy.opnsense.ipsec_cert:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
