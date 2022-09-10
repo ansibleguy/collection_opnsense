@@ -4,7 +4,7 @@
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
 # module to reload running config
-# pylint: disable=R0912,R0915
+# pylint: disable=R0912,R0915,R0914
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -29,7 +29,7 @@ def run_module():
             choises=[
                 'alias', 'rule', 'route', 'cron', 'syslog', 'package',
                 'unbound_host', 'unbound_domain', 'unbound_dot', 'unbound_forward',
-                'unbound_host_alias',
+                'unbound_host_alias', 'ipsec_cert',
             ],
             description='What part of the running config should be listed'
         ),
@@ -91,7 +91,10 @@ def run_module():
         elif module.params['target'] == 'package':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.package_obj import Package
             target = Package(module=module, name='dummy')
-            pass
+
+        elif module.params['target'] == 'ipsec_cert':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.ipsec_cert_obj import KeyPair
+            target = KeyPair(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

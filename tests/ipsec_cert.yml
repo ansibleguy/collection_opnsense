@@ -1,0 +1,217 @@
+---
+
+- name: Testing IPSec certificates
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.ipsec_cert:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      reload: true
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'ipsec_cert'
+
+  vars:
+    test1:
+      pub: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2OJtOwz6s6+v0UCcjiOA
+        eAQCaLZADjZ3kdc70/U6S1nzo6jWU6Aii/md+BLw0SLs4c5krNpo3zQ7dhZLpUIH
+        DZVvAMQnfi1kZmrInLdQYZ6/i+ilxHSGC+jm+7Uuz5rPotw4kICZ92PofE4+B3uJ
+        kS1PASbcJCbL2cidOyoatKLj38+9iQF54ZBVpOz2XNkuAG1lRPFmuQtc72MTyFzv
+        02PlGWuZt3twDL9Hn61HRGmA3Wy3xto0y/ZKzEHZH+wiGV8wCM4kuxONxtzc/ezQ
+        ox6rLPKBPQkbXqCE5Y9rp7xlpcrYuuWIneyKepLlw6vHnRv7+y4LIwk658HjsKzi
+        OQIDAQAB
+        -----END PUBLIC KEY-----
+      priv: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEowIBAAKCAQEA2OJtOwz6s6+v0UCcjiOAeAQCaLZADjZ3kdc70/U6S1nzo6jW
+        U6Aii/md+BLw0SLs4c5krNpo3zQ7dhZLpUIHDZVvAMQnfi1kZmrInLdQYZ6/i+il
+        xHSGC+jm+7Uuz5rPotw4kICZ92PofE4+B3uJkS1PASbcJCbL2cidOyoatKLj38+9
+        iQF54ZBVpOz2XNkuAG1lRPFmuQtc72MTyFzv02PlGWuZt3twDL9Hn61HRGmA3Wy3
+        xto0y/ZKzEHZH+wiGV8wCM4kuxONxtzc/ezQox6rLPKBPQkbXqCE5Y9rp7xlpcrY
+        uuWIneyKepLlw6vHnRv7+y4LIwk658HjsKziOQIDAQABAoIBAQDAvwH6P7+x3wnu
+        enBntc9fWZjWfFmTB/7dgp2t8js7ahantM29BgyNv2oPZK3V/ybsSqOYJoabDu1l
+        Nc1GcdaY0NwUnz7F2QtoJbBh7lwmVZG/giOH41KZ1QMqYUvXvqqW/wXaDiBHBug/
+        SL3Bop2Qgua6jFGKY1w5ERwCz5lqO9HLmaiaZtiiiejw0gKJI1/YKbmzpq+k5kxl
+        uamN/7FQTApQS2PN9FjqEaxcPuz8Yi+uEpjbVW75lkPmibVIHg7FXmXaz860Qw/8
+        X/RckjeVivqq4V1KjDDhbRMNhJAytLTgo4r4/MaRdsYAX1yU9dWKPcGl78JeePm8
+        4kT4AUzxAoGBAPgwwsQLlONfKKWfBaAKLGM88N9qicrC8ptzSZWn7FqjrjL+wiIG
+        X0s88l/mzMPLCXqFg3RHSgdvISAfXx27TttpljGc28RENiZOB5tLbPsh7IM1BTrg
+        Ov2qNsxWO5xqxOxX/+tW0rov2uWM96tLrv+YI3KT1C1ifdX5FW3U3tG9AoGBAN+1
+        fOgH/sqNqeE/gnvS25b3U9A/ZmdR13hOVss1v1r4Oa+tKmawYk/rdTuqW5nIoJ1V
+        EO/IwzXoOyVn+OYQaj3rn4E/ybRAy0AMRZhIrZbWIBX3MnP0xxGAHfFItWI+qeoy
+        mLz6VuAJauvOsAuL76wPYdd4q+MUC9/oJYFecFQtAoGAC5Sq4d7weZONH/1Fk+wl
+        mhPT4XjlKRLjoyFEA7msK6aLkFGW2WOWuroDTTpFv7UPoinsslZJPAORdiBAnfCJ
+        g29v1KzPDF9qb2sgq7xfP3CbypuEvPSNjByPJgW4DlplCeopRN/uQUXOXvuu6s1D
+        QyXkMYp4Ug3QdVWEDHXsV7kCgYBUk1/CtWsdlwtXzlP9jk1YuO7l92I2w5lLsYpc
+        z1gmA1yDz1sNcbfpcSJkSVbSQCiA8u0xSlyLH95kmPdfu2r/N/qYuc3/KNPuxfT1
+        ytxd/1woEcnwTuWH90DavNteZkSE91YJdDeuAcF7nyutYd1d1n7uIIATnLuUjkbH
+        rzWWjQKBgHilCTPkvf+awlSTZTxomfJogZI8pPGBuKfEzqKrmGKNhqbunFJvg5IW
+        R6TK1xBlSgiaplTf+yBFbUHmlQ1Yc4CW0HGUAzRS/qaDeba5tmwKiNs+ekFSbw/m
+        0Z0gyiFy6GY4g/BMNO7Kw/LqGOMVTl+cwUrpBdGQXMnhb9z/iKa8
+        -----END RSA PRIVATE KEY-----
+    test2:
+      pub: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApo6ZJHN8swJDESP61U0f
+        9WT4utwZr465dhgsb28ZmVtCEbNcjOx5HFYoHC/r/olLwxtonz/VXhfGjHR/MDDt
+        Zr9VBQJmrbpWEJfqffmzdab2RHcqHGz06WnJMdhRfIaasmbgmrYQBmc7Q0sZXjvR
+        x184vpWSb5alOnDWBBvlqUoahyywuzr7oh79UXqTJM3M52xXnAlbO7nYixeh0+oR
+        iqsF7F/ouKbVeuR6f4znnXskhJksY99kbVpCkVTJ+rGb0E+QjxHKWpLYvOFo7Kho
+        vTRrOvf/9NRHBImwGcOHAa1gmuw8BUxeG627a6rACJbhRLY4DxmixESWuHNRh26T
+        YwIDAQAB
+        -----END PUBLIC KEY-----
+      priv: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEogIBAAKCAQEApo6ZJHN8swJDESP61U0f9WT4utwZr465dhgsb28ZmVtCEbNc
+        jOx5HFYoHC/r/olLwxtonz/VXhfGjHR/MDDtZr9VBQJmrbpWEJfqffmzdab2RHcq
+        HGz06WnJMdhRfIaasmbgmrYQBmc7Q0sZXjvRx184vpWSb5alOnDWBBvlqUoahyyw
+        uzr7oh79UXqTJM3M52xXnAlbO7nYixeh0+oRiqsF7F/ouKbVeuR6f4znnXskhJks
+        Y99kbVpCkVTJ+rGb0E+QjxHKWpLYvOFo7KhovTRrOvf/9NRHBImwGcOHAa1gmuw8
+        BUxeG627a6rACJbhRLY4DxmixESWuHNRh26TYwIDAQABAoIBAGzCkxftXdFauca4
+        kvO0MBlC/PSwAwnTjiGieWmux62PnN4IHHhddlxdmkWFuXn114YpILFUspSFu/49
+        mEw0tuEwMWla/weUtNyTBumKI3jBNPDSS6pSL783d8zXr6Y8E0pJyYLdPiugP1+a
+        647QSxUAhgJVk1DQs0YtJmN6gAaBsoMqWoVcW6uSNZtneeg+FVW0gPYk5vCcQ/Pe
+        4O0hMJfR/jgH2d7Knk8qNmLPnbuLGYHcjlSo1POTGEcvsF8JtUEGTI0OkB3cElTF
+        0fS0M0COPyke1vADlo6TF7Vt0tHFX5cSBRjjrKZ0bAZwb5iXVtjMORqdXsKD+PVm
+        wJR04NECgYEA0r7qNRt/QmORlDS90fBB0ZwC/fT0tq9x+nuzOr3zT6I+UJNiuM5F
+        x+TIBzrowz3zSjrw0nKcOvc+6KW/0nB4GOKwon6X4Lsgf/YayrWj16bM5RG2I0vj
+        ezlJdmfjXQib9xIkNf/WlL0tBZSEvnCkgn4Li0jn66Ge926coZi00xkCgYEAylKL
+        637EZbfO8spbzW2dflTq+3fS1xY+FuZ8/WzxC9n39prtonF2PaERKjc5OPA37snN
+        xgxIOBW+Dob+oTopNvbcFidVMalgLBwYqCp0ZpAZb8fAJEubLyRkD9dyCKGzHBat
+        SG8iNXB3YCGMxuLOVP0YuHIxKCRiIuiGai/ihdsCgYBkgyu/AotShZyUPAdgjp9F
+        sov2xZLFYq4Q0lisJpZaH75qvbCzBaZgbSw9zonfPLfBapUbOhBrSyrU2ODBJGUT
+        MWMfTRNw2q7oeN9UWQd4vhQxGJ5u/S3UwoDYGTpmT8nbL+rXWlrke8lyROB+18iO
+        eEFXQAFk76OazUWlCOkNWQKBgH+Ei3/ABFUABsVr2XSes/cd2oToPtElybhxSTIJ
+        advIY8rgVwpdbOLnE4SCDeTfMsGkG7fJofMHcSSC3RYNLFDiQlEMNVv5nw3uH3RO
+        XdMO25liUq4NoR+TViXN6qeaEuOPP2Q591urKPJD8xCffuB+LQiDoIvmcpwB5kYj
+        LCilAoGAFfBsmc/F4GrwZ17jSR71Hc2+YreEYR03k0KB1Y4CkSzRppuWnC+GUy2c
+        D6vOkcod0zFqson4AeaVDBsaXw/0MndgFTO2u5yVXg3sypL2RrScWCpt06Dzb5r9
+        kI20NFA11fXwlZiuV35+K+nZkwz+fSEgGlx7GygTupVhWi3iJXU=
+        -----END RSA PRIVATE KEY-----
+    test2_mismatch:
+      pub: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApo6ZJHN8swJDESP61U0f
+        9WT4utwZr355dhgsb28ZmVtCEbNcjOx5HFYoHC/r/olLwxtonz/VXhfGjHR/MDDt
+        Zr9VBQJmrbpWEJfqffmzdab2RHcqHGz06WnJMdhRfIaasmbgmrYQBmc7Q0sZXjvR
+        x184vpWSb5alOnDWBBvlqUoahyywuzr7oh79UXqTJM3M52xXnAlbO7nYixeh0+oR
+        iqsF7F/ouKbVeuR6f4znnXskhJksY99kbVpCkVTJ+rGb0E+QjxHKWpLYvOFo7Kho
+        vTRrOvf/9NRHBImwGcOHAa1gmuw8BUxeG627a6rACJbhRLY4DxmixESWuHNRh26T
+        YwIDAQAB
+        -----END PUBLIC KEY-----
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn2
+      failed_when: >
+        'data' not in opn2 or
+        opn2.data | length != 0
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.ipsec_cert:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+
+    - name: Validation - failing because of invalid pub-key
+      ansibleguy.opnsense.ipsec_cert:
+        name: 'ANSIBLE_TEST_1_1'
+        public_key: 'not-a-pubkey'
+        private_key: "{{ test1.priv }}"
+      register: opn3
+      failed_when: not opn3.failed
+
+    - name: Validation - failing because of invalid priv-key
+      ansibleguy.opnsense.ipsec_cert:
+        name: 'ANSIBLE_TEST_1_1'
+        public_key: "{{ test1.pub }}"
+        private_key: 'not-a-privkey'
+      register: opn4
+      failed_when: not opn4.failed
+
+    - name: Validation - failing because of key-mismatch (server-side)
+      ansibleguy.opnsense.ipsec_cert:
+        name: 'ANSIBLE_TEST_1_1'
+        public_key: "{{ test2_mismatch.pub }}"
+        private_key: "{{ test2.priv }}"
+      register: opn5
+      failed_when: not opn5.failed
+      when: not ansible_check_mode
+
+    - name: Adding 1
+      ansibleguy.opnsense.ipsec_cert:
+        name: 'ANSIBLE_TEST_1_1'
+        public_key: "{{ test1.pub }}"
+        private_key: "{{ test1.priv }}"
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+
+    - name: Adding 1 - nothing changed
+      ansibleguy.opnsense.ipsec_cert:
+        name: 'ANSIBLE_TEST_1_1'
+        public_key: "{{ test1.pub }}"
+        private_key: "{{ test1.priv }}"
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.ipsec_cert:
+        name: 'ANSIBLE_TEST_1_2'
+        public_key: "{{ test2.pub }}"
+        private_key: "{{ test2.priv }}"
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.ipsec_cert:
+        name: 'ANSIBLE_TEST_1_1'
+        public_key: "{{ test2.pub }}"
+        private_key: "{{ test2.priv }}"
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn10
+      failed_when: >
+        'data' not in opn10 or
+        opn10.data | length != 2
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.ipsec_cert:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn2
+      failed_when: >
+        'data' not in opn2 or
+        opn2.data | length != 0
+      when: not ansible_check_mode

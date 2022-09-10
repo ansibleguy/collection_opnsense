@@ -43,6 +43,15 @@ echo ''
 
 echo ''
 echo '##############################'
+echo 'RUNNING TESTS for module RELOAD'
+echo ''
+
+ansible-playbook tests/reload.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+# no task will be executed..
+# ansible-playbook tests/reload.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+echo ''
+echo '##############################'
 echo 'RUNNING TESTS for module ALIAS'
 echo ''
 
@@ -170,7 +179,6 @@ echo ''
 ansible-playbook tests/unbound_host_alias.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/unbound_host_alias.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
-
 echo ''
 echo '##############################'
 echo 'RUNNING TESTS for module SYSLOG'
@@ -179,6 +187,13 @@ echo ''
 ansible-playbook tests/syslog.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/syslog.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
+echo ''
+echo '##############################'
+echo 'RUNNING TESTS for module IPSEC-CERT'
+echo ''
+
+ansible-playbook tests/ipsec_cert.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/ipsec_cert.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
 echo ''
 echo '##############################'

@@ -66,16 +66,18 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **DNS over TLS**         | ansibleguy.opnsense.unbound_dot        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_dot.md)        | unstable |
 | **DNS Host overrides**   | ansibleguy.opnsense.unbound_host       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host.md)       | unstable |
 | **DNS Domain overrides** | ansibleguy.opnsense.unbound_domain     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_domain.md)     | unstable |
-| **DNS Host-Aliases**     | ansibleguy.opnsense.unbound_host_alias | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host_alias.md) | testing  |
+| **DNS Host-Aliases**     | ansibleguy.opnsense.unbound_host_alias | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host_alias.md) | unstable  |
 | **Syslog**               | ansibleguy.opnsense.syslog             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_syslog.md)             | unstable  |
+| **IPSec Certificates**   | ansibleguy.opnsense.ipsec_cert         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/ipsec.md)                  | unstable  |
 
 
 ### Roadmap
 
 **Core API**:
 
+- [Proxy](https://docs.opnsense.org/development/api/core/proxy.html)
 - [IDS](https://docs.opnsense.org/development/api/core/ids.html)
-- [IPSec](https://docs.opnsense.org/development/api/core/ipsec.html)
+- [~~IPSec~~](https://docs.opnsense.org/development/api/core/ipsec.html) => [not API enabled](https://forum.opnsense.org/index.php?topic=18914.0)
 - [Monit](https://docs.opnsense.org/development/api/core/monit.html)
 - [Trafficshaper](https://docs.opnsense.org/development/api/core/trafficshaper.html)
 

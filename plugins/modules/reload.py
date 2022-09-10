@@ -27,7 +27,7 @@ def run_module():
         target=dict(
             type='str', required=True, aliases=['dom', 'd'],
             choises=[
-                'alias', 'rule', 'route', 'cron', 'unbound', 'syslog',
+                'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec'
             ],
             description='What part of the running config should be reloaded'
         ),
@@ -70,13 +70,17 @@ def run_module():
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.syslog_obj import Syslog
             target = Syslog(module=module, result=result)
 
+        elif module.params['target'] == 'ipsec':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.ipsec_cert_obj import KeyPair
+            target = KeyPair(module=module, result=result)
+
     except MODULE_EXCEPTIONS:
         module_dependency_error()
 
     if target is not None:
         result['changed'] = True
         if not module.check_mode:
-            target.reconfigure()
+            target.reload()
 
         if hasattr(target, 's'):
             target.s.close()
