@@ -90,7 +90,7 @@ def run_module():
     syslog.process()
 
     if result['changed'] and module.params['reload']:
-        syslog.reconfigure()
+        syslog.reload()
 
     syslog.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

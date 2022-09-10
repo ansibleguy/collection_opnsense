@@ -122,7 +122,7 @@ def run_module():
             )
 
     if result['changed'] and module.params['reload']:
-        meta_alias.reconfigure()
+        meta_alias.reload()
 
     session.close()
     result['diff'] = diff_remove_empty(result['diff'])

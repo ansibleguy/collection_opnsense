@@ -62,7 +62,7 @@ def run_module():
     dot.check()
     dot.process()
     if result['changed'] and module.params['reload']:
-        dot.reconfigure()
+        dot.reload()
 
     dot.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

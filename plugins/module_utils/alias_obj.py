@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
-    validate_values, alias_in_use_by_rule, compare_aliases, filter_builtin_alias
+    validate_values, alias_in_use_by_rule, filter_builtin_alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
     ensure_list, get_matching, get_simple_existing, is_true, get_selected
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
@@ -21,6 +21,8 @@ class Alias:
     API_KEY = 'alias'
     API_MOD = 'firewall'
     API_CONT = 'alias'
+    API_CMD_REL = 'reconfigure'
+    CHANGE_CHECK_FIELDS = ['enabled', 'content', 'description']
 
     def __init__(
             self, module: AnsibleModule, result: dict, cnf: dict = None,
@@ -144,7 +146,7 @@ class Alias:
             _before = self._build_diff(data=self.alias)
             _after = self._build_diff(data=self.cnf)
 
-            for field in ['enabled', 'content', 'description']:
+            for field in self.CHANGE_CHECK_FIELDS:
                 if _before[field] != _after[field]:
                     self.r['changed'] = True
                     break
@@ -273,9 +275,9 @@ class Alias:
             }
         })
 
-    def reconfigure(self):
+    def reload(self):
         # reload the aliases to apply changes
         if not self.m.check_mode:
             self.s.post(cnf={
-                **self.call_cnf, **{'command': 'reconfigure', 'params': []}
+                **self.call_cnf, **{'command': self.API_CMD_REL, 'params': []}
             })

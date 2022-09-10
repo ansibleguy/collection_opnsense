@@ -19,6 +19,8 @@ class Route:
     API_KEY = 'route'
     API_MOD = 'routes'
     API_CONT = 'routes'
+    API_CMD_REL = 'reconfigure'
+    CHANGE_CHECK_FIELDS = ['network', 'gateway', 'description', 'enabled']
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -99,7 +101,7 @@ class Route:
 
     def update(self):
         # checking if changed
-        for field in ['network', 'gateway', 'description', 'enabled']:
+        for field in self.CHANGE_CHECK_FIELDS:
             if self.route[field] != self.p[field]:
                 self.r['changed'] = True
                 break
@@ -159,9 +161,9 @@ class Route:
     def _delete_call(self) -> dict:
         return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
 
-    def reconfigure(self):
+    def reload(self):
         # reload the active routes
         if not self.m.check_mode:
             self.s.post(cnf={
-                **self.call_cnf, **{'command': 'reconfigure', 'params': []}
+                **self.call_cnf, **{'command': self.API_CMD_REL, 'params': []}
             })

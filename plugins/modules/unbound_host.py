@@ -70,7 +70,7 @@ def run_module():
     host.check()
     host.process()
     if result['changed'] and module.params['reload']:
-        host.reconfigure()
+        host.reload()
 
     host.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

@@ -45,8 +45,8 @@ def run_module():
     alias = Alias(module=module, result=result)
     alias.check()
     alias.process()
-    if result['changed'] and module.params['reload']:
-        alias.reconfigure()
+    if result['changed'] and module.params['reconfigure']:
+        alias.reload()
 
     alias.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

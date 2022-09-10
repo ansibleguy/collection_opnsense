@@ -5,7 +5,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
     is_ip, valid_hostname, get_matching, get_selected, is_true, to_digit, get_simple_existing
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
-    validate_domain, reconfigure
+    validate_domain, reload
 
 
 class Host:
@@ -19,6 +19,11 @@ class Host:
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
+    API_CMD_REL = 'reconfigure'
+    CHANGE_CHECK_FIELDS = [
+        'hostname', 'domain', 'record_type', 'prio', 'value',
+        'description', 'enabled'
+    ]
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -102,12 +107,7 @@ class Host:
 
     def update(self):
         # checking if changed
-        check_fields = [
-            'hostname', 'domain', 'record_type', 'prio', 'value',
-            'description', 'enabled'
-        ]
-
-        for field in set(check_fields) - set(self.p['match_fields']):
+        for field in set(self.CHANGE_CHECK_FIELDS) - set(self.p['match_fields']):
             if str(self.host[field]) != str(self.p[field]):
                 self.r['changed'] = True
                 break
@@ -192,6 +192,6 @@ class Host:
     def _delete_call(self) -> dict:
         return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
 
-    def reconfigure(self):
+    def reload(self):
         # reload running config
-        reconfigure(self)
+        reload(self)

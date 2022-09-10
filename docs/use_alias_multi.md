@@ -2,7 +2,7 @@
 
 **STATE**: unstable
 
-**TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias_multi.yml) | [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias_purge.yml)
+**TESTS**: [alias_multi](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias_multi.yml) | [alias_purge](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias_purge.yml)
 
 **API DOCS**: [Core - Firewall](https://docs.opnsense.org/development/api/core/firewall.html)
 

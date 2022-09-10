@@ -2,7 +2,7 @@
 
 **STATE**: unstable
 
-**TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule_multi.yml) | [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule_purge.yml)
+**TESTS**: [rule_multi](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule_multi.yml) | [rule_purge](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule_purge.yml)
 
 **API DOCS**: [Plugins - Firewall](https://docs.opnsense.org/development/api/plugins/firewall.html)
 

@@ -84,7 +84,7 @@ def run_module():
     job.check()
     job.process()
     if result['changed'] and module.params['reload']:
-        job.reconfigure()
+        job.reload()
 
     job.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

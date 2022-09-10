@@ -63,7 +63,7 @@ def run_module():
     route.check()
     route.process()
     if result['changed'] and module.params['reload']:
-        route.reconfigure()
+        route.reload()
 
     route.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

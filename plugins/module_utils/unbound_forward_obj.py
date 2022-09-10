@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
-    validate_domain, reconfigure
+    validate_domain, reload
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
     get_matching, validate_port, is_true, to_digit, get_simple_existing
 
@@ -19,6 +19,8 @@ class Forward:
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
+    API_CMD_REL = 'reconfigure'
+    CHANGE_CHECK_FIELDS = ['domain', 'target', 'enabled', 'port']
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -111,7 +113,7 @@ class Forward:
 
     def update(self):
         # checking if changed
-        for field in ['domain', 'target', 'enabled', 'port']:
+        for field in self.CHANGE_CHECK_FIELDS:
             if self.fwd[field] != self.p[field]:
                 self.r['changed'] = True
                 break
@@ -181,6 +183,6 @@ class Forward:
             headers=self.call_headers,
         )
 
-    def reconfigure(self):
+    def reload(self):
         # reload running config
-        reconfigure(self)
+        reload(self)

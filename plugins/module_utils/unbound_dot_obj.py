@@ -6,7 +6,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
-    validate_domain, reconfigure
+    validate_domain, reload
 
 
 class DnsOverTls:
@@ -20,6 +20,8 @@ class DnsOverTls:
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
+    API_CMD_REL = 'reconfigure'
+    CHANGE_CHECK_FIELDS = ['domain', 'target', 'enabled', 'port', 'verify']
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -112,7 +114,7 @@ class DnsOverTls:
 
     def update(self):
         # checking if changed
-        for field in ['domain', 'target', 'enabled', 'port', 'verify']:
+        for field in self.CHANGE_CHECK_FIELDS:
             if str(self.dot[field]) != str(self.p[field]):
                 self.r['changed'] = True
                 break
@@ -177,6 +179,6 @@ class DnsOverTls:
     def _delete_call(self) -> dict:
         return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
 
-    def reconfigure(self):
+    def reload(self):
         # reload running config
-        reconfigure(self)
+        reload(self)

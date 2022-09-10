@@ -58,7 +58,7 @@ def run_module():
     dom.check()
     dom.process()
     if result['changed'] and module.params['reload']:
-        dom.reconfigure()
+        dom.reload()
 
     dom.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

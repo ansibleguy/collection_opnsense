@@ -19,6 +19,11 @@ class CronJob:
     API_MOD = 'cron'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
+    API_CMD_REL = 'reconfigure'
+    CHANGE_CHECK_FIELDS = [
+        'enabled', 'minutes', 'hours', 'days', 'months',
+        'weekdays', 'command', 'who', 'parameters'
+    ]
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -121,8 +126,7 @@ class CronJob:
 
     def update(self):
         # checking if changed
-        for field in ['enabled', 'minutes', 'hours', 'days', 'months',
-                      'weekdays', 'command', 'who', 'parameters']:
+        for field in self.CHANGE_CHECK_FIELDS:
             if str(self.cron[field]) != str(self.p[field]):
                 self.r['changed'] = True
                 break
@@ -183,12 +187,12 @@ class CronJob:
     def _delete_call(self) -> dict:
         return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
 
-    def reconfigure(self):
+    def reload(self):
         # reload the active jobs
         if not self.m.check_mode:
             self.s.post(cnf={
                 'module': self.call_cnf['module'],
                 'controller': self.API_CONT_REL,
-                'command': 'reconfigure',
+                'command': self.API_CMD_REL,
                 'params': []
             })

@@ -57,7 +57,7 @@ def run_module():
     fwd.check()
     fwd.process()
     if result['changed'] and module.params['reload']:
-        fwd.reconfigure()
+        fwd.reload()
 
     fwd.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

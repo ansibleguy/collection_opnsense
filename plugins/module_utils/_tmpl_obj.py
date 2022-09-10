@@ -19,7 +19,8 @@ class TMPL:
     API_KEY = 'stuff'
     API_MOD = 'API_Module'
     API_CONT = 'API_Controller'
-    API_CONT_REL = 'API_Controller_reconfigure'  # if other
+    API_CONT_REL = 'API_Controller_reload'  # if other
+    API_CMD_REL = 'reconfigure'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -193,9 +194,9 @@ class TMPL:
             }
         })
 
-    def reconfigure(self):
+    def reload(self):
         # reload the running config
         if not self.m.check_mode:
             self.s.post(cnf={
-                **self.call_cnf, **{'command': 'reconfigure', 'params': []}
+                **self.call_cnf, **{'command': self.API_CMD_REL, 'params': []}
             })

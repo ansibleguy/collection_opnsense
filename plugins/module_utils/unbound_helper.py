@@ -14,11 +14,11 @@ def validate_domain(module: AnsibleModule, domain: str):
         module.fail_json(f"Value '{domain}' is an invalid domain!")
 
 
-def reconfigure(self):
+def reload(self):
     if not self.m.check_mode:
         self.s.post(cnf={
             'module': self.call_cnf['module'],
             'controller': self.API_CONT_REL,
-            'command': 'reconfigure',
+            'command': self.API_CMD_REL,
             'params': []
         })

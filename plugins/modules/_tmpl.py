@@ -101,7 +101,7 @@ def run_module():
                 # })
                 pass
 
-    # don't forget to call the 'reconfigure' endpoint to activate the changes (if available/needed)
+    # don't forget to call the 'reload' endpoint to activate the changes (if available/needed)
 
     # cleanup and exit
 
