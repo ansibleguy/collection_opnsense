@@ -84,9 +84,11 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 **Plugins API**:
 
 - [Source-NAT](https://docs.opnsense.org/development/api/plugins/firewall.html)
-- [Backup](https://docs.opnsense.org/development/api/plugins/backup.html)
 - [WireGuard](https://docs.opnsense.org/development/api/plugins/wireguard.html)
 - [Zabbix Agent](https://docs.opnsense.org/development/api/plugins/zabbixagent.html)
+- [STunnel](https://docs.opnsense.org/development/api/plugins/stunnel.html)
+- [Backup](https://docs.opnsense.org/development/api/plugins/backup.html)
+- [FreeRadius](https://docs.opnsense.org/development/api/plugins/freeradius.html)
 - [Zabbix Proxy](https://docs.opnsense.org/development/api/plugins/zabbixproxy.html)
 
 ---

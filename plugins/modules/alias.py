@@ -45,7 +45,7 @@ def run_module():
     alias = Alias(module=module, result=result)
     alias.check()
     alias.process()
-    if result['changed'] and module.params['reconfigure']:
+    if result['changed'] and module.params['reload']:
         alias.reload()
 
     alias.s.close()
