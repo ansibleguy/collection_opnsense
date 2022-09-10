@@ -8,6 +8,8 @@
 
 This module can list existing items/entries of a specified part of the OPNSense system.
 
+In most cases the returned type of this module ist a list of dictionaries.
+
 ## Definition
 
 | Parameter | Type   | Required | Default value | Comment                                                                                                                                                                                                           |

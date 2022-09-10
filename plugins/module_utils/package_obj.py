@@ -18,7 +18,7 @@ class Package:
         self.n = name
         self.r = {
             'changed': False, 'version': None,
-            'diff': {'before': {'installed': False, 'locked': False}}
+            'diff': {}
         }
         self.package_stati = None
         self.call_cnf = {
@@ -30,18 +30,19 @@ class Package:
         if self.package_stati is None:
             self.package_stati = self.search_call()
 
+        self.r['diff']['before'] = {'installed': False, 'locked': False}
+
         for pkg_status in self.package_stati:
             if pkg_status['name'] == self.n:
                 if self.p['debug']:
                     self.m.warn(f"Package status: '{pkg_status}'")
 
-                self.r['diff']['before']['version'] = pkg_status['version']
-
-                if is_true(pkg_status['installed']):
-                    self.r['diff']['before']['installed'] = True
-
-                if is_true(pkg_status['locked']):
-                    self.r['diff']['before']['locked'] = True
+                self.r['diff']['before'] = {
+                    'version': pkg_status['version'],
+                    'installed': is_true(pkg_status['installed']),
+                    'locked': is_true(pkg_status['locked']),
+                }
+                break
 
         self.r['diff']['after'] = self.r['diff']['before'].copy()
 
@@ -72,6 +73,19 @@ class Package:
             )
 
         return False
+
+    def get_existing(self) -> list:
+        entries = []
+
+        for entry in self.search_call():
+            if is_true(entry['installed']):
+                entries.append({
+                    'name': entry['name'],
+                    'version': entry['version'],
+                    'locked': is_true(entry['locked']),
+                })
+
+        return entries
 
     def search_call(self) -> dict:
         return self.s.get(cnf={'command': 'info', **self.call_cnf})['package']

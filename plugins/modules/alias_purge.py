@@ -15,7 +15,7 @@ try:
         OPN_MOD_ARGS, PURGE_MOD_ARGS, INFO_MOD_ARG, RELOAD_MOD_ARG
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
-        check_purge_configured, simplify_existing_alias, builtin_alias
+        check_purge_configured, builtin_alias
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
@@ -60,8 +60,8 @@ def run_module():
 
     session = Session(module=module)
     meta_alias = Alias(module=module, session=session, result={})
-    existing_aliases = meta_alias.search_call()
-    existing_rules = Rule(module=module, session=session, result={}).search_call()
+    existing_aliases = meta_alias.get_existing()
+    existing_rules = Rule(module=module, session=session, result={}).get_existing()
     aliases_to_purge = []
 
     def obj_func(alias_to_purge: dict) -> Alias:
@@ -100,7 +100,6 @@ def run_module():
         # checking if existing alias should be purged
         for alias in existing_aliases:
             if not builtin_alias(name=alias['name']):
-                alias = simplify_existing_alias(existing=alias)
                 to_purge = check_purge_configured(module=module, existing_alias=alias)
 
                 if to_purge:

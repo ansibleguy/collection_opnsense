@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_ip, get_matching, is_true, to_digit
+    is_ip, get_matching, is_true, to_digit, get_simple_existing
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
     validate_domain, reconfigure
 
@@ -59,7 +59,7 @@ class Domain:
 
     def _find_domain(self):
         if self.existing_domains is None:
-            self.existing_domains = self.search_call()
+            self.existing_domains = self._search_call()
 
         match = get_matching(
             module=self.m, existing_items=self.existing_domains,
@@ -72,7 +72,13 @@ class Domain:
             self.r['diff']['before'] = self.domain
             self.exists = True
 
-    def search_call(self) -> dict:
+    def get_existing(self) -> list:
+        return get_simple_existing(
+            entries=self._search_call(),
+            simplify_func=self._simplify_existing
+        )
+
+    def _search_call(self) -> dict:
         return self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['unbound']['domains'][self.API_KEY]

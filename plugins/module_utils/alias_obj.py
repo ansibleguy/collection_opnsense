@@ -3,9 +3,9 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
-    validate_values, equal_type, alias_in_use_by_rule, compare_aliases
+    validate_values, alias_in_use_by_rule, compare_aliases, filter_builtin_alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    ensure_list, get_matching
+    ensure_list, get_matching, get_simple_existing, is_true, get_selected
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
 
 
@@ -15,8 +15,7 @@ class Alias:
         'add': 'addItem',
         'del': 'delItem',
         'set': 'setItem',
-        'search': 'searchItem',
-        'detail': 'getItem',
+        'search': 'get',
         'toggle': 'toggleItem',
     }
     API_KEY = 'alias'
@@ -63,6 +62,9 @@ class Alias:
                     else:
                         self.disable()
 
+                else:
+                    self._error('You need to provide values to create an alias!')
+
     def check(self):
         # pulling alias info if it exists
         if self.existing_aliases is None:
@@ -71,21 +73,12 @@ class Alias:
         self.alias = get_matching(
             module=self.m, existing_items=self.existing_aliases,
             compare_item=self.cnf, match_fields=[self.FIELD_ID],
+            simplify_func=self.simplify_existing,
         )
 
         if self.alias is not None:
             self.exists = True
             self.call_cnf['params'] = [self.alias['uuid']]
-            if self.cnf['type'] == 'urltable':
-                try:
-                    self.alias['updatefreq_days'] = float(self.detail_call()['updatefreq'].strip())
-
-                except ValueError:
-                    self.alias['updatefreq_days'] = float(0)
-
-        elif self.cnf['state'] == 'present':
-            if self.cnf['content'] is None or len(self.cnf['content']) == 0:
-                self.m.fail_json('You need to provide values to create an alias!')
 
     def _error(self, msg: str):
         if self.fail:
@@ -94,22 +87,46 @@ class Alias:
         else:
             self.m.warn(msg)
 
-    def search_call(self) -> list:
+    def get_existing(self) -> list:
+        return filter_builtin_alias(
+            get_simple_existing(
+                entries=self.search_call(),
+                simplify_func=self.simplify_existing,
+            )
+        )
+
+    def search_call(self) -> dict:
         # returns list of alias-dicts
         return self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
-        })['rows']
+        })['alias']['aliases'][self.API_KEY]
 
-    def detail_call(self) -> dict:
-        return self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['detail']}
-        })[self.API_KEY]
+    @staticmethod
+    def simplify_existing(alias: dict) -> dict:
+        # makes processing easier
+        simple = {
+            'uuid': alias['uuid'],
+            'name': alias['name'],
+            'content': list(alias['content'].keys()),
+            'description': alias['description'],
+            'type': get_selected(alias['type']),
+            'enabled': is_true(alias['enabled']),
+        }
+
+        if simple['type'] == 'urltable':
+            try:
+                simple['updatefreq_days'] = float(alias['updatefreq'])
+
+            except ValueError:
+                simple['updatefreq_days'] = float(0)
+
+        return simple
 
     def create(self):
         # creating alias
         validate_values(error_func=self._error, cnf=self.cnf)
         self.r['changed'] = True
-        self.r['diff']['after'] = {self.cnf[self.FIELD_ID]: self.cnf['content']}
+        self.r['diff']['after'] = {self.cnf[self.FIELD_ID]: self._build_diff(self.cnf)}
 
         if not self.m.check_mode:
             self.s.post(cnf={
@@ -123,22 +140,14 @@ class Alias:
         # checking if alias changed
         validate_values(error_func=self._error, cnf=self.cnf)
 
-        if equal_type(existing=self.alias['type'], configured=self.cnf['type']):
-            self.r['changed'], _before, _after = compare_aliases(
-                existing=self.alias, configured=self.cnf,
-            )
+        if self.alias['type'] == self.cnf['type']:
+            _before = self._build_diff(data=self.alias)
+            _after = self._build_diff(data=self.cnf)
 
-            if self.cnf['type'] == 'urltable':
-                if self.alias['updatefreq_days'] != self.cnf['updatefreq_days']:
+            for field in ['enabled', 'content', 'description']:
+                if _before[field] != _after[field]:
                     self.r['changed'] = True
-                    _before = {
-                        'content': _before,
-                        'updatefreq_days': round(self.alias['updatefreq_days'], 1)
-                    }
-                    _after = {
-                        'content': _after,
-                        'updatefreq_days': round(self.cnf['updatefreq_days'], 1)
-                    }
+                    break
 
             self.r['diff']['before'] = {self.cnf[self.FIELD_ID]: _before}
             self.r['diff']['after'] = {self.cnf[self.FIELD_ID]: _after}
@@ -157,10 +166,31 @@ class Alias:
 
         else:
             self.r['changed'] = True
-            self.m.fail_json(
+            self._error(
                 f"Unable to update alias '{self.cnf[self.FIELD_ID]}' - it is not of the same type! "
                 f"You need to delete the current one first!"
             )
+
+    def _build_diff(self, data: dict) -> dict:
+        diff = {
+            # 'name': data['name'],  # as it is the FIELD_ID
+            'type': data['type'],
+            'enabled': data['enabled'],
+            'content': data['content'],
+            'description': data['description'],
+        }
+        if self.alias is not None and 'uuid' in self.alias:
+            diff['uuid'] = self.alias['uuid']
+
+        else:
+            diff['uuid'] = None
+
+        diff['content'].sort()
+
+        if data['type'] == 'urltable':
+            diff['updatefreq_days'] = round(data['updatefreq_days'], 1)
+
+        return diff
 
     def _build_request(self) -> dict:
         return {
@@ -201,7 +231,7 @@ class Alias:
             self._error(msg=f"Unable to delete alias '{self.cnf[self.FIELD_ID]}' as it is currently referenced!")
 
         else:
-            self.r['diff']['before'] = {self.cnf[self.FIELD_ID]: self.alias['content'].split(',')}
+            self.r['diff']['before'] = {self.cnf[self.FIELD_ID]: self.alias['content']}
 
             if self.m.params['debug']:
                 self.m.warn(f"{self.r['diff']}")
@@ -210,7 +240,7 @@ class Alias:
         return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
 
     def enable(self):
-        if self.exists and self.alias['enabled'] != '1':
+        if self.exists and not self.alias['enabled']:
             self.r['changed'] = True
             self.r['diff']['before'] = {self.cnf[self.FIELD_ID]: {'enabled': False}}
             self.r['diff']['after'] = {self.cnf[self.FIELD_ID]: {'enabled': True}}
@@ -227,7 +257,7 @@ class Alias:
         })
 
     def disable(self):
-        if (self.exists and self.alias['enabled'] != '0') or not self.exists:
+        if (self.exists and self.alias['enabled']) or not self.exists:
             self.r['changed'] = True
             self.r['diff']['before'] = {self.cnf[self.FIELD_ID]: {'enabled': True}}
             self.r['diff']['after'] = {self.cnf[self.FIELD_ID]: {'enabled': False}}

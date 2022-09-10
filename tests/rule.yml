@@ -19,7 +19,6 @@
         protocol: 'TCP'
         state: 'absent'
         description: 'ANSIBLE_TEST_1_1'
-        debug: false
       register: opn1
       failed_when: >
         opn1.failed or
@@ -44,7 +43,7 @@
       failed_when: >
         opn2.failed or
         opn2.changed
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Updating
       ansibleguy.opnsense.rule:
@@ -57,7 +56,7 @@
       failed_when: >
         opn3.failed or
         not opn3.changed
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Updating more
       ansibleguy.opnsense.rule:
@@ -72,7 +71,7 @@
       failed_when: >
         opn4.failed or
         not opn4.changed
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Creating IPv6
       ansibleguy.opnsense.rule:
@@ -94,7 +93,7 @@
       failed_when: >
         opn18.failed or
         not opn18.changed
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Triggering server-side validation error
       ansibleguy.opnsense.rule:
@@ -106,7 +105,7 @@
         interface: ['lan', 'does_not_exist']
       register: opn19
       failed_when: not opn19.failed
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Creating block rule
       ansibleguy.opnsense.rule:
@@ -221,7 +220,7 @@
         destination_net: '10.0.0.0/8'
         description: 'ANSIBLE_TEST_1_5'
         action: 'block'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Listing rules
       ansibleguy.opnsense.list:
@@ -229,7 +228,7 @@
       failed_when: >
         'data' not in opn8 or
         opn8.data | length != 1
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Modifying dummy rule 1 by uuid
       ansibleguy.opnsense.rule:
@@ -239,8 +238,8 @@
         description: 'ANSIBLE_TEST_1_5'
         action: 'block'
         match_fields: ['uuid']
-        uuid: "{{ opn8.data | json_query('keys(@)[0]') }}"
-      when: not ansible_check_mode  # no use in check mode
+        uuid: "{{ opn8.data[0]['uuid'] }}"
+      when: not ansible_check_mode
 
     - name: Creating dummy rule 2
       ansibleguy.opnsense.rule:
@@ -250,7 +249,7 @@
         description: 'ANSIBLE_TEST_1_8'
         enabled: false
         action: 'block'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Cleanup
       ansibleguy.opnsense.rule:
@@ -291,7 +290,7 @@
       failed_when: >
         'data' not in opn10 or
         opn10.data | length != 0
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Creating rule 1
       ansibleguy.opnsense.rule:
@@ -314,7 +313,7 @@
       failed_when: >
         opn6.failed or
         not opn6.changed
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Creating rule 2
       ansibleguy.opnsense.rule:
@@ -342,7 +341,7 @@
         destination_net: '192.168.1.0/24'
         destination_port: 443
         protocol: 'UDP'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Listing rules - after
       ansibleguy.opnsense.list:
@@ -350,7 +349,7 @@
       failed_when: >
         'data' not in opn11 or
         opn11.data | length != 3
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Cleanup
       ansibleguy.opnsense.rule:
@@ -398,14 +397,14 @@
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_3_3'
         content: '192.168.0.1'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Creating rule
       ansibleguy.opnsense.rule:
         source_net: 'ANSIBLE_TEST_3_3'
         description: 'ANSIBLE_TEST_1_9'
         protocol: 'TCP'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Deleting alias - should fail
       ansibleguy.opnsense.alias:
@@ -413,21 +412,21 @@
         state: 'absent'
       register: opn13
       failed_when: not opn13.failed
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Cleanup rule
       ansibleguy.opnsense.rule:
         description: 'ANSIBLE_TEST_1_9'
         state: 'absent'
       diff: false
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Cleanup alias
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_3_3'
         state: 'absent'
       diff: false
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Checking cleanup
       ansibleguy.opnsense.list:

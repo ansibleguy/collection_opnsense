@@ -43,7 +43,7 @@
             source_invert: true
             source_net: 'bogons'
             action: 'block'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Simple disable-purge
       ansibleguy.opnsense.rule_purge:
@@ -51,7 +51,7 @@
           ANSIBLE_TEST_3_1:
         action: 'disable'
       register: opn2
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       failed_when: >
         opn2.failed or
         not opn2.changed
@@ -60,7 +60,7 @@
       ansibleguy.opnsense.rule_purge:
         rules:
           ANSIBLE_TEST_3_1:
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn3
       failed_when: >
         opn3.failed or
@@ -72,7 +72,7 @@
       failed_when: >
         'data' not in opn4 or
         opn4.data | length != 1
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Adding 2
       ansibleguy.opnsense.rule_multi:
@@ -92,13 +92,13 @@
             source_invert: true
             source_net: 'bogons'
             action: 'block'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Filtered purge (single)
       ansibleguy.opnsense.rule_purge:
         filters:
           destination_net: '192.168.10.0/24'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn1
       failed_when: >
         opn1.failed or
@@ -110,7 +110,7 @@
       failed_when: >
         'data' not in opn5 or
         opn5.data | length != 1
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Adding 3
       ansibleguy.opnsense.rule_multi:
@@ -130,14 +130,14 @@
             source_invert: true
             source_net: 'bogons'
             action: 'block'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Filtered purge (single inverted)
       ansibleguy.opnsense.rule_purge:
         filters:
           destination_net: '192.168.10.0/24'
         filter_invert: true
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn6
       failed_when: >
         opn6.failed or
@@ -149,7 +149,7 @@
       failed_when: >
         'data' not in opn7 or
         opn7.data | length != 2
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Adding 4
       ansibleguy.opnsense.rule_multi:
@@ -169,14 +169,14 @@
             source_invert: true
             source_net: 'bogons'
             action: 'block'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Filtered purge (multiple)
       ansibleguy.opnsense.rule_purge:
         filters:
           ip_protocol: 'inet'
           action: 'block'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn8
       failed_when: >
         opn8.failed or
@@ -188,18 +188,18 @@
       failed_when: >
         'data' not in opn9 or
         opn9.data | length != 1
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Purge ALL - not forced
       ansibleguy.opnsense.rule_purge:
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn12
       failed_when: not opn12.failed
 
     - name: Purge ALL
       ansibleguy.opnsense.rule_purge:
         force_all: true
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn10
       failed_when: >
         opn10.failed or
@@ -211,4 +211,4 @@
       failed_when: >
         'data' not in opn11 or
         opn11.data | length != 0
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode

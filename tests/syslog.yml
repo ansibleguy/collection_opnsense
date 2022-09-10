@@ -63,7 +63,7 @@
     - name: Adding 2 - DNS target
       ansibleguy.opnsense.syslog:
         description: 'ANSIBLE_TEST_2'
-        target: 'test.local'
+        target: 'test.ansibleguy.net'
         transport: 'tcp6'
       register: opn5
       failed_when: >

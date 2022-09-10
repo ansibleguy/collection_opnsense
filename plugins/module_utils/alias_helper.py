@@ -57,19 +57,6 @@ def validate_values(error_func, cnf: dict) -> None:
         #             error_func(error)
 
 
-def convert_existing_type(existing: str) -> str:
-    return existing.lower().replace(' ', '').split('(', 1)[0]
-
-
-def equal_type(existing: str, configured: str) -> bool:
-    return configured == convert_existing_type(existing)
-
-
-def simplify_existing_alias(existing: dict) -> dict:
-    existing['type'] = convert_existing_type(existing['type'])
-    return existing
-
-
 def alias_in_use_by_rule(rules: dict, alias: str) -> bool:
     in_use = False
 
@@ -114,7 +101,7 @@ def check_purge_filter(module: AnsibleModule, existing_rule: dict) -> bool:
 
 
 def compare_aliases(existing: dict, configured: dict) -> tuple:
-    before = list(map(str, existing['content'].split(',')))
+    before = list(map(str, existing['content']))
     after = list(map(str, configured['content']))
     before.sort()
     after.sort()
@@ -139,7 +126,7 @@ def builtin_alias(name: str) -> bool:
            regex_match(BUILTIN_INTERFACE_ALIASES_REG, name) is not None
 
 
-def filter_builtin_alias(aliases: dict) -> list:
+def filter_builtin_alias(aliases: list) -> list:
     filtered = []
 
     for alias in aliases:

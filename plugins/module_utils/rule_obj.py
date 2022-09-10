@@ -1,7 +1,8 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    ensure_list, is_true, to_digit, get_selected_list, get_selected, get_matching
+    ensure_list, is_true, to_digit, get_selected_list, get_selected, get_matching, \
+    get_simple_existing
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
     validate_values, get_state_change, get_config_change
@@ -110,6 +111,12 @@ class Rule:
 
         else:
             self.m.warn(msg)
+
+    def get_existing(self) -> list:
+        return get_simple_existing(
+            entries=self.search_call(),
+            simplify_func=self.simplify_existing
+        )
 
     def search_call(self) -> (dict, list):
         # returns dict of rules

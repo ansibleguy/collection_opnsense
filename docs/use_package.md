@@ -16,6 +16,8 @@ If:
   - in that case - you should run '[ansibleguy.opnsense.system](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)' with action 'upgrade'
 
 
+Be aware that the list-module with target 'package' will return installed plugins AND base-packages.
+
 ## Definition
 
 | Parameter | Type            | Required | Default value | Comment                                                                                           |
@@ -36,6 +38,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
     ansibleguy.opnsense.package:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+  
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'package'
   
   tasks:
     - name: Installing
@@ -67,4 +74,13 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
       ansibleguy.opnsense.package:
         name: 'os-api-backup'
         action: 'unlock'
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      #  target: 'package'
+      register: existing_entries
+
+    - name: Printing installed packages
+      ansible.builtin.debug:
+        var: existing_entries.data
 ```

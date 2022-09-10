@@ -32,7 +32,7 @@
           ANSIBLE_TEST_4_3:
             type: 'port'
             content: [80, 443]
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Simple disable-purge
       ansibleguy.opnsense.alias_purge:
@@ -40,7 +40,7 @@
           ANSIBLE_TEST_4_2:
         action: 'disable'
       register: opn1
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       failed_when: >
         opn1.failed or
         not opn1.changed
@@ -49,7 +49,7 @@
       ansibleguy.opnsense.alias_purge:
         aliases:
           ANSIBLE_TEST_4_2:
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn2
       failed_when: >
         opn2.failed or
@@ -61,7 +61,7 @@
       failed_when: >
         'data' not in opn3 or
         opn3.data | length != 1
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Adding 2
       ansibleguy.opnsense.alias_multi:
@@ -74,13 +74,13 @@
           ANSIBLE_TEST_4_3:
             type: 'port'
             content: [80, 443]
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Filtered purge (single)
       ansibleguy.opnsense.alias_purge:
         filters:
           type: 'port'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn4
       failed_when: >
         opn4.failed or
@@ -92,7 +92,7 @@
       failed_when: >
         'data' not in opn5 or
         opn5.data | length != 2
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Adding 3
       ansibleguy.opnsense.alias_multi:
@@ -105,14 +105,14 @@
           ANSIBLE_TEST_4_3:
             type: 'port'
             content: [80, 443]
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Filtered purge (single inverted)
       ansibleguy.opnsense.alias_purge:
         filters:
           type: 'port'
         filter_invert: true
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn6
       failed_when: >
         opn6.failed or
@@ -124,18 +124,18 @@
       failed_when: >
         'data' not in opn7 or
         opn7.data | length != 1
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Purge ALL - not forced
       ansibleguy.opnsense.alias_purge:
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn8
       failed_when: not opn8.failed
 
     - name: Purge ALL
       ansibleguy.opnsense.alias_purge:
         force_all: true
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn9
       failed_when: >
         opn9.failed or
@@ -147,4 +147,4 @@
       failed_when: >
         'data' not in opn10 or
         opn10.data | length != 0
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode

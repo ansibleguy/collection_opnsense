@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_ip, valid_hostname, get_matching, get_selected, is_true, to_digit
+    is_ip, valid_hostname, get_matching, get_selected, is_true, to_digit, get_simple_existing
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
     validate_domain, reconfigure
 
@@ -64,7 +64,7 @@ class Host:
 
     def _find_host(self):
         if self.existing_hosts is None:
-            self.existing_hosts = self.search_call()
+            self.existing_hosts = self._search_call()
 
         match = get_matching(
             module=self.m, existing_items=self.existing_hosts,
@@ -78,7 +78,13 @@ class Host:
             self.r['diff']['before'] = self.host
             self.call_cnf['params'] = [self.host['uuid']]
 
-    def search_call(self) -> dict:
+    def get_existing(self) -> list:
+        return get_simple_existing(
+            entries=self._search_call(),
+            simplify_func=self._simplify_existing
+        )
+
+    def _search_call(self) -> dict:
         return self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['unbound']['hosts'][self.API_KEY]
@@ -119,7 +125,8 @@ class Host:
                     }
                 })
 
-    def _simplify_existing(self, host: dict) -> dict:
+    @staticmethod
+    def _simplify_existing(host: dict) -> dict:
         # makes processing easier
         data = {
             'enabled': is_true(host['enabled']),
@@ -130,7 +137,7 @@ class Host:
             'record_type': get_selected(host['rr']),
         }
 
-        if self.p['record_type'] == 'MX':
+        if data['record_type'] == 'MX':
             data['prio'] = host['mxprio']
             data['value'] = host['mx']
 

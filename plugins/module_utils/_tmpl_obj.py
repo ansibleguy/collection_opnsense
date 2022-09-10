@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    get_matching, is_true, to_digit
+    get_matching, is_true, to_digit, get_simple_existing
 
 
 class TMPL:
@@ -61,7 +61,7 @@ class TMPL:
 
     def _find_stuff(self):
         if self.existing_stuffs is None:
-            self.existing_stuffs = self.search_call()
+            self.existing_stuffs = self._search_call()
 
         match = get_matching(
             module=self.m, existing_items=self.existing_stuffs,
@@ -78,7 +78,13 @@ class TMPL:
         # for special handling of errors
         self.m.fail_json(msg)
 
-    def search_call(self) -> list:
+    def get_existing(self) -> list:
+        return get_simple_existing(
+            entries=self._search_call(),
+            simplify_func=self._simplify_existing
+        )
+
+    def _search_call(self) -> list:
         return self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['rows']

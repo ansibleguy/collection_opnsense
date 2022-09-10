@@ -72,7 +72,7 @@
             source_net: 'bogons'
             ip_protocol: 'inet6'
             action: 'block'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn3
       failed_when: >
         opn3.failed or
@@ -108,7 +108,7 @@
             destination_port: 'XXX'
           ANSIBLE_TEST_2_3:
         fail_verification: false
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
       register: opn8
       failed_when: not opn8.failed
 
@@ -118,7 +118,7 @@
       failed_when: >
         'data' not in opn4 or
         opn4.data | length != 3
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Removing
       ansibleguy.opnsense.rule_multi:
@@ -134,4 +134,4 @@
       failed_when: >
         'data' not in opn5 or
         opn5.data | length != 0
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode

@@ -1,7 +1,8 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_ip, valid_hostname, get_matching, validate_port, is_true, to_digit
+    is_ip, valid_hostname, get_matching, validate_port, is_true, to_digit, \
+    get_simple_existing
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
@@ -63,7 +64,7 @@ class DnsOverTls:
 
     def _find_dot(self):
         if self.existing_dots is None:
-            self.existing_dots = self.search_call()
+            self.existing_dots = self._search_call()
 
         match = get_matching(
             module=self.m, existing_items=self.existing_dots,
@@ -77,7 +78,13 @@ class DnsOverTls:
             self.r['diff']['before'] = self.dot
             self.call_cnf['params'] = [self.dot['uuid']]
 
-    def search_call(self) -> list:
+    def get_existing(self) -> list:
+        return get_simple_existing(
+            entries=self._search_call(),
+            simplify_func=self._simplify_existing
+        )
+
+    def _search_call(self) -> list:
         dots = []
         raw = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}

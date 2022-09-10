@@ -89,11 +89,12 @@ class Syslog:
 
     def _find_dest(self):
         if self.existing_dests is None:
-            self.existing_dests = self.search_call()
+            self.existing_dests = self._search_call()
 
         match = get_matching(
             module=self.m, existing_items=self.existing_dests,
             compare_item=self.p, match_fields=self.p['match_fields'],
+            simplify_func=self._simplify_existing,
         )
 
         if match is not None:
@@ -105,19 +106,21 @@ class Syslog:
         # for special handling of errors
         self.m.fail_json(msg)
 
-    def search_call(self) -> list:
-        raw = self.s.get(cnf={
+    def get_existing(self) -> list:
+        existing_entries = self._search_call()
+        simple_entries = []
+
+        if len(existing_entries) > 0:
+            for uuid, entry in existing_entries.items():
+                entry['uuid'] = uuid
+                simple_entries.append(self._simplify_existing(dest=entry))
+
+        return simple_entries
+
+    def _search_call(self) -> dict:
+        return self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['syslog']['destinations']['destination']
-
-        self.existing_dests = []
-
-        if len(raw) > 0:
-            for uuid, dest in raw.items():
-                dest['uuid'] = uuid
-                self.existing_dests.append(self._simplify_existing(dest))
-
-        return self.existing_dests
 
     def detail_call(self) -> dict:
         return self.s.get(cnf={

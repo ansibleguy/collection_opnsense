@@ -31,21 +31,21 @@
         opn1.failed or
         'revision' not in opn1 or
         not opn1.revision
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Applying filter savepoint
       ansibleguy.opnsense.savepoint:
         action: 'apply'
         controller: 'filter'
         revision: "{{ opn1.revision }}"
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Removing filter savepoint
       ansibleguy.opnsense.savepoint:
         action: 'remove'
         controller: 'filter'
         revision: "{{ opn1.revision }}"
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Creating filter savepoint - to be reverted
       ansibleguy.opnsense.savepoint:
@@ -56,21 +56,21 @@
         opn2.failed or
         'revision' not in opn2 or
         not opn2.revision
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Applying filter savepoint - to be reverted
       ansibleguy.opnsense.savepoint:
         action: 'apply'
         controller: 'filter'
         revision: "{{ opn2.revision }}"
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Reverting filter savepoint
       ansibleguy.opnsense.savepoint:
         action: 'revert'
         controller: 'filter'
         revision: "{{ opn2.revision }}"
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Creating source-nat savepoint
       ansibleguy.opnsense.savepoint:
@@ -81,18 +81,18 @@
         opn4.failed or
         'revision' not in opn4 or
         not opn4.revision
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Applying source-nat savepoint
       ansibleguy.opnsense.savepoint:
         action: 'apply'
         controller: 'source_nat'
         revision: "{{ opn4.revision }}"
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Removing source-nat savepoint
       ansibleguy.opnsense.savepoint:
         action: 'remove'
         controller: 'source_nat'
         revision: "{{ opn4.revision }}"
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode

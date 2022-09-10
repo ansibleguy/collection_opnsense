@@ -52,7 +52,7 @@
         content: 'https://test.ansibleguy.net'
       register: opn9
       failed_when: not opn9.failed
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Disabling
       ansibleguy.opnsense.alias:
@@ -62,7 +62,7 @@
       failed_when: >
         not opn5.changed or
         opn5.failed
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Disabling - nothing changed
       ansibleguy.opnsense.alias:
@@ -81,7 +81,7 @@
       failed_when: >
         not opn6.changed or
         opn6.failed
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Enabling - nothing changed
       ansibleguy.opnsense.alias:
@@ -343,7 +343,7 @@
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_3_1'
         content: 'test.ansibleguy.net'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Listing aliases
       ansibleguy.opnsense.list:
@@ -351,13 +351,13 @@
       failed_when: >
         'data' not in opn11 or
         opn11.data | length != 1
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Adding dummy alias 2
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_3_2'
         content: 'template.ansibleguy.net'
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Listing aliases
       ansibleguy.opnsense.list:
@@ -365,7 +365,7 @@
       failed_when: >
         'data' not in opn12 or
         opn12.data | length != 2
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Cleanup
       ansibleguy.opnsense.alias:

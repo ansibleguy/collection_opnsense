@@ -46,15 +46,11 @@ def run_module():
     )
 
     target = None
-    filter_func = None
 
     try:
         if module.params['target'] == 'alias':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
-                filter_builtin_alias
             target = Alias(module=module, result=result)
-            filter_func = filter_builtin_alias
 
         elif module.params['target'] == 'rule':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
@@ -93,9 +89,8 @@ def run_module():
             target = Syslog(module=module, result=result)
 
         elif module.params['target'] == 'package':
-            # todo: add package list-functionality to return list of installed packages (+version)
-            # from ansible_collections.ansibleguy.opnsense.plugins.module_utils.package_obj import Package
-            # target = Package(module=module, result=result)
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.package_obj import Package
+            target = Package(module=module, name='dummy')
             pass
 
     except MODULE_EXCEPTIONS:
@@ -104,11 +99,17 @@ def run_module():
     result['data'] = None
 
     if target is not None:
-        if filter_func is None:
-            result['data'] = target.search_call()
+        if hasattr(target, 'get_existing'):
+            # has additional filtering
+            target_func = getattr(target, 'get_existing')
+
+        elif hasattr(target, 'search_call'):
+            target_func = getattr(target, 'search_call')
 
         else:
-            result['data'] = filter_func(target.search_call())
+            target_func = getattr(target, '_search_call')
+
+        result['data'] = target_func()
 
         if hasattr(target, 's'):
             target.s.close()

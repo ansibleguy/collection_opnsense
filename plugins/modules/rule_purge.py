@@ -62,7 +62,7 @@ def run_module():
 
     session = Session(module=module)
     meta_rule = Rule(module=module, session=session, result={})
-    existing_rules = meta_rule.search_call()
+    existing_rules = meta_rule.get_existing()
     rules_to_purge = []
 
     def obj_func(rule_to_purge: dict) -> Rule:
@@ -90,19 +90,16 @@ def run_module():
                 len(module.params['filters']) == 0:
             module.warn('Forced to purge ALL RULES!')
 
-            for uuid, raw_existing_rule in existing_rules.items():
-                raw_existing_rule['uuid'] = uuid
+            for existing_rule in existing_rules:
                 purge(
                     module=module, result=result, obj_func=obj_func,
                     diff_param=module.params['key_field'],
-                    item_to_purge=meta_rule.simplify_existing(raw_existing_rule),
+                    item_to_purge=existing_rule,
                 )
 
         else:
             # checking if existing rule should be purged
-            for uuid, raw_existing_rule in existing_rules.items():
-                raw_existing_rule['uuid'] = uuid
-                existing_rule = meta_rule.simplify_existing(raw_existing_rule)
+            for existing_rule in existing_rules:
                 to_purge = check_purge_configured(module=module, existing_rule=existing_rule)
 
                 if to_purge:

@@ -58,7 +58,7 @@ class Route:
 
     def _find_route(self):
         if self.existing_routes is None:
-            self.existing_routes = self.search_call()
+            self.existing_routes = self._search_call()
 
         match = get_matching(
             module=self.m, existing_items=self.existing_routes,
@@ -72,7 +72,16 @@ class Route:
             self.r['diff']['before'] = self.route
             self.call_cnf['params'] = [self.route['uuid']]
 
-    def search_call(self) -> list:
+    def get_existing(self) -> list:
+        existing_entries = self._search_call()
+        simple_entries = []
+
+        for entry in existing_entries:
+            simple_entries.append(self._simplify_existing(route=entry))
+
+        return simple_entries
+
+    def _search_call(self) -> list:
         return self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['rows']

@@ -5,7 +5,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
     validate_domain, reconfigure
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    get_matching, validate_port, is_true, to_digit
+    get_matching, validate_port, is_true, to_digit, get_simple_existing
 
 
 class Forward:
@@ -60,7 +60,7 @@ class Forward:
 
     def _find_fwd(self):
         if self.existing_fwds is None:
-            self.existing_fwds = self.search_call()
+            self.existing_fwds = self._search_call()
 
         match = get_matching(
             module=self.m, existing_items=self.existing_fwds,
@@ -74,7 +74,13 @@ class Forward:
             self.r['diff']['before'] = self.fwd
             self.call_cnf['params'] = [self.fwd['uuid']]
 
-    def search_call(self) -> list:
+    def get_existing(self) -> list:
+        return get_simple_existing(
+            entries=self._search_call(),
+            simplify_func=self._simplify_existing
+        )
+
+    def _search_call(self) -> list:
         fwds = []
         raw = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}

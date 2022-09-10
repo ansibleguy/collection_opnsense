@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_true, to_digit, get_matching
+    is_true, to_digit, get_matching, get_simple_existing
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
     Session
 
@@ -63,7 +63,7 @@ class CronJob:
 
     def _find_cron(self):
         if self.existing_jobs is None:
-            self.existing_jobs = self.search_call()
+            self.existing_jobs = self._search_call()
 
         match = get_matching(
             module=self.m, existing_items=self.existing_jobs,
@@ -76,28 +76,34 @@ class CronJob:
             self.r['diff']['before'] = self.cron
             self.exists = True
 
-    def _simplify_existing(self, existing: dict) -> dict:
-        simple = existing
+    def _simplify_existing(self, job: dict) -> dict:
+        simple = job
         simple.pop('origin')
-        existing['enabled'] = is_true(existing['enabled'])
+        job['enabled'] = is_true(job['enabled'])
 
         # to get full list of commands
         init_cmds = False
         if len(self.available_commands) == 0:
             init_cmds = True
 
-        for cmd, cmd_values in existing['command'].items():
+        for cmd, cmd_values in job['command'].items():
             if cmd not in self.available_commands:
                 self.available_commands.append(cmd)
 
             if is_true(cmd_values['selected']):
-                existing['command'] = cmd
+                job['command'] = cmd
                 if not init_cmds:
                     break
 
         return simple
 
-    def search_call(self) -> list:
+    def get_existing(self) -> list:
+        return get_simple_existing(
+            entries=self._search_call(),
+            simplify_func=self._simplify_existing
+        )
+
+    def _search_call(self) -> dict:
         return self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['job']['jobs']['job']

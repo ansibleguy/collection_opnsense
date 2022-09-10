@@ -112,3 +112,24 @@ def get_selected_list(data: dict) -> list:
 
 def to_digit(data: bool) -> int:
     return 1 if data else 0
+
+
+def get_simple_existing(entries: (dict, list), simplify_func=None) -> list:
+    simple_entries = []
+
+    if isinstance(entries, dict):
+        _entries = []
+        for uuid, entry in entries.items():
+            entry['uuid'] = uuid
+            _entries.append(entry)
+
+        entries = _entries
+
+    for entry in entries:
+        if simplify_func is not None:
+            simple_entries.append(simplify_func(entry))
+
+        else:
+            simple_entries.append(entries)
+
+    return simple_entries

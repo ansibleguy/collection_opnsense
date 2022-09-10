@@ -42,7 +42,7 @@ INFO_MOD_ARG = dict(
 )
 
 STATE_MOD_ARG = dict(
-    state=dict(type='str', required=False, choices=['present', 'absent']),
+    state=dict(type='str', required=False, choices=['present', 'absent'], default='present'),
     enabled=dict(type='bool', required=False, default=True),
 )
 

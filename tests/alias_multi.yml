@@ -107,6 +107,34 @@
       failed_when: >
         opn3.failed or
         not opn3.changed
+      when: not ansible_check_mode
+
+    - name: Nothing changed
+      ansibleguy.opnsense.alias_multi:
+        aliases:
+          ANSIBLE_TEST_2_2:
+            content: ['192.168.1.1', '192.168.1.3']
+          ANSIBLE_TEST_2_3:
+            type: 'network'
+            content: '192.168.10.0/24'
+          ANSIBLE_TEST_2_5:
+            type: 'port'
+            content: 81
+          ANSIBLE_TEST_2_7:
+            type: 'url'
+            content: 'http://test.template.ansibleguy.net'
+          ANSIBLE_TEST_2_8:
+            type: 'urltable'
+            content: 'https://www.spamhaus.org/drop/dropv6.txt'
+          ANSIBLE_TEST_2_9:
+            type: 'geoip'
+            content: 'DE'
+
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+      when: not ansible_check_mode
 
     - name: Listing aliases
       ansibleguy.opnsense.list:
@@ -114,7 +142,7 @@
       failed_when: >
         'data' not in opn4 or
         opn4.data | length != 10
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
 
     - name: Removing
       ansibleguy.opnsense.alias_multi:
@@ -137,4 +165,4 @@
       failed_when: >
         'data' not in opn5 or
         opn5.data | length != 0
-      when: not ansible_check_mode  # no use in check mode
+      when: not ansible_check_mode
