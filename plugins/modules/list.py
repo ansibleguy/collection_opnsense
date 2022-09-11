@@ -106,8 +106,8 @@ def run_module():
             target = Queue(module=module, result=result)
 
         elif module.params['target'] == 'shaper_rule':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_pipe_obj import Pipe
-            target = Pipe(module=module, result=result)
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_rule_obj import Rule
+            target = Rule(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

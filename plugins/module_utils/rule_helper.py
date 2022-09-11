@@ -1,9 +1,7 @@
-import validators
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    get_matching
+    get_matching, validate_port
 
 
 def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
@@ -23,13 +21,7 @@ def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
     #                 error_func(error % (cnf[field], field))
 
     for field in ['source_port', 'destination_port']:
-        if cnf[field] not in [None, '']:
-            try:
-                if not validators.between(int(cnf[field]), 1, 65535):
-                    error_func(error % (cnf[field], field))
-
-            except ValueError:
-                error_func(error % (cnf[field], field))
+        validate_port(module=module, port=module.params[field], error_func=error_func)
 
     if cnf['protocol'] in ['TCP/UDP']:
         error_func(error % (cnf['protocol'], 'protocol'))

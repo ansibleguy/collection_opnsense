@@ -81,6 +81,11 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.shaper_rule:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Cleanup Aliases
       ansibleguy.opnsense.alias_purge:
@@ -195,9 +200,19 @@
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
+        - 'ANSIBLE_TEST_3_1'
 
     - name: Cleanup shaper queues
       ansibleguy.opnsense.shaper_queue:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_2_1'
+
+    - name: Cleanup shaper rules
+      ansibleguy.opnsense.shaper_rule:
         description: "{{ item }}"
         state: 'absent'
       loop:

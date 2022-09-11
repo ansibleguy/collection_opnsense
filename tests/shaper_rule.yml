@@ -1,0 +1,215 @@
+---
+
+- name: Testing Shaper Rules
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.shaper_queue:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.shaper_pipe:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.shaper_rule:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'shaper_rule'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn10
+      failed_when: >
+        'data' not in opn10 or
+        opn10.data | length != 0
+
+    - name: Adding dummy pipe
+      ansibleguy.opnsense.shaper_pipe:
+        description: 'ANSIBLE_TEST_3_1'
+        bandwidth: 50
+      check_mode: false
+
+    - name: Adding dummy queue
+      ansibleguy.opnsense.shaper_queue:
+        description: 'ANSIBLE_TEST_2_1'
+        pipe: 'ANSIBLE_TEST_3_1'
+        weight: 50
+      check_mode: false
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_1'
+        target_pipe: 'ANSIBLE_TEST_3_1'
+        state: 'absent'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+
+    - name: Adding 1 - failing because of invalid int-value
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_1'
+        target_pipe: 'ANSIBLE_TEST_3_1'
+        max_packet_length: 100000
+      register: opn11
+      failed_when: not opn11.failed
+
+    - name: Adding 1 - failing because of unprovided target
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_1'
+      register: opn12
+      failed_when: not opn12.failed
+
+    - name: Adding 1 - failing because of non-existant pipe
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_1'
+        target_pipe: 'does-not-exist'
+      register: opn13
+      failed_when: not opn13.failed
+
+    - name: Adding 1 - failing because of non-existant queue
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_1'
+        target_queue: 'does-not-exist'
+      register: opn14
+      failed_when: not opn14.failed
+
+    - name: Adding 1
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_1'
+        target_queue: 'ANSIBLE_TEST_2_1'
+        protocol: 'tcp'
+        destination_port: 80
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_1'
+        target_queue: 'ANSIBLE_TEST_2_1'
+        protocol: 'tcp'
+        destination_port: 443
+      register: opn15
+      failed_when: >
+        opn15.failed or
+        not opn15.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_1'
+        target_queue: 'ANSIBLE_TEST_2_1'
+        protocol: 'tcp'
+        destination_port: 443
+        enabled: false
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_1'
+        target_queue: 'ANSIBLE_TEST_2_1'
+        protocol: 'tcp'
+        destination_port: 443
+        enabled: false
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_1'
+        target_queue: 'ANSIBLE_TEST_2_1'
+        protocol: 'tcp'
+        destination_port: 443
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_2'
+        target_pipe: 'ANSIBLE_TEST_3_1'
+        destination_invert: true
+        destination: '172.16.0.0/12'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_2'
+        target_pipe: 'ANSIBLE_TEST_3_1'
+        destination_invert: true
+        destination: '172.16.0.0/12'
+      register: opn13
+      failed_when: >
+        opn13.failed or
+        opn13.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_2'
+        state: 'absent'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn3
+      failed_when: >
+        'data' not in opn3 or
+        opn3.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.shaper_rule:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Cleanup queue
+      ansibleguy.opnsense.shaper_queue:
+        description: 'ANSIBLE_TEST_2_1'
+        state: 'absent'
+      check_mode: false
+
+    - name: Cleanup pipe
+      ansibleguy.opnsense.shaper_pipe:
+        description: 'ANSIBLE_TEST_3_1'
+        state: 'absent'
+      check_mode: false
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn2
+      failed_when: >
+        'data' not in opn2 or
+        opn2.data | length != 0
+      when: not ansible_check_mode

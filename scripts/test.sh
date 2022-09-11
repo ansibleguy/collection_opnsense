@@ -211,6 +211,13 @@ echo ''
 ansible-playbook tests/shaper_queue.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/shaper_queue.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
+echo ''
+echo '##############################'
+echo 'RUNNING TESTS for module SHAPER-RULE'
+echo ''
+
+ansible-playbook tests/shaper_rule.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/shaper_rule.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
 echo ''
 echo '##############################'

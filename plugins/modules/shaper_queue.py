@@ -67,7 +67,7 @@ def run_module():
             queue.reload()
 
     if PROFILE or module.params['debug']:
-        profiler(check=process, log_file='shaper_pipe.log')
+        profiler(check=process, log_file='shaper_queue.log')
         # log in /tmp/ansibleguy.opnsense/
 
     else:

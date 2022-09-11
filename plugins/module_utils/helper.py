@@ -85,9 +85,23 @@ def get_matching(
     return matching
 
 
-def validate_port(module: AnsibleModule, port: (int, str)):
-    if not validators.between(int(port), 1, 65535):
-        module.fail_json(f"Value '{port}' is an invalid port!")
+def validate_port(module: AnsibleModule, port: (int, str), error_func=None) -> bool:
+    if error_func is None:
+        error_func = module.fail_json
+
+    if port in ['any', '']:
+        return True
+
+    try:
+        if not validators.between(int(port), 1, 65535):
+            error_func(f"Value '{port}' is an invalid port!")
+            return False
+
+    except (ValueError, TypeError):
+        error_func(f"Value '{port}' is an invalid port!")
+        return False
+
+    return True
 
 
 def validate_int_fields(module: AnsibleModule, data: dict, field_minmax: dict):
