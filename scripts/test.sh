@@ -197,6 +197,14 @@ ansible-playbook tests/ipsec_cert.yml --check --extra-vars="ansible_python_inter
 
 echo ''
 echo '##############################'
+echo 'RUNNING TESTS for module SHAPER-PIPE'
+echo ''
+
+ansible-playbook tests/shaper_pipe.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/shaper_pipe.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+echo ''
+echo '##############################'
 echo 'FINISHED TESTS!'
 echo '##############################'
 echo ''

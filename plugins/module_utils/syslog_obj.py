@@ -225,7 +225,7 @@ class Syslog:
         return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
 
     def enable(self):
-        if self.exists and self.dest['enabled'] != '1':
+        if self.exists and not self.dest['enabled']:
             self.r['changed'] = True
             self.r['diff']['before'] = {'enabled': False}
             self.r['diff']['after'] = {'enabled': True}
@@ -234,7 +234,7 @@ class Syslog:
                 self._change_enabled_state(1)
 
     def disable(self):
-        if (self.exists and self.dest['enabled'] != '0') or not self.exists:
+        if self.exists and self.dest['enabled']:
             self.r['changed'] = True
             self.r['diff']['before'] = {'enabled': True}
             self.r['diff']['after'] = {'enabled': False}

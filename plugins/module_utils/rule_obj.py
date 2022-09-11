@@ -195,7 +195,7 @@ class Rule:
                 self._change_enabled_state(1)
 
     def disable(self):
-        if (self.exists and self.rule['enabled'] not in [0, '0', False]) or not self.exists:
+        if self.exists and self.rule['enabled']:
             self.r['changed'] = True
             self.r['diff']['before'] = {'enabled': True}
             self.r['diff']['after'] = {'enabled': False}

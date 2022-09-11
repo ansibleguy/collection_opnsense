@@ -21,6 +21,7 @@ class TMPL:
     API_CONT = 'API_Controller'
     API_CONT_REL = 'API_Controller_reload'  # if other
     API_CMD_REL = 'reconfigure'
+    CHANGE_CHECK_FIELDS = []
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -108,7 +109,7 @@ class TMPL:
 
     def update(self):
         # checking if changed
-        for field in []:
+        for field in self.CHANGE_CHECK_FIELDS:
             if str(self.stuff[field]) != str(self.p[field]):
                 self.r['changed'] = True
                 break
@@ -169,19 +170,19 @@ class TMPL:
         return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
 
     def enable(self):
-        if self.exists and self.stuff['enabled'] != '1':
+        if self.exists and not self.stuff['enabled']:
             self.r['changed'] = True
-            self.r['diff']['before'] = {self.p[self.FIELD_ID]: {'enabled': False}}
-            self.r['diff']['after'] = {self.p[self.FIELD_ID]: {'enabled': True}}
+            self.r['diff']['before'] = {'enabled': False}
+            self.r['diff']['after'] = {'enabled': True}
 
             if not self.m.check_mode:
                 self._change_enabled_state(1)
 
     def disable(self):
-        if (self.exists and self.stuff['enabled'] != '0') or not self.exists:
+        if self.exists and self.stuff['enabled']:
             self.r['changed'] = True
-            self.r['diff']['before'] = {self.p[self.FIELD_ID]: {'enabled': True}}
-            self.r['diff']['after'] = {self.p[self.FIELD_ID]: {'enabled': False}}
+            self.r['diff']['before'] = {'enabled': True}
+            self.r['diff']['after'] = {'enabled': False}
 
             if not self.m.check_mode:
                 self._change_enabled_state(0)

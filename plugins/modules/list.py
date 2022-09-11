@@ -29,7 +29,8 @@ def run_module():
             choises=[
                 'alias', 'rule', 'route', 'cron', 'syslog', 'package',
                 'unbound_host', 'unbound_domain', 'unbound_dot', 'unbound_forward',
-                'unbound_host_alias', 'ipsec_cert',
+                'unbound_host_alias', 'ipsec_cert', 'shaper_pipe', 'shaper_queue',
+                'shaper_rule',
             ],
             description='What part of the running config should be listed'
         ),
@@ -95,6 +96,18 @@ def run_module():
         elif module.params['target'] == 'ipsec_cert':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.ipsec_cert_obj import KeyPair
             target = KeyPair(module=module, result=result)
+
+        elif module.params['target'] == 'shaper_pipe':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_pipe_obj import Pipe
+            target = Pipe(module=module, result=result)
+
+        elif module.params['target'] == 'shaper_queue':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_pipe_obj import Pipe
+            target = Pipe(module=module, result=result)
+
+        elif module.params['target'] == 'shaper_rule':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_pipe_obj import Pipe
+            target = Pipe(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

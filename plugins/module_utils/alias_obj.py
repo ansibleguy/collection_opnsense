@@ -259,7 +259,7 @@ class Alias:
         })
 
     def disable(self):
-        if (self.exists and self.alias['enabled']) or not self.exists:
+        if self.exists and self.alias['enabled']:
             self.r['changed'] = True
             self.r['diff']['before'] = {self.cnf[self.FIELD_ID]: {'enabled': True}}
             self.r['diff']['after'] = {self.cnf[self.FIELD_ID]: {'enabled': False}}
