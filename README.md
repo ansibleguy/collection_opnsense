@@ -70,8 +70,8 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Syslog**               | ansibleguy.opnsense.syslog             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_syslog.md)             | unstable  |
 | **IPSec Certificates**   | ansibleguy.opnsense.ipsec_cert         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_ipsec.md)              | unstable  |
 | **Traffic Shaper**       | ansibleguy.opnsense.shaper_pipe        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_shaper.md)             | unstable  |
-| **Traffic Shaper**       | ansibleguy.opnsense.shaper_queue       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_shaper.md)             | development  |
-| **Traffic Shaper**       | ansibleguy.opnsense.shaper_rule        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_shaper.md)             | development  |
+| **Traffic Shaper**       | ansibleguy.opnsense.shaper_queue       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_shaper.md)             | unstable  |
+| **Traffic Shaper**       | ansibleguy.opnsense.shaper_rule        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_shaper.md)             | unstable  |
 
 
 ### Roadmap
@@ -82,7 +82,6 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 - [IDS](https://docs.opnsense.org/development/api/core/ids.html)
 - [~~IPSec~~](https://docs.opnsense.org/development/api/core/ipsec.html) => [not API enabled](https://forum.opnsense.org/index.php?topic=18914.0)
 - [Monit](https://docs.opnsense.org/development/api/core/monit.html)
-- [Trafficshaper](https://docs.opnsense.org/development/api/core/trafficshaper.html)
 
 **Plugins API**:
 
