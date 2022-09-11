@@ -21,7 +21,7 @@ def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
     #                 error_func(error % (cnf[field], field))
 
     for field in ['source_port', 'destination_port']:
-        validate_port(module=module, port=module.params[field], error_func=error_func)
+        validate_port(module=module, port=cnf[field], error_func=error_func)
 
     if cnf['protocol'] in ['TCP/UDP']:
         error_func(error % (cnf['protocol'], 'protocol'))
