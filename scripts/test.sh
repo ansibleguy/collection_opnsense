@@ -205,6 +205,15 @@ ansible-playbook tests/shaper_pipe.yml --check --extra-vars="ansible_python_inte
 
 echo ''
 echo '##############################'
+echo 'RUNNING TESTS for module SHAPER-QUEUE'
+echo ''
+
+ansible-playbook tests/shaper_queue.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/shaper_queue.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+
+echo ''
+echo '##############################'
 echo 'FINISHED TESTS!'
 echo '##############################'
 echo ''

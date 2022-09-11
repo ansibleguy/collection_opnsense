@@ -94,10 +94,6 @@ class KeyPair:
             self.r['diff']['before'] = self._build_diff(data=self.key)
             self.exists = True
 
-    def _error(self, msg: str):
-        # for special handling of errors
-        self.m.fail_json(msg)
-
     def get_existing(self) -> list:
         return get_simple_existing(
             entries=self._search_call(),

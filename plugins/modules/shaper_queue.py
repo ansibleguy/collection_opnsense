@@ -15,7 +15,7 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
         OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_pipe_obj import Pipe
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_queue_obj import Queue
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -28,32 +28,17 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/_
 
 def run_module():
     module_args = dict(
-        # id=dict(type='int', required=True, alises=['number']),  # ignored and set automatically
-        bw=dict(
-            type='int', required=False, aliases=['bandwidth']
-        ),
-        bw_metric=dict(
-            type='str', required=False, default='Mbit', aliases=['bandwidth_metric'],
-            choises=['bit', 'Kbit', 'Mbit', 'Gbit'],
-        ),
-        queue=dict(type='str', required=False, default=''),
+        pipe=dict(type='str', required=False, default=''),
         mask=dict(
             type='str', required=False, default='none', choices=['none', 'src-ip', 'dst-ip']
         ),
+        weight=dict(type='str', required=False, default=''),
         buckets=dict(type='str', required=False, default=''),
-        scheduler=dict(
-            type='str', required=False, default='',
-            choises=['', 'fifo', 'rr', 'qfq', 'fq_codel', 'fq_pie']
-        ),
         pie_enable=dict(type='bool', required=False, default=False, aliases=['pie']),
         codel_enable=dict(type='bool', required=False, default=False, aliases=['codel']),
         codel_ecn_enable=dict(type='bool', required=False, default=False, aliases=['codel_ecn']),
         codel_target=dict(type='str', required=False, default=''),
         codel_interval=dict(type='str', required=False, default=''),
-        fqcodel_quantum=dict(type='str', required=False, default=''),
-        fqcodel_limit=dict(type='str', required=False, default=''),
-        fqcodel_flows=dict(type='str', required=False, default=''),
-        delay=dict(type='str', required=False, default=''),
         description=dict(type='str', required=True, aliases=['desc']),
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
@@ -73,13 +58,13 @@ def run_module():
         supports_check_mode=True,
     )
 
-    pipe = Pipe(module=module, result=result)
+    queue = Queue(module=module, result=result)
 
     def process():
-        pipe.check()
-        pipe.process()
+        queue.check()
+        queue.process()
         if result['changed'] and module.params['reload']:
-            pipe.reload()
+            queue.reload()
 
     if PROFILE or module.params['debug']:
         profiler(check=process, log_file='shaper_pipe.log')
@@ -88,7 +73,7 @@ def run_module():
     else:
         process()
 
-    pipe.s.close()
+    queue.s.close()
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 

@@ -102,8 +102,8 @@ def run_module():
             target = Pipe(module=module, result=result)
 
         elif module.params['target'] == 'shaper_queue':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_pipe_obj import Pipe
-            target = Pipe(module=module, result=result)
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_queue_obj import Queue
+            target = Queue(module=module, result=result)
 
         elif module.params['target'] == 'shaper_rule':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_pipe_obj import Pipe

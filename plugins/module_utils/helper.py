@@ -90,6 +90,19 @@ def validate_port(module: AnsibleModule, port: (int, str)):
         module.fail_json(f"Value '{port}' is an invalid port!")
 
 
+def validate_int_fields(module: AnsibleModule, data: dict, field_minmax: dict):
+    for field, valid in field_minmax.items():
+        try:
+            if not validators.between(int(data[field]), valid['min'], valid['max']):
+                module.fail_json(
+                    f"Value of field '{field}' is not valid - "
+                    f"Must be between {valid['min']} and {valid['max']}!"
+                )
+
+        except (TypeError, ValueError):
+            pass
+
+
 def is_true(data: (str, int, bool)) -> bool:
     return data in [1, '1', True]
 

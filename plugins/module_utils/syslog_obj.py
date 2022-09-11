@@ -107,10 +107,6 @@ class Syslog:
             self.r['diff']['before'] = self.dest
             self.exists = True
 
-    def _error(self, msg: str):
-        # for special handling of errors
-        self.m.fail_json(msg)
-
     def get_existing(self) -> list:
         existing_entries = self._search_call()
         simple_entries = []
