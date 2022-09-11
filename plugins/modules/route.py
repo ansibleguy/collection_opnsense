@@ -70,7 +70,7 @@ def run_module():
         if result['changed'] and module.params['reload']:
             route.reload()
 
-    if PROFILE:
+    if PROFILE or module.params['debug']:
         profiler(check=process, log_file='route.log')
         # log in /tmp/ansibleguy.opnsense/
 

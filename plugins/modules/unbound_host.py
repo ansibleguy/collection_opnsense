@@ -76,7 +76,7 @@ def run_module():
         if result['changed'] and module.params['reload']:
             host.reload()
 
-    if PROFILE:
+    if PROFILE or module.params['debug']:
         profiler(check=process, log_file='unbound_host.log')
         # log in /tmp/ansibleguy.opnsense/
 

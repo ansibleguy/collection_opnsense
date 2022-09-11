@@ -58,7 +58,7 @@ def run_module():
         if result['changed'] and module.params['reload']:
             key.reload()
 
-    if PROFILE:
+    if PROFILE or module.params['debug']:
         profiler(check=process, log_file='ipsec_cert.log')
         # log in /tmp/ansibleguy.opnsense/
 

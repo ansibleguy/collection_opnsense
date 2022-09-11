@@ -53,7 +53,7 @@ def run_module():
         supports_check_mode=True,
     )
 
-    if PROFILE:
+    if PROFILE or module.params['debug']:
         profiler(
             check=process, kwargs=dict(
                 m=module, p=module.params, r=result,

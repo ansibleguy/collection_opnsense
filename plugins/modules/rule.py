@@ -46,7 +46,7 @@ def run_module():
         rule.check()
         rule.process()
 
-    if PROFILE:
+    if PROFILE or module.params['debug']:
         profiler(check=process, log_file='rule.log')
         # log in /tmp/ansibleguy.opnsense/
 
