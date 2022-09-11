@@ -11,20 +11,18 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.utils import profiler
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_purge import process
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
         OPN_MOD_ARGS, PURGE_MOD_ARGS, INFO_MOD_ARG
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import \
         RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_KEY_FIELD
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
-        check_purge_configured
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.purge_helper import \
-        purge, check_purge_filter
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
+
+PROFILE = False  # create log to profile time consumption
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md'
@@ -60,68 +58,17 @@ def run_module():
         supports_check_mode=True,
     )
 
-    session = Session(module=module)
-    meta_rule = Rule(module=module, session=session, result={})
-    existing_rules = meta_rule.get_existing()
-    rules_to_purge = []
-
-    def obj_func(rule_to_purge: dict) -> Rule:
-        if module.params['debug'] or module.params['output_info']:
-            module.warn(f"Purging rule '{rule_to_purge[module.params['key_field']]}'!")
-
-        _rule = Rule(
-            module=module,
-            result={'changed': False, 'diff': {'before': {}, 'after': {}}},
-            cnf=rule_to_purge,
-            session=session,
-            fail=module.params['fail_all']
+    if PROFILE:
+        profiler(
+            check=process, kwargs=dict(
+                m=module, p=module.params, r=result,
+            ),
+            log_file='rule_purge.log'  # /tmp/ansibleguy.opnsense/
         )
-        _rule.rule = rule_to_purge
-        _rule.call_cnf['params'] = [rule_to_purge['uuid']]
-        return _rule
 
-    # checking if all rules should be purged
-    if not module.params['force_all'] and len(module.params['rules']) == 0 and \
-            len(module.params['filters']) == 0:
-        module.fail_json("You need to either provide 'rules' or 'filters'!")
+    else:
+        process(m=module, p=module.params, r=result)
 
-    if len(existing_rules) > 0:
-        if module.params['force_all'] and len(module.params['rules']) == 0 and \
-                len(module.params['filters']) == 0:
-            module.warn('Forced to purge ALL RULES!')
-
-            for existing_rule in existing_rules:
-                purge(
-                    module=module, result=result, obj_func=obj_func,
-                    diff_param=module.params['key_field'],
-                    item_to_purge=existing_rule,
-                )
-
-        else:
-            # checking if existing rule should be purged
-            for existing_rule in existing_rules:
-                to_purge = check_purge_configured(module=module, existing_rule=existing_rule)
-
-                if to_purge:
-                    to_purge = check_purge_filter(module=module, item=existing_rule)
-
-                if to_purge:
-                    if module.params['debug']:
-                        module.warn(
-                            f"Existing rule '{existing_rule[module.params['key_field']]}' "
-                            f"will be purged!"
-                        )
-
-                    rules_to_purge.append(existing_rule)
-
-            for rule in rules_to_purge:
-                result['changed'] = True
-                purge(
-                    module=module, result=result, diff_param=module.params['key_field'],
-                    obj_func=obj_func, item_to_purge=rule
-                )
-
-    session.close()
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 

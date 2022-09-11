@@ -5,20 +5,20 @@
 
 # see: https://docs.opnsense.org/development/api/core/firmware.html
 
-from time import sleep
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.utils import profiler
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.package import process
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.package_obj import Package
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
+
+PROFILE = False  # create log to profile time consumption
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md'
@@ -56,34 +56,17 @@ def run_module():
         supports_check_mode=True,
     )
 
-    session = Session(module=module)
-    session.start(timeout=module.params['timeout'])
+    if PROFILE:
+        profiler(
+            check=process, kwargs=dict(
+                m=module, p=module.params, r=result,
+            ),
+            log_file='package.log'  # /tmp/ansibleguy.opnsense/
+        )
 
-    # pulling stati of all packages
-    package_stati = Package(module=module, session=session, name='').search_call()
+    else:
+        process(m=module, p=module.params, r=result)
 
-    for pkg_name in module.params['name']:
-        pkg = Package(module=module, name=pkg_name, session=session,)
-        pkg.package_stati = package_stati
-        pkg.check()
-
-        # execute action if needed
-        if pkg.r['diff']['before']['installed'] and \
-                module.params['action'] in ['reinstall', 'remove', 'lock', 'unlock']:
-            pkg.change_state()
-
-        elif not pkg.r['diff']['before']['installed'] and \
-                module.params['action'] == 'install':
-            pkg.install()
-
-        if pkg.r['changed']:
-            sleep(module.params['post_sleep'])  # time for the box to update package info
-            result['changed'] = True
-
-        result['diff']['before'][pkg_name] = pkg.r['diff']['before']
-        result['diff']['after'][pkg_name] = pkg.r['diff']['after']
-
-    session.close()
     module.exit_json(**result)
 
 

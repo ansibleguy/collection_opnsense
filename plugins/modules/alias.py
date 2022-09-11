@@ -11,6 +11,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.utils import profiler
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import RELOAD_MOD_ARG_DEF_FALSE
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
@@ -18,6 +19,8 @@ try:
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
+
+PROFILE = False  # create log to profile time consumption
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias.yml'

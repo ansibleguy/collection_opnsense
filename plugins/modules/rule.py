@@ -12,12 +12,15 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.utils import profiler
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import RULE_MOD_ARGS
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
+
+PROFILE = False  # create log to profile time consumption
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md'
@@ -38,8 +41,17 @@ def run_module():
     )
 
     rule = Rule(module=module, result=result)
-    rule.check()
-    rule.process()
+
+    def process():
+        rule.check()
+        rule.process()
+
+    if PROFILE:
+        profiler(check=process, log_file='rule.log')
+        # log in /tmp/ansibleguy.opnsense/
+
+    else:
+        process()
 
     rule.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

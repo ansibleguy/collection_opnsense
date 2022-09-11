@@ -11,19 +11,16 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.utils import profiler
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_purge import process
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
         OPN_MOD_ARGS, PURGE_MOD_ARGS, INFO_MOD_ARG, RELOAD_MOD_ARG
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_helper import \
-        check_purge_configured, builtin_alias
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.purge_helper import \
-        purge, check_purge_filter
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
+
+PROFILE = False  # create log to profile time consumption
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/tests/alias_multi.yml'
@@ -58,73 +55,17 @@ def run_module():
         supports_check_mode=True,
     )
 
-    session = Session(module=module)
-    meta_alias = Alias(module=module, session=session, result={})
-    existing_aliases = meta_alias.get_existing()
-    existing_rules = Rule(module=module, session=session, result={}).get_existing()
-    aliases_to_purge = []
-
-    def obj_func(alias_to_purge: dict) -> Alias:
-        if module.params['debug'] or module.params['output_info']:
-            module.warn(f"Purging alias '{alias_to_purge['name']}'!")
-
-        _alias = Alias(
-            module=module,
-            result={'changed': False, 'diff': {'before': {}, 'after': {}}},
-            cnf=alias_to_purge,
-            session=session,
-            fail=module.params['fail_all']
+    if PROFILE:
+        profiler(
+            check=process, kwargs=dict(
+                m=module, p=module.params, r=result,
+            ),
+            log_file='alias_purge.log'  # /tmp/ansibleguy.opnsense/
         )
-        _alias.alias = alias_to_purge
-        _alias.existing_rules = existing_rules
-        _alias.call_cnf['params'] = [alias_to_purge['uuid']]
-        return _alias
-
-    # checking if all aliases should be purged
-    if not module.params['force_all'] and len(module.params['aliases']) == 0 and \
-            len(module.params['filters']) == 0:
-        module.fail_json("You need to either provide 'aliases' or 'filters'!")
-
-    if module.params['force_all'] and len(module.params['aliases']) == 0 and \
-            len(module.params['filters']) == 0:
-        module.warn('Forced to purge ALL ALIASES!')
-
-        for alias in existing_aliases:
-            if not builtin_alias(name=alias['name']):
-                purge(
-                    module=module, result=result, diff_param='name',
-                    obj_func=obj_func, item_to_purge=alias,
-                )
 
     else:
-        # checking if existing alias should be purged
-        for alias in existing_aliases:
-            if not builtin_alias(name=alias['name']):
-                to_purge = check_purge_configured(module=module, existing_alias=alias)
+        process(m=module, p=module.params, r=result)
 
-                if to_purge:
-                    to_purge = check_purge_filter(module=module, item=alias)
-
-                if to_purge:
-                    if module.params['debug']:
-                        module.warn(
-                            f"Existing alias '{alias[module.params['key_field']]}' "
-                            f"will be purged!"
-                        )
-
-                    aliases_to_purge.append(alias)
-
-        for alias in aliases_to_purge:
-            result['changed'] = True
-            purge(
-                module=module, result=result, diff_param='name',
-                obj_func=obj_func, item_to_purge=alias,
-            )
-
-    if result['changed'] and module.params['reload']:
-        meta_alias.reload()
-
-    session.close()
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 

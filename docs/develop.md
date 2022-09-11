@@ -17,7 +17,7 @@ Here is a nice online-tool to do so: [XML-to-YAML](https://codebeautify.org/xml-
 
 ## Module
 
-There is a [module-template](https://github.com/ansibleguy/collection_opnsense/blob/stable/plugins/modules/_tmpl.py) that can be copied - so you don't have to re-write the basic structure.
+There are [module-templates](https://github.com/ansibleguy/collection_opnsense/blob/stable/plugins/modules/) that can be copied - so you don't have to re-write the basic structure.
 
 ## API
 
@@ -72,3 +72,36 @@ You can also use the 'debug' argument to enable verbose output of the api reques
 ```
 
 'Multi' modules also support the 'debug' parameter on a per-item basis - so you don't get flooded.
+
+### Profiling
+
+To profile a modules time-consumption - you can use the existing profiler function:
+
+For it to work, you need to move your modules processing into a dedicated function or object!
+
+The profiler will wrap around this function call and analyze it.
+
+```python3
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.utils import profiler
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.target_module import process
+
+PROFILE = True
+
+if PROFILE:
+    profiler(
+        check=process, kwargs=dict(
+            m=module, p=module.params, r=result,
+        ),
+        log_file='target_module.log'  # in folder: /tmp/ansibleguy.opnsense/
+    )
+
+else:
+    process(m=module, p=module.params, r=result)
+```
+
+Note: these entries can be interpreted as waiting for the responses of HTTP requests:
+- 'read' of '_ssl._SSLSocket'
+- 'connect' of '_socket.socket'
+- 'do_handshake' of '_ssl._SSLSocket'
+
+One can only try to lower the needed HTTP calls.

@@ -11,6 +11,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.utils import profiler
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
         OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
@@ -18,6 +19,8 @@ try:
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
+
+PROFILE = False  # create log to profile time consumption
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host.md'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host.md'
@@ -67,10 +70,18 @@ def run_module():
 
     host = Host(module=module, result=result)
 
-    host.check()
-    host.process()
-    if result['changed'] and module.params['reload']:
-        host.reload()
+    def process():
+        host.check()
+        host.process()
+        if result['changed'] and module.params['reload']:
+            host.reload()
+
+    if PROFILE:
+        profiler(check=process, log_file='unbound_host.log')
+        # log in /tmp/ansibleguy.opnsense/
+
+    else:
+        process()
 
     host.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

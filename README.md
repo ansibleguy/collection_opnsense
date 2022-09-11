@@ -89,6 +89,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 - [STunnel](https://docs.opnsense.org/development/api/plugins/stunnel.html)
 - [Backup](https://docs.opnsense.org/development/api/plugins/backup.html)
 - [FreeRadius](https://docs.opnsense.org/development/api/plugins/freeradius.html)
+- [Bind](https://docs.opnsense.org/development/api/plugins/bind.html)
 - [Zabbix Proxy](https://docs.opnsense.org/development/api/plugins/zabbixproxy.html)
 
 ---

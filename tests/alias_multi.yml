@@ -77,7 +77,7 @@
           ANSIBLE_TEST_2_10:
             type: 'geoip'
             content: ['AT', 'DE', 'CH']
-
+        reload: false  # geoip and urltable take LONG time
       register: opn2
       failed_when: >
         opn2.failed or
@@ -103,6 +103,7 @@
           ANSIBLE_TEST_2_9:
             type: 'geoip'
             content: 'DE'
+        reload: false  # geoip and urltable take LONG time
       register: opn3
       failed_when: >
         opn3.failed or
@@ -129,7 +130,7 @@
           ANSIBLE_TEST_2_9:
             type: 'geoip'
             content: 'DE'
-
+        reload: false  # geoip and urltable take LONG time
       register: opn6
       failed_when: >
         opn6.failed or
