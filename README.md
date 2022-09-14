@@ -78,9 +78,10 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 
 **Core API**:
 
+- [VLANs/VxLAN](https://docs.opnsense.org/development/api/core/interfaces.html)
 - [Proxy](https://docs.opnsense.org/development/api/core/proxy.html)
 - [IDS](https://docs.opnsense.org/development/api/core/ids.html)
-- [~~IPSec~~](https://docs.opnsense.org/development/api/core/ipsec.html) => [not API enabled](https://forum.opnsense.org/index.php?topic=18914.0)
+- [~~IPSec~~](https://docs.opnsense.org/development/api/core/ipsec.html) => [not API enabled](https://forum.opnsense.org/index.php?topic=18914.msg146063#msg146063)
 - [Monit](https://docs.opnsense.org/development/api/core/monit.html)
 
 **Plugins API**:

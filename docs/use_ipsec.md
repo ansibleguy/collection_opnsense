@@ -8,7 +8,7 @@
 
 ## Limitations
 
-The management of IPSec tunnels [is not yet API available](https://forum.opnsense.org/index.php?topic=18914.0)!
+The management of IPSec tunnels [is not yet API available](https://forum.opnsense.org/index.php?topic=18914.msg146063#msg146063)!
 
 Only its certificates can be managed for now..
 

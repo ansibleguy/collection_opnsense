@@ -1,5 +1,7 @@
 ---
 
+# todo: test default matching
+
 - name: Testing Syslog
   hosts: localhost
   gather_facts: no

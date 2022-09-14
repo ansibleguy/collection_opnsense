@@ -35,6 +35,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
       ssl_verify: false
       match_fields: ['description']
 
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'syslog'
+
   tasks:
     - name: Example
       ansibleguy.opnsense.syslog:
@@ -54,4 +59,56 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         description: 'test1'
         target: '192.168.0.1'
         # match_fields: ['description']
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      #  target: 'syslog'
+      register: existing_entries
+
+    - name: Printing entries
+      ansible.builtin.debug:
+        var: existing_entries.data
+```
+
+### Cleanup
+
+Removing all unwanted (_not configured_) entries.
+
+In this example the description is used as unique identifier!
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.syslog:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'syslog'
+
+  vars:
+    syslog: {...}
+  
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      #  target: 'syslog'
+      register: existing_entries
+
+    - name: Purge
+      ansibleguy.opnsense.syslog:
+        description: "{{ destination.description }}"
+        target: "{{ destination.target }}"
+        state: 'absent'
+    
+      when: destination.description not in syslog | json_query('[*].description')
+    
+      loop_control:
+        loop_var: destination
+      loop: "{{ existing_entries.data }}"
 ```

@@ -25,6 +25,7 @@ This plugin has some limitations you need to know of:
   * protocol (_or 'any'; 'TCP/UDP' is NOT valid_)
   * ip-protocol (_IPv4/IPv6_)
   * direction
+* gateway-groups are not valid yet => [see Forum](https://forum.opnsense.org/index.php?topic=30077.msg146268#msg146268)
 * the ruleset managed by this plugin is SEPARATE from the default WEB-UI rules (_Firewall - Rules_) - combined usage might bring complications
 * interfaces must be provided as used in the network config (_p.e. 'opt1' instead of 'DMZ'_)
   * per example see menu: 'Interface - Assignments - Interface ID (in brackets)'

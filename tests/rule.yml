@@ -371,7 +371,7 @@
 
 - name: Testing Rules - alias deletion if in use
   # this is to fix lacking server-side checks for the automation-rules
-  # see: https://forum.opnsense.org/index.php?topic=30077.0
+  # see: https://forum.opnsense.org/index.php?topic=30077.msg145259#msg145259
   hosts: localhost
   gather_facts: no
   module_defaults:

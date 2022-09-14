@@ -217,7 +217,7 @@ class Alias:
 
         if alias_in_use_by_rule(rules=self.existing_rules, alias=self.cnf[self.FIELD_ID]):
             # this is to fix lacking server-side checks for the automation-rules
-            # see: https://forum.opnsense.org/index.php?topic=30077.0
+            # see: https://forum.opnsense.org/index.php?topic=30077.msg145259#msg145259
             alias_deletion = 'in_use'
 
         else:

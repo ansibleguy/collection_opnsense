@@ -27,7 +27,7 @@ def run_module():
         target=dict(
             type='str', required=True, aliases=['dom', 'd'],
             choises=[
-                'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec'
+                'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper',
             ],
             description='What part of the running config should be reloaded'
         ),
@@ -73,6 +73,10 @@ def run_module():
         elif module.params['target'] == 'ipsec':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.ipsec_cert_obj import KeyPair
             target = KeyPair(module=module, result=result)
+
+        elif module.params['target'] == 'shaper':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_pipe_obj import Pipe
+            target = Pipe(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

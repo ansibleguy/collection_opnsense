@@ -91,6 +91,9 @@ class Syslog:
             self.call_cnf['params'] = [self.dest['uuid']]
 
         self.r['diff']['after'] = self._build_diff_after()
+        self.p['program'].sort()
+        self.p['level'].sort()
+        self.p['facility'].sort()
 
     def _find_dest(self):
         if self.existing_dests is None:
@@ -186,7 +189,7 @@ class Syslog:
             'description': self.p['description'],
             'program': self.p['program'],
             'level': self.p['level'],
-            'facility': self.p['facility'],
+            'facility': [fac for fac in self.p['facility'] if fac != ''],
             'certificate': self.p['certificate'],
             'port': self.p['port'],
         }

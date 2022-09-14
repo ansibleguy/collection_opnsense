@@ -243,7 +243,6 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         # interface2: 'wan'
         # max_packet_length: 1024
         # protocol: 'ip'
-        # max_packet_length: 1024
         # source_invert: false
         # source_net: 'any'
         # source_port: 'any'
