@@ -37,6 +37,7 @@ def run_module():
             type='int', required=False, default=53, aliases=['p'],
             description='DNS port of the target server'
         ),
+        type=dict(type='str', required=False, choises=['forward'], default='forward'),
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,

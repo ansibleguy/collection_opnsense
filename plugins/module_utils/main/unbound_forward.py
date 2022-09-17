@@ -4,8 +4,9 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain, reload
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_matching, validate_port, is_true, to_digit, get_simple_existing
+    get_matching, validate_port, is_true, get_simple_existing
 
 
 class Forward:
@@ -20,7 +21,13 @@ class Forward:
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    CHANGE_CHECK_FIELDS = ['domain', 'target', 'enabled', 'port']
+    FIELDS_CHANGE = ['domain', 'target', 'enabled', 'port']
+    FIELDS_ALL = ['type']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
+    FIELDS_TRANSLATE = {
+        'target': 'server',
+    }
+    EXIST_ATTR = 'fwd'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -39,18 +46,7 @@ class Forward:
         # else the type will always be 'dns-over-tls':
         #   https://github.com/opnsense/core/commit/6832fd75a0b41e376e80f287f8ad3cfe599ea3d1
         self.existing_fwds = None
-
-    def process(self):
-        if self.p['state'] == 'absent':
-            if self.exists:
-                self.delete()
-
-        else:
-            if self.exists:
-                self.update()
-
-            else:
-                self.create()
+        self.b = Base(instance=self)
 
     def check(self):
         validate_domain(module=self.m, domain=self.p['domain'])
@@ -58,7 +54,7 @@ class Forward:
 
         # checking if item exists
         self._find_fwd()
-        self.r['diff']['after'] = self._build_diff_after()
+        self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _find_fwd(self):
         if self.existing_fwds is None:
@@ -73,7 +69,7 @@ class Forward:
         if match is not None:
             self.fwd = match
             self.exists = True
-            self.r['diff']['before'] = self.fwd
+            self.r['diff']['before'] = self.b.build_diff(data=self.fwd)
             self.call_cnf['params'] = [self.fwd['uuid']]
 
     def get_existing(self) -> list:
@@ -105,7 +101,7 @@ class Forward:
                 cnf={
                     **self.call_cnf, **{
                         'command': self.CMDS['add'],
-                        'data': self._build_request(),
+                        'data': self.b.build_request(),
                     }
                 },
                 headers=self.call_headers,
@@ -113,7 +109,7 @@ class Forward:
 
     def update(self):
         # checking if changed
-        for field in self.CHANGE_CHECK_FIELDS:
+        for field in self.FIELDS_CHANGE:
             if self.fwd[field] != self.p[field]:
                 self.r['changed'] = True
                 break
@@ -128,7 +124,7 @@ class Forward:
                     cnf={
                         **self.call_cnf, **{
                             'command': self.CMDS['set'],
-                            'data': self._build_request(),
+                            'data': self.b.build_request(),
                         }
                     },
                     headers=self.call_headers,
@@ -145,42 +141,17 @@ class Forward:
             'enabled': is_true(fwd['enabled']),
         }
 
-    def _build_diff_after(self) -> dict:
-        return {
-            'uuid': self.fwd['uuid'] if 'uuid' in self.fwd else None,
-            'domain': self.p['domain'],
-            'target': self.p['target'],
-            'port': self.p['port'],
-            'enabled': self.p['enabled'],
-        }
-
-    def _build_request(self) -> dict:
-        return {
-            self.API_KEY: {
-                'type': 'forward',
-                'enabled': to_digit(self.p['enabled']),
-                'domain': self.p['domain'],
-                'server': self.p['target'],
-                'port': self.p['port'],
-            }
-        }
-
-    def delete(self):
-        self.r['changed'] = True
-        self.r['diff']['after'] = {}
-
-        if not self.m.check_mode:
-            self._delete_call()
-
-            if self.p['debug']:
-                self.m.warn(f"{self.r['diff']}")
-
     def _delete_call(self) -> dict:
         return self.s.post(
             cnf={**self.call_cnf, **{'command': self.CMDS['del']}},
             headers=self.call_headers,
         )
 
+    def process(self):
+        self.b.process()
+
+    def delete(self):
+        self.b.delete()
+
     def reload(self):
-        # reload running config
-        reload(self)
+        self.b.reload()

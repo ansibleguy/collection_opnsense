@@ -42,6 +42,7 @@ def run_module():
             description='Verify if CN in certificate matches this value, if not set - '
                         'certificate verification will not be performed!'
         ),
+        type=dict(type='str', required=False, choises=['dot'], default='dot'),
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,

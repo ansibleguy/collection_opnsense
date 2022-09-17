@@ -2,6 +2,8 @@
 
 # pylint: disable=W0212
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
+    single_get, single_post
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     get_simple_existing, to_digit
 
@@ -9,14 +11,18 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main im
 class Base:
     def __init__(self, instance):
         self.i = instance  # module-specific object
-        self.e = getattr(self.i, self.i.EXIST_ATTR)  # existing entry
+        self.e = {}  # existing entry
 
     def update(self) -> dict:
+        if len(self.e) == 0:
+            self.e = getattr(self.i, self.i.EXIST_ATTR)
+
         # checking if changed
         for field in self.i.FIELDS_CHANGE:
-            if str(self.e[field]) != str(self.i.p[field]):
-                self.i.r['changed'] = True
-                break
+            if field in self.i.p:
+                if str(self.e[field]) != str(self.i.p[field]):
+                    self.i.r['changed'] = True
+                    break
 
         # update if changed
         if self.i.r['changed']:
@@ -24,6 +30,28 @@ class Base:
                 self.i.m.warn(f"{self.i.r['diff']}")
 
             if not self.i.m.check_mode:
+                if hasattr(self.i, '_update_call'):
+                    _ = self.i._update_call()
+
+                elif hasattr(self.i, 's'):
+                    _ = self.i.s.post(cnf={
+                        **self.i.call_cnf, **{
+                            'command': self.i.CMDS['set'],
+                            'data': self._get_request_data(),
+                        }
+                    })
+
+                else:
+                    _ = single_post(
+                        module=self.i.m,
+                        cnf={
+                            **self.i.call_cnf, **{
+                                'command': self.i.CMDS['set'],
+                                'data': self._get_request_data(),
+                            }
+                        }
+                    )
+
                 return self.i.s.post(cnf={
                     **self.i.call_cnf, **{
                         'command': self.i.CMDS['set'],
@@ -36,7 +64,17 @@ class Base:
         self.i.r['diff']['after'] = {}
 
         if not self.i.m.check_mode:
-            _ = self.i.s.post(cnf={**self.i.call_cnf, **{'command': self.i.CMDS['del']}})
+            if hasattr(self.i, '_delete_call'):
+                _ = self.i._delete_call()
+
+            elif hasattr(self.i, 's'):
+                _ = self.i.s.post(cnf={**self.i.call_cnf, **{'command': self.i.CMDS['del']}})
+
+            else:
+                _ = single_post(
+                    module=self.i.m,
+                    cnf={**self.i.call_cnf, **{'command': self.i.CMDS['del']}}
+                )
 
             if self.i.p['debug']:
                 self.i.m.warn(f"{self.i.r['diff']}")
@@ -126,19 +164,27 @@ class Base:
         )
 
     def build_diff(self, data: dict) -> dict:
+        if len(self.e) == 0:
+            self.e = getattr(self.i, self.i.EXIST_ATTR)
+
         diff = {
             'uuid': self.e['uuid'] if 'uuid' in self.e else None
         }
 
         for field in self.i.FIELDS_ALL:
-            diff[field] = data[field]
+            try:
+                diff[field] = data[field]
 
-            if isinstance(data[field], list):
+            except KeyError:
+                if field in self.i.p:
+                    diff[field] = self.i.p[field]
+
+            if isinstance(diff[field], list):
                 diff[field].sort()
 
-            elif isinstance(data[field], str) and data[field].isnumeric:
+            elif isinstance(diff[field], str) and diff[field].isnumeric:
                 try:
-                    diff[field] = int(data[field])
+                    diff[field] = int(diff[field])
 
                 except (TypeError, ValueError):
                     pass
@@ -147,19 +193,36 @@ class Base:
 
     def build_request(self) -> dict:
         request = {}
+        translate = {}
+
+        if len(self.e) == 0:
+            self.e = getattr(self.i, self.i.EXIST_ATTR)
+
+        if hasattr(self.i, 'FIELDS_TRANSLATE'):
+            translate = self.i.FIELDS_TRANSLATE
 
         for field in self.i.FIELDS_ALL:
-            if isinstance(self.i.p[field], bool):
-                request[field] = to_digit(self.i.p[field])
+            opn_field = field
+            if field in translate:
+                opn_field = translate[field]
 
-            elif isinstance(self.i.p[field], list):
+            if field in self.i.p:
+                opn_data = self.i.p[field]
+
+            else:
+                opn_data = self.e[field]
+
+            if isinstance(opn_data, bool):
+                request[opn_field] = to_digit(opn_data)
+
+            elif isinstance(opn_data, list):
                 join_char = ','
                 if hasattr(self, 'JOIN_CHAR'):
                     join_char = self.i.JOIN_CHAR
 
-                request[field] = join_char.join(self.i.p[field])
+                request[opn_field] = join_char.join(opn_data)
 
             else:
-                request[field] = self.i.p[field]
+                request[opn_field] = opn_data
 
-        return request
+        return {self.i.API_KEY: request}
