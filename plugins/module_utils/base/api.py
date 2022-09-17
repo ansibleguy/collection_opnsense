@@ -2,7 +2,7 @@ import httpx
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api_helper \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.api \
     import check_host, ssl_verification, check_response, get_params_path, debug_output,\
     check_or_load_credentials
 

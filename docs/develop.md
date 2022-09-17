@@ -1,6 +1,6 @@
 # Development
 
-The basic API interaction is handled in 'ansibleguy.opnsense.plugins.module_utils.api'.
+The basic API interaction is handled in 'ansibleguy.opnsense.plugins.module_utils.base.api'.
 
 It is a generic abstraction layer for interacting with the api - therefore all plugins should be able to function with it!
 
@@ -28,7 +28,7 @@ One can choose to either:
   p.e. _check current state => create/update/delete_
 
   ```python3
-  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
+  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
   session = Session(module=module)
   session.get(cnf={'controller': 'alias', 'command': 'addItem', 'data': {'name': 'dummy', ...}})
   session.post(cnf={'controller': 'alias', 'command': 'delItem', 'params': [uuid]})
@@ -40,7 +40,7 @@ One can choose to either:
   p.e. toggle a cronjob or restart a service
 
   ```python3
-  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import single_get, single_post
+  from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import single_get, single_post
   single_get(
       module=module, 
       cnf={'controller': 'alias', 'command': 'addItem', 'data': {'name': 'dummy', ...}}

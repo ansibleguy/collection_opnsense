@@ -1,26 +1,27 @@
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
+    is_ip, valid_hostname, get_matching, validate_port, is_true, to_digit, \
+    get_simple_existing
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    get_matching, is_true, to_digit, get_simple_existing
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain, reload
 
 
-class Alias:
+class DnsOverTls:
     CMDS = {
-        'add': 'addHostAlias',
-        'del': 'delHostAlias',
-        'set': 'setHostAlias',
+        'add': 'addForward',
+        'del': 'delForward',
+        'set': 'setForward',
         'search': 'get',
     }
-    API_KEY = 'alias'
+    API_KEY = 'dot'
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    CHANGE_CHECK_FIELDS = ['target', 'domain', 'alias',  'description', 'enabled']
+    CHANGE_CHECK_FIELDS = ['domain', 'target', 'enabled', 'port', 'verify']
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -28,14 +29,12 @@ class Alias:
         self.r = result
         self.s = Session(module=module) if session is None else session
         self.exists = False
-        self.alias = {}
+        self.dot = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_aliases = None
-        self.existing_hosts = None
-        self.target = None
+        self.existing_dots = None
 
     def process(self):
         if self.p['state'] == 'absent':
@@ -51,37 +50,35 @@ class Alias:
 
     def check(self):
         validate_domain(module=self.m, domain=self.p['domain'])
+        validate_port(module=self.m, port=self.p['port'])
+
+        if self.p['verify'] not in ['', None] and \
+                not is_ip(self.p['verify']) and \
+                not valid_hostname(self.p['verify']):
+            self.m.fail_json(
+                f"Verify-value '{self.p['verify']}' is neither a valid IP-Address "
+                f"nor a valid hostname!"
+            )
 
         # checking if item exists
-        self._find_alias()
-        self._find_target()
-        if self.p['state'] == 'present' and self.target is None:
-            self.m.fail_json(f"Alias-target '{self.p['target']}' was not found!")
-
+        self._find_dot()
         self.r['diff']['after'] = self._build_diff_after()
 
-    def _find_alias(self):
-        if self.existing_aliases is None:
-            self.existing_aliases = self._search_call()
+    def _find_dot(self):
+        if self.existing_dots is None:
+            self.existing_dots = self._search_call()
 
         match = get_matching(
-            module=self.m, existing_items=self.existing_aliases,
-            compare_item=self.p, match_fields=self.p['match_fields'],
+            module=self.m, existing_items=self.existing_dots,
+            compare_item=self.p, match_fields=['domain', 'target'],
             simplify_func=self._simplify_existing,
         )
 
         if match is not None:
-            self.alias = match
+            self.dot = match
             self.exists = True
-            self.r['diff']['before'] = self.alias
-            self.call_cnf['params'] = [self.alias['uuid']]
-
-    def _find_target(self):
-        if len(self.existing_hosts) > 0:
-            for uuid, host in self.existing_hosts.items():
-                if f"{host['hostname']}.{host['domain']}" == self.p['target']:
-                    self.target = uuid
-                    break
+            self.r['diff']['before'] = self.dot
+            self.call_cnf['params'] = [self.dot['uuid']]
 
     def get_existing(self) -> list:
         return get_simple_existing(
@@ -89,12 +86,20 @@ class Alias:
             simplify_func=self._simplify_existing
         )
 
-    def _search_call(self) -> dict:
-        unbound = self.s.get(cnf={
+    def _search_call(self) -> list:
+        dots = []
+        raw = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
-        })['unbound']
-        self.existing_hosts = unbound['hosts']['host']
-        return unbound['aliases'][self.API_KEY]
+        })['unbound']['dots'][self.API_KEY]
+
+        if len(raw) > 0:
+            for uuid, dot in raw.items():
+                if is_true(dot['type']['dot']['selected']):
+                    dot.pop('type')
+                    dot['uuid'] = uuid
+                    dots.append(dot)
+
+        return dots
 
     def create(self):
         self.r['changed'] = True
@@ -109,8 +114,8 @@ class Alias:
 
     def update(self):
         # checking if changed
-        for field in set(self.CHANGE_CHECK_FIELDS) - set(self.p['match_fields']):
-            if str(self.alias[field]) != str(self.p[field]):
+        for field in self.CHANGE_CHECK_FIELDS:
+            if str(self.dot[field]) != str(self.p[field]):
                 self.r['changed'] = True
                 break
 
@@ -128,39 +133,36 @@ class Alias:
                 })
 
     @staticmethod
-    def _simplify_existing(alias: dict) -> dict:
+    def _simplify_existing(dot: dict) -> dict:
         # makes processing easier
-        simple = {
-            'enabled': is_true(alias['enabled']),
-            'domain': alias['domain'],
-            'uuid': alias['uuid'],
-            'alias': alias['hostname'],
-            'description': alias['description'],
+        return {
+            'uuid': dot['uuid'],
+            'domain': dot['domain'],
+            'target': dot['server'],
+            'port': int(dot['port']),
+            'verify': dot['verify'],
+            'enabled': is_true(dot['enabled']),
         }
-
-        if len(alias['host']) > 0:
-            simple['target'] = [v['value'] for v in alias['host'].values()][0]
-
-        return simple
 
     def _build_diff_after(self) -> dict:
         return {
-            'uuid': self.alias['uuid'] if 'uuid' in self.alias else None,
-            'enabled': self.p['enabled'],
-            'alias': self.p['alias'],
-            'target': self.p['target'],
+            'uuid': self.dot['uuid'] if 'uuid' in self.dot else None,
             'domain': self.p['domain'],
-            'description': self.p['description'],
+            'target': self.p['target'],
+            'port': self.p['port'],
+            'verify': self.p['verify'],
+            'enabled': self.p['enabled'],
         }
 
     def _build_request(self) -> dict:
         return {
             self.API_KEY: {
+                'type': 'dot',
                 'enabled': to_digit(self.p['enabled']),
-                'hostname': self.p['alias'],
-                'host': self.target,
                 'domain': self.p['domain'],
-                'description': self.p['description'],
+                'server': self.p['target'],
+                'verify': self.p['verify'],
+                'port': self.p['port'],
             }
         }
 

@@ -1,10 +1,10 @@
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain, reload
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     get_matching, validate_port, is_true, to_digit, get_simple_existing
 
 
@@ -155,8 +155,6 @@ class Forward:
         }
 
     def _build_request(self) -> dict:
-        # todo: need to set '' as referer header
-        #
         return {
             self.API_KEY: {
                 'type': 'forward',

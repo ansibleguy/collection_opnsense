@@ -2,9 +2,9 @@ from ipaddress import ip_network
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     is_true, get_matching
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 
 

@@ -93,7 +93,7 @@ def validate_port(module: AnsibleModule, port: (int, str), error_func=None) -> b
         return True
 
     try:
-        if not validators.between(int(port), 1, 65535):
+        if int(port) < 1 or int(port) > 65535:
             error_func(f"Value '{port}' is an invalid port!")
             return False
 
@@ -107,7 +107,7 @@ def validate_port(module: AnsibleModule, port: (int, str), error_func=None) -> b
 def validate_int_fields(module: AnsibleModule, data: dict, field_minmax: dict):
     for field, valid in field_minmax.items():
         try:
-            if not validators.between(int(data[field]), valid['min'], valid['max']):
+            if int(data[field]) < valid['min'] or int(data[field]) > valid['max']:
                 module.fail_json(
                     f"Value of field '{field}' is not valid - "
                     f"Must be between {valid['min']} and {valid['max']}!"

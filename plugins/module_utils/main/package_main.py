@@ -2,8 +2,8 @@ from time import sleep
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.package_obj import Package
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.package import Package
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
 
 
 def process(m: AnsibleModule, p: dict, r: dict):

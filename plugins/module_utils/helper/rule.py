@@ -1,6 +1,6 @@
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     get_matching, validate_port
 
 

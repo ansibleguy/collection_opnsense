@@ -1,10 +1,10 @@
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     ensure_list, is_true, to_digit, get_selected_list, get_selected, get_matching, \
     get_simple_existing
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.rule import \
     validate_values, get_state_change, get_config_change
 
 

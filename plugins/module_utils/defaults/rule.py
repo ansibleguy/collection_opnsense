@@ -1,4 +1,4 @@
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
     OPN_MOD_ARGS, STATE_MOD_ARG
 
 RULE_DEFAULTS = {

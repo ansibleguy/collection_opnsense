@@ -1,29 +1,26 @@
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
-    is_ip, valid_hostname, get_matching, get_selected, is_true, to_digit, get_simple_existing
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
+    get_matching, is_true, to_digit, get_simple_existing
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain, reload
 
 
-class Host:
+class Alias:
     CMDS = {
-        'add': 'addHostOverride',
-        'del': 'delHostOverride',
-        'set': 'setHostOverride',
+        'add': 'addHostAlias',
+        'del': 'delHostAlias',
+        'set': 'setHostAlias',
         'search': 'get',
     }
-    API_KEY = 'host'
+    API_KEY = 'alias'
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    CHANGE_CHECK_FIELDS = [
-        'hostname', 'domain', 'record_type', 'prio', 'value',
-        'description', 'enabled'
-    ]
+    CHANGE_CHECK_FIELDS = ['target', 'domain', 'alias',  'description', 'enabled']
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -31,12 +28,14 @@ class Host:
         self.r = result
         self.s = Session(module=module) if session is None else session
         self.exists = False
-        self.host = {}
+        self.alias = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
+        self.existing_aliases = None
         self.existing_hosts = None
+        self.target = None
 
     def process(self):
         if self.p['state'] == 'absent':
@@ -51,37 +50,38 @@ class Host:
                 self.create()
 
     def check(self):
-        if self.p['record_type'] == 'MX':
-            if not valid_hostname(self.p['value']):
-                self.m.fail_json(f"Value '{self.p['value']}' is not a valid hostname!")
-
-        else:
-            self.p['prio'] = None
-
-            if not is_ip(self.p['value']):
-                self.m.fail_json(f"Value '{self.p['value']}' is not a valid IP-address!")
-
         validate_domain(module=self.m, domain=self.p['domain'])
 
         # checking if item exists
-        self._find_host()
+        self._find_alias()
+        self._find_target()
+        if self.p['state'] == 'present' and self.target is None:
+            self.m.fail_json(f"Alias-target '{self.p['target']}' was not found!")
+
         self.r['diff']['after'] = self._build_diff_after()
 
-    def _find_host(self):
-        if self.existing_hosts is None:
-            self.existing_hosts = self._search_call()
+    def _find_alias(self):
+        if self.existing_aliases is None:
+            self.existing_aliases = self._search_call()
 
         match = get_matching(
-            module=self.m, existing_items=self.existing_hosts,
+            module=self.m, existing_items=self.existing_aliases,
             compare_item=self.p, match_fields=self.p['match_fields'],
             simplify_func=self._simplify_existing,
         )
 
         if match is not None:
-            self.host = match
+            self.alias = match
             self.exists = True
-            self.r['diff']['before'] = self.host
-            self.call_cnf['params'] = [self.host['uuid']]
+            self.r['diff']['before'] = self.alias
+            self.call_cnf['params'] = [self.alias['uuid']]
+
+    def _find_target(self):
+        if len(self.existing_hosts) > 0:
+            for uuid, host in self.existing_hosts.items():
+                if f"{host['hostname']}.{host['domain']}" == self.p['target']:
+                    self.target = uuid
+                    break
 
     def get_existing(self) -> list:
         return get_simple_existing(
@@ -90,9 +90,11 @@ class Host:
         )
 
     def _search_call(self) -> dict:
-        return self.s.get(cnf={
+        unbound = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
-        })['unbound']['hosts'][self.API_KEY]
+        })['unbound']
+        self.existing_hosts = unbound['hosts']['host']
+        return unbound['aliases'][self.API_KEY]
 
     def create(self):
         self.r['changed'] = True
@@ -108,7 +110,7 @@ class Host:
     def update(self):
         # checking if changed
         for field in set(self.CHANGE_CHECK_FIELDS) - set(self.p['match_fields']):
-            if str(self.host[field]) != str(self.p[field]):
+            if str(self.alias[field]) != str(self.p[field]):
                 self.r['changed'] = True
                 break
 
@@ -126,57 +128,40 @@ class Host:
                 })
 
     @staticmethod
-    def _simplify_existing(host: dict) -> dict:
+    def _simplify_existing(alias: dict) -> dict:
         # makes processing easier
-        data = {
-            'enabled': is_true(host['enabled']),
-            'hostname': host['hostname'],
-            'uuid': host['uuid'],
-            'domain': host['domain'],
-            'description': host['description'],
-            'record_type': get_selected(host['rr']),
+        simple = {
+            'enabled': is_true(alias['enabled']),
+            'domain': alias['domain'],
+            'uuid': alias['uuid'],
+            'alias': alias['hostname'],
+            'description': alias['description'],
         }
 
-        if data['record_type'] == 'MX':
-            data['prio'] = host['mxprio']
-            data['value'] = host['mx']
+        if len(alias['host']) > 0:
+            simple['target'] = [v['value'] for v in alias['host'].values()][0]
 
-        else:
-            data['value'] = host['server']
-            data['prio'] = None
-
-        return data
+        return simple
 
     def _build_diff_after(self) -> dict:
         return {
-            'uuid': self.host['uuid'] if 'uuid' in self.host else None,
+            'uuid': self.alias['uuid'] if 'uuid' in self.alias else None,
             'enabled': self.p['enabled'],
-            'hostname': self.p['hostname'],
+            'alias': self.p['alias'],
+            'target': self.p['target'],
             'domain': self.p['domain'],
-            'record_type': self.p['record_type'],
-            'value': self.p['value'],
-            'prio': self.p['prio'],
             'description': self.p['description'],
         }
 
     def _build_request(self) -> dict:
-        data = {
-            'enabled': to_digit(self.p['enabled']),
-            'hostname': self.p['hostname'],
-            'domain': self.p['domain'],
-            'rr': self.p['record_type'],  # A/AAAA/MX
-            'description': self.p['description'],
-        }
-
-        if self.p['record_type'] == 'MX':
-            data['mxprio'] = self.p['prio']
-            data['mx'] = self.p['value']
-
-        else:
-            data['server'] = self.p['value']
-
         return {
-            self.API_KEY: data
+            self.API_KEY: {
+                'enabled': to_digit(self.p['enabled']),
+                'hostname': self.p['alias'],
+                'host': self.target,
+                'domain': self.p['domain'],
+                'description': self.p['description'],
+            }
         }
 
     def delete(self):

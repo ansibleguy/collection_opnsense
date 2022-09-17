@@ -7,13 +7,13 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.savepoint_obj import SavePoint
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import OPN_MOD_ARGS
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.savepoint import SavePoint
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()

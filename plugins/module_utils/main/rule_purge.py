@@ -1,11 +1,11 @@
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.purge_helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.purge import \
     purge, check_purge_filter
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.rule import \
     check_purge_configured
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
 
 
 def process(m: AnsibleModule, p: dict, r: dict):

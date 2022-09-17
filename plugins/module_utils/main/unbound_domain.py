@@ -1,10 +1,10 @@
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     is_ip, get_matching, is_true, to_digit, get_simple_existing
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain, reload
 
 

@@ -4,7 +4,7 @@ import validators
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
     BUILTIN_ALIASES, BUILTIN_INTERFACE_ALIASES_REG
 
 
@@ -32,7 +32,7 @@ def validate_values(error_func, cnf: dict) -> None:
 
             for _value in to_check:
                 try:
-                    if not validators.between(int(_value), 1, 65535):
+                    if int(_value) < 1 or int(_value) > 65535:
                         error_func(error)
 
                 except ValueError:

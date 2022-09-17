@@ -8,11 +8,11 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import OPN_MOD_ARGS
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import OPN_MOD_ARGS
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -30,7 +30,7 @@ def run_module():
                 'alias', 'rule', 'route', 'cron', 'syslog', 'package',
                 'unbound_host', 'unbound_domain', 'unbound_dot', 'unbound_forward',
                 'unbound_host_alias', 'ipsec_cert', 'shaper_pipe', 'shaper_queue',
-                'shaper_rule',
+                'shaper_rule', 'monit_service', 'monit_test', 'monit_alert',
             ],
             description='What part of the running config should be listed'
         ),
@@ -50,64 +50,76 @@ def run_module():
 
     try:
         if module.params['target'] == 'alias':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import Alias
             target = Alias(module=module, result=result)
 
         elif module.params['target'] == 'rule':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
             target = Rule(module=module, result=result)
 
         elif module.params['target'] == 'route':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.route_obj import Route
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.route import Route
             target = Route(module=module, result=result)
 
         elif module.params['target'] == 'cron':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.cron_obj import CronJob
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.cron import CronJob
             target = CronJob(module=module, result=result)
 
         elif module.params['target'] == 'unbound_host':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_host_obj import Host
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host import Host
             target = Host(module=module, result=result)
 
         elif module.params['target'] == 'unbound_host_alias':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_host_alias_obj import Alias
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host_alias import Alias
             target = Alias(module=module, result=result)
 
         elif module.params['target'] == 'unbound_domain':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_domain_obj import Domain
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_domain import Domain
             target = Domain(module=module, result=result)
 
         elif module.params['target'] == 'unbound_dot':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_dot_obj import DnsOverTls
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_dot import DnsOverTls
             target = DnsOverTls(module=module, result=result)
 
         elif module.params['target'] == 'unbound_forward':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_forward_obj import Forward
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_forward import Forward
             target = Forward(module=module, result=result)
 
         elif module.params['target'] == 'syslog':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.syslog_obj import Syslog
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.syslog import Syslog
             target = Syslog(module=module, result=result)
 
         elif module.params['target'] == 'package':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.package_obj import Package
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.package import Package
             target = Package(module=module, name='dummy')
 
         elif module.params['target'] == 'ipsec_cert':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.ipsec_cert_obj import KeyPair
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_cert import KeyPair
             target = KeyPair(module=module, result=result)
 
         elif module.params['target'] == 'shaper_pipe':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_pipe_obj import Pipe
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_pipe import Pipe
             target = Pipe(module=module, result=result)
 
         elif module.params['target'] == 'shaper_queue':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_queue_obj import Queue
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_queue import Queue
             target = Queue(module=module, result=result)
 
         elif module.params['target'] == 'shaper_rule':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.shaper_rule_obj import Rule
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_rule import Rule
             target = Rule(module=module, result=result)
+
+        elif module.params['target'] == 'monit_service':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_service import Service
+            target = Service(module=module, result=result)
+
+        elif module.params['target'] == 'monit_test':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_test import Test
+            target = Test(module=module, result=result)
+
+        elif module.params['target'] == 'monit_alert':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_alert import Alert
+            target = Alert(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

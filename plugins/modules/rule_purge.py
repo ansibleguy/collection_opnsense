@@ -7,16 +7,16 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.utils import profiler
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_purge import process
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.utils import profiler
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule_purge import process
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, PURGE_MOD_ARGS, INFO_MOD_ARG
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_defaults import \
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.rule import \
         RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_KEY_FIELD
 
 except MODULE_EXCEPTIONS:

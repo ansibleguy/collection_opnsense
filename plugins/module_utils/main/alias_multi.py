@@ -1,14 +1,14 @@
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_defaults import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.alias import \
     ALIAS_DEFAULTS, ALIAS_MOD_ARGS, ALIAS_MOD_ARG_ALIASES
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     diff_remove_empty, ensure_list
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.api import Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.multi_helper import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.multi import \
     validate_single, convert_aliases
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.alias_obj import Alias
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.rule_obj import Rule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import Alias
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
 
 
 def process(m: AnsibleModule, p: dict, r: dict, ):

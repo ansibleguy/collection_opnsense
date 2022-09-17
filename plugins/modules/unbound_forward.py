@@ -7,15 +7,15 @@
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.handler import \
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.utils import profiler
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper import diff_remove_empty
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults import \
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.utils import profiler
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.unbound_forward_obj import Forward
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_forward import Forward
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
