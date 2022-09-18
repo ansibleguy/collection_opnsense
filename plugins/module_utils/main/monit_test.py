@@ -15,8 +15,8 @@ class Test:
         'set': 'setTest',
         'search': 'get',
     }
-    API_MAIN_KEY = 'monit'
     API_KEY = 'test'
+    API_KEY_1 = 'monit'
     API_MOD = 'monit'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
@@ -58,7 +58,8 @@ class Test:
         if self.exists:
             self.call_cnf['params'] = [self.test['uuid']]
 
-        self.r['diff']['after'] = self._build_diff(data=self.p)
+        if self.p['state'] == 'present':
+            self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _find_test(self):
         if self.existing_tests is None:
@@ -72,7 +73,7 @@ class Test:
 
         if match is not None:
             self.test = match
-            self.r['diff']['before'] = self._build_diff(data=self.test)
+            self.r['diff']['before'] = self.b.build_diff(data=self.test)
             self.exists = True
 
     @staticmethod
@@ -86,9 +87,6 @@ class Test:
             'action': get_selected(test['action']),
             'path': test['path'],
         }
-
-    def _build_diff(self, data: dict) -> dict:
-        return self.b.build_diff(data=data)
 
     def process(self):
         self.b.process()

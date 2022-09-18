@@ -29,11 +29,11 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/_
 def run_module():
     module_args = dict(
         # id=dict(type='int', required=True, alises=['number']),  # ignored and set automatically
-        bw=dict(
-            type='int', required=False, aliases=['bandwidth']
+        bandwidth=dict(
+            type='int', required=False, aliases=['bw']
         ),
-        bw_metric=dict(
-            type='str', required=False, default='Mbit', aliases=['bandwidth_metric'],
+        bandwidth_metric=dict(
+            type='str', required=False, default='Mbit', aliases=['bw_metric'],
             choises=['bit', 'Kbit', 'Mbit', 'Gbit'],
         ),
         queue=dict(type='str', required=False, default=''),

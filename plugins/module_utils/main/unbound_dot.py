@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_ip, valid_hostname, get_matching, validate_port, is_true
+    is_ip, valid_hostname, validate_port, is_true
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
@@ -17,6 +17,8 @@ class DnsOverTls:
         'search': 'get',
     }
     API_KEY = 'dot'
+    API_KEY_1 = 'unbound'
+    API_KEY_2 = 'dots'
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
@@ -40,7 +42,7 @@ class DnsOverTls:
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_dots = None
+        self.existing_entries = None
         self.b = Base(instance=self)
 
     def check(self):
@@ -55,31 +57,16 @@ class DnsOverTls:
                 f"nor a valid hostname!"
             )
 
-        # checking if item exists
-        self._find_dot()
-        self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self.b.find(match_fields=['domain', 'target'])
 
-    def _find_dot(self):
-        if self.existing_dots is None:
-            self.existing_dots = self._search_call()
-
-        match = get_matching(
-            module=self.m, existing_items=self.existing_dots,
-            compare_item=self.p, match_fields=['domain', 'target'],
-            simplify_func=self._simplify_existing,
-        )
-
-        if match is not None:
-            self.dot = match
-            self.exists = True
-            self.r['diff']['before'] = self.b.build_diff(data=self.dot)
-            self.call_cnf['params'] = [self.dot['uuid']]
+        if self.p['state'] == 'present':
+            self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _search_call(self) -> list:
         dots = []
         raw = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
-        })['unbound']['dots'][self.API_KEY]
+        })[self.API_KEY_1][self.API_KEY_2][self.API_KEY]
 
         if len(raw) > 0:
             for uuid, dot in raw.items():

@@ -30,7 +30,7 @@ def run_module():
     module_args = dict(
         alias=dict(type='str', required=True, aliases=['hostname']),
         domain=dict(type='str', required=True, aliases=['dom', 'd']),
-        target=dict(type='str', required=True, aliases=['tgt', 'host']),
+        target=dict(type='str', required=False, aliases=['tgt', 'host']),
         description=dict(type='str', required=False, default='', aliases=['desc']),
         match_fields=dict(
             type='list', required=False, elements='str',

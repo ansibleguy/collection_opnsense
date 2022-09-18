@@ -6,7 +6,8 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_ip, get_matching, validate_port, get_selected, get_selected_list, is_true, to_digit
+    is_ip, get_matching, validate_port, get_selected, get_selected_list, is_true
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
 class Syslog:
@@ -17,14 +18,22 @@ class Syslog:
         'search': 'get',
     }
     API_KEY = 'destination'
+    API_KEY_1 = 'syslog'
+    API_KEY_2 = 'destinations'
     API_MOD = 'syslog'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    CHANGE_CHECK_FIELDS = [
+    FIELDS_CHANGE = [
         'target', 'transport', 'facility', 'program', 'level', 'certificate',
         'port', 'description', 'enabled',
     ]
+    FIELDS_ALL = ['rfc5424']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
+    FIELDS_TRANSLATE = {
+        'target': 'hostname',
+    }
+    EXIST_ATTR = 'dest'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -37,19 +46,8 @@ class Syslog:
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_dests = None
-
-    def process(self):
-        if self.p['state'] == 'absent':
-            if self.exists:
-                self.delete()
-
-        else:
-            if self.exists:
-                self.update()
-
-            else:
-                self.create()
+        self.existing_entries = None
+        self.b = Base(instance=self)
 
     def check(self):
         if not is_ip(self.p['target']) and \
@@ -86,81 +84,15 @@ class Syslog:
         validate_port(module=self.m, port=self.p['port'])
 
         # checking if item exists
-        self._find_dest()
+        self.b.find(match_fields=self.p['match_fields'])
         if self.exists:
             self.call_cnf['params'] = [self.dest['uuid']]
 
-        self.r['diff']['after'] = self._build_diff_after()
-        self.p['program'].sort()
-        self.p['level'].sort()
-        self.p['facility'].sort()
-
-    def _find_dest(self):
-        if self.existing_dests is None:
-            self.existing_dests = self._search_call()
-
-        match = get_matching(
-            module=self.m, existing_items=self.existing_dests,
-            compare_item=self.p, match_fields=self.p['match_fields'],
-            simplify_func=self._simplify_existing,
-        )
-
-        if match is not None:
-            self.dest = match
-            self.r['diff']['before'] = self.dest
-            self.exists = True
-
-    def get_existing(self) -> list:
-        existing_entries = self._search_call()
-        simple_entries = []
-
-        if len(existing_entries) > 0:
-            for uuid, entry in existing_entries.items():
-                entry['uuid'] = uuid
-                simple_entries.append(self._simplify_existing(dest=entry))
-
-        return simple_entries
-
-    def _search_call(self) -> dict:
-        return self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })['syslog']['destinations']['destination']
-
-    def detail_call(self) -> dict:
-        return self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['detail']}
-        })['dest']
-
-    def create(self):
-        self.r['changed'] = True
-
-        if not self.m.check_mode:
-            self.s.post(cnf={
-                **self.call_cnf, **{
-                    'command': self.CMDS['add'],
-                    'data': self._build_request(),
-                }
-            })
-
-    def update(self):
-        # checking if changed
-        for field in self.CHANGE_CHECK_FIELDS:
-            if str(self.dest[field]) != str(self.p[field]):
-                self.r['changed'] = True
-                break
-
-        # update if changed
-        if self.r['changed']:
-            if self.p['debug']:
-                self.m.warn(f"{self.r['diff']}")
-
-            if not self.m.check_mode:
-                self.s.post(cnf={
-                    **self.call_cnf, **{
-                        'command': self.CMDS['set'],
-                        'data': self._build_request(),
-                    }
-                })
+        if self.p['state'] == 'present':
+            self.r['diff']['after'] = self.b.build_diff(self.p)
+            self.p['program'].sort()
+            self.p['level'].sort()
+            self.p['facility'].sort()
 
     @staticmethod
     def _simplify_existing(dest: dict) -> dict:
@@ -179,82 +111,20 @@ class Syslog:
             'facility': get_selected_list(data=dest['facility']),
         }
 
-    def _build_diff_after(self) -> dict:
-        return {
-            'uuid': self.dest['uuid'] if 'uuid' in self.dest else None,
-            'rfc5424': self.p['rfc5424'],
-            'enabled': self.p['enabled'],
-            'target': self.p['target'],
-            'transport': self.p['transport'],
-            'description': self.p['description'],
-            'program': self.p['program'],
-            'level': self.p['level'],
-            'facility': [fac for fac in self.p['facility'] if fac != ''],
-            'certificate': self.p['certificate'],
-            'port': self.p['port'],
-        }
+    def get_existing(self) -> list:
+        return self.b.get_existing()
 
-    def _build_request(self) -> dict:
-        return {
-            self.API_KEY: {
-                'rfc5424': to_digit(self.p['rfc5424']),
-                'enabled': to_digit(self.p['enabled']),
-                'transport': self.p['transport'],
-                'description': self.p['description'],
-                'program': ','.join(self.p['program']),
-                'level': ','.join(self.p['level']),
-                'facility': ','.join(self.p['facility']),
-                'hostname': self.p['target'],
-                'certificate': self.p['certificate'],
-                'port': self.p['port'],
-            }
-        }
+    def create(self):
+        self.b.create()
+
+    def update(self):
+        self.b.update()
+
+    def process(self):
+        self.b.process()
 
     def delete(self):
-        self.r['changed'] = True
-        self.r['diff']['after'] = {}
-
-        if not self.m.check_mode:
-            self._delete_call()
-
-            if self.p['debug']:
-                self.m.warn(f"{self.r['diff']}")
-
-    def _delete_call(self) -> dict:
-        return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
-
-    def enable(self):
-        if self.exists and not self.dest['enabled']:
-            self.r['changed'] = True
-            self.r['diff']['before'] = {'enabled': False}
-            self.r['diff']['after'] = {'enabled': True}
-
-            if not self.m.check_mode:
-                self._change_enabled_state(1)
-
-    def disable(self):
-        if self.exists and self.dest['enabled']:
-            self.r['changed'] = True
-            self.r['diff']['before'] = {'enabled': True}
-            self.r['diff']['after'] = {'enabled': False}
-
-            if not self.m.check_mode:
-                self._change_enabled_state(0)
-
-    def _change_enabled_state(self, value: int):
-        self.s.post(cnf={
-            **self.call_cnf, **{
-                'command': self.CMDS['toggle'],
-                'params': [self.dest['uuid'], value],
-            }
-        })
+        self.b.delete()
 
     def reload(self):
-        # reload the running config
-        if not self.m.check_mode:
-            self.s.post(cnf={
-                'module': self.call_cnf['module'],
-                'controller': self.API_CONT_REL,
-                'command': self.API_CMD_REL,
-                'params': []
-            })
+        self.b.reload()

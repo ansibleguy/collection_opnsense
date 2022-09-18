@@ -3,9 +3,10 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_matching, is_true, to_digit, get_simple_existing
+    is_true, to_digit
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
-    validate_domain, reload
+    validate_domain
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
 class Alias:
@@ -20,7 +21,9 @@ class Alias:
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    CHANGE_CHECK_FIELDS = ['target', 'domain', 'alias',  'description', 'enabled']
+    FIELDS_CHANGE = ['target', 'domain', 'alias',  'description', 'enabled']
+    FIELDS_ALL = FIELDS_CHANGE
+    EXIST_ATTR = 'alias'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -33,48 +36,29 @@ class Alias:
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_aliases = None
+        self.existing_entries = None
         self.existing_hosts = None
         self.target = None
-
-    def process(self):
-        if self.p['state'] == 'absent':
-            if self.exists:
-                self.delete()
-
-        else:
-            if self.exists:
-                self.update()
-
-            else:
-                self.create()
+        self.b = Base(instance=self)
 
     def check(self):
-        validate_domain(module=self.m, domain=self.p['domain'])
+        if self.p['state'] == 'present':
+            if self.p['target'] is None:
+                self.m.fail_json(
+                    "You need to provide a 'target' if you want to create a host-alias!"
+                )
 
-        # checking if item exists
-        self._find_alias()
-        self._find_target()
-        if self.p['state'] == 'present' and self.target is None:
-            self.m.fail_json(f"Alias-target '{self.p['target']}' was not found!")
+            validate_domain(module=self.m, domain=self.p['domain'])
 
-        self.r['diff']['after'] = self._build_diff_after()
+        self.b.find(match_fields=self.p['match_fields'])
 
-    def _find_alias(self):
-        if self.existing_aliases is None:
-            self.existing_aliases = self._search_call()
+        if self.p['state'] == 'present':
+            self._find_target()
 
-        match = get_matching(
-            module=self.m, existing_items=self.existing_aliases,
-            compare_item=self.p, match_fields=self.p['match_fields'],
-            simplify_func=self._simplify_existing,
-        )
+            if self.target is None:
+                self.m.fail_json(f"Alias-target '{self.p['target']}' was not found!")
 
-        if match is not None:
-            self.alias = match
-            self.exists = True
-            self.r['diff']['before'] = self.alias
-            self.call_cnf['params'] = [self.alias['uuid']]
+            self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _find_target(self):
         if len(self.existing_hosts) > 0:
@@ -83,49 +67,12 @@ class Alias:
                     self.target = uuid
                     break
 
-    def get_existing(self) -> list:
-        return get_simple_existing(
-            entries=self._search_call(),
-            simplify_func=self._simplify_existing
-        )
-
     def _search_call(self) -> dict:
         unbound = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['unbound']
         self.existing_hosts = unbound['hosts']['host']
         return unbound['aliases'][self.API_KEY]
-
-    def create(self):
-        self.r['changed'] = True
-
-        if not self.m.check_mode:
-            self.s.post(cnf={
-                **self.call_cnf, **{
-                    'command': self.CMDS['add'],
-                    'data': self._build_request(),
-                }
-            })
-
-    def update(self):
-        # checking if changed
-        for field in set(self.CHANGE_CHECK_FIELDS) - set(self.p['match_fields']):
-            if str(self.alias[field]) != str(self.p[field]):
-                self.r['changed'] = True
-                break
-
-        # update if changed
-        if self.r['changed']:
-            if self.p['debug']:
-                self.m.warn(f"{self.r['diff']}")
-
-            if not self.m.check_mode:
-                self.s.post(cnf={
-                    **self.call_cnf, **{
-                        'command': self.CMDS['set'],
-                        'data': self._build_request(),
-                    }
-                })
 
     @staticmethod
     def _simplify_existing(alias: dict) -> dict:
@@ -143,16 +90,6 @@ class Alias:
 
         return simple
 
-    def _build_diff_after(self) -> dict:
-        return {
-            'uuid': self.alias['uuid'] if 'uuid' in self.alias else None,
-            'enabled': self.p['enabled'],
-            'alias': self.p['alias'],
-            'target': self.p['target'],
-            'domain': self.p['domain'],
-            'description': self.p['description'],
-        }
-
     def _build_request(self) -> dict:
         return {
             self.API_KEY: {
@@ -164,19 +101,20 @@ class Alias:
             }
         }
 
+    def get_existing(self) -> list:
+        return self.b.get_existing()
+
+    def create(self):
+        self.b.create()
+
+    def update(self):
+        self.b.update()
+
+    def process(self):
+        self.b.process()
+
     def delete(self):
-        self.r['changed'] = True
-        self.r['diff']['after'] = {}
-
-        if not self.m.check_mode:
-            self._delete_call()
-
-            if self.p['debug']:
-                self.m.warn(f"{self.r['diff']}")
-
-    def _delete_call(self) -> dict:
-        return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
+        self.b.delete()
 
     def reload(self):
-        # reload running config
-        reload(self)
+        self.b.reload()

@@ -3,9 +3,10 @@ from ipaddress import ip_network
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, get_matching
+    is_true, to_digit
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
 class Route:
@@ -20,7 +21,9 @@ class Route:
     API_MOD = 'routes'
     API_CONT = 'routes'
     API_CMD_REL = 'reconfigure'
-    CHANGE_CHECK_FIELDS = ['network', 'gateway', 'description', 'enabled']
+    FIELDS_CHANGE = ['network', 'gateway', 'description', 'enabled']
+    FIELDS_ALL = FIELDS_CHANGE
+    EXIST_ATTR = 'route'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -33,19 +36,8 @@ class Route:
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_routes = None
-
-    def process(self):
-        if self.p['state'] == 'absent':
-            if self.exists:
-                self.delete()
-
-        else:
-            if self.exists:
-                self.update()
-
-            else:
-                self.create()
+        self.existing_entries = None
+        self.b = Base(instance=self)
 
     def check(self):
         try:
@@ -54,69 +46,15 @@ class Route:
         except ValueError:
             self.m.fail_json(f"Value '{self.p['network']}' is not a valid network!")
 
-        # checking if item exists
-        self._find_route()
-        self.r['diff']['after'] = self._build_diff_after()
+        self.b.find(match_fields=self.p['match_fields'])
 
-    def _find_route(self):
-        if self.existing_routes is None:
-            self.existing_routes = self._search_call()
-
-        match = get_matching(
-            module=self.m, existing_items=self.existing_routes,
-            compare_item=self.p, match_fields=self.p['match_fields'],
-            simplify_func=self._simplify_existing,
-        )
-
-        if match is not None:
-            self.route = match
-            self.exists = True
-            self.r['diff']['before'] = self.route
-            self.call_cnf['params'] = [self.route['uuid']]
-
-    def get_existing(self) -> list:
-        existing_entries = self._search_call()
-        simple_entries = []
-
-        for entry in existing_entries:
-            simple_entries.append(self._simplify_existing(route=entry))
-
-        return simple_entries
+        if self.p['state'] == 'present':
+            self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _search_call(self) -> list:
         return self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['rows']
-
-    def create(self):
-        self.r['changed'] = True
-
-        if not self.m.check_mode:
-            self.s.post(cnf={
-                **self.call_cnf, **{
-                    'command': self.CMDS['add'],
-                    'data': self._build_request(),
-                }
-            })
-
-    def update(self):
-        # checking if changed
-        for field in self.CHANGE_CHECK_FIELDS:
-            if self.route[field] != self.p[field]:
-                self.r['changed'] = True
-                break
-
-        # update if changed
-        if self.r['changed'] and not self.m.check_mode:
-            self.s.post(cnf={
-                **self.call_cnf, **{
-                    'command': self.CMDS['set'],
-                    'data': self._build_request(),
-                }
-            })
-
-            if self.p['debug']:
-                self.m.warn(f"{self.r['diff']}")
 
     @staticmethod
     def _simplify_existing(route: dict) -> dict:
@@ -129,41 +67,30 @@ class Route:
             'enabled': not is_true(route['disabled']),
         }
 
-    def _build_diff_after(self) -> dict:
-        return {
-            'uuid': self.route['uuid'] if 'uuid' in self.route else None,
-            'network': self.p['network'],
-            'gateway': self.p['gateway'],
-            'description': self.p['description'],
-            'enabled': self.p['enabled'],
-        }
-
     def _build_request(self) -> dict:
         return {
             self.API_KEY: {
                 'network': self.p['network'],
                 'gateway': self.p['gateway'],
                 'descr': self.p['description'],
-                'disabled': 0 if self.p['enabled'] else 1,
+                'disabled': to_digit(not self.p['enabled']),
             }
         }
 
+    def get_existing(self) -> list:
+        return self.b.get_existing()
+
+    def create(self):
+        self.b.create()
+
+    def update(self):
+        self.b.update()
+
+    def process(self):
+        self.b.process()
+
     def delete(self):
-        self.r['changed'] = True
-        self.r['diff']['after'] = {}
-
-        if not self.m.check_mode:
-            self._delete_call()
-
-            if self.p['debug']:
-                self.m.warn(f"{self.r['diff']}")
-
-    def _delete_call(self) -> dict:
-        return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
+        self.b.delete()
 
     def reload(self):
-        # reload the active routes
-        if not self.m.check_mode:
-            self.s.post(cnf={
-                **self.call_cnf, **{'command': self.API_CMD_REL, 'params': []}
-            })
+        self.b.reload()

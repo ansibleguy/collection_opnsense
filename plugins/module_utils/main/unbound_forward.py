@@ -3,10 +3,10 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
-    validate_domain, reload
+    validate_domain
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_matching, validate_port, is_true, get_simple_existing
+    validate_port, is_true
 
 
 class Forward:
@@ -45,38 +45,17 @@ class Forward:
         }
         # else the type will always be 'dns-over-tls':
         #   https://github.com/opnsense/core/commit/6832fd75a0b41e376e80f287f8ad3cfe599ea3d1
-        self.existing_fwds = None
+        self.existing_entries = None
         self.b = Base(instance=self)
 
     def check(self):
         validate_domain(module=self.m, domain=self.p['domain'])
         validate_port(module=self.m, port=self.p['port'])
 
-        # checking if item exists
-        self._find_fwd()
-        self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self.b.find(match_fields=['domain', 'target'])
 
-    def _find_fwd(self):
-        if self.existing_fwds is None:
-            self.existing_fwds = self._search_call()
-
-        match = get_matching(
-            module=self.m, existing_items=self.existing_fwds,
-            compare_item=self.p, match_fields=['domain', 'target'],
-            simplify_func=self._simplify_existing,
-        )
-
-        if match is not None:
-            self.fwd = match
-            self.exists = True
-            self.r['diff']['before'] = self.b.build_diff(data=self.fwd)
-            self.call_cnf['params'] = [self.fwd['uuid']]
-
-    def get_existing(self) -> list:
-        return get_simple_existing(
-            entries=self._search_call(),
-            simplify_func=self._simplify_existing
-        )
+        if self.p['state'] == 'present':
+            self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _search_call(self) -> list:
         fwds = []
@@ -146,6 +125,9 @@ class Forward:
             cnf={**self.call_cnf, **{'command': self.CMDS['del']}},
             headers=self.call_headers,
         )
+
+    def get_existing(self) -> list:
+        return self.b.get_existing()
 
     def process(self):
         self.b.process()

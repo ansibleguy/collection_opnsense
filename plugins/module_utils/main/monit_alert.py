@@ -16,8 +16,8 @@ class Alert:
         'set': 'setAlert',
         'search': 'get',
     }
-    API_MAIN_KEY = 'monit'
     API_KEY = 'alert'
+    API_KEY_1 = 'monit'
     API_MOD = 'monit'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
@@ -64,7 +64,8 @@ class Alert:
         if self.exists:
             self.call_cnf['params'] = [self.alert['uuid']]
 
-        self.r['diff']['after'] = self._build_diff(data=self.p)
+        if self.p['state'] == 'present':
+            self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _find_alert(self):
         if self.existing_alerts is None:
@@ -78,7 +79,7 @@ class Alert:
 
         if match is not None:
             self.alert = match
-            self.r['diff']['before'] = self._build_diff(data=self.alert)
+            self.r['diff']['before'] = self.b.build_diff(data=self.alert)
             self.exists = True
 
     @staticmethod
@@ -94,9 +95,6 @@ class Alert:
             'reminder': int(alert['reminder']),
             'description': alert['description'],
         }
-
-    def _build_diff(self, data: dict) -> dict:
-        return self.b.build_diff(data=data)
 
     def process(self):
         self.b.process()

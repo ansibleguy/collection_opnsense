@@ -147,7 +147,6 @@
         description: 'ANSIBLE_TEST_1_2'
         alias: 'd'
         domain: 'opnsense.test.ansibleguy.net'
-        target: 'host.opnsense.test.ansibleguy.net'
         state: 'absent'
       register: opn8
       failed_when: >
@@ -168,18 +167,16 @@
         description: "{{ item }}"
         alias: 'dummy'
         domain: 'dummy'
-        target: 'dummy.local'
         state: 'absent'
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
       when: not ansible_check_mode
 
-    - name: Cleanup alias
+    - name: Cleanup host
       ansibleguy.opnsense.unbound_host:
         hostname: 'host'
         domain: 'opnsense.test.ansibleguy.net'
-        value: '192.168.0.1'
         description: 'ANSIBLE_TEST_2_1'
         state: 'absent'
 

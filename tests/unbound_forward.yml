@@ -27,7 +27,7 @@
 
     - name: Removing - does not exist
       ansibleguy.opnsense.unbound_forward:
-        domain: 'dot.opnsense.test.ansibleguy.net'
+        domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.1'
         state: 'absent'
       register: opn1
@@ -37,7 +37,7 @@
 
     - name: Adding 1
       ansibleguy.opnsense.unbound_forward:
-        domain: 'dot.opnsense.test.ansibleguy.net'
+        domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.1'
       register: opn4
       failed_when: >
@@ -46,7 +46,7 @@
 
     - name: Adding 2
       ansibleguy.opnsense.unbound_forward:
-        domain: 'dot.opnsense.test.ansibleguy.net'
+        domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.2'
       register: opn5
       failed_when: >
@@ -55,7 +55,7 @@
 
     - name: Disabling 2
       ansibleguy.opnsense.unbound_forward:
-        domain: 'dot.opnsense.test.ansibleguy.net'
+        domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.2'
         enabled: false
       register: opn6
@@ -66,7 +66,7 @@
 
     - name: Disabling 2 - nothing changed
       ansibleguy.opnsense.unbound_forward:
-        domain: 'dot.opnsense.test.ansibleguy.net'
+        domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.2'
         enabled: false
       register: opn9
@@ -77,7 +77,7 @@
 
     - name: Enabling 2
       ansibleguy.opnsense.unbound_forward:
-        domain: 'dot.opnsense.test.ansibleguy.net'
+        domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.2'
       register: opn7
       failed_when: >
@@ -87,7 +87,7 @@
 
     - name: Removing 2
       ansibleguy.opnsense.unbound_forward:
-        domain: 'dot.opnsense.test.ansibleguy.net'
+        domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.2'
         state: 'absent'
       register: opn8
@@ -110,8 +110,8 @@
         target: "{{ item.t }}"
         state: 'absent'
       loop:
-        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
-        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
+        - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
+        - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
       when: not ansible_check_mode
 
     - name: Listing

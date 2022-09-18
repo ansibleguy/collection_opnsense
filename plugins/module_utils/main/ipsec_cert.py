@@ -1,11 +1,10 @@
-from hashlib import sha256 as hash_sha256
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_matching, get_simple_existing, get_selected
+    get_selected
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
 class KeyPair:
@@ -17,11 +16,21 @@ class KeyPair:
         'search': 'get',
     }
     API_KEY = 'keyPair'
+    API_KEY_1 = 'ipsec'
+    API_KEY_2 = 'keyPairs'
     API_MOD = 'ipsec'
     API_CONT = 'key_pairs'
     API_CONT_REL = 'legacy_subsystem'
     API_CMD_REL = 'applyConfig'
-    CHANGE_CHECK_FIELDS = ['public_key']
+    FIELDS_CHANGE = ['public_key']
+    FIELDS_ALL = ['name', 'private_key', 'type']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
+    FIELDS_TRANSLATE = {
+        'type': 'keyType',
+        'public_key': 'publicKey',
+        'private_key': 'privateKey',
+    }
+    EXIST_ATTR = 'key'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -34,19 +43,8 @@ class KeyPair:
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_keys = None
-
-    def process(self):
-        if self.p['state'] == 'absent':
-            if self.exists:
-                self.delete()
-
-        else:
-            if self.exists:
-                self.update()
-
-            else:
-                self.create()
+        self.existing_entries = None
+        self.b = Base(instance=self)
 
     def check(self):
         if self.p['state'] == 'present':
@@ -72,70 +70,12 @@ class KeyPair:
             self.p['private_key'] = self.p['private_key'].strip()
 
         # checking if item exists
-        self._find_key()
+        self.b.find(match_fields=[self.FIELD_ID])
         if self.exists:
             self.call_cnf['params'] = [self.key['uuid']]
 
         if self.p['state'] == 'present':
-            self.r['diff']['after'] = self._build_diff(data=self.p)
-
-    def _find_key(self):
-        if self.existing_keys is None:
-            self.existing_keys = self._search_call()
-
-        match = get_matching(
-            module=self.m, existing_items=self.existing_keys,
-            compare_item=self.p, match_fields=[self.FIELD_ID],
-            simplify_func=self._simplify_existing,
-        )
-
-        if match is not None:
-            self.key = match
-            self.r['diff']['before'] = self._build_diff(data=self.key)
-            self.exists = True
-
-    def get_existing(self) -> list:
-        return get_simple_existing(
-            entries=self._search_call(),
-            simplify_func=self._simplify_existing
-        )
-
-    def _search_call(self) -> dict:
-        return self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })['ipsec']['keyPairs'][self.API_KEY]
-
-    def create(self):
-        self.r['changed'] = True
-
-        if not self.m.check_mode:
-            self.s.post(cnf={
-                **self.call_cnf, **{
-                    'command': self.CMDS['add'],
-                    'data': self._build_request(),
-                }
-            })
-
-    def update(self):
-        # checking if changed
-        for field in self.CHANGE_CHECK_FIELDS:
-            if str(self.key[field]) != str(self.p[field]):
-                self.r['changed'] = True
-                # raise SystemExit(f"{field} - {self.key[field]} != {self.p[field]}")
-                break
-
-        # update if changed
-        if self.r['changed']:
-            if self.p['debug']:
-                self.m.warn(f"{self.r['diff']}")
-
-            if not self.m.check_mode:
-                self.s.post(cnf={
-                    **self.call_cnf, **{
-                        'command': self.CMDS['set'],
-                        'data': self._build_request(),
-                    }
-                })
+            self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _simplify_existing(self, key: dict) -> dict:
         # makes processing easier
@@ -157,42 +97,20 @@ class KeyPair:
 
         return simple
 
-    @staticmethod
-    def _build_diff(data: dict) -> dict:
-        return {
-            'type': data['type'],
-            'public_key': data['public_key'],
-            'name': data['name'],
-        }
+    def get_existing(self) -> list:
+        return self.b.get_existing()
 
-    def _build_request(self) -> dict:
-        return {
-            self.API_KEY: {
-                'keyType': self.p['type'],
-                'publicKey': self.p['public_key'],
-                'privateKey': self.p['private_key'],
-                'name': self.p['name'],
-            }
-        }
+    def create(self):
+        self.b.create()
+
+    def update(self):
+        self.b.update()
+
+    def process(self):
+        self.b.process()
 
     def delete(self):
-        self.r['changed'] = True
-        self.r['diff']['after'] = {}
-
-        if not self.m.check_mode:
-            self._delete_call()
-
-            if self.p['debug']:
-                self.m.warn(f"{self.r['diff']}")
-
-    def _delete_call(self) -> dict:
-        return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
+        self.b.delete()
 
     def reload(self):
-        # reload the running config
-        if not self.m.check_mode:
-            self.s.post(cnf={  # config shared by all calls
-                'module': self.API_MOD,
-                'controller': self.API_CONT_REL,
-                'command': self.API_CMD_REL,
-            })
+        self.b.reload()

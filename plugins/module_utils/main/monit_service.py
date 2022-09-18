@@ -76,10 +76,10 @@ class Service:
         if self.exists:
             self.call_cnf['params'] = [self.service['uuid']]
 
-        self.p['tests'] = self._find_tests()
-        self.p['depends'] = self._find_dependencies()
-
-        self.r['diff']['after'] = self._build_diff(data=self.p)
+        if self.p['state'] == 'present':
+            self.p['tests'] = self._find_tests()
+            self.p['depends'] = self._find_dependencies()
+            self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _find_service(self):
         if self.existing_services is None:
@@ -93,7 +93,7 @@ class Service:
 
         if match is not None:
             self.service = match
-            self.r['diff']['before'] = self._build_diff(data=self.service)
+            self.r['diff']['before'] = self.b.build_diff(data=self.service)
             self.exists = True
 
     def _find_tests(self) -> list:
@@ -178,9 +178,6 @@ class Service:
             'polltime': service['polltime'],
             'description': service['description'],
         }
-
-    def _build_diff(self, data: dict) -> dict:
-        return self.b.build_diff(data=data)
 
     def process(self):
         self.b.process()

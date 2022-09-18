@@ -17,8 +17,9 @@ class TMPL:
         'detail': 'getstuff',
         'toggle': 'togglestuff',
     }
-    API_MAIN_KEY = 'category'
     API_KEY = 'stuff'
+    API_KEY_1 = 'category'
+    # API_KEY_2 = 'sub-category'
     API_MOD = 'API_Module'
     API_CONT = 'API_Controller'
     API_CONT_REL = 'API_Controller_reload'  # if other
@@ -49,32 +50,17 @@ class TMPL:
         # custom argument validation
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
-        # checking if item exists
-        self._find_stuff()
+        self.b.find(match_fields=[])  # todo: match_fields
         if self.exists:
             self.call_cnf['params'] = [self.stuff['uuid']]
 
-        self.r['diff']['after'] = self._build_diff(data=self.p)
+        if self.p['state'] == 'present':
+            self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
         # basic validation of conditional parameters
         if not self.exists and self.p['state'] == 'present':
             if self.p['value'] is None or len(self.p['value']) == 0:
                 self.m.fail_json('You need to provide values to create stuff!')
-
-    def _find_stuff(self):
-        if self.existing_stuffs is None:
-            self.existing_stuffs = self._search_call()
-
-        match = get_matching(
-            module=self.m, existing_items=self.existing_stuffs,
-            compare_item=self.p, match_fields=['domain', 'target'],  # or match_fields
-            simplify_func=self._simplify_existing,
-        )
-
-        if match is not None:
-            self.stuff = match
-            self.r['diff']['before'] = self._build_diff(data=self.stuff)
-            self.exists = True
 
     def _error(self, msg: str):
         # for special handling of errors
@@ -95,9 +81,6 @@ class TMPL:
             'param1': stuff['param1'],
             'param2': stuff['param2'],
         }
-
-    def _build_diff(self, data: dict) -> dict:
-        return self.b.build_diff(data=data)
 
     def process(self):
         self.b.process()

@@ -152,15 +152,14 @@
         target: "{{ item.t }}"
         state: 'absent'
       loop:
-        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
-        - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
+        - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
+        - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
 
     - name: Cleanup DNS host-override aliases
       ansibleguy.opnsense.unbound_host_alias:
         description: "{{ item }}"
         alias: 'dummy'
         domain: 'dummy'
-        target: 'dummy.local'
         state: 'absent'
       loop:
         - 'ANSIBLE_TEST_1_1'
@@ -171,7 +170,6 @@
         description: "{{ item }}"
         hostname: 'dummy'
         domain: 'dummy'
-        value: '192.168.0.1'
         state: 'absent'
       loop:
         - 'ANSIBLE_TEST_1_1'
@@ -244,7 +242,7 @@
         - 'ANSIBLE_TEST_1_3'
         - 'ANSIBLE_TEST_1_4'
 
-    - name: Cleanup monit alert
+    - name: Cleanup monit alerts
       ansibleguy.opnsense.monit_alert:
         recipient: "{{ item }}"
         state: 'absent'

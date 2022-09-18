@@ -34,7 +34,7 @@ def run_module():
             type='str', required=False, aliases=['type', 'rr', 'rt'],
             choises=['A', 'AAAA', 'MX'], default='A',
         ),
-        value=dict(type='str', required=True, aliases=['server', 'srv', 'mx']),
+        value=dict(type='str', required=False, aliases=['server', 'srv', 'mx']),
         prio=dict(
             type='int', required=False, aliases=['mxprio'], default=10,
             description='Priority that is only used for MX record types'
