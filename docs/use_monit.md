@@ -10,6 +10,11 @@
 
 ## Info
 
+For mail alerts to work:
+
+* Don't forget to configure your mailing settings at the general monit page
+* You will also need to set your sender-mail address in the 'format' field using the 'monit_alert' module. See the examples below.
+
 Interfaces for 'monit_services' must be provided as used in the network config (_p.e. 'opt1' instead of 'DMZ'_)
   * per example see menu: 'Interface - Assignments - Interface ID (in brackets)'
   * this brings problems if the interface-names are not the same on both nodes when using HA-setups
@@ -97,6 +102,10 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
     - name: Changing
       ansibleguy.opnsense.monit_alert:
         recipient: 'monit-alert@template.ansibleguy.net'
+        format: |
+          From: monit-alert@template.ansibleguy.net
+          Reply-To: netmaster@template.ansibleguy.net
+          Subject: $SERVICE at $HOST failed
         not_on: true
         events: ['timestamp']
         description: 'alert1'
@@ -105,6 +114,10 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
     - name: Disabling
       ansibleguy.opnsense.monit_alert:
         recipient: 'monit-alert@template.ansibleguy.net'
+        format: |
+          From: monit-alert@template.ansibleguy.net
+          Reply-To: netmaster@template.ansibleguy.net
+          Subject: $SERVICE at $HOST failed
         not_on: true
         events: ['timestamp']
         description: 'alert1'
@@ -274,4 +287,36 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
     - name: Printing services
       ansible.builtin.debug:
         var: existing_entries.data
+```
+
+### Practical example
+
+Mail notification on IDS alert: see [documentation](https://docs.opnsense.org/manual/monit.html#example-3)
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.monit_service:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.monit_test:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+  tasks:
+    - name: Adding test
+      ansibleguy.opnsense.monit_test:
+        name: 'SURICATA_EVE'
+        condition: 'content = "blocked"'
+        type: 'FileContent'
+        action: 'alert'
+
+    - name: Adding service
+      ansibleguy.opnsense.monit_service:
+        name: 'SURICATA_ALERT'
+        type: 'file'
+        path: '/var/log/suricata/eve.json'
+        tests: ['SURICATA_EVE']
 ```
