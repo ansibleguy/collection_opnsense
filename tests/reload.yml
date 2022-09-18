@@ -12,7 +12,7 @@
   tasks:
     - name: Reloading
       ansibleguy.opnsense.reload:
-        target:
+        target: "{{ item }}"
       when: not ansible_check_mode
       loop:
         - 'alias'
@@ -21,3 +21,5 @@
         - 'unbound'
         - 'syslog'
         - 'ipsec'
+        - 'shaper'
+        - 'monit'
