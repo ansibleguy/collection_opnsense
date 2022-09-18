@@ -105,6 +105,7 @@
       failed_when: >
         opn15.failed or
         not opn15.changed
+      when: not ansible_check_mode
 
     - name: Disabling 1
       ansibleguy.opnsense.shaper_rule:

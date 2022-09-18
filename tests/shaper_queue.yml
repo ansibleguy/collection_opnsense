@@ -87,6 +87,7 @@
       failed_when: >
         opn14.failed or
         not opn14.changed
+      when: not ansible_check_mode
 
     - name: Disabling 1
       ansibleguy.opnsense.shaper_queue:
