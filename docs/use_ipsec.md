@@ -6,6 +6,8 @@
 
 **API DOCS**: [Core - IPSec](https://docs.opnsense.org/development/api/core/ipsec.html)
 
+**BASE DOCS**: [IPSec](https://docs.opnsense.org/manual/vpnet.html#ipsec)
+
 ## Limitations
 
 The management of IPSec tunnels [is not yet API available](https://forum.opnsense.org/index.php?topic=18914.msg146063#msg146063)!

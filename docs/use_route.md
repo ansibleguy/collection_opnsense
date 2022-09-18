@@ -6,6 +6,8 @@
 
 **API DOCS**: [Core - Routes](https://docs.opnsense.org/development/api/core/routes.html)
 
+**BASE DOCS**: [Routes](https://docs.opnsense.org/manual/routes.html)
+
 ## Definition
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)

@@ -1,0 +1,111 @@
+---
+
+- name: Testing Monit test
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.monit_test:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'monit_test'
+
+  vars:
+    default_test_count: 11
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn10
+      failed_when: >
+        'data' not in opn10 or
+        opn10.data | length != default_test_count
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.monit_test:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+
+    - name: Adding 1 - failing because of invalid type
+      ansibleguy.opnsense.monit_test:
+        name: 'ANSIBLE_TEST_1_1'
+        type: '!INVALID!'
+      register: opn12
+      failed_when: not opn12.failed
+
+    - name: Adding 1
+      ansibleguy.opnsense.monit_test:
+        name: 'ANSIBLE_TEST_1_1'
+        condition: 'failed host 127.0.0.1 port 22 protocol ssh'
+        type: 'Connection'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+
+    - name: Adding 2
+      ansibleguy.opnsense.monit_test:
+        name: 'ANSIBLE_TEST_1_2'
+        condition: 'memory usage is greater than 90%'
+        type: 'SystemResource'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.monit_test:
+        name: 'ANSIBLE_TEST_1_2'
+        condition: 'memory usage is greater than 90%'
+        type: 'SystemResource'
+      register: opn13
+      failed_when: >
+        opn13.failed or
+        opn13.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.monit_test:
+        name: 'ANSIBLE_TEST_1_2'
+        condition: 'memory usage is greater than 90%'
+        type: 'SystemResource'
+        state: 'absent'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn3
+      failed_when: >
+        'data' not in opn3 or
+        opn3.data | length != (default_test_count + 1)
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.monit_test:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn2
+      failed_when: >
+        'data' not in opn2 or
+        opn2.data | length != default_test_count
+      when: not ansible_check_mode

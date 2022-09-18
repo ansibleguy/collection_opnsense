@@ -6,6 +6,8 @@
 
 **API DOCS**: [Core - Firewall](https://docs.opnsense.org/development/api/core/firewall.html)
 
+**BASE DOCS**: [Aliases](https://docs.opnsense.org/manual/aliases.html)
+
 This module allows you to manage multiple aliases.
 
 It is faster than the 'alias' module as it reduces the needed api/http calls.

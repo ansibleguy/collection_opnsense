@@ -6,6 +6,8 @@
 
 **API DOCS**: [Core - Unbound](https://docs.opnsense.org/development/api/core/unbound.html)
 
+**BASE DOCS**: [Unbound](https://docs.opnsense.org/manual/unbound.html)
+
 ## Definition
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)

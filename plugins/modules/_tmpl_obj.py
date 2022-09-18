@@ -14,7 +14,7 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.utils import profiler
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
-        OPN_MOD_ARGS, STATE_MOD_ARG
+        OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main._tmpl import TMPL
 
 except MODULE_EXCEPTIONS:
@@ -32,6 +32,7 @@ def run_module():
         description=dict(type='str', required=False, default='', aliases=['desc']),
         content=dict(type='list', required=False, default=[], elements='str'),
         type=dict(type='str', required=False, choices=['1', '2'], default='1'),
+        **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,
     )

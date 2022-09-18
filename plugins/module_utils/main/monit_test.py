@@ -1,39 +1,30 @@
-import validators
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_matching, is_true, validate_int_fields, get_selected_list
+    get_matching, is_true, get_selected
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
-class Alert:
+class Test:
+    FIELD_ID = 'name'
     CMDS = {
-        'add': 'addAlert',
-        'del': 'delAlert',
-        'set': 'setAlert',
+        'add': 'addTest',
+        'del': 'delTest',
+        'set': 'setTest',
         'search': 'get',
     }
     API_MAIN_KEY = 'monit'
-    API_KEY = 'alert'
+    API_KEY = 'test'
     API_MOD = 'monit'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = [
-        'recipient', 'not_on', 'events', 'format', 'reminder', 'description',
-        'enabled',
-    ]
-    FIELDS_ALL = FIELDS_CHANGE
-    FIELDS_TRANSLATE = {
-        'not_on': 'noton',
-    }
-    INT_VALIDATIONS = {
-        'reminder': {'min': 0, 'max': 86400},
-    }
-    EXIST_ATTR = 'alert'
+    FIELDS_CHANGE = ['type', 'condition', 'action', 'path']
+    FIELDS_ALL = ['name']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
+    EXIST_ATTR = 'test'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -41,58 +32,59 @@ class Alert:
         self.r = result
         self.s = Session(module=module) if session is None else session
         self.exists = False
-        self.alert = {}
+        self.test = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_alerts = None
+        self.existing_tests = None
         self.b = Base(instance=self)
 
     def check(self):
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
-
         if self.p['state'] == 'present':
-            if not validators.email(self.p['recipient']):
+            if self.p['condition'] is None:
                 self.m.fail_json(
-                    f"The recipient value '{self.p['recipient']}' is not a "
-                    f"valid email address!"
+                    "You need to provide a 'condition' to create a test!"
+                )
+
+            if self.p['action'] == 'execute' and self.p['path'] == '':
+                self.m.fail_json(
+                    "You need to provide the path to a executable to "
+                    "create a test of type 'execute'!"
                 )
 
         # checking if item exists
-        self._find_alert()
+        self._find_test()
         if self.exists:
-            self.call_cnf['params'] = [self.alert['uuid']]
+            self.call_cnf['params'] = [self.test['uuid']]
 
         self.r['diff']['after'] = self._build_diff(data=self.p)
 
-    def _find_alert(self):
-        if self.existing_alerts is None:
-            self.existing_alerts = self._search_call()
+    def _find_test(self):
+        if self.existing_tests is None:
+            self.existing_tests = self._search_call()
 
         match = get_matching(
-            module=self.m, existing_items=self.existing_alerts,
-            compare_item=self.p, match_fields=self.p['match_fields'],
+            module=self.m, existing_items=self.existing_tests,
+            compare_item=self.p, match_fields=[self.FIELD_ID],
             simplify_func=self._simplify_existing,
         )
 
         if match is not None:
-            self.alert = match
-            self.r['diff']['before'] = self._build_diff(data=self.alert)
+            self.test = match
+            self.r['diff']['before'] = self._build_diff(data=self.test)
             self.exists = True
 
     @staticmethod
-    def _simplify_existing(alert: dict) -> dict:
+    def _simplify_existing(test: dict) -> dict:
         # makes processing easier
         return {
-            'enabled': is_true(alert['enabled']),
-            'uuid': alert['uuid'],
-            'recipient': alert['recipient'],
-            'not_on': is_true(alert['noton']),
-            'events': get_selected_list(alert['events']),
-            'format': alert['format'],
-            'reminder': int(alert['reminder']),
-            'description': alert['description'],
+            'uuid': test['uuid'],
+            'name': test['name'],
+            'type': get_selected(test['type']),
+            'condition': test['condition'],
+            'action': get_selected(test['action']),
+            'path': test['path'],
         }
 
     def _build_diff(self, data: dict) -> dict:

@@ -14,8 +14,8 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.utils import profiler
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
-        OPN_MOD_ARGS, STATE_MOD_ARG
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main._tmpl import TMPL
+        OPN_MOD_ARGS, STATE_ONLY_MOD_ARG, RELOAD_MOD_ARG
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_test import Test
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -30,21 +30,34 @@ def run_module():
     module_args = dict(
         name=dict(type='str', required=True, description='Unique test name'),
         type=dict(
-            type='str', required=False, default='Custom',  # required for create
+            type='str', required=False, default='Custom',
             choises=[
                 'Existence', 'SystemResource', 'ProcessResource', 'ProcessDiskIO',
                 'FileChecksum', 'Timestamp', 'FileSize', 'FileContent', 'FilesystemMountFlags',
                 'SpaceUsage', 'InodeUsage', 'DiskIO', 'Permisssion', 'UID', 'GID', 'PID', 'PPID',
                 'Uptime', 'ProgramStatus', 'NetworkInterface', 'NetworkPing', 'Connection', 'Custom',
-            ]
+            ],
+            description='Custom will not be idempotent - will be translated on the server-side. '
+                        "See 'list' module output for details"
         ),
-        condition=dict(type='str', required=False),  # required for create
+        condition=dict(
+            type='str', required=False,
+            description="The test condition. Per example: "
+                        "'cpu is greater than 50%' or "
+                        "'failed host 127.0.0.1 port 22 protocol ssh'"
+        ),
         action=dict(
-            type='str', required=False,  # required for create
+            type='str', required=False, default='alert',
             choises=['alert', 'restart', 'start', 'stop', 'exec', 'unmonitor']
         ),
-        path=dict(type='path', required=False),
-        **STATE_MOD_ARG,
+        path=dict(
+            type='path', required=False, default='',
+            description='The absolute path to the script to execute - if action is '
+                        "set to 'execute'. "
+                        "Make sure the script is executable by the Monit service"
+        ),
+        **RELOAD_MOD_ARG,
+        **STATE_ONLY_MOD_ARG,
         **OPN_MOD_ARGS,
     )
 
@@ -61,13 +74,13 @@ def run_module():
         supports_check_mode=True,
     )
 
-    tmpl = TMPL(module=module, result=result)
+    test = Test(module=module, result=result)
 
     def process():
-        tmpl.check()
-        # tmpl.process()
-        # if result['changed'] and module.params['reload']:
-        #     tmpl.reload()
+        test.check()
+        test.process()
+        if result['changed'] and module.params['reload']:
+            test.reload()
 
     if PROFILE or module.params['debug']:
         profiler(check=process, log_file='monit_test.log')
@@ -76,7 +89,7 @@ def run_module():
     else:
         process()
 
-    tmpl.s.close()
+    test.s.close()
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 

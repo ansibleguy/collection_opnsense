@@ -62,7 +62,7 @@ class Service:
 
             elif self.p['type'] == 'host' and self.p['address'] == '':
                 self.m.fail_json(
-                    "You need to provide an  'address' to create "
+                    "You need to provide an 'address' to create "
                     "a remote-host service!"
                 )
 
@@ -100,15 +100,16 @@ class Service:
         tests = []
         existing = {}
 
-        if len(self.existing_tests) > 0:
-            for uuid, test in self.existing_tests.items():
-                existing[test['name']] = uuid
+        if len(self.p['tests']) > 0:
+            if len(self.existing_tests) > 0:
+                for uuid, test in self.existing_tests.items():
+                    existing[test['name']] = uuid
 
-        for test in self.p['tests']:
-            if test not in existing:
-                self.m.fail_json(f"Test '{test}' does not exist!")
+            for test in self.p['tests']:
+                if test not in existing:
+                    self.m.fail_json(f"Test '{test}' does not exist!")
 
-            tests.append(existing[test])
+                tests.append(existing[test])
 
         return tests
 
@@ -116,15 +117,16 @@ class Service:
         services = []
         existing = {}
 
-        if len(self.existing_services) > 0:
-            for uuid, svc in self.existing_services.items():
-                existing[svc['name']] = uuid
+        if len(self.p['depends']) > 0:
+            if len(self.existing_services) > 0:
+                for uuid, svc in self.existing_services.items():
+                    existing[svc['name']] = uuid
 
-        for svc in self.p['depends']:
-            if svc not in existing:
-                self.m.fail_json(f"Dependency '{svc}' does not exist!")
+            for svc in self.p['depends']:
+                if svc not in existing:
+                    self.m.fail_json(f"Dependency '{svc}' does not exist!")
 
-            services.append(existing[svc])
+                services.append(existing[svc])
 
         return services
 

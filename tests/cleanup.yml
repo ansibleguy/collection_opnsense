@@ -86,6 +86,21 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.monit_service:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.monit_alert:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.monit_test:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Cleanup Aliases
       ansibleguy.opnsense.alias_purge:
@@ -218,3 +233,30 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+
+    - name: Cleanup monit services
+      ansibleguy.opnsense.monit_service:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_1_3'
+        - 'ANSIBLE_TEST_1_4'
+
+    - name: Cleanup monit alert
+      ansibleguy.opnsense.monit_alert:
+        recipient: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'alert@monit.opnsense.test.ansibleguy.net'
+        - 'alert2@monit.opnsense.test.ansibleguy.net'
+
+    - name: Cleanup monit tests
+      ansibleguy.opnsense.monit_test:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_2_1'

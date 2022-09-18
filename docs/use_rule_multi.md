@@ -6,6 +6,8 @@
 
 **API DOCS**: [Plugins - Firewall](https://docs.opnsense.org/development/api/plugins/firewall.html)
 
+**BASE DOCS**: [Rules](https://docs.opnsense.org/manual/firewall.html#rules)
+
 ## Info
 
 For basic info, limitations and must-know to the rule-handling see the [rule](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md) module!

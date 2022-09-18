@@ -71,7 +71,7 @@ def run_module():
         polltime=dict(
             type='str',  required=False, default='',
             description='Set the service poll time. Either as a number of cycles '
-                        '"NUMBER CYCLES" or Cron-style "* 8-19 * * 1-5"'
+                        "'NUMBER CYCLES' or Cron-style '* 8-19 * * 1-5'"
         ),
         description=dict(type='str', required=False, default='', aliases=['desc']),
         **RELOAD_MOD_ARG,

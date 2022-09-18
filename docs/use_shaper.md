@@ -6,6 +6,8 @@
 
 **API DOCS**: [Core - Traffic Shaper](https://docs.opnsense.org/development/api/core/trafficshaper.html)
 
+**BASE DOCS**: [Traffic Shaping](https://docs.opnsense.org/manual/shaping.html)
+
 ## Info
 
 The description is used to match the configured entries with the existing ones. It must be unique!

@@ -221,6 +221,31 @@ ansible-playbook tests/shaper_rule.yml --check --extra-vars="ansible_python_inte
 
 echo ''
 echo '##############################'
+echo 'RUNNING TESTS for module MONIT-ALERT'
+echo ''
+
+ansible-playbook tests/monit_alert.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/monit_alert.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+echo ''
+echo '##############################'
+echo 'RUNNING TESTS for module MONIT-TEST'
+echo ''
+
+ansible-playbook tests/monit_test.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/monit_test.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+echo ''
+echo '##############################'
+echo 'RUNNING TESTS for module MONIT-SERVICE'
+echo ''
+
+ansible-playbook tests/monit_service.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/monit_service.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+
+echo ''
+echo '##############################'
 echo 'FINISHED TESTS!'
 echo '##############################'
 echo ''

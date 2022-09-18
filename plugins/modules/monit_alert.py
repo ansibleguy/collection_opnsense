@@ -29,11 +29,11 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 def run_module():
     module_args = dict(
         recipient=dict(
-            type='str', required=True,
+            type='str', required=True, aliases=['email', 'mail'],
             description='The email address to send alerts to',
-        ),  # validate email
+        ),
         not_on=dict(
-            type='bool', required=False, default=False,
+            type='bool', required=False, default=False, aliases=['not'],
             description='Do not send alerts for the following events but on all others',
         ),
         events=dict(
@@ -113,9 +113,9 @@ def run_module():
 
     def process():
         alert.check()
-        # alert.process()
-        # if result['changed'] and module.params['reload']:
-        #     alert.reload()
+        alert.process()
+        if result['changed'] and module.params['reload']:
+            alert.reload()
 
     if PROFILE or module.params['debug']:
         profiler(check=process, log_file='monit_alert.log')

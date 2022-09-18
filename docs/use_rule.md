@@ -6,6 +6,8 @@
 
 **API DOCS**: [Plugins - Firewall](https://docs.opnsense.org/development/api/plugins/firewall.html)
 
+**BASE DOCS**: [Rules](https://docs.opnsense.org/manual/firewall.html#rules)
+
 ## Prerequisites
 
 You need to install the following plugin as OPNSense has no core-api for managing its firewall rules:

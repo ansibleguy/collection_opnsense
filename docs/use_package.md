@@ -6,6 +6,8 @@
 
 **API DOCS**: [Core - Firmware](https://docs.opnsense.org/development/api/core/firmware.html)
 
+**BASE DOCS**: [Plugins](https://docs.opnsense.org/manual/firmware.html#plugins)
+
 ## Info
 
 If:

@@ -1,0 +1,225 @@
+---
+
+- name: Testing Monit service
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.monit_service:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.monit_test:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'monit_service'
+
+  vars:
+    default_svc_count: 4
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn10
+      failed_when: >
+        'data' not in opn10 or
+        opn10.data | length != default_svc_count
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+
+    - name: Adding 1 - failing because of unsupported type
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_1'
+      register: opn12
+      failed_when: not opn12.failed
+
+    - name: Adding 1 - failing because of missing type-arguments
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_1'
+        type: "{{ item }}"
+      register: opn11
+      failed_when: not opn11.failed
+      loop:
+        - 'network'  # address or interface
+        - 'host'  # address
+
+    - name: Adding 1 - failing because of invalid address-ip
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_1'
+        type: 'network'
+        address: '192.168-INVALID-IP'
+      register: opn14
+      failed_when: not opn14.failed
+
+    - name: Adding 1
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_1'
+        type: 'custom'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_1'
+        type: 'custom'
+        enabled: false
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_1'
+        type: 'custom'
+        enabled: false
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_1'
+        type: 'custom'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_2'
+        type: 'network'
+        address: '192.168.0.1'
+        description: 'test1'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_2'
+        type: 'network'
+        address: '192.168.0.1'
+        description: 'test1'
+      register: opn13
+      failed_when: >
+        opn13.failed or
+        opn13.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_2'
+        state: 'absent'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn3
+      failed_when: >
+        'data' not in opn3 or
+        opn3.data | length != (default_svc_count + 1)
+      when: not ansible_check_mode
+
+    - name: Adding dummy test
+      ansibleguy.opnsense.monit_test:
+        name: 'ANSIBLE_TEST_2_1'
+        condition: 'memory usage is greater than 90%'
+        type: 'SystemResource'
+      when: not ansible_check_mode
+
+    - name: Adding 3 - linking test
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_3'
+        type: 'system'
+        tests: ['ANSIBLE_TEST_2_1']
+        depends: ['ANSIBLE_TEST_1_1']
+      register: opn15
+      failed_when: >
+        opn15.failed or
+        not opn15.changed
+      when: not ansible_check_mode
+
+    - name: Changing 3 - nothing changed
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_3'
+        type: 'system'
+        tests: ['ANSIBLE_TEST_2_1']
+        depends: ['ANSIBLE_TEST_1_1']
+      register: opn16
+      failed_when: >
+        opn16.failed or
+        opn16.changed
+      when: not ansible_check_mode
+
+    - name: Adding 4 - linking dependency
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_4'
+        type: 'custom'
+        depends: ['ANSIBLE_TEST_1_1']
+      register: opn17
+      failed_when: >
+        opn17.failed or
+        not opn17.changed
+      when: not ansible_check_mode
+
+    - name: Changing 4 - nothing changed
+      ansibleguy.opnsense.monit_service:
+        name: 'ANSIBLE_TEST_1_4'
+        type: 'custom'
+        depends: ['ANSIBLE_TEST_1_1']
+      register: opn18
+      failed_when: >
+        opn18.failed or
+        opn18.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.monit_service:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_1_3'
+        - 'ANSIBLE_TEST_1_4'
+      when: not ansible_check_mode
+
+    - name: Cleanup test
+      ansibleguy.opnsense.monit_test:
+        name: 'ANSIBLE_TEST_2_1'
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn2
+      failed_when: >
+        'data' not in opn2 or
+        opn2.data | length != default_svc_count
+      when: not ansible_check_mode
