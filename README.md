@@ -72,9 +72,9 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Traffic Shaper**       | ansibleguy.opnsense.shaper_pipe        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_shaper.md)             | unstable    |
 | **Traffic Shaper**       | ansibleguy.opnsense.shaper_queue       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_shaper.md)             | unstable    |
 | **Traffic Shaper**       | ansibleguy.opnsense.shaper_rule        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_shaper.md)             | unstable    |
-| **Monit**                | ansibleguy.opnsense.monit_service      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | testing     |
-| **Monit**                | ansibleguy.opnsense.monit_alert        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | development |
-| **Monit**                | ansibleguy.opnsense.monit_test         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | development     |
+| **Monit**                | ansibleguy.opnsense.monit_service      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable     |
+| **Monit**                | ansibleguy.opnsense.monit_alert        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable |
+| **Monit**                | ansibleguy.opnsense.monit_test         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable     |
 
 
 ### Roadmap
