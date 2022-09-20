@@ -109,22 +109,6 @@ ansible-playbook tests/savepoint.yml --check --extra-vars="ansible_python_interp
 
 echo ''
 echo '##############################'
-echo 'RUNNING TESTS for module SYSTEM'
-echo ''
-
-ansible-playbook tests/system.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
-ansible-playbook tests/system.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
-
-echo ''
-echo '##############################'
-echo 'RUNNING TESTS for module PACKAGE'
-echo ''
-
-ansible-playbook tests/package.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
-ansible-playbook tests/package.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
-
-echo ''
-echo '##############################'
 echo 'RUNNING TESTS for module CRON'
 echo ''
 
@@ -243,6 +227,21 @@ echo ''
 ansible-playbook tests/monit_service.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 ansible-playbook tests/monit_service.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
+echo ''
+echo '##############################'
+echo 'RUNNING TESTS for module SYSTEM'
+echo ''
+
+ansible-playbook tests/system.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/system.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+
+echo ''
+echo '##############################'
+echo 'RUNNING TESTS for module PACKAGE'
+echo ''
+
+ansible-playbook tests/package.yml --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+ansible-playbook tests/package.yml --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
 
 echo ''
 echo '##############################'
