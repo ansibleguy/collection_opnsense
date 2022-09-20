@@ -29,7 +29,7 @@ def run_module():
             choices=['poweroff', 'reboot', 'update', 'upgrade', 'audit']
         ),
         wait=dict(type='bool', required=False, default=True),
-        timeout=dict(type='int', required=False, default=90),
+        wait_timeout=dict(type='int', required=False, default=90),
         poll_interval=dict(type='int', required=False, default=2),
         **OPN_MOD_ARGS
     )

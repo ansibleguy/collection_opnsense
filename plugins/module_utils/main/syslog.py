@@ -40,7 +40,10 @@ class Syslog:
         self.m = module
         self.p = module.params
         self.r = result
-        self.s = Session(module=module, timeout=self.TIMEOUT) if session is None else session
+        self.s = Session(
+            module=module,
+            timeout=self.TIMEOUT,
+        ) if session is None else session
         self.exists = False
         self.dest = {}
         self.call_cnf = {  # config shared by all calls

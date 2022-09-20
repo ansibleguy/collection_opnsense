@@ -63,6 +63,7 @@
         queue: 20
         pie_enable: true
         debug: true
+        timeout: 60
       register: opn14
       failed_when: >
         opn14.failed or

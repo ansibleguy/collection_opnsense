@@ -37,7 +37,10 @@ class KeyPair:
         self.m = module
         self.p = module.params
         self.r = result
-        self.s = Session(module=module, timeout=self.TIMEOUT) if session is None else session
+        self.s = Session(
+            module=module,
+            timeout=self.TIMEOUT,
+        ) if session is None else session
         self.exists = False
         self.key = {}
         self.call_cnf = {  # config shared by all calls

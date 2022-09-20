@@ -17,6 +17,9 @@ HTTPX_EXCEPTIONS = (
 class Session:
     def __init__(self, module: AnsibleModule, timeout: float = DEFAULT_TIMEOUT):
         self.m = module
+        if module.params['timeout'] is not None:
+            timeout = module.params['timeout']
+
         self.t = httpx.Timeout(timeout=timeout)
         socket.setdefaulttimeout(timeout)
         self.s = self.start()

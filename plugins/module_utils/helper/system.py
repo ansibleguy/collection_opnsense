@@ -13,11 +13,11 @@ def opn_reachable(module: AnsibleModule) -> bool:
 
 
 def wait_for_response(module: AnsibleModule) -> bool:
-    timeout = time() + module.params['timeout']
+    timeout = time() + module.params['wait_timeout']
 
     if module.params['action'] == 'upgrade':
         # waiting longer for download/install to finish
-        sleep(int(module.params['timeout'] / 2))
+        sleep(int(module.params['wait_timeout'] / 2))
 
     else:
         # waiting for services to stop

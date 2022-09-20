@@ -7,7 +7,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
 
 
 def process(m: AnsibleModule, p: dict, r: dict):
-    s = Session(module=m, timeout=p['timeout'])
+    s = Session(module=m)
 
     # pulling stati of all packages
     package_stati = Package(module=m, session=s, name='').search_call()

@@ -10,11 +10,15 @@ class Package:
     UPGRADE_MSG = 'Installation out of date'
     API_MOD = 'core'
     API_CONT = 'firmware'
+    TIMEOUT = 60.0
 
     def __init__(self, module: AnsibleModule, name: str, session: Session = None):
         self.m = module
         self.p = module.params
-        self.s = Session(module=module) if session is None else session
+        self.s = Session(
+            module=module,
+            timeout=self.TIMEOUT,
+        ) if session is None else session
         self.n = name
         self.r = {
             'changed': False, 'version': None,

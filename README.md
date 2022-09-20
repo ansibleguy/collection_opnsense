@@ -234,6 +234,14 @@ fatal: [localhost]: FAILED! => {"changed": false, "msg": "API call failed | Erro
 
 - 'option not in list' => an invalid option was provided for this parameter
 - 'port only allowed for tcp/udp' => any protocol except 'TCP' or 'UDP' provided
+- 'ConnectionError: Got timeout calling' => you can override the used timeout manually:
+
+  Per example:
+  ```yaml
+  - name: Example
+    ansibleguy.opnsense.alias:
+      timeout: 60  # seconds
+  ```
 
 **Known issues**:
 

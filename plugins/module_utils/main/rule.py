@@ -42,7 +42,10 @@ class Rule:
     ):
         self.m = module
         self.r = result
-        self.s = Session(module=module, timeout=self.TIMEOUT) if session is None else session
+        self.s = Session(
+            module=module,
+            timeout=self.TIMEOUT,
+        ) if session is None else session
         self.p = self.m.params if cnf is None else cnf  # to allow override by rule_multi
         self.fail = fail
         self.exists = False
