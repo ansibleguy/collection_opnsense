@@ -44,7 +44,7 @@ class Session:
 
         except (httpx.ConnectError, httpx.ConnectTimeout) as error:
             raise_pretty_exception(
-                method='POST', error=error,
+                method='GET', error=error,
                 url=f'{self.s.base_url}{call_url}',
             )
 
