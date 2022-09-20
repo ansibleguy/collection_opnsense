@@ -34,7 +34,7 @@ class Rule:
         'destination_invert': 'destination_not',
     }
     EXIST_ATTR = 'rule'
-    TIMEOUT = 30.0  # urltable etc reload
+    TIMEOUT = 60.0  # urltable etc reload
 
     def __init__(
             self, module: AnsibleModule, result: dict, cnf: dict = None,
