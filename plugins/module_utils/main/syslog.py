@@ -34,7 +34,7 @@ class Syslog:
         'target': 'hostname',
     }
     EXIST_ATTR = 'dest'
-    TIMEOUT = 20.0  # reload using unresolvable dns
+    TIMEOUT = 40.0  # reload using unresolvable dns
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
