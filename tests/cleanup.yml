@@ -102,12 +102,12 @@
       ssl_verify: false
 
   tasks:
-    - name: Cleanup Aliases
-      ansibleguy.opnsense.alias_purge:
-        force_all: true
-
     - name: Cleanup Rules
       ansibleguy.opnsense.rule_purge:
+        force_all: true
+
+    - name: Cleanup Aliases
+      ansibleguy.opnsense.alias_purge:
         force_all: true
 
     - name: Cleanup packages
