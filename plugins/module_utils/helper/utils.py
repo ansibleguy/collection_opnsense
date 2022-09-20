@@ -3,6 +3,7 @@ from pstats import Stats
 from io import StringIO
 from datetime import datetime
 from pathlib import Path
+from httpx import ConnectError
 
 
 def profiler(check, log_file: str = '', kwargs: dict = None, sort: str = 'tottime', show_top_n: int = 20):
@@ -11,10 +12,16 @@ def profiler(check, log_file: str = '', kwargs: dict = None, sort: str = 'tottim
     _ = Profile()
     _.enable()
 
+    httpx_error = None
+    check_response = None
     if kwargs is None:
         kwargs = {}
 
-    check_response = check(**kwargs)
+    try:
+        check_response = check(**kwargs)
+
+    except ConnectError as error:
+        httpx_error = str(error)
 
     _.disable()
     result = StringIO()
@@ -31,4 +38,8 @@ def profiler(check, log_file: str = '', kwargs: dict = None, sort: str = 'tottim
         with open(f'/tmp/ansibleguy.opnsense/{log_file}', 'a+', encoding='utf-8') as log:
             log.write(f"\n{datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')} | {cleaned_result}\n")
 
-    return check_response
+    if httpx_error is None:
+        return check_response
+
+    else:
+        raise ConnectError(httpx_error)

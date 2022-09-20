@@ -24,14 +24,24 @@ def check_or_load_credentials(module: AnsibleModule):
                 )
 
             with open(module.params['api_credential_file'], 'r', encoding='utf-8') as file:
+                config = {}
+
                 for line in file.readlines():
-                    key, value = line.split('=', 1)
+                    try:
+                        key, value = line.split('=', 1)
+                        config[key] = value.strip()
 
-                    if key == 'key':
-                        module.params['api_key'] = value.strip()
+                    except ValueError:
+                        pass
 
-                    elif key == 'secret':
-                        module.params['api_secret'] = value.strip()
+                if 'key' not in config or 'secret' not in config:
+                    raise ValueError(
+                        f"Credential file '{module.params['api_credential_file']}' "
+                        f"could not be parsed!"
+                    )
+
+                module.params['api_key'] = config['key']
+                module.params['api_secret'] = config['secret']
 
         else:
             module.fail_json(
@@ -109,3 +119,14 @@ def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
                 module.fail_json(msg=f"API call failed | Response: {response.__dict__}")
 
     return json
+
+
+def raise_pretty_exception(method: str, url: str, error):
+    call = f'{method} => {url}'
+    msg = f"Unable to connect '{call}'!"
+
+    if str(error).find('timed out') != -1:
+        msg = f"Got timeout calling '{call}'!"
+
+    raise ConnectionError(msg)
+

@@ -62,6 +62,7 @@
         bandwidth: 60
         queue: 20
         pie_enable: true
+        debug: true
       register: opn14
       failed_when: >
         opn14.failed or

@@ -1,10 +1,13 @@
 import httpx
+import socket
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.api \
-    import check_host, ssl_verification, check_response, get_params_path, debug_output,\
-    check_or_load_credentials
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.api import \
+    check_host, ssl_verification, check_response, get_params_path, debug_output, \
+    check_or_load_credentials, raise_pretty_exception
+
+DEFAULT_TIMEOUT = 20.0
 
 
 class Session:
@@ -12,14 +15,15 @@ class Session:
         self.m = module
         self.s = self.start()
 
-    def start(self, timeout: float = None):
+    def start(self, timeout: float = DEFAULT_TIMEOUT):
         check_host(module=self.m)
+        socket.setdefaulttimeout(timeout)
         check_or_load_credentials(module=self.m)
         return httpx.Client(
             base_url=f"https://{self.m.params['firewall']}:{self.m.params['api_port']}/api",
             auth=(self.m.params['api_key'], self.m.params['api_secret']),
             verify=ssl_verification(module=self.m),
-            timeout=timeout,
+            timeout=httpx.Timeout(timeout=timeout),
         )
 
     def get(self, cnf: dict) -> dict:
@@ -31,11 +35,18 @@ class Session:
             msg=f"REQUEST: GET | URL: {self.s.base_url}{call_url}"
         )
 
-        response = check_response(
-            module=self.m,
-            cnf=cnf,
-            response=self.s.get(call_url)
-        )
+        try:
+            response = check_response(
+                module=self.m,
+                cnf=cnf,
+                response=self.s.get(call_url)
+            )
+
+        except (httpx.ConnectError, httpx.ConnectTimeout) as error:
+            raise_pretty_exception(
+                method='POST', error=error,
+                url=f'{self.s.base_url}{call_url}',
+            )
 
         return response
 
@@ -60,11 +71,18 @@ class Session:
                 f"DATA: {data}"
         )
 
-        response = check_response(
-            module=self.m,
-            cnf=cnf,
-            response=self.s.post(call_url, json=data, headers=headers)
-        )
+        try:
+            response = check_response(
+                module=self.m,
+                cnf=cnf,
+                response=self.s.post(call_url, json=data, headers=headers)
+            )
+
+        except (httpx.ConnectError, httpx.ConnectTimeout) as error:
+            raise_pretty_exception(
+                method='POST', error=error,
+                url=f'{self.s.base_url}{call_url}',
+            )
 
         return response
 
@@ -72,8 +90,9 @@ class Session:
         self.s.close()
 
 
-def single_get(module: AnsibleModule, cnf: dict, timeout: float = None) -> dict:
+def single_get(module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOUT) -> dict:
     check_host(module=module)
+    socket.setdefaulttimeout(timeout)
     params_path = get_params_path(cnf=cnf)
     call_url = f"https://{module.params['firewall']}:{module.params['api_port']}/api/" \
                f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
@@ -84,22 +103,30 @@ def single_get(module: AnsibleModule, cnf: dict, timeout: float = None) -> dict:
     )
 
     check_or_load_credentials(module=module)
-    response = check_response(
-        module=module,
-        cnf=cnf,
-        response=httpx.get(
-            call_url,
-            auth=(module.params['api_key'], module.params['api_secret']),
-            verify=ssl_verification(module=module),
-            timeout=timeout,
+
+    try:
+        response = check_response(
+            module=module,
+            cnf=cnf,
+            response=httpx.get(
+                call_url,
+                auth=(module.params['api_key'], module.params['api_secret']),
+                verify=ssl_verification(module=module),
+                timeout=httpx.Timeout(timeout=timeout),
+            )
         )
-    )
+
+    except (httpx.ConnectError, httpx.ConnectTimeout) as error:
+        raise_pretty_exception(method='GET', url=call_url, error=error)
 
     return response
 
 
-def single_post(module: AnsibleModule, cnf: dict, timeout: float = None, headers: dict = None) -> dict:
+def single_post(
+        module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOUT,
+        headers: dict = None) -> dict:
     check_host(module=module)
+    socket.setdefaulttimeout(timeout)
 
     if headers is None:
         headers = {}
@@ -123,15 +150,20 @@ def single_post(module: AnsibleModule, cnf: dict, timeout: float = None, headers
     )
 
     check_or_load_credentials(module=module)
-    response = check_response(
-        module=module,
-        cnf=cnf,
-        response=httpx.post(
-            call_url,
-            auth=(module.params['api_key'], module.params['api_secret']), verify=ssl_verification(module=module),
-            json=data, headers=headers,
-            timeout=timeout,
+
+    try:
+        response = check_response(
+            module=module,
+            cnf=cnf,
+            response=httpx.post(
+                call_url,
+                auth=(module.params['api_key'], module.params['api_secret']), verify=ssl_verification(module=module),
+                json=data, headers=headers,
+                timeout=httpx.Timeout(timeout=timeout),
+            )
         )
-    )
+
+    except (httpx.ConnectError, httpx.ConnectTimeout) as error:
+        raise_pretty_exception(method='POST', url=call_url, error=error)
 
     return response
