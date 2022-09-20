@@ -9,6 +9,13 @@
 
 Feel free to contribute to this project using [pull-requests](https://github.com/ansibleguy/collection_opnsense/pulls), [issues](https://github.com/ansibleguy/collection_opnsense/issues) and [discussions](https://github.com/ansibleguy/collection_opnsense/discussions)!
 
+**What to contribute**:
+
+* add ansible-based [tests](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests) for some error-case(s) you have encountered
+* extend or correct the [documentation](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs)
+* contribute code fixes or optimizations
+* implement additional API endpoints => see [development guide](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/develop.md)
+
 ---
 
 ## Requirements

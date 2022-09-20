@@ -102,8 +102,6 @@ class Rule:
         return simple
 
     def create(self):
-        # creating rule
-        validate_values(error_func=self._error, module=self.m, cnf=self.p)
         self.r['changed'] = True
         self.r['diff']['after'] = self.b.build_diff(data=self.p)
         if not self.m.check_mode:
@@ -115,8 +113,6 @@ class Rule:
             })
 
     def _changed(self) -> tuple:
-        # check if config changed
-        validate_values(error_func=self._error, module=self.m, cnf=self.p)
         self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
         config_changed = get_config_change(
@@ -177,6 +173,9 @@ class Rule:
     def check(self):
         self._build_log_name()
         self.b.find(match_fields=self.p['match_fields'])
+
+        if self.p['state'] == 'present':
+            validate_values(error_func=self._error, module=self.m, cnf=self.p)
 
     def _error(self, msg: str):
         if self.fail:

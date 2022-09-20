@@ -8,6 +8,10 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.api imp
     check_or_load_credentials, raise_pretty_exception
 
 DEFAULT_TIMEOUT = 20.0
+HTTPX_EXCEPTIONS = (
+    httpx.ConnectTimeout, httpx.ConnectError, httpx.ReadTimeout, httpx.WriteTimeout,
+    httpx.TimeoutException, httpx.PoolTimeout,
+)
 
 
 class Session:
@@ -42,7 +46,7 @@ class Session:
                 response=self.s.get(call_url)
             )
 
-        except (httpx.ConnectError, httpx.ConnectTimeout) as error:
+        except HTTPX_EXCEPTIONS as error:
             raise_pretty_exception(
                 method='GET', error=error,
                 url=f'{self.s.base_url}{call_url}',
@@ -78,7 +82,7 @@ class Session:
                 response=self.s.post(call_url, json=data, headers=headers)
             )
 
-        except (httpx.ConnectError, httpx.ConnectTimeout) as error:
+        except HTTPX_EXCEPTIONS as error:
             raise_pretty_exception(
                 method='POST', error=error,
                 url=f'{self.s.base_url}{call_url}',
@@ -116,7 +120,7 @@ def single_get(module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOU
             )
         )
 
-    except (httpx.ConnectError, httpx.ConnectTimeout) as error:
+    except HTTPX_EXCEPTIONS as error:
         raise_pretty_exception(method='GET', url=call_url, error=error)
 
     return response
@@ -163,7 +167,7 @@ def single_post(
             )
         )
 
-    except (httpx.ConnectError, httpx.ConnectTimeout) as error:
+    except HTTPX_EXCEPTIONS as error:
         raise_pretty_exception(method='POST', url=call_url, error=error)
 
     return response
