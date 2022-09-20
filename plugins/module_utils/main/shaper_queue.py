@@ -35,7 +35,7 @@ class Queue:
         'codel_interval': {'min': 1, 'max': 10000},
     }
     EXIST_ATTR = 'queue'
-    TIMEOUT = 20.0  # get timeout
+    TIMEOUT = 40.0  # 'get' timeout
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module

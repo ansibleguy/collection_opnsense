@@ -44,7 +44,7 @@ class Rule:
         'max_packet_length': {'min': 2, 'max': 65535},
     }
     EXIST_ATTR = 'rule'
-    TIMEOUT = 20.0  # get timeout
+    TIMEOUT = 40.0  # 'get' timeout
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module

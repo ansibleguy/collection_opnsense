@@ -31,12 +31,13 @@ class KeyPair:
         'private_key': 'privateKey',
     }
     EXIST_ATTR = 'key'
+    TIMEOUT = 30.0  # ipsec reload
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
         self.p = module.params
         self.r = result
-        self.s = Session(module=module) if session is None else session
+        self.s = Session(module=module, timeout=self.TIMEOUT) if session is None else session
         self.exists = False
         self.key = {}
         self.call_cnf = {  # config shared by all calls
