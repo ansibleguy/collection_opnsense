@@ -42,7 +42,7 @@ def run_module():
             type='path', required=False, default='',
             description='According to the service type path can be a file or a directory',
         ),
-        service_timeout=dict(type='int', required=False, default=300, aliases='svc_timeout'),
+        service_timeout=dict(type='int', required=False, default=300, aliases=['svc_timeout']),
         address=dict(
             type='str', required=False, default='',
             description="The target IP address for 'Remote Host' and 'Network' checks",

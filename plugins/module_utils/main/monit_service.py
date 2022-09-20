@@ -22,13 +22,16 @@ class Service:
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'type', 'pidfile', 'match', 'path', 'timeout', 'address', 'interface',
+        'type', 'pidfile', 'match', 'path', 'service_timeout', 'address', 'interface',
         'start', 'stop', 'tests', 'depends', 'polltime', 'description', 'enabled',
     ]
     FIELDS_ALL = ['name']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     INT_VALIDATIONS = {
-        'timeout': {'min': 1, 'max': 86400},
+        'service_timeout': {'min': 1, 'max': 86400},
+    }
+    FIELDS_TRANSLATE = {
+        'service_timeout': 'timeout',
     }
     EXIST_ATTR = 'service'
 
@@ -168,7 +171,7 @@ class Service:
             'pidfile': service['pidfile'],
             'match': service['match'],
             'path': service['path'],
-            'timeout': int(service['timeout']),
+            'service_timeout': int(service['timeout']),
             'address': service['address'],
             'interface': get_selected(service['interface']),
             'start': service['start'],
