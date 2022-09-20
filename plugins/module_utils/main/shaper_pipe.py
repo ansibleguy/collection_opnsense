@@ -45,12 +45,13 @@ class Pipe:
         'delay': {'min': 1, 'max': 3000},
     }
     EXIST_ATTR = 'pipe'
+    TIMEOUT = 20.0  # get timeout
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
         self.p = module.params
         self.r = result
-        self.s = Session(module=module) if session is None else session
+        self.s = Session(module=module, timeout=self.TIMEOUT) if session is None else session
         self.exists = False
         self.pipe = {}
         self.call_cnf = {  # config shared by all calls

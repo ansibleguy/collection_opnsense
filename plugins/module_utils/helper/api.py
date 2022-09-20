@@ -129,4 +129,3 @@ def raise_pretty_exception(method: str, url: str, error):
         msg = f"Got timeout calling '{call}'!"
 
     raise ConnectionError(msg)
-

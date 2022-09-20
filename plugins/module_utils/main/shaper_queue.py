@@ -35,12 +35,13 @@ class Queue:
         'codel_interval': {'min': 1, 'max': 10000},
     }
     EXIST_ATTR = 'queue'
+    TIMEOUT = 20.0  # get timeout
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
         self.p = module.params
         self.r = result
-        self.s = Session(module=module) if session is None else session
+        self.s = Session(module=module, timeout=self.TIMEOUT) if session is None else session
         self.exists = False
         self.queue = {}
         self.pipe_found = False

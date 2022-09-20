@@ -1,5 +1,5 @@
-import httpx
 import socket
+import httpx
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -15,19 +15,20 @@ HTTPX_EXCEPTIONS = (
 
 
 class Session:
-    def __init__(self, module: AnsibleModule):
+    def __init__(self, module: AnsibleModule, timeout: float = DEFAULT_TIMEOUT):
         self.m = module
+        self.t = httpx.Timeout(timeout=timeout)
+        socket.setdefaulttimeout(timeout)
         self.s = self.start()
 
-    def start(self, timeout: float = DEFAULT_TIMEOUT):
+    def start(self):
         check_host(module=self.m)
-        socket.setdefaulttimeout(timeout)
         check_or_load_credentials(module=self.m)
         return httpx.Client(
             base_url=f"https://{self.m.params['firewall']}:{self.m.params['api_port']}/api",
             auth=(self.m.params['api_key'], self.m.params['api_secret']),
             verify=ssl_verification(module=self.m),
-            timeout=httpx.Timeout(timeout=timeout),
+            timeout=self.t,
         )
 
     def get(self, cnf: dict) -> dict:
@@ -43,7 +44,7 @@ class Session:
             response = check_response(
                 module=self.m,
                 cnf=cnf,
-                response=self.s.get(call_url)
+                response=self.s.get(url=call_url, timeout=self.t)
             )
 
         except HTTPX_EXCEPTIONS as error:
@@ -79,7 +80,9 @@ class Session:
             response = check_response(
                 module=self.m,
                 cnf=cnf,
-                response=self.s.post(call_url, json=data, headers=headers)
+                response=self.s.post(
+                    url=call_url, json=data, headers=headers, timeout=self.t
+                )
             )
 
         except HTTPX_EXCEPTIONS as error:
@@ -113,7 +116,7 @@ def single_get(module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOU
             module=module,
             cnf=cnf,
             response=httpx.get(
-                call_url,
+                url=call_url,
                 auth=(module.params['api_key'], module.params['api_secret']),
                 verify=ssl_verification(module=module),
                 timeout=httpx.Timeout(timeout=timeout),
@@ -160,7 +163,7 @@ def single_post(
             module=module,
             cnf=cnf,
             response=httpx.post(
-                call_url,
+                url=call_url,
                 auth=(module.params['api_key'], module.params['api_secret']), verify=ssl_verification(module=module),
                 json=data, headers=headers,
                 timeout=httpx.Timeout(timeout=timeout),

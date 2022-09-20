@@ -34,12 +34,13 @@ class Syslog:
         'target': 'hostname',
     }
     EXIST_ATTR = 'dest'
+    TIMEOUT = 20.0  # reload using unresolvable dns
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
         self.p = module.params
         self.r = result
-        self.s = Session(module=module) if session is None else session
+        self.s = Session(module=module, timeout=self.TIMEOUT) if session is None else session
         self.exists = False
         self.dest = {}
         self.call_cnf = {  # config shared by all calls

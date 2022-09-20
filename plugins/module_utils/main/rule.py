@@ -34,6 +34,7 @@ class Rule:
         'destination_invert': 'destination_not',
     }
     EXIST_ATTR = 'rule'
+    TIMEOUT = 30.0  # urltable etc reload
 
     def __init__(
             self, module: AnsibleModule, result: dict, cnf: dict = None,
@@ -41,7 +42,7 @@ class Rule:
     ):
         self.m = module
         self.r = result
-        self.s = Session(module=module) if session is None else session
+        self.s = Session(module=module, timeout=self.TIMEOUT) if session is None else session
         self.p = self.m.params if cnf is None else cnf  # to allow override by rule_multi
         self.fail = fail
         self.exists = False
