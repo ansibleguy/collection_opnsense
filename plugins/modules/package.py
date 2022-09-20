@@ -38,7 +38,7 @@ def run_module():
             type='int', required=False, default=3,
             description='The firewall needs some time to update package info'
         ),
-        timeout=dict(type='float', required=False, default=30.0),
+        timeout=dict(type='float', required=False, default=60.0),
         # timeout because of box might update its package info
         **OPN_MOD_ARGS
     )
