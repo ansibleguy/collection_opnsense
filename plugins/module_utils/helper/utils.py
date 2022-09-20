@@ -3,7 +3,7 @@ from pstats import Stats
 from io import StringIO
 from datetime import datetime
 from pathlib import Path
-from httpx import ConnectError
+from httpx import ConnectError, ConnectTimeout
 
 
 def profiler(check, log_file: str = '', kwargs: dict = None, sort: str = 'tottime', show_top_n: int = 20):
@@ -20,7 +20,7 @@ def profiler(check, log_file: str = '', kwargs: dict = None, sort: str = 'tottim
     try:
         check_response = check(**kwargs)
 
-    except ConnectError as error:
+    except (ConnectError, ConnectTimeout, ConnectionError) as error:
         httpx_error = str(error)
 
     _.disable()
@@ -42,4 +42,4 @@ def profiler(check, log_file: str = '', kwargs: dict = None, sort: str = 'tottim
         return check_response
 
     else:
-        raise ConnectError(httpx_error)
+        raise ConnectionError(httpx_error)
