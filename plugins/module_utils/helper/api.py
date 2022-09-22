@@ -129,3 +129,10 @@ def raise_pretty_exception(method: str, url: str, error):
         msg = f"Got timeout calling '{call}'!"
 
     raise ConnectionError(msg)
+
+
+def timeout_override(module: AnsibleModule, timeout: float) -> float:
+    if 'timeout' in module.params and module.params['timeout'] is not None:
+        timeout = module.params['timeout']
+
+    return timeout

@@ -5,7 +5,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.api import \
     check_host, ssl_verification, check_response, get_params_path, debug_output, \
-    check_or_load_credentials, raise_pretty_exception
+    check_or_load_credentials, raise_pretty_exception, timeout_override
 
 DEFAULT_TIMEOUT = 20.0
 HTTPX_EXCEPTIONS = (
@@ -17,9 +17,7 @@ HTTPX_EXCEPTIONS = (
 class Session:
     def __init__(self, module: AnsibleModule, timeout: float = DEFAULT_TIMEOUT):
         self.m = module
-        if module.params['timeout'] is not None:
-            timeout = module.params['timeout']
-
+        timeout = timeout_override(module=module, timeout=timeout)
         self.t = httpx.Timeout(timeout=timeout)
         socket.setdefaulttimeout(timeout)
         self.s = self.start()
@@ -102,7 +100,9 @@ class Session:
 
 def single_get(module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOUT) -> dict:
     check_host(module=module)
+    timeout = timeout_override(module=module, timeout=timeout)
     socket.setdefaulttimeout(timeout)
+
     params_path = get_params_path(cnf=cnf)
     call_url = f"https://{module.params['firewall']}:{module.params['api_port']}/api/" \
                f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
@@ -136,6 +136,8 @@ def single_post(
         module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOUT,
         headers: dict = None) -> dict:
     check_host(module=module)
+
+    timeout = timeout_override(module=module, timeout=timeout)
     socket.setdefaulttimeout(timeout)
 
     if headers is None:
