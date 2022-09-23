@@ -79,9 +79,11 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Traffic Shaper**       | ansibleguy.opnsense.shaper_pipe        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_shaper.md)             | unstable    |
 | **Traffic Shaper**       | ansibleguy.opnsense.shaper_queue       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_shaper.md)             | unstable    |
 | **Traffic Shaper**       | ansibleguy.opnsense.shaper_rule        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_shaper.md)             | unstable    |
-| **Monit**                | ansibleguy.opnsense.monit_service      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable     |
-| **Monit**                | ansibleguy.opnsense.monit_alert        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable |
-| **Monit**                | ansibleguy.opnsense.monit_test         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable     |
+| **Monit**                | ansibleguy.opnsense.monit_service      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable    |
+| **Monit**                | ansibleguy.opnsense.monit_alert        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable    |
+| **Monit**                | ansibleguy.opnsense.monit_test         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable    |
+| **WireGuard**            | ansibleguy.opnsense.wireguard_server   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_wireguard.md)          | development |
+| **WireGuard**            | ansibleguy.opnsense.wireguard_peer     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_wireguard.md)          | development |
 
 
 ### Roadmap
@@ -96,7 +98,6 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 **Plugins API**:
 
 - [Source-NAT](https://docs.opnsense.org/development/api/plugins/firewall.html)
-- [WireGuard](https://docs.opnsense.org/development/api/plugins/wireguard.html)
 - [Zabbix Agent](https://docs.opnsense.org/development/api/plugins/zabbixagent.html)
 - [STunnel](https://docs.opnsense.org/development/api/plugins/stunnel.html)
 - [Backup](https://docs.opnsense.org/development/api/plugins/backup.html)

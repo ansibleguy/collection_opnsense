@@ -31,6 +31,7 @@ def run_module():
                 'unbound_host', 'unbound_domain', 'unbound_dot', 'unbound_forward',
                 'unbound_host_alias', 'ipsec_cert', 'shaper_pipe', 'shaper_queue',
                 'shaper_rule', 'monit_service', 'monit_test', 'monit_alert',
+                'wireguard_server', 'wireguard_peer',
             ],
             description='What part of the running config should be listed'
         ),
@@ -120,6 +121,14 @@ def run_module():
         elif module.params['target'] == 'monit_alert':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_alert import Alert
             target = Alert(module=module, result=result)
+
+        elif module.params['target'] == 'wireguard_server':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_server import Server
+            target = Server(module=module, result=result)
+
+        elif module.params['target'] == 'wireguard_peer':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_peer import Peer
+            target = Peer(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

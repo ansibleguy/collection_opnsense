@@ -47,7 +47,7 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
     ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
-      target: 'rule'
+      target: 'route'
 
   tasks:
     - name: Example
@@ -77,7 +77,7 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
 
     - name: Listing routes
       ansibleguy.opnsense.list:
-      #  target: 'rule'
+      #  target: 'route'
       register: existing_entries
 
     - name: Printing routes

@@ -1,0 +1,165 @@
+# OPNSense - WireGuard module
+
+**STATE**: development
+
+**TESTS**: [wireguard_server](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_server.yml) | [wireguard_peer](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_peer.yml)
+
+**API DOCS**: [Plugin - Wireguard](https://docs.opnsense.org/development/api/plugins/wireguard.html)
+
+**BASE DOCS**: [WireGuard - Site to Site](https://docs.opnsense.org/manual/how-tos/wireguard-s2s.html) | [WireGuard - Client to Site](https://docs.opnsense.org/manual/how-tos/wireguard-client.html)
+
+## Definition
+
+For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
+
+### ansibleguy.opnsense.wireguard_server
+
+| Parameter | Type    | Required | Default value | Aliases                                                                       | Comment                                                                                                                                                                                                                                                                                        |
+|:----------|:--------|:---------|:--------------|:------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| name      | string  | true     | -             | -                                                                             | The unique name of the local WireGuard server instance                                                                                                                                                                                                                                         |
+| peers   | list  | false     | -             | clients                                                                       | List of existing peers that                                                                                                                                                                                                                                                                    |
+| tunnel_ips   | list    | false    | -             | tunnel_ip, tunneladdress, tunnel_adresses, tunnel_address, addresses, address | One or multiple IP addresses that are used inside the tunnel                                                                                                                                                                                                                                   |
+| public_key   | string  | false    | -             | pubkey, pub                                                                   | Optionally provide an existing WireGuard Public Key. If none is provided - a key-pair will be generated automatically or the existing one will be used.                                                                                                                                        |
+| private_key   | string  | false    | -             | privkey, priv                                                                 | Optionally provide an existing WireGuard Private Key. If none is provided - a key-pair will be generated automatically or the existing one will be used.                                                                                                                                       |
+| port   | integer | false    | -             | -                                                                             | Optionally provide a port for the server instance. Needed if dynamic peers will connect to this instance!                                                                                                                                                                                      |
+| mtu   | integer | false    | 1420          | -                                                                             | Integer between 1 and 9300                                                                                                                                                                                                                                                                     |
+| dns_servers   | list    | false    | -             | dns                                                                           | List of DNS servers that will be used to resolve peer endpoint-names                                                                                                                                                                                                                           |
+| disable_routes   | boolean | false    | false         | disableroutes                                                                 | If automatically created routes should be disabled. Needs to be set if you want to use [policy-based routing](https://docs.opnsense.org/manual/firewall.html#policy-based-routing), [dynamic routing](https://docs.opnsense.org/manual/dynamic_routing.html) or manually created static routes |
+| gateway   | string  | false    | -             | gw                                                                            | Can only be used if you enable the 'disable_routes' option                                                                                                                                                                                                                                     |
+| reload    | boolean | false    | true          | -                                                                             | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md).         |
+
+### ansibleguy.opnsense.wireguard_peer
+
+| Parameter      | Type    | Required | Default value | Aliases                                                                       | Comment                                                                                                                                                                                                                                                                                |
+|:---------------|:--------|:---------|:--------------|:------------------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| name           | string  | true     | -             | -                                                                             | The unique name of the local WireGuard peer                                                                                                                                                                                                                                            |
+| target         | string    | false    | -             | endpoint, server_address, serveraddress, server                               | Peer endpoint IP address or DNS-hostname                                                                                                                                                                                                                                               |
+| tunnel_ips     | list    | false    | -             | tunnel_ip, tunneladdress, tunnel_adresses, tunnel_address, addresses, address | One or multiple IP addresses used by the peer inside the tunnel                                                                                                                                                                                                                        |
+| public_key     | string  | false    | -             | pubkey, pub                                                                   | Provide the WireGuard Public Key of the peer. Used to identify the peer                                                                                                                                                                                                                |
+| psk            | string  | false    | -             | -                                                                             | Optionally provide an PSK. The pre-shared key (PSK) is an optional security improvement as per the WireGuard protocol and should be a unique PSK per client for highest security.                                                                                                      |
+| port           | integer | false    | -             | -                                                                             | Optionally provide a port for the server instance. Needed if dynamic peers will connect to this instance!                                                                                                                                                                              |
+| keepalive            | integer | false    | -             | -                                                                             | Integer between 1 and 86400. Should be used if one of the connection-members is behind NAT                                                                                                                                                                                             |
+| reload         | boolean | false    | true          | -                                                                             | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+
+
+## Usage
+
+To make a dynamic WireGuard endpoint to re-connect you may want to create a [gateway monitoring (_dpinger_)](https://docs.opnsense.org/manual/gateways.html#settings) targeting the remote tunnel-address.
+
+
+## Examples
+
+### ansibleguy.opnsense.wireguard_peer
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.wireguard_peer:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'wireguard_peer'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.wireguard_peer:
+        name: 'example'
+        # tunnel_ips: []
+        # target: ''
+        # port: ''
+        # public_key: ''
+        # psk: ''
+        # keepalive: ''
+        # enabled: true
+        # debug: false
+        # state: 'present'
+
+    - name: Adding peer
+      ansibleguy.opnsense.wireguard_peer:
+        name: 'test1'
+        target: 'wg.template.ansibleguy.net'
+        tunnel_ips: ['10.200.0.1/32']
+        public_key: 'gTuhGXA28/qRSLPnH3szr2+A4l3C4tKlUsOORV63+SE='
+
+    - name: Disabling peer
+      ansibleguy.opnsense.wireguard_peer:
+        name: 'test1'
+        enabled: false
+
+    - name: Listing peers
+      ansibleguy.opnsense.wireguard_peer:
+      #  target: 'wireguard_peer'
+      register: existing_entries
+
+    - name: Printing
+      ansible.builtin.debug:
+        var: existing_entries.data
+
+    - name: Removing peer
+      ansibleguy.opnsense.wireguard_peer:
+        name: 'test1'
+        state: 'absent'
+```
+
+### ansibleguy.opnsense.wireguard_server
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.wireguard_server:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'wireguard_server'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.wireguard_server:
+        name: 'example'
+        # tunnel_ips: []
+        # peers: []
+        # port: ''
+        # public_key: ''
+        # private_key: ''
+        # mtu: 1420
+        # dns_servers: []
+        # disable_routes: false
+        # gateway: ''
+        # enabled: true
+        # debug: false
+        # state: 'present'
+
+    - name: Adding server
+      ansibleguy.opnsense.wireguard_server:
+        name: 'test1'
+        tunnel_ips: ['10.200.0.1/32']
+        peers: ['peer1']
+        port: 51820
+
+    - name: Disabling server
+      ansibleguy.opnsense.wireguard_server:
+        name: 'test1'
+        enabled: false
+
+    - name: Listing servers
+      ansibleguy.opnsense.wireguard_server:
+      #  target: 'wireguard_server'
+      register: existing_entries
+
+    - name: Printing
+      ansible.builtin.debug:
+        var: existing_entries.data
+
+    - name: Removing server
+      ansibleguy.opnsense.wireguard_server:
+        name: 'test1'
+        state: 'absent'
+```

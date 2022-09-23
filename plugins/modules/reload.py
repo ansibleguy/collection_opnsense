@@ -27,7 +27,7 @@ def run_module():
             type='str', required=True, aliases=['dom', 'd'],
             choises=[
                 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper',
-                'monit',
+                'monit', 'wireguard',
             ],
             description='What part of the running config should be reloaded'
         ),
@@ -81,6 +81,10 @@ def run_module():
         elif module.params['target'] == 'monit':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_service import Service
             target = Service(module=module, result=result)
+
+        elif module.params['target'] == 'wireguard':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_server import Server
+            target = Server(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

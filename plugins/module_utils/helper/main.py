@@ -127,9 +127,12 @@ def get_selected(data: dict) -> str:
             return key
 
 
-def get_selected_list(data: dict) -> list:
+def get_selected_list(data: dict, remove_empty: bool = False) -> list:
     selected = []
     for key, values in data.items():
+        if remove_empty and key in [None, '', ' ']:
+            continue
+
         if is_true(values['selected']):
             selected.append(key)
 
@@ -160,3 +163,28 @@ def get_simple_existing(entries: (dict, list), simplify_func=None) -> list:
             simple_entries.append(entries)
 
     return simple_entries
+
+
+def validate_str_fields(module: AnsibleModule, data: dict, field_regex: dict = None, field_minmax_length: dict = None):
+    if field_minmax_length is not None:
+        for field, min_max_length in field_minmax_length.items():
+            if min_max_length['min'] < len(data[field]) > min_max_length['max']:
+                module.fail_json(
+                    f"Value of field '{field}' is not valid - "
+                    f"Invalid length must be between {min_max_length['min']} and {min_max_length['max']}!"
+                )
+
+    if field_regex is not None:
+        for field, regex in field_regex.items():
+            if regex_match(regex, data[field]) is None:
+                module.fail_json(
+                    f"Value of field '{field}' is not valid - "
+                    f"Must match regex '{regex}'!"
+                )
+
+
+def format_int(data: str) -> (int, str):
+    if data.isnumeric():
+        return int(data)
+
+    return data

@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_matching, is_true, validate_int_fields
+    is_true, validate_int_fields
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
@@ -43,7 +43,7 @@ class TMPL:
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_stuffs = None
+        self.existing_entries = None
         self.b = Base(instance=self)
 
     def check(self):

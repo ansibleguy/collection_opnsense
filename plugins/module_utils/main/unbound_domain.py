@@ -47,7 +47,7 @@ class Domain:
     def check(self):
         validate_domain(module=self.m, domain=self.p['domain'])
         if not is_ip(self.p['server']):
-            self.m.fail_json(f"Server-value '{self.p['server']}' not a valid IP-address!")
+            self.m.fail_json(f"Server-value '{self.p['server']}' is not a valid IP-address!")
 
         self.b.find(match_fields=self.p['match_fields'])
         if self.exists:

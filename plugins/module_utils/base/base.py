@@ -17,6 +17,10 @@ class Base:
         self.e = {}  # existing entry
 
     def search(self) -> (dict, list):
+        # find response keys in development
+        # raise SystemExit(self.i.s.get(cnf={
+        #     **self.i.call_cnf, **{'command': self.i.CMDS['search']}
+        # }))
         if hasattr(self.i, 'API_KEY_2'):
             return self.i.s.get(cnf={
                 **self.i.call_cnf, **{'command': self.i.CMDS['search']}
@@ -206,6 +210,10 @@ class Base:
         if len(self.e) == 0:
             self.e = getattr(self.i, self.i.EXIST_ATTR)
 
+        EXCLUDE_FIELDS = []
+        if hasattr(self.i, 'FIELDS_DIFF_EXCLUDE'):
+            EXCLUDE_FIELDS = getattr(self.i, 'FIELDS_DIFF_EXCLUDE')
+
         if not isinstance(self.e, dict):
             raise ValueError('The existing attribute must be of type dict!')
 
@@ -214,6 +222,9 @@ class Base:
         }
 
         for field in self.i.FIELDS_ALL:
+            if field in EXCLUDE_FIELDS:
+                continue
+
             stringify = True
 
             try:
