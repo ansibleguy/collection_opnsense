@@ -4,8 +4,9 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     is_true, validate_int_fields, validate_str_fields, is_ip, validate_port, \
-    get_selected_list, format_int
+    get_selected_list, format_int, is_ip_or_network
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_peer import Peer
 
 
 class Server:
@@ -25,7 +26,7 @@ class Server:
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'public_key', 'private_key', 'port', 'mtu', 'dns_servers', 'tunnel_ips',
+        'public_key', 'private_key', 'port', 'mtu', 'dns_servers', 'allowed_ips',
         'disable_routes', 'gateway', 'peers',
     ]
     FIELDS_ALL = [FIELD_ID, 'enabled']
@@ -34,7 +35,7 @@ class Server:
         'dns_servers': 'dns',
         'public_key': 'pubkey',
         'private_key': 'privkey',
-        'tunnel_ips': 'tunneladdress',
+        'allowed_ips': 'tunneladdress',
         'disable_routes': 'disableroutes',
     }
     FIELDS_DIFF_EXCLUDE = ['private_key']
@@ -73,9 +74,24 @@ class Server:
             field_minmax_length=self.STR_LEN_VALIDATIONS
         )
 
-        for tun_ip in self.p['tunnel_ips']:
-            if not is_ip(tun_ip):
-                self.m.fail_json(f"Tunnel address '{tun_ip}' is not a valid IP-address!")
+        if self.p['state'] == 'present':
+            if len(self.p['allowed_ips']) == 0:
+                self.m.fail_json(
+                    "You need to provide at least one 'allowed_ips' entry "
+                    "to create a server!"
+                )
+
+            if self.p['gateway'] != '' and not is_ip(self.p['gateway']):
+                self.m.fail_json(
+                    f"Gateway '{self.p['gateway']}' is not a valid IP-address!"
+                )
+
+        for entry in self.p['allowed_ips']:
+            if not is_ip_or_network(entry):
+                self.m.fail_json(
+                    f"Allowed-ip entry '{entry}' is neither a valid IP-address "
+                    f"nor a valid network!"
+                )
 
         for dns in self.p['dns_servers']:
             if not is_ip(dns):
@@ -89,7 +105,30 @@ class Server:
                 self.p['private_key'] = self.server['private_key']
 
         if self.p['state'] == 'present':
+            self.p['peers'] = self._find_peers()
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
+
+    def _find_peers(self) -> list:
+        peers = []
+        existing = {}
+
+        if self.existing_peers is None:
+            self.existing_peers = Peer(
+                module=self.m, result={}, session=self.s
+            ).search_call()
+
+        if len(self.p['peers']) > 0:
+            if len(self.existing_peers) > 0:
+                for uuid, peer in self.existing_peers.items():
+                    existing[peer['name']] = uuid
+
+            for peer in self.p['peers']:
+                if peer not in existing:
+                    self.m.fail_json(f"Peer '{peer}' does not exist!")
+
+                peers.append(existing[peer])
+
+        return peers
 
     @staticmethod
     def _simplify_existing(server: dict) -> dict:
@@ -103,11 +142,11 @@ class Server:
             'private_key': server['privkey'],
             'port': format_int(server['port']),
             'mtu': format_int(server['mtu']),
-            'dns_servers': server['dns'],
-            'tunnel_ips': get_selected_list(data=server['tunneladdress'], remove_empty=True),
+            'dns_servers': get_selected_list(data=server['dns'], remove_empty=True),
+            'allowed_ips': get_selected_list(data=server['tunneladdress'], remove_empty=True),
             'disable_routes': is_true(server['disableroutes']),
             'gateway': server['gateway'],
-            'peers': server['peers'],
+            'peers': get_selected_list(server['peers']),
         }
 
     def process(self):

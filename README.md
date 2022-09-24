@@ -15,6 +15,7 @@ Feel free to contribute to this project using [pull-requests](https://github.com
 * extend or correct the [documentation](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs)
 * contribute code fixes or optimizations
 * implement additional API endpoints => see [development guide](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/develop.md)
+* test unstable modules and report bugs/errors
 
 ---
 
@@ -82,8 +83,8 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Monit**                | ansibleguy.opnsense.monit_service      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable    |
 | **Monit**                | ansibleguy.opnsense.monit_alert        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable    |
 | **Monit**                | ansibleguy.opnsense.monit_test         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable    |
-| **WireGuard**            | ansibleguy.opnsense.wireguard_server   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_wireguard.md)          | development |
-| **WireGuard**            | ansibleguy.opnsense.wireguard_peer     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_wireguard.md)          | development |
+| **WireGuard**            | ansibleguy.opnsense.wireguard_server   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_wireguard.md)          | unstable |
+| **WireGuard**            | ansibleguy.opnsense.wireguard_peer     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_wireguard.md)          | unstable |
 
 
 ### Roadmap

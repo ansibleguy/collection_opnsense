@@ -1,4 +1,4 @@
-from ipaddress import ip_address
+from ipaddress import ip_address, ip_network
 from re import match as regex_match
 
 import validators
@@ -37,6 +37,20 @@ def is_ip(host: str) -> bool:
         pass
 
     return valid_ip
+
+
+def is_ip_or_network(entry: str) -> bool:
+    valid = is_ip(entry)
+
+    if not valid:
+        try:
+            ip_network(entry)
+            valid = True
+
+        except ValueError:
+            valid = False
+
+    return valid
 
 
 def valid_hostname(name: str) -> bool:
@@ -129,12 +143,13 @@ def get_selected(data: dict) -> str:
 
 def get_selected_list(data: dict, remove_empty: bool = False) -> list:
     selected = []
-    for key, values in data.items():
-        if remove_empty and key in [None, '', ' ']:
-            continue
+    if len(data) > 0:
+        for key, values in data.items():
+            if remove_empty and key in [None, '', ' ']:
+                continue
 
-        if is_true(values['selected']):
-            selected.append(key)
+            if is_true(values['selected']):
+                selected.append(key)
 
     selected.sort()
     return selected

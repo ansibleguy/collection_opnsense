@@ -36,11 +36,11 @@ def run_module():
         dns_servers=dict(
             type='list', elements='str', required=False, default=[], aliases=['dns'],
         ),
-        tunnel_ips=dict(
+        allowed_ips=dict(
             type='list', elements='str', required=False, default=[],
             aliases=[
-                'tunnel_ip', 'tunneladdress', 'tunnel_adresses', 'tunnel_address',
-                'addresses', 'address',
+                'tunnel_ips', 'tunnel_ip', 'tunneladdress', 'tunnel_adresses',
+                'addresses', 'address', 'tunnel_address', 'allowed',
             ]
         ),
         disable_routes=dict(type='bool', default=False, required=False, aliases=['disableroutes']),

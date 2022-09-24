@@ -31,16 +31,16 @@ def run_module():
         name=dict(type='str', required=True),
         public_key=dict(type='str', required=False, alises=['pubkey', 'pub']),
         psk=dict(type='str', required=False, default=''),
-        tunnel_ips=dict(
+        allowed_ips=dict(
             type='list', elements='str', required=False, default=[],
             aliases=[
-                'tunnel_ip', 'tunneladdress', 'tunnel_adresses', 'tunnel_address',
-                'addresses', 'address',
+                'tunnel_ips', 'tunnel_ip', 'tunneladdress', 'tunnel_adresses',
+                'addresses', 'address', 'tunnel_address', 'allowed',
             ]
         ),
-        target=dict(
+        endpoint=dict(
             type='str', required=False, default='',
-            aliases=['endpoint', 'server_address', 'serveraddress', 'server']
+            aliases=['target', 'server_address', 'serveraddress', 'server']
         ),
         port=dict(type='str', required=False, default=''),
         keepalive=dict(type='str', required=False, default=''),

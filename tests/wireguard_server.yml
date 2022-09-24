@@ -1,0 +1,241 @@
+---
+
+- name: Testing WireGuard servers
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.wireguard_peer:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.wireguard_server:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'wireguard_server'
+
+  vars:
+    test:
+      pub1: 'Imk0UJX1clYYXKaDW9OdLE6J2N+X6aJ+/MxSlsDLW04='
+      pub2: '7eWtiJ2nRNdLjkJgGp9/Cac3LylHKJ//D5AuNnkzxxI='
+      pub3: '7APwSdbet/8RQo7MyU95KdOPJ8YPD1ZaOh6LHNO5Cgw='
+      priv1: '2ESImYf/PhpEqgK2s/5med7CbvyZrUNpsQCaKrpsW0g='
+      priv2: 'OIra/s01yynMZcIk1SL+Hk3ucyBdpnT9dd0WUxnW9GI='
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn10
+      failed_when: >
+        'data' not in opn10 or
+        opn10.data | length != 0
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+
+    - name: Adding 1 - failing because of invalid tunnel ip
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        allowed_ips: ['192.168.0.1000']
+      register: opn11
+      failed_when: not opn11.failed
+
+    - name: Adding 1 - failing because of invalid port
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        port: 70000
+        allowed_ips: ['192.168.0.1']
+      register: opn12
+      failed_when: not opn12.failed
+
+    - name: Adding 1 - failing because of invalid dns-server
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        allowed_ips: ['192.168.0.1']
+        dns_servers: ['192.168.0.1000']
+      register: opn14
+      failed_when: not opn14.failed
+
+    - name: Adding 1 - failing because of missing allowed-ips
+      ansibleguy.opnsense.wireguard_peer:
+        name: 'ANSIBLE_TEST_1_1'
+      register: opn17
+      failed_when: not opn17.failed
+
+    - name: Adding 1 - failing because of invalid gateway
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        allowed_ips: ['192.168.0.1']
+        gateway: '192.168.0.1000'
+      register: opn18
+      failed_when: not opn18.failed
+
+    - name: Adding 1
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        allowed_ips: ['192.168.0.1']
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        allowed_ips: ['192.168.0.1']
+        enabled: false
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        allowed_ips: ['192.168.0.1']
+        enabled: false
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        allowed_ips: ['192.168.0.1']
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_2'
+        allowed_ips: ['192.168.1.1']
+        public_key: "{{ test.pub1 }}"
+        private_key: "{{ test.priv1 }}"
+        port: 51999
+        mtu: 1400
+        dns_servers: ['1.1.1.1']
+        disable_routes: true
+        gateway: '192.168.100.1'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_2'
+        allowed_ips: ['192.168.1.1']
+        public_key: "{{ test.pub1 }}"
+        private_key: "{{ test.priv1 }}"
+        port: 51999
+        mtu: 1400
+        dns_servers: ['1.1.1.1']
+        disable_routes: true
+        gateway: '192.168.100.1'
+      register: opn13
+      failed_when: >
+        opn13.failed or
+        opn13.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_2'
+        allowed_ips: ['192.168.1.1']
+        public_key: "{{ test.pub1 }}"
+        private_key: "{{ test.priv1 }}"
+        port: 51999
+        mtu: 1400
+        dns_servers: ['1.1.1.1']
+        disable_routes: true
+        gateway: '192.168.100.1'
+        state: 'absent'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn3
+      failed_when: >
+        'data' not in opn3 or
+        opn3.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Adding dummy peer
+      ansibleguy.opnsense.wireguard_peer:
+        name: 'ANSIBLE_TEST_2_1'
+        target: 'wg.test.ansibleguy.net'
+        allowed_ips: ['192.168.3.2']
+        public_key: "{{ test.pub3 }}"
+      when: not ansible_check_mode
+
+    - name: Adding 3
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_3'
+        allowed_ips: ['192.168.3.1']
+        public_key: "{{ test.pub2 }}"
+        private_key: "{{ test.priv2 }}"
+        peers: ['ANSIBLE_TEST_2_1']
+      register: opn15
+      failed_when: >
+        opn15.failed or
+        not opn15.changed
+      when: not ansible_check_mode
+
+    - name: Adding 3 - nothing changed
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_3'
+        allowed_ips: ['192.168.3.1']
+        public_key: "{{ test.pub2 }}"
+        private_key: "{{ test.priv2 }}"
+        peers: ['ANSIBLE_TEST_2_1']
+      register: opn16
+      failed_when: >
+        opn16.failed or
+        opn16.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.wireguard_server:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_1_3'
+      when: not ansible_check_mode
+
+    - name: Cleanup peer
+      ansibleguy.opnsense.wireguard_peer:
+        name: 'ANSIBLE_TEST_2_1'
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn2
+      failed_when: >
+        'data' not in opn2 or
+        opn2.data | length != 0
+      when: not ansible_check_mode

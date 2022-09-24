@@ -6,7 +6,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     is_true, validate_int_fields, validate_str_fields, is_ip, validate_port, \
-    get_selected_list, format_int
+    get_selected_list, format_int, is_ip_or_network
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
@@ -27,14 +27,14 @@ class Peer:
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'public_key', 'psk', 'port', 'tunnel_ips', 'target', 'keepalive',
+        'public_key', 'psk', 'port', 'allowed_ips', 'endpoint', 'keepalive',
     ]
     FIELDS_ALL = [FIELD_ID, 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'public_key': 'pubkey',
-        'tunnel_ips': 'tunneladdress',
-        'target': 'serveraddress',
+        'allowed_ips': 'tunneladdress',
+        'endpoint': 'serveraddress',
         'port': 'serverport',
     }
     FIELDS_DIFF_EXCLUDE = ['psk']
@@ -79,19 +79,23 @@ class Peer:
                     "You need to provide a 'public_key' if you want to create a peer!"
                 )
 
-            if len(self.p['tunnel_ips']) == 0:
+            if len(self.p['allowed_ips']) == 0:
                 self.m.fail_json(
-                    "You need to provide at least one 'tunnel_ip' of the peer to create!"
+                    "You need to provide at least one 'allowed_ips' entry "
+                    "of the peer to create!"
                 )
 
-        for tun_ip in self.p['tunnel_ips']:
-            if not is_ip(tun_ip):
-                self.m.fail_json(f"Tunnel address '{tun_ip}' is not a valid IP-address!")
+        for entry in self.p['allowed_ips']:
+            if not is_ip_or_network(entry):
+                self.m.fail_json(
+                    f"Allowed-ip entry '{entry}' is neither a valid IP-address "
+                    f"nor a valid network!"
+                )
 
-        if self.p['target'] != '' and \
-                not is_ip(self.p['target']) and not validators.domain(self.p['target']):
+        if self.p['endpoint'] != '' and \
+                not is_ip(self.p['endpoint']) and not validators.domain(self.p['endpoint']):
             self.m.fail_json(
-                f"Peer target '{self.p['target']}' is neither a valid IP-address "
+                f"Peer endpoint '{self.p['endpoint']}' is neither a valid IP-address "
                 f"nor a valid domain!"
             )
 
@@ -111,8 +115,8 @@ class Peer:
             'name': peer['name'],
             'public_key': peer['pubkey'],
             'psk': peer['psk'],
-            'tunnel_ips': get_selected_list(peer['tunneladdress'], remove_empty=True),
-            'target': peer['serveraddress'],
+            'allowed_ips': get_selected_list(peer['tunneladdress'], remove_empty=True),
+            'endpoint': peer['serveraddress'],
             'port': format_int(peer['serverport']),
             'keepalive': format_int(peer['keepalive']),
         }
@@ -120,7 +124,7 @@ class Peer:
     def process(self):
         self.b.process()
 
-    def _search_call(self) -> list:
+    def search_call(self) -> list:
         return self.b.search()
 
     def get_existing(self) -> list:
