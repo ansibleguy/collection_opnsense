@@ -44,10 +44,10 @@ function run_test() {
   echo "RUNNING TESTS of module: '$module'"
   echo ''
 
-  ansible-playbook "tests/$module" --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+  ansible-playbook "tests/$module.yml" --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
   if [[ "$check_mode" == '1' ]]
   then
-    ansible-playbook "tests/$module" --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
+    ansible-playbook "tests/$module.yml" --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
   fi
 }
 
