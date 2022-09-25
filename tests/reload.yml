@@ -23,3 +23,6 @@
         - 'ipsec'
         - 'shaper'
         - 'monit'
+        - 'wireguard'
+        - 'interface_vlan'
+        - 'interface_vxlan'

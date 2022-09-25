@@ -3,34 +3,39 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields
+    validate_int_fields, get_selected, is_ip
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
-class TMPL:
-    FIELD_ID = 'name'
+class Vxlan:
+    FIELD_ID = 'id'
     CMDS = {
         'add': 'addItem',
         'del': 'delItem',
         'set': 'setItem',
         'search': 'get',
-        'detail': 'getItem',
-        'toggle': 'toggleItem',
     }
-    API_KEY = 'stuff'
-    API_KEY_1 = 'category'
-    # API_KEY_2 = 'sub-category'
-    API_MOD = 'API_Module'
-    API_CONT = 'API_Controller'
-    API_CONT_REL = 'API_Controller_reload'  # if other
+    API_KEY = 'vxlan'
+    API_KEY_1 = 'vxlan'
+    API_MOD = 'interfaces'
+    API_CONT = 'vxlan_settings'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = []
-    FIELDS_ALL = []
+    FIELDS_CHANGE = ['interface', 'local', 'remote', 'group']
+    FIELDS_ALL = [FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
-    INT_VALIDATIONS = {
-        'field1': {'min': 1, 'max': 100},
+    FIELDS_TRANSLATE = {
+        # 'name': 'deviceId',  # can't be configured
+        'id': 'vxlanid',
+        'local': 'vxlanlocal',
+        'remote': 'vxlanremote',
+        'group': 'vxlangroup',
+        'interface': 'vxlandev',
     }
-    EXIST_ATTR = 'stuff'
+    INT_VALIDATIONS = {
+        'id': {'min': 0, 'max': 16777215},
+    }
+    FIELDS_IP = ['local', 'remote', 'group']
+    EXIST_ATTR = 'vxlan'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -38,7 +43,7 @@ class TMPL:
         self.r = result
         self.s = Session(module=module) if session is None else session
         self.exists = False
-        self.stuff = {}
+        self.vxlan = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
@@ -47,40 +52,35 @@ class TMPL:
         self.b = Base(instance=self)
 
     def check(self):
-        # custom argument validation
+        if self.p['state'] == 'present':
+            if self.p['local'] is None:
+                self.m.fail_json("You need to provide a 'local' ip to create a vxlan!")
+
+            for field in self.FIELDS_IP:
+                if self.p[field] is not None and not is_ip(self.p[field]):
+                    self.m.fail_json(
+                        f"Value '{self.p[field]}' is not a valid IP-address!"
+                    )
+
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
-        self.b.find(match_fields=[])  # todo: match_fields
+        self.b.find(match_fields=[self.FIELD_ID])
         if self.exists:
-            self.call_cnf['params'] = [self.stuff['uuid']]
+            self.call_cnf['params'] = [self.vxlan['uuid']]
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-        # basic validation of conditional parameters
-        if not self.exists and self.p['state'] == 'present':
-            if self.p['value'] is None or len(self.p['value']) == 0:
-                self.m.fail_json('You need to provide values to create stuff!')
-
-    def _error(self, msg: str):
-        # for special handling of errors
-        self.m.fail_json(msg)
-
-    def detail_call(self) -> dict:
-        # return base_detail(self)
-        return self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['detail']}
-        })['stuff']
-
     @staticmethod
-    def _simplify_existing(stuff: dict) -> dict:
+    def _simplify_existing(vxlan: dict) -> dict:
         # makes processing easier
         return {
-            'enabled': is_true(stuff['enabled']),
-            'description': stuff['description'],
-            'uuid': stuff['uuid'],
-            'param1': stuff['param1'],
-            'param2': stuff['param2'],
+            'uuid': vxlan['uuid'],
+            'id': int(vxlan['vxlanid']),
+            'interface': get_selected(vxlan['vxlandev']),
+            'local': vxlan['vxlanlocal'],
+            'remote': vxlan['vxlanremote'],
+            'group': vxlan['vxlangroup'],
         }
 
     def process(self):

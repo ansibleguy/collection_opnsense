@@ -31,7 +31,8 @@ def run_module():
                 'unbound_host', 'unbound_domain', 'unbound_dot', 'unbound_forward',
                 'unbound_host_alias', 'ipsec_cert', 'shaper_pipe', 'shaper_queue',
                 'shaper_rule', 'monit_service', 'monit_test', 'monit_alert',
-                'wireguard_server', 'wireguard_peer',
+                'wireguard_server', 'wireguard_peer', 'interface_vlan',
+                'interface_vxlan',
             ],
             description='What part of the running config should be listed'
         ),
@@ -129,6 +130,14 @@ def run_module():
         elif module.params['target'] == 'wireguard_peer':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_peer import Peer
             target = Peer(module=module, result=result)
+
+        elif module.params['target'] == 'interface_vlan':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vlan import Vlan
+            target = Vlan(module=module, result=result)
+
+        elif module.params['target'] == 'interface_vxlan':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vxlan import Vxlan
+            target = Vxlan(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

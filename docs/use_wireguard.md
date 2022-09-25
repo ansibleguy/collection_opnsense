@@ -86,6 +86,7 @@ To make a dynamic WireGuard endpoint to re-connect you may want to create a [gat
         # enabled: true
         # debug: false
         # state: 'present'
+        # reload: true
 
     - name: Adding peer
       ansibleguy.opnsense.wireguard_peer:
@@ -100,7 +101,7 @@ To make a dynamic WireGuard endpoint to re-connect you may want to create a [gat
         enabled: false
 
     - name: Listing peers
-      ansibleguy.opnsense.wireguard_peer:
+      ansibleguy.opnsense.list:
       #  target: 'wireguard_peer'
       register: existing_entries
 
@@ -145,6 +146,7 @@ To make a dynamic WireGuard endpoint to re-connect you may want to create a [gat
         # enabled: true
         # debug: false
         # state: 'present'
+        # reload: true
 
     - name: Adding server
       ansibleguy.opnsense.wireguard_server:
@@ -159,7 +161,7 @@ To make a dynamic WireGuard endpoint to re-connect you may want to create a [gat
         enabled: false
 
     - name: Listing servers
-      ansibleguy.opnsense.wireguard_server:
+      ansibleguy.opnsense.list:
       #  target: 'wireguard_server'
       register: existing_entries
 

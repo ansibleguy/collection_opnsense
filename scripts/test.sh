@@ -82,6 +82,8 @@ run_test 'monit_test' 1
 run_test 'monit_service' 1
 run_test 'wireguard_peer' 1
 run_test 'wireguard_server' 1
+run_test 'interface_vlan' 1
+run_test 'interface_vxlan' 1
 run_test 'system' 1
 run_test 'package' 1
 

@@ -4,6 +4,7 @@
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
 # module to reload running config
+# pylint: disable=R0912,R0915,R0914
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -27,7 +28,7 @@ def run_module():
             type='str', required=True, aliases=['dom', 'd'],
             choises=[
                 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper',
-                'monit', 'wireguard',
+                'monit', 'wireguard', 'interface_vlan', 'interface_vxlan',
             ],
             description='What part of the running config should be reloaded'
         ),
@@ -85,6 +86,14 @@ def run_module():
         elif module.params['target'] == 'wireguard':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_server import Server
             target = Server(module=module, result=result)
+
+        elif module.params['target'] == 'interface_vlan':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vlan import Vlan
+            target = Vlan(module=module, result=result)
+
+        elif module.params['target'] == 'interface_vxlan':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vxlan import Vxlan
+            target = Vxlan(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

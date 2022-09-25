@@ -85,13 +85,14 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Monit**                | ansibleguy.opnsense.monit_test         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_monit.md)              | unstable    |
 | **WireGuard**            | ansibleguy.opnsense.wireguard_server   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_wireguard.md)          | unstable |
 | **WireGuard**            | ansibleguy.opnsense.wireguard_peer     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_wireguard.md)          | unstable |
+| **Interfaces**           | ansibleguy.opnsense.interface_vlan     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_interface.md)          | unstable |
+| **Interfaces**           | ansibleguy.opnsense.interface_vxlan    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_interface.md)          | unstable |
 
 
 ### Roadmap
 
 **Core API**:
 
-- [VLANs/VxLAN](https://docs.opnsense.org/development/api/core/interfaces.html)
 - [Proxy](https://docs.opnsense.org/development/api/core/proxy.html)
 - [IDS](https://docs.opnsense.org/development/api/core/ids.html)
 - [~~IPSec~~](https://docs.opnsense.org/development/api/core/ipsec.html) => [not API enabled](https://forum.opnsense.org/index.php?topic=18914.msg146063#msg146063)
