@@ -15,7 +15,10 @@ def process(m: AnsibleModule, p: dict, r: dict):
     rules_to_purge = []
 
     def obj_func(rule_to_purge: dict) -> Rule:
-        if p['debug'] or p['output_info']:
+        if 'debug' not in rule_to_purge:
+            rule_to_purge['debug'] = p['debug']
+
+        if rule_to_purge['debug'] or p['output_info']:
             m.warn(f"Purging rule '{rule_to_purge[p['key_field']]}'!")
 
         _rule = Rule(
