@@ -1,14 +1,15 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
+    Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, get_selected_list, get_selected, validate_int_fields
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
+    is_true, validate_int_fields, get_selected
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.rule import \
     validate_values
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
-class Rule:
+class SNat:
     CMDS = {
         'add': 'addRule',
         'del': 'delRule',
@@ -18,14 +19,13 @@ class Rule:
     }
     API_KEY = 'rule'
     API_KEY_1 = 'filter'
-    API_KEY_2 = 'rules'
+    API_KEY_2 = 'snatrules'
     API_MOD = 'firewall'
-    API_CONT = 'filter'
+    API_CONT = 'source_nat'
     FIELDS_CHANGE = [
-        'sequence', 'action', 'quick', 'interface', 'direction',
+        'sequence', 'no_nat', 'interface', 'target', 'target_port', 'description',
         'ip_protocol', 'protocol', 'source_invert', 'source_net', 'source_port',
         'destination_invert', 'destination_net', 'destination_port', 'log',
-        'description',
     ]
     FIELDS_ALL = ['enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
@@ -33,28 +33,20 @@ class Rule:
         'ip_protocol': 'ipprotocol',
         'source_invert': 'source_not',
         'destination_invert': 'destination_not',
+        'no_nat': 'nonat',
     }
-    EXIST_ATTR = 'rule'
-    TIMEOUT = 60.0  # urltable etc reload
     INT_VALIDATIONS = {
         'sequence': {'min': 1, 'max': 99999},
     }
+    EXIST_ATTR = 'rule'
 
-    def __init__(
-            self, module: AnsibleModule, result: dict, cnf: dict = None,
-            session: Session = None, fail: bool = True
-    ):
+    def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
+        self.p = module.params
         self.r = result
-        self.s = Session(
-            module=module,
-            timeout=self.TIMEOUT,
-        ) if session is None else session
-        self.p = self.m.params if cnf is None else cnf  # to allow override by rule_multi
-        self.fail = fail
+        self.s = Session(module=module) if session is None else session
         self.exists = False
         self.rule = {}
-        self.log_name = None
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
@@ -62,27 +54,47 @@ class Rule:
         self.existing_entries = None
         self.b = Base(instance=self)
 
+    def check(self):
+        if self.p['state'] == 'present':
+            if self.p['interface'] is None:
+                self.m.fail_json(
+                    "You need to provide an 'interface' to create a source-nat rule!"
+                )
+
+            if self.p['target'] is None:
+                self.m.fail_json(
+                    "You need to provide an 'target' to create a source-nat rule!"
+                )
+
+        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
+        self._build_log_name()
+
+        self.b.find(match_fields=self.p['match_fields'])
+        if self.exists:
+            self.call_cnf['params'] = [self.rule['uuid']]
+
+        if self.p['state'] == 'present':
+            validate_values(module=self.m, cnf=self.p, error_func=self.m.fail_json)
+            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+
     @staticmethod
-    def simplify_existing(rule):
+    def _simplify_existing(rule: dict) -> dict:
         # makes processing easier
         simple = {
             'uuid': rule['uuid'],
             'enabled': is_true(rule['enabled']),
             'log': is_true(rule['log']),
-            'quick': is_true(rule['quick']),
             'source_invert': is_true(rule['source_not']),
+            'no_nat': is_true(rule['nonat']),
             'destination_invert': is_true(rule['destination_not']),
-            'action': get_selected(data=rule['action']),
-            'interface': get_selected_list(data=rule['interface']),
-            'direction': get_selected(data=rule['direction']),
+            'interface': get_selected(data=rule['interface']),
             'ip_protocol': get_selected(data=rule['ipprotocol']),
             'protocol': get_selected(data=rule['protocol']),
-            'gateway': get_selected(data=rule['gateway']),
         }
 
         for field in [
             'sequence', 'source_net', 'source_port', 'destination_net',
-            'destination_port', 'description'
+            'destination_port', 'description', 'target', 'target_port',
         ]:
             simple[field] = rule[field]
 
@@ -93,7 +105,7 @@ class Rule:
             log_name = self.p['description']
 
         else:
-            log_name = f"{self.p['action'].upper()}: FROM "
+            log_name = 'FROM '
 
             if self.p['source_invert']:
                 log_name += 'NOT '
@@ -103,34 +115,19 @@ class Rule:
             if self.p['destination_invert']:
                 log_name += 'NOT '
 
-            log_name += f"{self.p['destination_net']}:{self.p['destination_port']}"
+            log_name += f"{self.p['destination_net']}:{self.p['destination_port']} "
+            log_name += f" =NAT=> {self.p['target']}:{self.p['target_port']}"
 
         return log_name
-
-    def check(self):
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS, error_func=self._error)
-        self._build_log_name()
-
-        self.b.find(match_fields=self.p['match_fields'])
-        if self.exists:
-            self.call_cnf['params'] = [self.rule['uuid']]
-
-        if self.p['state'] == 'present':
-            validate_values(error_func=self._error, module=self.m, cnf=self.p)
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    def _error(self, msg: str):
-        if self.fail:
-            self.m.fail_json(msg)
-
-        else:
-            self.m.warn(msg)
 
     def process(self):
         self.b.process()
 
-    def search_call(self) -> (dict, list):
+    def _search_call(self) -> list:
         return self.b.search()
+
+    def get_existing(self) -> list:
+        return self.b.get_existing()
 
     def create(self):
         self.b.create()
@@ -147,5 +144,5 @@ class Rule:
     def disable(self):
         self.b.disable()
 
-    def get_existing(self) -> list:
-        return self.b.get_existing()
+    def reload(self):
+        self.b.reload()

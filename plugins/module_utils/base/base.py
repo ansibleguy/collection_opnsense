@@ -30,7 +30,15 @@ class Base:
             **self.i.call_cnf, **{'command': self.i.CMDS['search']}
         })[self.i.API_KEY_1][self.i.API_KEY]
 
-    def get_existing(self) -> list:
+    def get_existing(self, diff_filter: bool = False) -> list:
+        if diff_filter:
+            # use already existing filtering to get 'clean' int/.. values
+            return get_simple_existing(
+                entries=self._call_search(),
+                simplify_func=self._call_simple(),
+                add_filter=self.build_diff,
+            )
+
         return get_simple_existing(
             entries=self._call_search(),
             simplify_func=self._call_simple(),

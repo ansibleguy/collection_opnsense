@@ -27,7 +27,7 @@ def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
         error_func(error % (cnf['protocol'], 'protocol'))
 
     # some recommendations - maybe the user overlooked something
-    if cnf['action'] == 'pass' and cnf['protocol'] in ['TCP', 'UDP']:
+    if 'action' in cnf and cnf['action'] == 'pass' and cnf['protocol'] in ['TCP', 'UDP']:
         if cnf['source_net'] == 'any' and cnf['destination_net'] == 'any':
             module.warn(
                 "Configuring allow-rules with 'any' source and "
@@ -39,22 +39,6 @@ def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
                 "Configuring allow-rules to 'any' destination "
                 "using 'all' ports is bad practise!"
             )
-
-
-def get_state_change(before: dict, after: dict) -> bool:
-    return before['enabled'] != after['enabled']
-
-
-def get_config_change(before: dict, after: dict) -> bool:
-    matching = []
-
-    for b_k, b_v in before.items():
-        if b_k == 'enabled':
-            continue
-
-        matching.append(str(b_v) == str(after[b_k]))
-
-    return not all(matching)
 
 
 def check_purge_configured(module: AnsibleModule, existing_rule: dict) -> bool:

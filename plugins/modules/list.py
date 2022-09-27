@@ -32,7 +32,7 @@ def run_module():
                 'unbound_host_alias', 'ipsec_cert', 'shaper_pipe', 'shaper_queue',
                 'shaper_rule', 'monit_service', 'monit_test', 'monit_alert',
                 'wireguard_server', 'wireguard_peer', 'interface_vlan',
-                'interface_vxlan',
+                'interface_vxlan', 'source_nat',
             ],
             description='What part of the running config should be listed'
         ),
@@ -138,6 +138,10 @@ def run_module():
         elif module.params['target'] == 'interface_vxlan':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vxlan import Vxlan
             target = Vxlan(module=module, result=result)
+
+        elif module.params['target'] == 'source_nat':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.source_nat import SNat
+            target = SNat(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

@@ -118,11 +118,14 @@ def validate_port(module: AnsibleModule, port: (int, str), error_func=None) -> b
     return True
 
 
-def validate_int_fields(module: AnsibleModule, data: dict, field_minmax: dict):
+def validate_int_fields(module: AnsibleModule, data: dict, field_minmax: dict, error_func = None):
+    if error_func is None:
+        error_func = module.fail_json
+
     for field, valid in field_minmax.items():
         try:
             if int(data[field]) < valid['min'] or int(data[field]) > valid['max']:
-                module.fail_json(
+                error_func(
                     f"Value of field '{field}' is not valid - "
                     f"Must be between {valid['min']} and {valid['max']}!"
                 )
@@ -159,7 +162,7 @@ def to_digit(data: bool) -> int:
     return 1 if data else 0
 
 
-def get_simple_existing(entries: (dict, list), simplify_func=None) -> list:
+def get_simple_existing(entries: (dict, list), add_filter=None, simplify_func=None) -> list:
     simple_entries = []
 
     if isinstance(entries, dict):
@@ -171,7 +174,10 @@ def get_simple_existing(entries: (dict, list), simplify_func=None) -> list:
         entries = _entries
 
     for entry in entries:
-        if simplify_func is not None:
+        if simplify_func is not None and add_filter is not None:
+            simple_entries.append(add_filter(simplify_func(entry)))
+
+        elif simplify_func is not None:
             simple_entries.append(simplify_func(entry))
 
         else:

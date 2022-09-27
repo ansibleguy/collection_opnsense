@@ -90,7 +90,8 @@ RULE_MOD_ARGS = dict(
     ),
     source_net=dict(
         type='str', required=False, default=RULE_DEFAULTS['source_net'], aliases=RULE_MOD_ARG_ALIASES['source_net'],
-        description="Host, network, alias or 'any'"),
+        description="Host, network, alias or 'any'",
+    ),
     source_port=dict(
         type='str', required=False, default=RULE_DEFAULTS['source_port'], aliases=RULE_MOD_ARG_ALIASES['source_port'],
         description='Leave empty to allow all, alias not supported'

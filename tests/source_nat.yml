@@ -1,20 +1,20 @@
 ---
 
-- name: Testing stuff
+- name: Testing source-nat
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.stuff:
+    ansibleguy.opnsense.source_nat:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
-      # match_fields: ['description']
+      match_fields: ['description']
 
     ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
-      target: 'stuff'
+      target: 'source_nat'
 
   tasks:
     - name: Listing
@@ -25,46 +25,64 @@
         opn_pre1.data | length != 0
 
     - name: Removing - does not exist
-      ansibleguy.opnsense.stuff:
-
+      ansibleguy.opnsense.source_nat:
+        description: 'ANSIBLE_TEST_1_1'
         state: 'absent'
       register: opn_pre2
       failed_when: >
         opn_pre2.failed or
         opn_pre2.changed
 
-    - name: Adding 1 - failing because of invalid value
-      ansibleguy.opnsense.stuff:
-        field1: 'INVALID-IP'
+    - name: Adding 1 - failing because of invalid protocol
+      ansibleguy.opnsense.source_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: 'lan'
+        destination: '192.168.0.1'
+        target: '192.168.0.2'
+        protocol: 'TCP/UDP'
       register: opn_fail1
       failed_when: not opn_fail1.failed
 
-    - name: Adding 1 - failing because of invalid domain
-      ansibleguy.opnsense.stuff:
-        field1: '!INVALID-DOMAIN!'
-        field2: 'INVALID-IP'
+    - name: Adding 1 - failing because of invalid alias (server-side)
+      ansibleguy.opnsense.source_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: 'lan'
+        destination: 'DoesNotExist'
+        target: '192.168.0.2'
       register: opn_fail2
       failed_when: not opn_fail2.failed
+      when: not ansible_check_mode
 
     - name: Adding 1
-      ansibleguy.opnsense.stuff:
-
+      ansibleguy.opnsense.source_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: 'lan'
+        destination: '192.168.0.1'
+        target: '192.168.0.2'
       register: opn1
       failed_when: >
         opn1.failed or
         not opn1.changed
 
     - name: Changing 1
-      ansibleguy.opnsense.stuff:
-
+      ansibleguy.opnsense.source_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: 'lan'
+        destination: '192.168.0.1'
+        protocol: 'TCP'
+        target: '192.168.0.5'
       register: opn9
       failed_when: >
         opn9.failed or
         not opn9.changed
 
     - name: Disabling 1
-      ansibleguy.opnsense.stuff:
-
+      ansibleguy.opnsense.source_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: 'lan'
+        destination: '192.168.0.1'
+        protocol: 'TCP'
+        target: '192.168.0.5'
         enabled: false
       register: opn2
       failed_when: >
@@ -73,8 +91,12 @@
       when: not ansible_check_mode
 
     - name: Disabling 1 - nothing changed
-      ansibleguy.opnsense.stuff:
-
+      ansibleguy.opnsense.source_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: 'lan'
+        destination: '192.168.0.1'
+        protocol: 'TCP'
+        target: '192.168.0.5'
         enabled: false
       register: opn3
       failed_when: >
@@ -83,8 +105,12 @@
       when: not ansible_check_mode
 
     - name: Enabling 1
-      ansibleguy.opnsense.stuff:
-
+      ansibleguy.opnsense.source_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: 'lan'
+        destination: '192.168.0.1'
+        protocol: 'TCP'
+        target: '192.168.0.5'
       register: opn4
       failed_when: >
         opn4.failed or
@@ -92,16 +118,34 @@
       when: not ansible_check_mode
 
     - name: Adding 2
-      ansibleguy.opnsense.stuff:
-
+      ansibleguy.opnsense.source_nat:
+        description: 'ANSIBLE_TEST_1_2'
+        no_nat: true
+        interface: 'lan'
+        source_invert: true
+        source: 'bogons'
+        destination: '192.168.2.1'
+        destination_port: 51820
+        protocol: 'UDP'
+        target: '192.168.3.1'
+        target_port: 51822
       register: opn5
       failed_when: >
         opn5.failed or
         not opn5.changed
 
     - name: Adding 2 - nothing changed
-      ansibleguy.opnsense.stuff:
-
+      ansibleguy.opnsense.source_nat:
+        description: 'ANSIBLE_TEST_1_2'
+        no_nat: true
+        interface: 'lan'
+        source_invert: true
+        source: 'bogons'
+        destination: '192.168.2.1'
+        destination_port: 51820
+        protocol: 'UDP'
+        target: '192.168.3.1'
+        target_port: 51822
       register: opn6
       failed_when: >
         opn6.failed or
@@ -109,8 +153,8 @@
       when: not ansible_check_mode
 
     - name: Removing 2
-      ansibleguy.opnsense.stuff:
-
+      ansibleguy.opnsense.source_nat:
+        description: 'ANSIBLE_TEST_1_2'
         state: 'absent'
       register: opn7
       failed_when: >
@@ -127,8 +171,8 @@
       when: not ansible_check_mode
 
     - name: Cleanup
-      ansibleguy.opnsense.stuff:
-
+      ansibleguy.opnsense.source_nat:
+        description: "{{ item }}"
         state: 'absent'
       loop:
         - 'ANSIBLE_TEST_1_1'
