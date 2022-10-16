@@ -34,6 +34,7 @@ class Alias:
     EXIST_ATTR = 'alias'
     JOIN_CHAR = '\n'
     TIMEOUT = 20.0
+    MAX_ALIAS_LEN = 32
 
     def __init__(
             self, module: AnsibleModule, result: dict, cnf: dict = None,
@@ -58,6 +59,12 @@ class Alias:
         self.b = Base(instance=self)
 
     def check(self):
+        if len(self.p['name']) > self.MAX_ALIAS_LEN:
+            self._error(
+                f"Alias name '{self.p['name']}' is invalid - "
+                f"must be shorter than {self.MAX_ALIAS_LEN} characters"
+            )
+
         if self.p['state'] == 'present':
             validate_values(error_func=self._error, cnf=self.p)
 

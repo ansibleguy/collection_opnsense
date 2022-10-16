@@ -1,4 +1,3 @@
-from ipaddress import ip_network
 from re import match as regex_match
 import validators
 
@@ -14,16 +13,7 @@ def validate_values(error_func, cnf: dict) -> None:
     for value in cnf['content']:
         error = f"Value '{value}' is invalid for type '{v_type}'!"
 
-        if v_type == 'network':
-            value = value[1:] if value.startswith('!') else value
-
-            try:
-                ip_network(value)
-
-            except ValueError:
-                error_func(value)
-
-        elif v_type == 'port':
+        if v_type == 'port':
             if str(value).find(':') != -1:
                 to_check = value.split(':')
 
@@ -46,6 +36,16 @@ def validate_values(error_func, cnf: dict) -> None:
         elif v_type in ['url', 'urltable']:
             if not validators.url(value):
                 error_func(error)
+
+        # unable to check because of alias-nesting support
+        # if v_type == 'network':
+        #     value = value[1:] if value.startswith('!') else value
+        #
+        #     try:
+        #         ip_network(value)
+        #
+        #     except ValueError:
+        #         error_func(error)
 
         # unable to check because of alias-nesting support and ip-ranges
         # if v_type == 'host':

@@ -17,6 +17,13 @@
       register: opn1
       failed_when: opn1.changed
 
+    - name: Failing because alias name is too long (>32 char)
+      ansibleguy.opnsense.alias:
+        name: 'ANSIBLE_TEST_1_1_TOOOOOOOOOOO_LONG'
+        content: '1.1.1.1'
+      register: opn13
+      failed_when: not opn13.failed
+
     - name: Adding
       ansibleguy.opnsense.alias:
         name: 'ANSIBLE_TEST_1_1'
@@ -138,7 +145,7 @@
         type: 'host'
         content: '1.1.1.1-1.1.1.4'
 
-    # unable to check because of alias-nesting support and ip-ranges
+    # NOTE: cannot fail as validation was disabled because of alias-nesting and ip-range support
     #    - name: Adding invalid host
     #      ansibleguy.opnsense.alias:
     #        name: 'ANSIBLE_TEST_1_2_HOST3'
@@ -163,16 +170,16 @@
         type: 'network'
         content: ['192.168.0.0/24', '192.168.1.0/24']
 
-    # todo: not really sure how that fails after validation was disabled because of alias-support
-    - name: Adding invalid network
-      ansibleguy.opnsense.alias:
-        name: 'ANSIBLE_TEST_1_2_NET3'
-        type: 'network'
-        content: "{{ item }}"
-      register: opnnet1
-      failed_when: not opnnet1.failed
-      loop:
-        - ['192.168.0.0/240']
+    # NOTE: cannot fail as validation was disabled because of alias-nesting support
+    #    - name: Adding invalid network
+    #      ansibleguy.opnsense.alias:
+    #        name: 'ANSIBLE_TEST_1_2_NET3'
+    #        type: 'network'
+    #        content: "{{ item }}"
+    #      register: opnnet1
+    #      failed_when: not opnnet1.failed
+    #      loop:
+    #        - ['192.168.0.0/240']
 
     # ports
 
@@ -295,6 +302,7 @@
         state: 'absent'
       diff: false
       loop:
+        - 'ANSIBLE_TEST_1_1_TOOOOOOOOOOO_LONG'
         - 'ANSIBLE_TEST_1_2_URLTABLE3'
         - 'ANSIBLE_TEST_1_2_URLTABLE2'
         - 'ANSIBLE_TEST_1_2_URLTABLE1'
