@@ -302,7 +302,6 @@
         state: 'absent'
       diff: false
       loop:
-        - 'ANSIBLE_TEST_1_1_TOOOOOOOOOOO_LONG'
         - 'ANSIBLE_TEST_1_2_URLTABLE3'
         - 'ANSIBLE_TEST_1_2_URLTABLE2'
         - 'ANSIBLE_TEST_1_2_URLTABLE1'
