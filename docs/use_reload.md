@@ -1,6 +1,6 @@
 # OPNSense - Reload module
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/reload.yml)
 
