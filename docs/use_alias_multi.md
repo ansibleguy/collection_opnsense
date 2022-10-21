@@ -1,6 +1,6 @@
 # OPNSense - Multi-Alias module
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: [alias_multi](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias_multi.yml) | [alias_purge](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias_purge.yml)
 

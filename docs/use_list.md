@@ -1,6 +1,6 @@
 # OPNSense - List module
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: Used in multiple ones
 
