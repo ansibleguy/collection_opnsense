@@ -54,8 +54,15 @@ def check_or_load_credentials(module: AnsibleModule):
 
 
 def check_host(module: AnsibleModule) -> None:
-    if not is_ip(module.params['firewall']) and not domain(module.params['firewall']):
-        module.fail_json(f"Host '{module.params['firewall']}' is neither a valid IP nor Domain-Name!")
+    if not is_ip(module.params['firewall']):
+        fw_dns = module.params['firewall']
+
+        if fw_dns.find('.') == -1:
+            # TLD-only will fail the domain validation
+            fw_dns = f'dummy.{fw_dns}'
+
+        if not domain(fw_dns):
+            module.fail_json(f"Host '{module.params['firewall']}' is neither a valid IP nor Domain-Name!")
 
 
 def ssl_verification(module: AnsibleModule) -> (ssl.SSLContext, bool):
