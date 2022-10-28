@@ -5,6 +5,9 @@ from datetime import datetime
 from pathlib import Path
 from httpx import ConnectError, ConnectTimeout
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
+    DEBUG_CONFIG
+
 
 def profiler(check, log_file: str = '', kwargs: dict = None, sort: str = 'tottime', show_top_n: int = 20):
     # note: https://stackoverflow.com/questions/10326936/sort-cprofile-output-by-percall-when-profiling-a-python-script
@@ -31,11 +34,11 @@ def profiler(check, log_file: str = '', kwargs: dict = None, sort: str = 'tottim
     cleaned_result = '\n'.join(cleaned_result)
 
     if log_file != '':
-        log_path = Path('/tmp/ansibleguy.opnsense')
+        log_path = Path(DEBUG_CONFIG['path_log'])
         if not log_path.exists():
             log_path.mkdir()
 
-        with open(f'/tmp/ansibleguy.opnsense/{log_file}', 'a+', encoding='utf-8') as log:
+        with open(f'{log_path}/{log_file}', 'a+', encoding='utf-8') as log:
             log.write(f"\n{datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')} | {cleaned_result}\n")
 
     if httpx_error is None:

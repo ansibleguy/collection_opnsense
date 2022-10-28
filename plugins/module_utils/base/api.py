@@ -4,7 +4,7 @@ import httpx
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.api import \
-    check_host, ssl_verification, check_response, get_params_path, debug_output, \
+    check_host, ssl_verification, check_response, get_params_path, debug_api, \
     check_or_load_credentials, raise_pretty_exception, timeout_override
 
 DEFAULT_TIMEOUT = 20.0
@@ -36,9 +36,10 @@ class Session:
         params_path = get_params_path(cnf=cnf)
         call_url = f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
 
-        debug_output(
+        debug_api(
             module=self.m,
-            msg=f"REQUEST: GET | URL: {self.s.base_url}{call_url}"
+            method='GET',
+            url=f'{self.s.base_url}{call_url}',
         )
 
         try:
@@ -69,12 +70,12 @@ class Session:
         params_path = get_params_path(cnf=cnf)
         call_url = f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
 
-        debug_output(
+        debug_api(
             module=self.m,
-            msg=f"REQUEST: POST | "
-                f"HEADERS: '{headers}' | "
-                f"URL: {self.s.base_url}{call_url} | "
-                f"DATA: {data}"
+            method='POST',
+            url=f'{self.s.base_url}{call_url}',
+            data=data,
+            headers=headers,
         )
 
         try:
@@ -107,9 +108,10 @@ def single_get(module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOU
     call_url = f"https://{module.params['firewall']}:{module.params['api_port']}/api/" \
                f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
 
-    debug_output(
+    debug_api(
         module=module,
-        msg=f"REQUEST: GET | URL: {call_url}"
+        method='GET',
+        url=call_url,
     )
 
     check_or_load_credentials(module=module)
@@ -153,12 +155,12 @@ def single_post(
     call_url = f"https://{module.params['firewall']}:{module.params['api_port']}/api/" \
                f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
 
-    debug_output(
+    debug_api(
         module=module,
-        msg=f"REQUEST: POST | "
-            f"HEADERS: '{headers}' | "
-            f"URL: {call_url} | "
-            f"DATA: {data}"
+        method='POST',
+        url=call_url,
+        data=data,
+        headers=headers,
     )
 
     check_or_load_credentials(module=module)

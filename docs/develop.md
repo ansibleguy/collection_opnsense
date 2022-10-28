@@ -73,6 +73,14 @@ You can also use the 'debug' argument to enable verbose output of the api reques
 
 'Multi' modules also support the 'debug' parameter on a per-item basis - so you don't get flooded.
 
+When the debug-mode is enabled some useful log files are created in the directory '/tmp/ansibleguy.opnsense'
+
+```bash
+guy$ ls -l /tmp/ansibleguy.opnsense/
+alias.log  # time consumption profiling for the executed module: https://docs.python.org/3/library/profile.html
+api_calls.log  # a list api calls that were executed by the debugged module
+```
+
 ### Profiling
 
 To profile a modules time-consumption - you can use the existing profiler function:

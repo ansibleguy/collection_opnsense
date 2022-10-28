@@ -71,3 +71,9 @@ RELOAD_MOD_ARG_DEF_FALSE = dict(
                     'will take some time'
     )
 )
+
+DEBUG_CONFIG = dict(
+    path_log='/tmp/ansibleguy.opnsense',
+    log_api_calls='api_calls.log',
+)
+

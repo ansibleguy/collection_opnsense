@@ -1,10 +1,13 @@
 import ssl
 from pathlib import Path
 from json import JSONDecodeError
+from datetime import datetime
 from validators import domain
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
+    DEBUG_CONFIG
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     ensure_list, is_ip
 
@@ -91,13 +94,38 @@ def get_params_path(cnf: dict) -> str:
     return params_path
 
 
-def debug_output(module: AnsibleModule, msg: str):
+def debug_api(
+        module: AnsibleModule, method: str = None, url: str = None,
+        data: dict = None, headers: dict = None, response: str = None,
+):
     if 'debug' in module.params and module.params['debug']:
+        if response is not None:
+            msg = f"RESPONSE: '{response}'"
+
+        else:
+            msg = f'REQUEST: {method} | URL: {url}'
+
+            if headers is not None:
+                msg += f" | HEADERS: '{headers}'"
+
+            if data is not None:
+                msg += f" | DATA: '{data}'"
+
+            log_path = Path(DEBUG_CONFIG['path_log'])
+            if not log_path.exists():
+                log_path.mkdir()
+
+            with open(
+                    f"{log_path}/{DEBUG_CONFIG['log_api_calls']}",
+                    'a+', encoding='utf-8'
+            ) as log:
+                log.write(f"\n{datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')} | {method} => {url}")
+
         module.warn(msg)
 
 
 def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
-    debug_output(module=module, msg=f"RESPONSE: {response.__dict__}")
+    debug_api(module=module, response=f"RESPONSE: {response.__dict__}")
 
     if 'allowed_http_stati' not in cnf:
         cnf['allowed_http_stati'] = [200]
