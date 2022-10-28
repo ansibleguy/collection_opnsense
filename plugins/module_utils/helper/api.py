@@ -96,11 +96,11 @@ def get_params_path(cnf: dict) -> str:
 
 def debug_api(
         module: AnsibleModule, method: str = None, url: str = None,
-        data: dict = None, headers: dict = None, response: str = None,
+        data: dict = None, headers: dict = None, response: dict = None,
 ):
     if 'debug' in module.params and module.params['debug']:
         if response is not None:
-            msg = f"RESPONSE: '{response}'"
+            msg = f"RESPONSE: '{response.__dict__}'"
 
         else:
             msg = f'REQUEST: {method} | URL: {url}'
@@ -125,7 +125,7 @@ def debug_api(
 
 
 def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
-    debug_api(module=module, response=f"RESPONSE: {response.__dict__}")
+    debug_api(module=module, response=response)
 
     if 'allowed_http_stati' not in cnf:
         cnf['allowed_http_stati'] = [200]
