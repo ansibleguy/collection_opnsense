@@ -77,7 +77,7 @@ def process(m: AnsibleModule, p: dict, r: dict, ):
             fail=p['fail_verification'],
         )
         # save on requests
-        alias.existing_aliases = existing_aliases
+        alias.existing_entries = existing_aliases
         alias.existing_rules = existing_rules
 
         alias.check()

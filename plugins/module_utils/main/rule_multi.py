@@ -83,7 +83,7 @@ def process(m: AnsibleModule, p: dict, r: dict):
             fail=p['fail_verification'],
         )
         # save on requests
-        rule.existing_rules = existing_rules
+        rule.existing_entries = existing_rules
 
         rule.check()
         rule.process()
