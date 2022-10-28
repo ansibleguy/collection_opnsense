@@ -89,6 +89,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Interfaces**           | ansibleguy.opnsense.interface_vxlan    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_interface.md)          | unstable |
 | **NAT**                  | ansibleguy.opnsense.source_nat         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_source_nat.md)         | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bfd            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr.md)                | unstable |
+| **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_general            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr.md)                | unstable |
 
 
 ### Roadmap

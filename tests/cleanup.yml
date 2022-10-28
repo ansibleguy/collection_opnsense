@@ -132,6 +132,11 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.frr_bgp_general:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Cleanup Rules
       ansibleguy.opnsense.rule_purge:
@@ -338,3 +343,8 @@
       loop:
         - '10.0.0.1'
         - '10.0.0.0/28'
+
+    - name: Cleanup BGP general settings
+      ansibleguy.opnsense.frr_bgp_general:
+        as_number: 1337
+        enabled: false

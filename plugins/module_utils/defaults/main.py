@@ -46,9 +46,13 @@ STATE_ONLY_MOD_ARG = dict(
     state=dict(type='str', required=False, choices=['present', 'absent'], default='present'),
 )
 
+EN_ONLY_MOD_ARG = dict(
+    enabled=dict(type='bool', required=False, default=True),
+)
+
 STATE_MOD_ARG = dict(
     **STATE_ONLY_MOD_ARG,
-    enabled=dict(type='bool', required=False, default=True),
+    **EN_ONLY_MOD_ARG,
 )
 
 STATE_MOD_ARG_MULTI = dict(
