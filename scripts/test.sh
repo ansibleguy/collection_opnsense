@@ -57,6 +57,9 @@ echo 'STARTING TESTS!'
 echo '##############################'
 echo ''
 
+# todo: some plugins will be needed as prerequisites - should be installed automatically
+#   os-firewall, os-wireguard, os-frr
+
 run_test 'reload' 0
 run_test 'alias' 1
 run_test 'alias_multi' 1
@@ -85,6 +88,7 @@ run_test 'wireguard_server' 1
 run_test 'interface_vlan' 1
 run_test 'interface_vxlan' 1
 run_test 'source_nat' 1
+run_test 'frr_bfd' 1
 run_test 'system' 1
 run_test 'package' 1
 

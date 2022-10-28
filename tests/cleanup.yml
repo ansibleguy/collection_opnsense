@@ -127,6 +127,11 @@
       ssl_verify: false
       match_fields: ['description']
 
+    ansibleguy.opnsense.frr_bfd:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Cleanup Rules
       ansibleguy.opnsense.rule_purge:
@@ -325,3 +330,11 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+
+    - name: Cleanup frr bfd
+      ansibleguy.opnsense.frr_bfd:
+        ip: "{{ item }}"
+        state: 'absent'
+      loop:
+        - '10.0.0.1'
+        - '10.0.0.0/28'

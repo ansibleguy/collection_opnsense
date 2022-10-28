@@ -6,7 +6,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_ip, get_matching, validate_port, get_selected, get_selected_list, is_true
+    is_ip, validate_port, get_selected, get_selected_list, is_true
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 

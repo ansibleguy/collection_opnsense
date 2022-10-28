@@ -32,7 +32,7 @@ def run_module():
                 'unbound_host_alias', 'ipsec_cert', 'shaper_pipe', 'shaper_queue',
                 'shaper_rule', 'monit_service', 'monit_test', 'monit_alert',
                 'wireguard_server', 'wireguard_peer', 'interface_vlan',
-                'interface_vxlan', 'source_nat',
+                'interface_vxlan', 'source_nat', 'frr_bfd',
             ],
             description='What part of the running config should be listed'
         ),
@@ -142,6 +142,10 @@ def run_module():
         elif module.params['target'] == 'source_nat':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.source_nat import SNat
             target = SNat(module=module, result=result)
+
+        elif module.params['target'] == 'frr_bfd':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bfd import Neighbor
+            target = Neighbor(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

@@ -87,7 +87,8 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **WireGuard**            | ansibleguy.opnsense.wireguard_peer     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_wireguard.md)          | unstable |
 | **Interfaces**           | ansibleguy.opnsense.interface_vlan     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_interface.md)          | unstable |
 | **Interfaces**           | ansibleguy.opnsense.interface_vxlan    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_interface.md)          | unstable |
-| **NAT**                  | ansibleguy.opnsense.source_nat         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_source_nat.md)          | unstable |
+| **NAT**                  | ansibleguy.opnsense.source_nat         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_source_nat.md)         | unstable |
+| **Dynamic Routing**      | ansibleguy.opnsense.frr_bfd            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr.md)                | unstable |
 
 
 ### Roadmap
