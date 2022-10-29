@@ -15,6 +15,8 @@ class General:
     API_KEY = 'bgp'
     API_MOD = 'quagga'
     API_CONT = 'bgp'
+    API_CONT_REL = 'service'
+    API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
         'as_number', 'id', 'graceful', 'enabled', 'networks',
         'redistribute',
@@ -73,3 +75,6 @@ class General:
 
     def update(self):
         self.b.update()
+
+    def reload(self):
+        self.b.reload()

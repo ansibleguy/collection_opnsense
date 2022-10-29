@@ -28,7 +28,7 @@ def run_module():
             type='str', required=True, aliases=['dom', 'd'],
             choises=[
                 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper',
-                'monit', 'wireguard', 'interface_vlan', 'interface_vxlan',
+                'monit', 'wireguard', 'interface_vlan', 'interface_vxlan', 'frr',
             ],
             description='What part of the running config should be reloaded'
         ),
@@ -94,6 +94,10 @@ def run_module():
         elif module.params['target'] == 'interface_vxlan':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vxlan import Vxlan
             target = Vxlan(module=module, result=result)
+
+        elif module.params['target'] == 'frr':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_general import General
+            target = General(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

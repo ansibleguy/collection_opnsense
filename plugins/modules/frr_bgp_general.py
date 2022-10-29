@@ -28,7 +28,7 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 
 def run_module():
     module_args = dict(
-        as_number=dict(type='str', required=True, aliases=['as', 'as_nr']),
+        as_number=dict(type='int', required=True, aliases=['as', 'as_nr']),
         id=dict(type='str', required=False, default='', aliases=['router_id']),
         graceful=dict(type='bool', required=False, default=False),
         networks=dict(
@@ -39,6 +39,7 @@ def run_module():
             type='list', elements='str', required=False, default=[],
             options=['ospf', 'connected', 'kernel', 'rip', 'static']
         ),
+        **RELOAD_MOD_ARG,
         **EN_ONLY_MOD_ARG,
         **OPN_MOD_ARGS,
     )
@@ -61,9 +62,11 @@ def run_module():
     def process():
         g.check()
         g.process()
+        if result['changed'] and module.params['reload']:
+            g.reload()
 
     if PROFILE or module.params['debug']:
-        profiler(check=process, log_file='frr_bfd.log')
+        profiler(check=process, log_file='frr_bgp_general.log')
         # log in /tmp/ansibleguy.opnsense/
 
     else:

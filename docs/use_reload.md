@@ -12,9 +12,9 @@ Most modules of this collection will automatically reload its relevant running c
 
 ## Definition
 
-| Parameter | Type   | Required | Default value | Comment                                                                                                           |
-|:----------|:-------|:---------|:--------------|:------------------------------------------------------------------------------------------------------------------|
-| target      | string | true     | -             | What part of the running config should be reloaded. One of: 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec' |
+| Parameter | Type   | Required | Default value | Comment                                                                                                                        |
+|:----------|:-------|:---------|:--------------|:-------------------------------------------------------------------------------------------------------------------------------|
+| target      | string | true     | -             | What part of the running config should be reloaded. One of: 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper', 'monit', 'wireguard', 'interface_vlan', 'interface_vxlan', 'frr' |
 
 ## Examples
 
