@@ -1,8 +1,8 @@
 # OPNSense - FRR module
 
-**STATE**: unstable
+**STATE**: testing
 
-**TESTS**: [frr_bfd](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bfd.yml) | [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_general.yml)
+**TESTS**: [frr_bfd](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bfd.yml) | [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_general.yml) | [frr_bgp_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_neighbor.yml)
 
 **API DOCS**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
 
