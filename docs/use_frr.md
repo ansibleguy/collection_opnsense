@@ -1,8 +1,8 @@
-# OPNSense - FRR module
+# OPNSense - FRR modules
 
 **STATE**: testing
 
-**TESTS**: [frr_bfd](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bfd.yml) | [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_general.yml) | [frr_bgp_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_neighbor.yml)
+**TESTS**: [frr_bfd](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bfd.yml) | [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_general.yml) | [frr_bgp_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_neighbor.yml) | [frr_bgp_prefix_list](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_prefix_list.yml)
 
 **API DOCS**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
 
@@ -71,6 +71,19 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | prefix_list_out                    | string  | false                              | -             | prefix_out, pre_out                    | Prefix-List for outbound direction                                                                                                                                                                                                                                                                                                                                    |
 | route_map_in                    | string  | false                              | -             | map_in, rm_in                          | Route-Map for inbound direction                                                                                                                                                                                                                                                                                                                                       |
 | route_map_out                    | string  | false                              | -             | map_out, rm_out                        | Route-Map for outbound direction                                                                                                                                                                                                                                                                                                                                      |
+| reload       | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+
+### ansibleguy.opnsense.frr_bgp_prefix_list
+
+| Parameter    | Type    | Required | Default value | Aliases | Comment                                                                                                                                                                                                                                                        |
+|:-------------|:--------|:---------|:--------------|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| name           | string  | true     | -             | -       | Name to identify the prefix-list by. Maximum length = 64                                                                                                                                                                                                       |
+| network  | string  | false for state changes, else true    | -             | net     |                                                                                                                                                                                                                                                                |                                                                                                                                                  |
+| seq  | integer | false for state changes, else true     | -             | seqnumber        | Sequence number for the prefix-list                                                                                                                                                                                                                            |                                                                                                                                                  |
+| action  | string  | false for state changes, else true    | -             | -       | One of: permit, deny                                                                                                                                                                                                                                           |                                                                                                                                                  |
+| description  | string  | false    | -             | -       | Optional description                                                                                                                                                                                                                                           |                                                                                                                                                  |
+| version  | string  | false    | IPv4          | ipv     | IP-version to use. One of: IPv4, IPv6                                                                                                                                                                                                                          |                                                                                                                                                  |
+| reload       | boolean | false    | true          | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 
 ## Examples
@@ -98,6 +111,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         # enabled: true
         # debug: false
         # state: 'present'
+        # reload: true
 
     - name: Adding neighbor
       ansibleguy.opnsense.frr_bfd:
@@ -149,6 +163,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         # networks: []
         # redistribute: []
         # enabled: true
+        # reload: true
 
     - name: Configuring general settings
       ansibleguy.opnsense.frr_bgp_general:
@@ -221,6 +236,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         # route_map_in: 'map1'
         # route_map_out: 'map2'
         # enabled: true
+        # reload: true
 
     - name: Creating neighbor
       ansibleguy.opnsense.frr_bgp_neighbor:
@@ -262,3 +278,58 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         state: 'absent'
 ```
 
+### ansibleguy.opnsense.frr_bgp_prefix_list
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_bgp_prefix_list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'frr_bgp_prefix_list'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'test1'
+        network: '10.0.0.0/24'
+        seq: 10
+        action: 'permit'
+        # description: 'test1'
+        # enabled: true
+        # reload: true
+
+    - name: Creating prefix-list
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'test2'
+        network: '10.0.10.0/24'
+        seq: 55
+        action: 'permit'
+
+    - name: Disabling prefix-list
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'test2'
+        network: '10.0.10.0/24'
+        seq: 55
+        action: 'permit'
+        enabled: false
+
+    - name: Pulling prefix-lists
+      ansibleguy.opnsense.list:
+      #  target: 'frr_bgp_prefix_list'
+      register: existing_entries
+
+    - name: Printing prefix-lists
+      ansible.builtin.debug:
+        var: existing_entries.data
+
+    - name: Removing prefix-list
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'test2'
+        state: 'absent'
+```

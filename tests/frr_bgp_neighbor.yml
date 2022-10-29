@@ -215,3 +215,80 @@
         'data' not in opn_clean1 or
         opn_clean1.data | length != 0
       when: not ansible_check_mode
+
+- name: Testing FRR BGP Neighbors - linking
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_bgp_neighbor:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['description']
+
+    ansibleguy.opnsense.frr_bgp_prefix_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'frr_bgp_neighbor'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre3
+      failed_when: >
+        'data' not in opn_pre3 or
+        opn_pre3.data | length != 0
+      when: not ansible_check_mode
+
+    - name: Adding dummy prefix-list
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_2_1'
+        network: '10.0.10.0/24'
+        seq: 50
+        action: 'permit'
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        not opn10.changed
+      when: not ansible_check_mode
+
+    - name: Adding neighbor linked to prefix-list
+      ansibleguy.opnsense.frr_bgp_neighbor:
+        description: 'ANSIBLE_TEST_2_1'
+        prefix_list_in: 'ANSIBLE_TEST_2_1'
+        as_number: 1337
+        ip: '10.0.0.1'
+      register: opn11
+      failed_when: >
+        opn11.failed or
+        not opn11.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup neighbors
+      ansibleguy.opnsense.frr_bgp_neighbor:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_2_1'
+        - 'ANSIBLE_TEST_2_2'
+      when: not ansible_check_mode
+
+    - name: Cleanup prefix-list
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_2_1'
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_clean2
+      failed_when: >
+        'data' not in opn_clean2 or
+        opn_clean2.data | length != 0
+      when: not ansible_check_mode

@@ -1,0 +1,165 @@
+---
+
+- name: Testing BGP prefix lists
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_bgp_prefix_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'frr_bgp_prefix_list'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1 - failing because of invalid network
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_1'
+        network: '10.0.100.0/320'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding 1 - failing because of invalid ip-version
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_1'
+        version: 'IPv5'
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+
+    - name: Adding 1
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_1'
+        network: '10.0.10.0/24'
+        seq: 50
+        action: 'permit'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_1'
+        network: '10.0.10.0/24'
+        seq: 55
+        action: 'permit'
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_1'
+        network: '10.0.10.0/24'
+        seq: 55
+        action: 'permit'
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_1'
+        network: '10.0.10.0/24'
+        seq: 55
+        action: 'permit'
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_1'
+        network: '10.0.10.0/24'
+        seq: 55
+        action: 'permit'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_2'
+        network: '10.0.20.0/24'
+        seq: 56
+        action: 'deny'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_2'
+        network: '10.0.20.0/24'
+        seq: 56
+        action: 'deny'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_2'
+        state: 'absent'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn8
+      failed_when: >
+        'data' not in opn8 or
+        opn8.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode

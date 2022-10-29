@@ -33,7 +33,7 @@ def run_module():
                 'shaper_rule', 'monit_service', 'monit_test', 'monit_alert',
                 'wireguard_server', 'wireguard_peer', 'interface_vlan',
                 'interface_vxlan', 'source_nat', 'frr_bfd', 'frr_bgp_general',
-                'frr_bgp_neighbor',
+                'frr_bgp_neighbor', 'frr_bgp_prefix_list',
             ],
             description='What part of the running config should be listed'
         ),
@@ -155,6 +155,10 @@ def run_module():
         elif module.params['target'] == 'frr_bgp_neighbor':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_neighbor import Neighbor
             target = Neighbor(module=module, result=result)
+
+        elif module.params['target'] == 'frr_bgp_prefix_list':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_prefix_list import Prefix
+            target = Prefix(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

@@ -90,7 +90,7 @@ run_test 'interface_vxlan' 1
 run_test 'source_nat' 1
 run_test 'frr_bfd' 1
 run_test 'frr_bgp_general' 1
-# run_test 'frr_bgp_prefix_list' 1
+run_test 'frr_bgp_prefix_list' 1
 # run_test 'frr_bgp_route_map' 1
 run_test 'frr_bgp_neighbor' 1
 # run_test 'frr_bgp_community_list' 1
