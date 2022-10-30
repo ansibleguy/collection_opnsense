@@ -35,7 +35,7 @@ def run_module():
             type='str', required=False, default='IPv4', options=['IPv4', 'IPv6'],
             aliases=['ipv']
         ),
-        seq=dict(type='str', required=False, default='', aliases=['seqnumber']),
+        seq=dict(type='str', required=False, default='', aliases=['seq_number']),
         action=dict(type='str', required=False, default='', options=['permit', 'deny']),
         **STATE_MOD_ARG,
         **RELOAD_MOD_ARG,

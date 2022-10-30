@@ -33,7 +33,7 @@ def run_module():
                 'shaper_rule', 'monit_service', 'monit_test', 'monit_alert',
                 'wireguard_server', 'wireguard_peer', 'interface_vlan',
                 'interface_vxlan', 'source_nat', 'frr_bfd', 'frr_bgp_general',
-                'frr_bgp_neighbor', 'frr_bgp_prefix_list',
+                'frr_bgp_neighbor', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
             ],
             description='What part of the running config should be listed'
         ),
@@ -163,6 +163,10 @@ def run_module():
         elif module.params['target'] == 'frr_bgp_route_map':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_route_map import RouteMap
             target = RouteMap(module=module, result=result)
+
+        elif module.params['target'] == 'frr_bgp_community_list':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_community_list import Community
+            target = Community(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

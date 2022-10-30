@@ -15,7 +15,7 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_route_map import RouteMap
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_community_list import Community
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -28,30 +28,14 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 
 def run_module():
     module_args = dict(
-        description=dict(type='str', required=False, default='', aliases=['desc']),
-        name=dict(type='str', required=True),
+        description=dict(type='str', required=True, aliases=['desc']),
+        number=dict(type='str', required=False, aliases=['nr']),
+        seq=dict(type='str', required=False, default='', aliases=['seq_number']),
         action=dict(type='str', required=False, default='', options=['permit', 'deny']),
-        id=dict(
-            type='int', required=False,
-            description='Route-map ID between 10 and 99. Be aware that the sorting '
-                        'will be done under the hood, so when you add an entry between '
-                        "it get's to the right position"
-        ),
-        as_path_list=dict(
-            type='list', elements='str', required=False, default=[], aliases=['as_path']
-        ),
-        prefix_list=dict(
-            type='list', elements='str', required=False, default=[], aliases=['prefix']
-        ),
-        community_list=dict(
-            type='list', elements='str', required=False, default=[], aliases=['community']
-        ),
-        set=dict(
-            type='str', required=False, default='',
-            description='Free text field for your set, please be careful! '
-                        'You can set e.g. "local-preference 300" or "community 1:1" '
-                        '(http://www.nongnu.org/quagga/docs/docs-multi/'
-                        'Route-Map-Set-Command.html#Route-Map-Set-Command)'
+        community=dict(
+            type='str', required=False, default='', aliases=['comm'],
+            description='The community you want to match. You can also regex and it is '
+                        'not validated so please be careful.'
         ),
         **STATE_MOD_ARG,
         **RELOAD_MOD_ARG,
@@ -71,22 +55,22 @@ def run_module():
         supports_check_mode=True,
     )
 
-    route_map = RouteMap(module=module, result=result)
+    community = Community(module=module, result=result)
 
     def process():
-        route_map.check()
-        route_map.process()
+        community.check()
+        community.process()
         if result['changed'] and module.params['reload']:
-            route_map.reload()
+            community.reload()
 
     if PROFILE or module.params['debug']:
-        profiler(check=process, log_file='frr_bgp_route_map.log')
+        profiler(check=process, log_file='frr_bgp_community_list.log')
         # log in /tmp/ansibleguy.opnsense/
 
     else:
         process()
 
-    route_map.s.close()
+    community.s.close()
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 

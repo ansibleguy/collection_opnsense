@@ -231,6 +231,11 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.frr_bgp_route_map:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
     ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
@@ -270,6 +275,29 @@
         not opn11.changed
       when: not ansible_check_mode
 
+    - name: Adding dummy route-map
+      ansibleguy.opnsense.frr_bgp_route_map:
+        name: 'ANSIBLE_TEST_3_1'
+        id: 50
+        action: 'permit'
+      register: opn12
+      failed_when: >
+        opn12.failed or
+        not opn12.changed
+      when: not ansible_check_mode
+
+    - name: Adding neighbor linked to route-map
+      ansibleguy.opnsense.frr_bgp_neighbor:
+        description: 'ANSIBLE_TEST_2_2'
+        route_map_out: 'ANSIBLE_TEST_3_1'
+        as_number: 1338
+        ip: '10.0.1.1'
+      register: opn13
+      failed_when: >
+        opn13.failed or
+        not opn13.changed
+      when: not ansible_check_mode
+
     - name: Cleanup neighbors
       ansibleguy.opnsense.frr_bgp_neighbor:
         description: "{{ item }}"
@@ -282,6 +310,12 @@
     - name: Cleanup prefix-list
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_2_1'
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Cleanup route-map
+      ansibleguy.opnsense.frr_bgp_route_map:
+        name: 'ANSIBLE_TEST_3_1'
         state: 'absent'
       when: not ansible_check_mode
 

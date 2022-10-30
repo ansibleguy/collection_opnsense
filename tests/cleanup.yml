@@ -153,6 +153,11 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.frr_bgp_community_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Cleanup Rules
       ansibleguy.opnsense.rule_purge:
@@ -384,6 +389,7 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
         - 'ANSIBLE_TEST_2_2'
+        - 'ANSIBLE_TEST_3_1'
 
     - name: Cleanup BGP prefix lists
       ansibleguy.opnsense.frr_bgp_prefix_list:
@@ -394,3 +400,12 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
         - 'ANSIBLE_TEST_3_1'
+
+    - name: Cleanup BGP community lists
+      ansibleguy.opnsense.frr_bgp_community_list:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_2_1'
