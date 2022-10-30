@@ -44,7 +44,7 @@ def is_ip_or_network(entry: str) -> bool:
 
     if not valid:
         try:
-            ip_network(entry)
+            ip_network(entry, strict=False)
             valid = True
 
         except ValueError:
