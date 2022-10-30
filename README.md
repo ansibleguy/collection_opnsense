@@ -92,11 +92,12 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **NAT**                  | ansibleguy.opnsense.source_nat             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_source_nat.md)         | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bfd                | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bfd.md)            | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_general        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | unstable |
-| **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_neighbor       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | testing |
+| **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_neighbor       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_prefix_list    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_route_map      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_community_list | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_as_path        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | unstable |
+| **Dynamic Routing**      | ansibleguy.opnsense.frr_diagnostic         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_diagnostic.md)     | unstable |
 
 
 ### Roadmap

@@ -3,7 +3,7 @@
 # Copyright: (C) 2022, AnsibleGuy <guy@ansibleguy.net>
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
-# see: https://docs.opnsense.org/development/api/plugins/wireguard.html
+# see: https://docs.opnsense.org/development/api/plugins/quagga.html
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -25,8 +25,14 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 def run_module():
     module_args = dict(
         target=dict(
-            type='str', required=False, default='handshake',
-            choises=['handshake', 'config'],
+            type='str', required=True,
+            choises=[
+                'bgpneighbors', 'bgproute', 'bgproute4', 'bgproute6', 'bgpsummary',
+                'generalroute', 'generalroute4', 'generalroute6', 'generalrunningconfig',
+                'ospfdatabase', 'ospfinterface', 'ospfneighbor', 'ospfoverview', 'ospfroute',
+                'ospfv3database', 'ospfv3interface', 'ospfv3neighbor', 'ospfv3overview',
+                'ospfv3route',
+            ],
             description='What information to query'
         ),
         **OPN_MOD_ARGS,
@@ -37,17 +43,21 @@ def run_module():
         supports_check_mode=True,
     )
 
-    command_mapping = {
-        'config': 'showconf',
-        'handshake': 'showhandshake',
-    }
+    non_json = ['generalrunningconfig']
+
+    if module.params['target'] in non_json:
+        params = []
+
+    else:
+        params = ['$format=”json”']
 
     info = single_get(
         module=module,
         cnf={
-            'module': 'wireguard',
-            'controller': 'service',
-            'command': command_mapping[module.params['target']],
+            'module': 'quagga',
+            'controller': 'diagnostics',
+            'command': module.params['target'],
+            'params': params,
         }
     )
 

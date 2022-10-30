@@ -2,7 +2,7 @@
 
 **STATE**: testing
 
-**TESTS**: [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_general.yml) | [frr_bgp_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_neighbor.yml) | [frr_bgp_prefix_list](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_prefix_list.yml) | [frr_bgp_route_map](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_route_map.yml) | [frr_bgp_community_list](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_community_list.yml)
+**TESTS**: [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_general.yml) | [frr_bgp_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_neighbor.yml) | [frr_bgp_prefix_list](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_prefix_list.yml) | [frr_bgp_route_map](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_route_map.yml) | [frr_bgp_community_list](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_community_list.yml) | [frr_bgp_as_path](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_as_path.yml)
 
 **API DOCS**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
 
@@ -13,6 +13,10 @@
 ## Sponsoring
 
 Thanks to [@telmich](https://github.com/telmich) for sponsoring the development of these modules!
+
+## More FRR modules
+
+* [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr.md)
 
 ## Prerequisites
 

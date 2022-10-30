@@ -90,6 +90,7 @@ run_test 'wireguard_show' 1
 run_test 'interface_vlan' 1
 run_test 'interface_vxlan' 1
 run_test 'source_nat' 1
+run_test 'frr_diagnostic' 1
 run_test 'frr_bfd' 1
 run_test 'frr_bgp_general' 1
 run_test 'frr_bgp_prefix_list' 1

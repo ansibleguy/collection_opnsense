@@ -14,6 +14,10 @@
 
 Thanks to [@telmich](https://github.com/telmich) for sponsoring the development of these modules!
 
+## More FRR modules
+
+* [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr.md)
+
 ## Prerequisites
 
 You need to install the FRR plugin:
