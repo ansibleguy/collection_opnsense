@@ -50,6 +50,18 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | keepalive   | integer | false    | -             | -                                                                                                  | Integer between 1 and 86400. Should be used if one of the connection-members is behind NAT                                                                                                                                                                                             |
 | reload      | boolean | false    | true          | -                                                                                                  | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
+### ansibleguy.opnsense.wireguard_show
+
+| Parameter   | Type    | Required | Default value | Aliases                                                                                            | Comment                                                 |
+|:------------|:--------|:---------|:--------------|:---------------------------------------------------------------------------------------------------|:--------------------------------------------------------|
+| target      | string  | false    | handshake     | -                                                                                                  | What information to query. One of: 'handshake', 'config' |
+
+### ansibleguy.opnsense.wireguard_general
+
+| Parameter | Type    | Required | Default value | Aliases                                                                                            | Comment                                         |
+|:----------|:--------|:---------|:--------------|:---------------------------------------------------------------------------------------------------|:------------------------------------------------|
+| enabled   | boolean | false    | true          | -                                                                                                  | Used to enable or disable the wireguard service |
+
 
 ## Usage
 
@@ -57,6 +69,51 @@ To make a dynamic WireGuard endpoint to re-connect you may want to create a [gat
 
 
 ## Examples
+
+### ansibleguy.opnsense.wireguard_general
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.wireguard_general:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.wireguard_general:
+        # enabled: true
+
+    - name: Enabling WireGuard service
+      ansibleguy.opnsense.wireguard_general:
+        enabled: true
+```
+
+### ansibleguy.opnsense.wireguard_show
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.wireguard_show:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.wireguard_show:
+        # target: 'handshake'
+
+    - name: Querying the current WireGuard handshakes
+      ansibleguy.opnsense.wireguard_show:
+        target: 'handshake'
+      register: wg_hands
+
+    - name: Printing
+      ansible.builtin.debug:
+        var: wg_hands.data
+```
 
 ### ansibleguy.opnsense.wireguard_peer
 
