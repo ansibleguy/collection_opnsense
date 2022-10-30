@@ -75,10 +75,6 @@ class Neighbor:
         self.existing_entries = None
         self.existing_prefixes = None
         self.existing_maps = None
-        self.prefix_in_found = False
-        self.prefix_out_found = False
-        self.map_in_found = False
-        self.map_out_found = False
 
     def check(self):
         if self.p['state'] == 'present':
@@ -96,11 +92,9 @@ class Neighbor:
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         self.b.find(match_fields=self.p['match_fields'])
+        self._find_links()
         if self.exists:
             self.call_cnf['params'] = [self.neighbor['uuid']]
-
-        self._find_prefix()
-        self._find_map()
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
@@ -150,59 +144,50 @@ class Neighbor:
             'uuid': neighbor['uuid'],
         }
 
-    def _find_prefix(self):
-        pre_in_provided = self.p['prefix_list_in'] not in ['', None]
-        pre_out_provided = self.p['prefix_list_out'] not in ['', None]
+    def _find_links(self):
+        links = {
+            'prefix-list': {
+                'in': 'prefix_list_in',
+                'out': 'prefix_list_out',
+                'in_found': False,
+                'out_found': False,
+                'existing': self.existing_prefixes,
+            },
+            'route-map': {
+                'in': 'route_map_in',
+                'out': 'route_map_out',
+                'in_found': False,
+                'out_found': False,
+                'existing': self.existing_maps,
+            }
+        }
 
-        if len(self.existing_prefixes) > 0 and (pre_in_provided or pre_out_provided):
-            for uuid, prefix in self.existing_prefixes.items():
-                if prefix['name'] == self.p['prefix_list_in']:
-                    self.p['prefix_list_in'] = uuid
-                    self.prefix_in_found = True
+        for key, values in links.items():
+            in_provided = self.p[values['in']] not in ['', None]
+            out_provided = self.p[values['out']] not in ['', None]
 
-                if prefix['name'] == self.p['prefix_list_out']:
-                    self.p['prefix_list_out'] = uuid
-                    self.prefix_out_found = True
+            if len(values['existing']) > 0 and (in_provided or out_provided):
+                for uuid, prefix in values['existing'].items():
+                    if prefix['name'] == self.p[values['in']]:
+                        self.p[values['in']] = uuid
+                        values['in_found'] = True
 
-                if self.prefix_in_found and self.prefix_out_found:
-                    break
+                    if prefix['name'] == self.p[values['out']]:
+                        self.p[values['out']] = uuid
+                        values['out_found'] = True
 
-        if pre_in_provided and not self.prefix_in_found:
-            self.m.fail_json(
-                f"Provided in-prefix-list '{self.p['prefix_list_in']}' was not found!"
-            )
+                    if values['in_found'] and values['out_found']:
+                        break
 
-        if pre_out_provided and not self.prefix_out_found:
-            self.m.fail_json(
-                f"Provided out-prefix-list '{self.p['prefix_list_out']}' was not found!"
-            )
+            if in_provided and not values['in_found']:
+                self.m.fail_json(
+                    f"Provided in-{key} '{self.p[values['in']]}' was not found!"
+                )
 
-    def _find_map(self):
-        map_in_provided = self.p['route_map_in'] not in ['', None]
-        map_out_provided = self.p['route_map_out'] not in ['', None]
-
-        if len(self.existing_maps) > 0 and (map_in_provided or map_out_provided):
-            for uuid, route_map in self.existing_prefixes.items():
-                if route_map['name'] == self.p['route_map_in']:
-                    self.p['route_map_in'] = uuid
-                    self.map_in_found = True
-
-                if route_map['name'] == self.p['route_map_out']:
-                    self.p['route_map_out'] = uuid
-                    self.map_out_found = True
-
-                if self.map_in_found and self.map_out_found:
-                    break
-
-        if map_in_provided and not self.map_in_found:
-            self.m.fail_json(
-                f"Provided in-route-map '{self.p['route_map_in']}' was not found!"
-            )
-
-        if map_out_provided and not self.map_out_found:
-            self.m.fail_json(
-                f"Provided out-route-map '{self.p['route_map_out']}' was not found!"
-            )
+            if out_provided and not values['out_found']:
+                self.m.fail_json(
+                    f"Provided out-{key} '{self.p[values['out']]}' was not found!"
+                )
 
     def get_existing(self) -> list:
         existing = []

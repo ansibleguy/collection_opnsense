@@ -92,6 +92,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_general     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr.md)                | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_neighbor    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr.md)                | testing |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_prefix_list | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr.md)                | unstable |
+| **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_route_map   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr.md)                | unstable |
 
 
 ### Roadmap

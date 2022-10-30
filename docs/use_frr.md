@@ -2,7 +2,7 @@
 
 **STATE**: testing
 
-**TESTS**: [frr_bfd](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bfd.yml) | [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_general.yml) | [frr_bgp_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_neighbor.yml) | [frr_bgp_prefix_list](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_prefix_list.yml)
+**TESTS**: [frr_bfd](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bfd.yml) | [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_general.yml) | [frr_bgp_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_neighbor.yml) | [frr_bgp_prefix_list](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_prefix_list.yml) | [frr_bgp_route_map](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_route_map.yml)
 
 **API DOCS**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
 
@@ -84,6 +84,21 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | description  | string  | false    | -             | -       | Optional description                                                                                                                                                                                                                                           |                                                                                                                                                  |
 | version  | string  | false    | IPv4          | ipv     | IP-version to use. One of: IPv4, IPv6                                                                                                                                                                                                                          |                                                                                                                                                  |
 | reload       | boolean | false    | true          | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+
+### ansibleguy.opnsense.frr_bgp_route_map
+
+| Parameter    | Type    | Required | Default value | Aliases   | Comment                                                                                                                                                                                                                                                        |
+|:-------------|:--------|:---------|:--------------|:----------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| name           | string  | true     | -             | -         | Name to identify the route-map by. Maximum length = 64                                                                                                                                                                                                         |
+| id  | string  | false for state changes, else true    | -             | -         | Route-map ID between 10 and 99. Be aware that the sorting will be done under the hood, so when you add an entry between it get's to the right position                                                                                                         |                                                                                                                                                  |
+| action  | string  | false for state changes, else true    | -             | -         | One of: permit, deny                                                                                                                                                                                                                                           |                                                                                                                                                  |
+| description  | string  | false    | -             | -         | Optional description                                                                                                                                                                                                                                           |                                                                                                                                                  |
+| as_path_list  | list    | false    | -             | as_path   | List of as-path entries to link                                                                                                                                                                                                                                |                                                                                                                                                  |
+| prefix_list  | list    | false    | -             | prefix    | List of prefix-list entries to link                                                                                                                                                                                                                            |                                                                                                                                                  |
+| community_list  | list    | false    | -             | community | List of community-list entries to link                                                                                                                                                                                                                         |                                                                                                                                                  |
+| set  | string    | false    | -             | -         | Free text field for your set, please be careful! You can set e.g. "local-preference 300" or "community 1:1" (http://www.nongnu.org/quagga/docs/docs-multi/Route-Map-Set-Command.html#Route-Map-Set-Command)                                                                                                                                                                                                                         |                                                                                                                                                  |
+| reload       | boolean | false    | true          | -         | If the running config should be reloaded on change - this will take some time. You might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+
 
 
 ## Examples
@@ -330,6 +345,65 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
     - name: Removing prefix-list
       ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'test2'
+        state: 'absent'
+```
+
+### ansibleguy.opnsense.frr_bgp_route_map
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_bgp_route_map:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'frr_bgp_route_map'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.frr_bgp_route_map:
+        name: 'test1'
+        id: 55
+        action: 'permit'
+        # as_path_list: []
+        # prefix_list: []
+        # community_list: []
+        # set: ''
+        # description: 'test1'
+        # enabled: true
+        # reload: true
+
+    - name: Creating route-map
+      ansibleguy.opnsense.frr_bgp_route_map:
+        name: 'test2'
+        prefix_list: ['test_prefix']
+        id: 55
+        action: 'permit'
+
+    - name: Disabling route-map
+      ansibleguy.opnsense.frr_bgp_route_map:
+        name: 'test2'
+        prefix_list: ['test_prefix']
+        id: 55
+        action: 'permit'
+        enabled: false
+
+    - name: Pulling route-maps
+      ansibleguy.opnsense.list:
+      #  target: 'frr_bgp_route_map'
+      register: existing_entries
+
+    - name: Printing route-maps
+      ansible.builtin.debug:
+        var: existing_entries.data
+
+    - name: Removing route-map
+      ansibleguy.opnsense.frr_bgp_route_map:
         name: 'test2'
         state: 'absent'
 ```

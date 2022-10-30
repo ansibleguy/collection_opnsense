@@ -160,6 +160,10 @@ def run_module():
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_prefix_list import Prefix
             target = Prefix(module=module, result=result)
 
+        elif module.params['target'] == 'frr_bgp_route_map':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_route_map import RouteMap
+            target = RouteMap(module=module, result=result)
+
     except MODULE_EXCEPTIONS:
         module_dependency_error()
 
