@@ -73,7 +73,8 @@ def run_module():
             target = Host(module=module, result=result)
 
         elif module.params['target'] == 'unbound_host_alias':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host_alias import Alias
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host_alias \
+                import Alias
             target = Alias(module=module, result=result)
 
         elif module.params['target'] == 'unbound_domain':
@@ -81,11 +82,13 @@ def run_module():
             target = Domain(module=module, result=result)
 
         elif module.params['target'] == 'unbound_dot':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_dot import DnsOverTls
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_dot \
+                import DnsOverTls
             target = DnsOverTls(module=module, result=result)
 
         elif module.params['target'] == 'unbound_forward':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_forward import Forward
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_forward \
+                import Forward
             target = Forward(module=module, result=result)
 
         elif module.params['target'] == 'syslog':
@@ -125,7 +128,8 @@ def run_module():
             target = Alert(module=module, result=result)
 
         elif module.params['target'] == 'wireguard_server':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_server import Server
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_server \
+                import Server
             target = Server(module=module, result=result)
 
         elif module.params['target'] == 'wireguard_peer':
@@ -149,23 +153,28 @@ def run_module():
             target = Neighbor(module=module, result=result)
 
         elif module.params['target'] == 'frr_bgp_general':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_general import General
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_general \
+                import General
             target = General(module=module, result=result)
 
         elif module.params['target'] == 'frr_bgp_neighbor':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_neighbor import Neighbor
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_neighbor \
+                import Neighbor
             target = Neighbor(module=module, result=result)
 
         elif module.params['target'] == 'frr_bgp_prefix_list':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_prefix_list import Prefix
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_prefix_list \
+                import Prefix
             target = Prefix(module=module, result=result)
 
         elif module.params['target'] == 'frr_bgp_route_map':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_route_map import RouteMap
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_route_map \
+                import RouteMap
             target = RouteMap(module=module, result=result)
 
         elif module.params['target'] == 'frr_bgp_community_list':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_community_list import Community
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_community_list \
+                import Community
             target = Community(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
