@@ -10,6 +10,10 @@
 
 **FRR DOCS**: [FRRouting](https://docs.frrouting.org/) (_make sure you are looking at the current OPNSense package version!_)
 
+## Sponsoring
+
+Thanks to [@telmich](https://github.com/telmich) for sponsoring the development of these modules!
+
 ## Prerequisites
 
 You need to install the FRR plugin:
@@ -73,7 +77,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | name           | string  | true     | -             | -       | Name to identify the prefix-list by. Maximum length = 64                                                                                                                                                                                                       |
 | network  | string  | false for state changes, else true    | -             | net     |                                                                                                                                                                                                                                                                |                                                                                                                                                  |
 | seq  | integer | false for state changes, else true     | -             | seq_number        | Sequence number for the prefix-list                                                                                                                                                                                                                            |                                                                                                                                                  |
-| action  | string  | false for state changes, else true    | -             | -       | One of: permit, deny                                                                                                                                                                                                                                           |                                                                                                                                                  |
+| action  | string  | false for state changes, else true    | -             | -       | Set permit for match or deny to negate the rule. One of: permit, deny                                                                                                                                                                                                                                           |                                                                                                                                                  |
 | description  | string  | false    | -             | -       | Optional description                                                                                                                                                                                                                                           |                                                                                                                                                  |
 | version  | string  | false    | IPv4          | ipv     | IP-version to use. One of: IPv4, IPv6                                                                                                                                                                                                                          |                                                                                                                                                  |
 | reload       | boolean | false    | true          | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
@@ -84,7 +88,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 |:-------------|:--------|:---------|:--------------|:----------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | name           | string  | true     | -             | -         | Name to identify the route-map by. Maximum length = 64                                                                                                                                                                                                         |
 | id  | integer | false for state changes, else true    | -             | -         | Route-map ID between 10 and 99. Be aware that the sorting will be done under the hood, so when you add an entry between it get's to the right position                                                                                                         |                                                                                                                                                  |
-| action  | string  | false for state changes, else true    | -             | -         | One of: permit, deny                                                                                                                                                                                                                                           |                                                                                                                                                  |
+| action  | string  | false for state changes, else true    | -             | -         | Set permit for match or deny to negate the rule. One of: permit, deny                                                                                                                                                                                                                                           |                                                                                                                                                  |
 | description  | string  | false    | -             | -         | Optional description                                                                                                                                                                                                                                           |                                                                                                                                                  |
 | as_path_list  | list    | false    | -             | as_path   | List of as-path entries to link                                                                                                                                                                                                                                |                                                                                                                                                  |
 | prefix_list  | list    | false    | -             | prefix    | List of prefix-list entries to link                                                                                                                                                                                                                            |                                                                                                                                                  |
@@ -103,6 +107,15 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | community         | string  | false for state changes, else true    | -             | comm     | The community you want to match. You can also regex and it is not validated so please be careful                                                                                                                                                                                          |                                                                                                                                                  |
 | reload         | boolean | false    | true          | -        | If the running config should be reloaded on change - this will take some time. You might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
+### ansibleguy.opnsense.frr_bgp_as_path
+
+| Parameter      | Type    | Required | Default value | Aliases | Comment                                                                                                                                                                                                                                                        |
+|:---------------|:--------|:---------|:--------------|:--------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| description    | string  | true     | -             | desc    | Description used to identify the as-path by                                                                                                                                                                                                                    |
+| number         | integer | false for state changes, else true    | -             | nr      | The ACL rule number (10-99); keep in mind that there are no sequence numbers with AS-Path lists. When you want to add a new line between you have to completely remove the ACL                                                                                 |                                                                                                                                                  |
+| action         | string  | false for state changes, else true    | -             | -       | Set permit for match or deny to negate the rule. One of: permit, deny                                                                                                                                                                                          |                                                                                                                                                  |
+| as_pattern         | string  | false for state changes, else true    | -             | as      | The AS pattern you want to match, regexp allowed (e.g. .$ or _1$). It's not validated so please be careful!  |
+| reload         | boolean | false    | true          | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 
 ## Examples
@@ -415,6 +428,61 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
     - name: Removing community-list
       ansibleguy.opnsense.frr_bgp_community_list:
+        description: 'test2'
+        state: 'absent'
+```
+
+### ansibleguy.opnsense.frr_bgp_as_path
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_bgp_as_path:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'frr_bgp_as_path'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.frr_bgp_as_path:
+        description: 'test1'
+        number: 55
+        action: 'permit'
+        as_pattern: 'example'
+        # enabled: true
+        # reload: true
+
+    - name: Creating as-path
+      ansibleguy.opnsense.frr_bgp_as_path:
+        description: 'test2'
+        number: 20
+        action: 'permit'
+        as_pattern: 'test_as'
+
+    - name: Disabling as-path
+      ansibleguy.opnsense.frr_bgp_as_path:
+        description: 'test2'
+        number: 20
+        action: 'permit'
+        as_pattern: 'test_as'
+        enabled: false
+
+    - name: Pulling as-paths
+      ansibleguy.opnsense.list:
+      #  target: 'frr_bgp_as_path'
+      register: existing_entries
+
+    - name: Printing as-paths
+      ansible.builtin.debug:
+        var: existing_entries.data
+
+    - name: Removing as-path
+      ansibleguy.opnsense.frr_bgp_as_path:
         description: 'test2'
         state: 'absent'
 ```

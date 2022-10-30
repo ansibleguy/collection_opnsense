@@ -199,6 +199,11 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.frr_bgp_as_path:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
     ansibleguy.opnsense.list:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
@@ -255,12 +260,36 @@
       ansibleguy.opnsense.frr_bgp_route_map:
         name: 'ANSIBLE_TEST_2_2'
         community_list: ['ANSIBLE_TEST_2_1']
-        id: 65
+        id: 66
         action: 'permit'
       register: opn13
       failed_when: >
         opn13.failed or
         not opn13.changed
+      when: not ansible_check_mode
+
+    - name: Adding dummy as-path
+      ansibleguy.opnsense.frr_bgp_as_path:
+        description: 'ANSIBLE_TEST_2_1'
+        number: 20
+        action: 'permit'
+        as_pattern: 'as-pattern'
+      register: opn14
+      failed_when: >
+        opn14.failed or
+        not opn14.changed
+      when: not ansible_check_mode
+
+    - name: Adding route-map linked to as-path
+      ansibleguy.opnsense.frr_bgp_route_map:
+        name: 'ANSIBLE_TEST_2_3'
+        as_path_list: ['ANSIBLE_TEST_2_1']
+        id: 67
+        action: 'permit'
+      register: opn15
+      failed_when: >
+        opn15.failed or
+        not opn15.changed
       when: not ansible_check_mode
 
     - name: Cleanup route-maps
@@ -283,6 +312,13 @@
       ansibleguy.opnsense.frr_bgp_community_list:
         description: 'ANSIBLE_TEST_2_1'
         state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Cleanup as-path
+      ansibleguy.opnsense.frr_bgp_as_path:
+        description: 'ANSIBLE_TEST_2_1'
+        state: 'absent'
+      when: not ansible_check_mode
 
     - name: Listing
       ansibleguy.opnsense.list:

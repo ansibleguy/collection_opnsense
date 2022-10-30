@@ -34,6 +34,7 @@ def run_module():
                 'wireguard_server', 'wireguard_peer', 'interface_vlan',
                 'interface_vxlan', 'source_nat', 'frr_bfd', 'frr_bgp_general',
                 'frr_bgp_neighbor', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
+                'frr_bgp_as_path',
             ],
             description='What part of the running config should be listed'
         ),
@@ -176,6 +177,11 @@ def run_module():
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_community_list \
                 import Community
             target = Community(module=module, result=result)
+
+        elif module.params['target'] == 'frr_bgp_as_path':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_as_path \
+                import AsPath
+            target = AsPath(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

@@ -10,6 +10,10 @@
 
 **FRR DOCS**: [FRRouting](https://docs.frrouting.org/) (_make sure you are looking at the current OPNSense package version!_)
 
+## Sponsoring
+
+Thanks to [@telmich](https://github.com/telmich) for sponsoring the development of these modules!
+
 ## Prerequisites
 
 You need to install the FRR plugin:

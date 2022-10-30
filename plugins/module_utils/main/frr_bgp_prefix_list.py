@@ -62,7 +62,7 @@ class Prefix:
         if self.p['state'] == 'present':
             if self.p['network'] in ['', None] or self.p['seq'] in ['', None] or self.p['action'] in ['', None]:
                 self.m.fail_json(
-                    'To create a BGP prefix_list you need to provide a network, '
+                    'To create a BGP prefix-list you need to provide a network, '
                     'sequence-number and action!'
                 )
 

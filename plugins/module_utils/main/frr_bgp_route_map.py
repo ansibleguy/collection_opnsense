@@ -66,7 +66,7 @@ class RouteMap:
         if self.p['state'] == 'present':
             if self.p['id'] in ['', None] or self.p['action'] in ['', None]:
                 self.m.fail_json(
-                    'To create a BGP route_map you need to provide a ID and action!'
+                    'To create a BGP route-map you need to provide a ID and action!'
                 )
 
             validate_str_fields(

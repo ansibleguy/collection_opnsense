@@ -6,6 +6,10 @@
 
 **FRR DOCS**: [FRRouting](https://docs.frrouting.org/) (_make sure you are looking at the current OPNSense package version!_)
 
+## Sponsoring
+
+Thanks to [@telmich](https://github.com/telmich) for sponsoring the development of these modules!
+
 ## Prerequisites
 
 You need to install the FRR plugin:
@@ -19,4 +23,3 @@ You can also install it using the [package module](https://github.com/ansibleguy
 
 * [BFD Module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bfd.md)
 * [BGP Modules](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)
-

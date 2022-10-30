@@ -7,35 +7,34 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main im
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
-class Community:
+class AsPath:
     FIELD_ID = 'description'
     CMDS = {
-        'add': 'addCommunitylist',
-        'del': 'delCommunitylist',
-        'set': 'setCommunitylist',
+        'add': 'addAspath',
+        'del': 'delAspath',
+        'set': 'setAspath',
         'search': 'get',
-        'toggle': 'toggleCommunitylist',
+        'toggle': 'toggleAspath',
     }
-    API_KEY = 'communitylist'
+    API_KEY = 'aspath'
     API_KEY_1 = 'bgp'
-    API_KEY_2 = 'communitylists'
+    API_KEY_2 = 'aspaths'
     API_MOD = 'quagga'
     API_CONT = 'bgp'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'number', 'seq', 'action', 'community', 'enabled',
+        'number', 'action', 'as_pattern', 'enabled',
     ]
     FIELDS_ALL = [FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
-        'seq': 'seqnumber',
+        'as_pattern': 'as',
     }
     INT_VALIDATIONS = {
-        'number': {'min': 1, 'max': 500},
-        'seq': {'min': 10, 'max': 99},
+        'number': {'min': 10, 'max': 99},
     }
-    EXIST_ATTR = 'community_list'
+    EXIST_ATTR = 'as_path'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         self.m = module
@@ -43,7 +42,7 @@ class Community:
         self.r = result
         self.s = Session(module=module) if session is None else session
         self.exists = False
-        self.community_list = {}
+        self.as_path = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
@@ -53,17 +52,18 @@ class Community:
 
     def check(self):
         if self.p['state'] == 'present':
-            if self.p['number'] in ['', None] or self.p['seq'] in ['', None] or self.p['action'] in ['', None]:
+            if self.p['number'] in ['', None] or self.p['as_pattern'] in ['', None] \
+                    or self.p['action'] in ['', None]:
                 self.m.fail_json(
-                    'To create a BGP community-list you need to provide a number, '
-                    'sequence-number and action!'
+                    'To create a BGP as-path you need to provide a number, '
+                    'as_pattern and action!'
                 )
 
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         self.b.find(match_fields=[self.FIELD_ID])
         if self.exists:
-            self.call_cnf['params'] = [self.community_list['uuid']]
+            self.call_cnf['params'] = [self.as_path['uuid']]
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
@@ -72,16 +72,15 @@ class Community:
         self.b.process()
 
     @staticmethod
-    def _simplify_existing(community_list: dict) -> dict:
+    def _simplify_existing(as_path: dict) -> dict:
         # makes processing easier
         return {
-            'description': community_list['description'],
-            'number': community_list['number'],
-            'seq': community_list['seqnumber'],
-            'community': community_list['community'],
-            'action': get_selected(community_list['action']),
-            'enabled': is_true(community_list['enabled']),
-            'uuid': community_list['uuid'],
+            'description': as_path['description'],
+            'number': as_path['number'],
+            'as_pattern': as_path['as'],
+            'action': get_selected(as_path['action']),
+            'enabled': is_true(as_path['enabled']),
+            'uuid': as_path['uuid'],
         }
 
     def get_existing(self) -> list:

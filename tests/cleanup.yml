@@ -158,6 +158,11 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.frr_bgp_as_path:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Cleanup Rules
       ansibleguy.opnsense.rule_purge:
@@ -171,6 +176,7 @@
       ansibleguy.opnsense.package:
         name: ['os-api-backup', 'os-dmidecode']
         action: "{{ item }}"
+        timeout: 60
       diff: false
       loop:
         - 'unlock'
@@ -357,7 +363,7 @@
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
 
-    - name: Cleanup frr bfd
+    - name: Cleanup FRR BFD
       ansibleguy.opnsense.frr_bfd:
         ip: "{{ item }}"
         state: 'absent'
@@ -365,12 +371,12 @@
         - '10.0.0.1'
         - '10.0.0.0/28'
 
-    - name: Cleanup BGP general settings
+    - name: Cleanup FRR BGP general settings
       ansibleguy.opnsense.frr_bgp_general:
         as_number: 1337
         enabled: false
 
-    - name: Cleanup BGP neighbors
+    - name: Cleanup FRR BGP neighbors
       ansibleguy.opnsense.frr_bgp_neighbor:
         description: "{{ item }}"
         state: 'absent'
@@ -380,7 +386,7 @@
         - 'ANSIBLE_TEST_2_1'
         - 'ANSIBLE_TEST_2_2'
 
-    - name: Cleanup BGP route-maps
+    - name: Cleanup FRR BGP route-maps
       ansibleguy.opnsense.frr_bgp_route_map:
         name: "{{ item }}"
         state: 'absent'
@@ -391,7 +397,7 @@
         - 'ANSIBLE_TEST_2_2'
         - 'ANSIBLE_TEST_3_1'
 
-    - name: Cleanup BGP prefix lists
+    - name: Cleanup FRR BGP prefix lists
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: "{{ item }}"
         state: 'absent'
@@ -401,8 +407,17 @@
         - 'ANSIBLE_TEST_2_1'
         - 'ANSIBLE_TEST_3_1'
 
-    - name: Cleanup BGP community lists
+    - name: Cleanup FRR BGP community lists
       ansibleguy.opnsense.frr_bgp_community_list:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_2_1'
+
+    - name: Cleanup FRR BGP as paths
+      ansibleguy.opnsense.frr_bgp_as_path:
         description: "{{ item }}"
         state: 'absent'
       loop:
