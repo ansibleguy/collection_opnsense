@@ -2,7 +2,9 @@
 
 **STATE**: unstable
 
-**TESTS**: [shaper_pipe](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/shaper_pipe.yml) | [shaper_queue](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/shaper_queue.yml) | [shaper_rule](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/shaper_rule.yml)
+**TESTS**: [shaper_pipe](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/shaper_pipe.yml) | 
+[shaper_queue](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/shaper_queue.yml) | 
+[shaper_rule](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/shaper_rule.yml)
 
 **API DOCS**: [Core - Traffic Shaper](https://docs.opnsense.org/development/api/core/trafficshaper.html)
 

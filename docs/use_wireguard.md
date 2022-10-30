@@ -2,7 +2,10 @@
 
 **STATE**: unstable
 
-**TESTS**: [wireguard_server](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_server.yml) | [wireguard_peer](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_peer.yml)
+**TESTS**: [wireguard_server](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_server.yml) | 
+[wireguard_peer](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_peer.yml) | 
+[wireguard_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_general.yml) | 
+[wireguard_show](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_show.yml) 
 
 **API DOCS**: [Plugin - Wireguard](https://docs.opnsense.org/development/api/plugins/wireguard.html)
 
