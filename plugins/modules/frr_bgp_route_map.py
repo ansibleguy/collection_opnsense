@@ -50,7 +50,8 @@ def run_module():
             type='str', required=False, default='',
             description='Free text field for your set, please be careful! '
                         'You can set e.g. "local-preference 300" or "community 1:1" '
-                        '(http://www.nongnu.org/quagga/docs/docs-multi/Route-Map-Set-Command.html#Route-Map-Set-Command)'
+                        '(http://www.nongnu.org/quagga/docs/docs-multi/'
+                        'Route-Map-Set-Command.html#Route-Map-Set-Command)'
         ),
         **STATE_MOD_ARG,
         **RELOAD_MOD_ARG,
