@@ -1,0 +1,27 @@
+---
+
+- name: Testing WireGuard info querying
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.wireguard_show:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Showing handshakes
+      ansibleguy.opnsense.wireguard_show:
+        target: 'handshake'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        'data' not in opn1
+
+    - name: Showing config
+      ansibleguy.opnsense.wireguard_show:
+        target: 'config'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        'data' not in opn2

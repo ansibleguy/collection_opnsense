@@ -1,0 +1,31 @@
+---
+
+- name: Testing WireGuard general
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.wireguard_general:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Disabling service - nothing to do
+      ansibleguy.opnsense.wireguard_general:
+        enabled: false
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        opn1.changed
+
+    - name: Enabling service
+      ansibleguy.opnsense.wireguard_general:
+        enabled: true
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+
+    - name: Cleanup
+      ansibleguy.opnsense.wireguard_general:
+        enabled: false
