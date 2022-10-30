@@ -126,7 +126,7 @@
     - name: Adding 2
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_2'
-        allowed_ips: ['192.168.1.1']
+        allowed_ips: ['192.168.1.1', '2a0a:e5c0::1/64']
         public_key: "{{ test.pub1 }}"
         private_key: "{{ test.priv1 }}"
         port: 51999
@@ -142,7 +142,7 @@
     - name: Adding 2 - nothing changed
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_2'
-        allowed_ips: ['192.168.1.1']
+        allowed_ips: ['192.168.1.1', '2a0a:e5c0::1/64']
         public_key: "{{ test.pub1 }}"
         private_key: "{{ test.priv1 }}"
         port: 51999
@@ -159,7 +159,7 @@
     - name: Removing 2
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_2'
-        allowed_ips: ['192.168.1.1']
+        allowed_ips: ['192.168.1.1', '2a0a:e5c0::1/64']
         public_key: "{{ test.pub1 }}"
         private_key: "{{ test.priv1 }}"
         port: 51999
