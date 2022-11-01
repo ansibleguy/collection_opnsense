@@ -48,6 +48,20 @@ A clear and concise description of what the bug is.
 
 A clear and concise description of what you expected to happen.
 
+### Debug output
+
+Set the [debug option](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/develop.md#debugging) and copy its output.
+
+```text
+placeholder
+```
+
+If the issue is related to time-consumption, you may also add the content of the [profiling logs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/develop.md#debugging).
+
+```text
+placeholder
+```
+
 ### Screenshots
 
 If applicable, add screenshots to help explain your problem.
