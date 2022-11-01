@@ -19,7 +19,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | domain       | string | true     | -             | dom, d    | Domain to override                                                                                                                                                                                                             |
 | target       | string | false for state changes, else true     | -             | tgt, host | Existing host override record                                                                                                                                                                                                  |
 | description  | string | false    | -             | desc      | Optional description for the host-alias. Could be used as unique-identifier when set as only 'match_field'.                                                                                                                    |
-| reload       | boolean | false    | true                 | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+| reload       | boolean | false    | true                 | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 ## Info
 
@@ -42,6 +42,14 @@ You can to set how this matching is done by setting the 'match_fields' parameter
 The default behaviour is that a host-alias is matched by its 'alias' and 'domain' fields.
 
 However - it is **recommended** to use/set 'description' as **unique identifier** if many aliases are used.
+
+### Mass manage
+
+If you are mass-managing DNS records or using DNS-Blacklists - you might want to disable ```reload: false``` on single module-calls!
+
+This takes a long time, as the service gets reloaded every time!
+
+You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md)
 
 
 ## Examples

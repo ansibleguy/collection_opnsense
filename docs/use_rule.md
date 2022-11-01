@@ -90,7 +90,7 @@ You need to set how this matching is done by setting the 'match_fields' paramete
 
 It is **recommended** to use/set **unique identifiers** like 'description' to make sure rules can be matched without overlapping.
 
-You could also use the UUID of existing rules as ID - but you would have to pull (_list_) and configure those manually. 
+You could also use the UUID of existing rules as ID - but you would have to pull (_list_) and configure those 'manually'. 
 
 ## Examples
 

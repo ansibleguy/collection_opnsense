@@ -21,7 +21,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | value   | string | false for state changes, else true     | -             | server, srv, mx | Value the record should hold                                                                                                                                                                                                                       |
 | prio | int    | false    | 10            | mxprio          | Priority that is only used for MX record types                                                                                                                                                                                                     |
 | description | string | false    | -             | desc            | Optional description for the host-override. Could be used as unique-identifier when set as only 'match_field'.                                                                                                                                     |
-| reload       | boolean | false    | true                 | -               | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+| reload       | boolean | false    | true                 | -               | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 ## Info
 
@@ -44,6 +44,14 @@ You can to set how this matching is done by setting the 'match_fields' parameter
 The default behaviour is that a host-override is matched by its 'hostname', 'domain', 'record_type', 'value' and 'prio' fields.
 
 However - it is **recommended** to use/set 'description' as **unique identifier** if many overrides are used.
+
+### Mass manage
+
+If you are mass-managing DNS records or using DNS-Blacklists - you might want to disable ```reload: false``` on single module-calls!
+
+This takes a long time, as the service gets reloaded every time!
+
+You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md)
 
 
 ## Examples

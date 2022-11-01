@@ -35,7 +35,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | state | string      | false   | 'present'     | -       | Options: 'present', 'absent'                               |
 | enabled | boolean     | false | true          | -       | If all aliases should be en- or disabled                   |
 | output_info | boolean     | false | false         | info    | Enable to show some information on processing at runtime. Will be hidden if the tasks 'no_log' parameter is set to 'true'. |
-| reload       | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+| reload       | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 For alias parameters see: [Alias](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md#definition)
 
