@@ -1,8 +1,13 @@
-# OPNSense - FRR BGP modules
+# OPNSense - FRR OSPF modules
 
 **STATE**: testing
 
-**TESTS**: [frr_ospf_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf_general.yml) | 
+**TESTS**: [frr_ospf_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf_general.yml) |
+[frr_ospf_prefix_list](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf_prefix_list.yml) |
+[frr_ospf_interface](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf_interface.yml) |
+[frr_ospf_route_map](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf_route_map.yml) |
+[frr_ospf3_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf3_general.yml) |
+[frr_ospf3_interface](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf3_interface.yml) |
 
 
 **API DOCS**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
@@ -33,7 +38,9 @@ You can also install it using the [package module](https://github.com/ansibleguy
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
 
-### ansibleguy.opnsense.frr_ospf_general
+### OSPF
+
+#### ansibleguy.opnsense.frr_ospf_general
 
 | Parameter        | Type    | Required | Default value | Aliases                                             | Comment                                                                                                                                                                                                                                                        |
 |:-----------------|:--------|:---------|:--------------|:----------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -49,13 +56,13 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | reload           | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 | enabled          | boolean | false    | true                 | -       | En- or disable the service                                                                                                                                                                                                                                     |
 
-### ansibleguy.opnsense.frr_ospf_network
+#### ansibleguy.opnsense.frr_ospf_network
 
 | Parameter           | Type    | Required                           | Default value | Aliases                                | Comment                                                                                                                                                                                                                                                                                                                                                               |
 |:--------------------|:--------|:-----------------------------------|:--------------|:---------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | reload       | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
-### ansibleguy.opnsense.frr_ospf_interface
+#### ansibleguy.opnsense.frr_ospf_interface
 
 | Parameter           | Type    | Required                               | Default value         | Aliases   | Comment                                                                                                                                                                                                                                                          |
 |:--------------------|:--------|:---------------------------------------|:----------------------|:----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -76,7 +83,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | network_type        | string  | false                                  | -                     | nw_type         | One of: 'broadcast', 'non-broadcast', 'point-to-multipoint', 'point-to-point'                                                                                                                                                                                    |
 | reload              | boolean | false                                  | true                  | -         | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
-### ansibleguy.opnsense.frr_ospf_prefix_list
+#### ansibleguy.opnsense.frr_ospf_prefix_list
 
 | Parameter | Type    | Required | Default value | Aliases    | Comment                                                                                                                                                                                                                                                        |
 |:----------|:--------|:---------|:----------------------|:-----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -86,13 +93,22 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | action    | string | false for state changes, else true    | -          | -          | Set permit for match or deny to negate the rule. One of: 'permit', 'deny' |
 | reload    | boolean | false    | true          | -          | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
-### ansibleguy.opnsense.frr_ospf_route_map
+#### ansibleguy.opnsense.frr_ospf_route_map
 
-| Parameter      | Type    | Required | Default value | Aliases  | Comment                                                                                                                                                                                                                                                        |
-|:-------------|:--------|:---------|:----------------------|:----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| reload         | boolean | false    | true          | -        | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+| Parameter    | Type    | Required | Default value | Aliases   | Comment                                                                                                                                                                                                                                                                                                                                                                                                                            |
+|:-------------|:--------|:---------|:--------------|:----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| name           | string  | true     | -             | -         | Name to identify the route-map by                                                                                                                                                                                                                                                                                                                                                                                                  |
+| id  | integer | false for state changes, else true    | -             | -         | Route-map ID between 10 and 99. Be aware that the sorting will be done under the hood, so when you add an entry between it get's to the right position                                                                                                                                                                                                                                                                             |                                                                                                                                                  |
+| action  | string  | false for state changes, else true    | -             | -         | Set permit for match or deny to negate the rule. One of: 'permit', 'deny'                                                                                                                                                                                                                                                                                                                                                          |                                                                                                                                                  |
+| prefix_list  | list    | false    | -             | prefix    | List of prefix-list entries to link                                                                                                                                                                                                                                                                                                                                                                                                |                                                                                                                                                  |
+| set  | string  | false    | -             | -         | Free text field for your set, please be careful! You can set e.g. "local-preference 300" or "community 1:1" (http://www.nongnu.org/quagga/docs/docs-multi/Route-Map-Set-Command.html#Route-Map-Set-Command)                                                                                                                                                                                                                        |                                                                                                                                                  |
+| reload       | boolean | false    | true          | -         | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md).                                                                                                                                                                   |
 
-### ansibleguy.opnsense.frr_ospf3_general
+----
+
+### OSPFv3 (_IPv6_)
+
+#### ansibleguy.opnsense.frr_ospf3_general
 
 | Parameter    | Type    | Required | Default value | Aliases                                             | Comment                                                                                                                                                                                                                                                   |
 |:-------------|:--------|:---------|:--------------|:----------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -102,7 +118,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | reload       | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 | enabled          | boolean | false    | true                 | -       | En- or disable the service                                                                                                                                                                                                                                     |
 
-### ansibleguy.opnsense.frr_ospf3_interface
+#### ansibleguy.opnsense.frr_ospf3_interface
 
 | Parameter    | Type    | Required | Default value         | Aliases   | Comment                                                                                                                                                                                                                                                          |
 |:-------------|:--------|:---------|:----------------------|:----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -123,7 +139,9 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
 ## Examples
 
-### ansibleguy.opnsense.frr_ospf_general
+### OSPF (_IPv4_)
+
+#### ansibleguy.opnsense.frr_ospf_general
 
 ```yaml
 - hosts: localhost
@@ -181,7 +199,202 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         var: existing_entries.data
 ```
 
-### ansibleguy.opnsense.frr_ospf3_general
+#### ansibleguy.opnsense.frr_ospf_prefix_list
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_ospf_prefix_list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'frr_ospf_prefix_list'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.frr_ospf_prefix_list:
+        name: 'example'
+        seq: 10
+        action: 'permit'
+        network: '10.0.0.0/24'
+        # enabled: true
+
+    - name: Configuring prefix-list
+      ansibleguy.opnsense.frr_ospf_prefix_list:
+        name: 'test2'
+        seq: 25
+        action: 'permit'
+        network: '10.0.1.0/24'
+
+    - name: Disabling prefix-list
+      ansibleguy.opnsense.frr_ospf_prefix_list:
+        name: 'test2'
+        seq: 25
+        action: 'permit'
+        network: '10.0.1.0/24'
+        enabled: false
+
+    - name: Pulling settings
+      ansibleguy.opnsense.list:
+      #  target: 'frr_ospf_prefix_list'
+      register: existing_entries
+
+    - name: Printing settings
+      ansible.builtin.debug:
+        var: existing_entries.data
+
+    - name: Removing prefix-list
+      ansibleguy.opnsense.frr_ospf_prefix_list:
+        name: 'test2'
+        state: 'absent'
+```
+
+#### ansibleguy.opnsense.frr_ospf_route_map
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_ospf_route_map:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'frr_ospf_route_map'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.frr_ospf_route_map:
+        name: 'example'
+        id: 10
+        action: 'permit'
+        # prefix_list: []
+        # set: ''
+        # enabled: true
+
+    - name: Configuring route-map
+      ansibleguy.opnsense.frr_ospf_route_map:
+        name: 'test2'
+        id: 65
+        action: 'permit'
+        set: 'local-preference 300'
+
+    - name: Disabling route-map
+      ansibleguy.opnsense.frr_ospf_route_map:
+        name: 'test2'
+        id: 65
+        action: 'permit'
+        set: 'local-preference 300'
+        enabled: false
+
+    - name: Pulling settings
+      ansibleguy.opnsense.list:
+      #  target: 'frr_ospf_route_map'
+      register: existing_entries
+
+    - name: Printing settings
+      ansible.builtin.debug:
+        var: existing_entries.data
+
+    - name: Removing prefix-list
+      ansibleguy.opnsense.frr_ospf_route_map:
+        name: 'test2'
+        state: 'absent'
+```
+
+#### ansibleguy.opnsense.frr_ospf_interface
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_ospf_interface:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      match_fields: ['interface']
+
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'frr_ospf_interface'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.frr_ospf_interface:
+        interface: 'opt1'
+        # area: '0.0.0.0'
+        # cost: 10
+        # cost_demoted: 10
+        # hello_interval: 10
+        # dead_interval: 10
+        # retransmit_interval: 10
+        # transmit_delay: 10
+        # priority: 10
+        # network_type: ''
+        # carp_depend_on: ''
+        # auth_type: ''
+        # auth_key: ''
+        # auth_key_id: 1
+        # enabled: true
+        # match_fields: ['interface', 'area']
+
+    - name: Configuring interface
+      ansibleguy.opnsense.frr_ospf_interface:
+        interface: 'opt1'
+        area: '0.0.0.0'
+        cost: 500
+        cost_demoted: 2000
+        hello_interval: 60
+        dead_interval: 30
+        retransmit_interval: 60
+        transmit_delay: 60
+        priority: 30
+        network_type: 'point-to-multipoint'
+        auth_type: 'message-digest'
+        auth_key: "{{ 'random' | hash('md5') }}"
+
+    - name: Disabling interface
+      ansibleguy.opnsense.frr_ospf_interface:
+        interface: 'opt1'
+        area: '0.0.0.0'
+        cost: 500
+        cost_demoted: 2000
+        hello_interval: 60
+        dead_interval: 30
+        retransmit_interval: 60
+        transmit_delay: 60
+        priority: 30
+        network_type: 'point-to-multipoint'
+        auth_type: 'message-digest'
+        auth_key: "{{ 'random' | hash('md5') }}"
+        enabled: false
+
+    - name: Pulling settings
+      ansibleguy.opnsense.list:
+      #  target: 'frr_ospf_interface'
+      register: existing_entries
+
+    - name: Printing settings
+      ansible.builtin.debug:
+        var: existing_entries.data
+
+    - name: Removing interface
+      ansibleguy.opnsense.frr_ospf_interface:
+        interface: 'opt1'
+        state: 'absent'
+```
+
+----
+
+### OSPFv3 (_IPv6_)
+
+#### ansibleguy.opnsense.frr_ospf3_general
 
 ```yaml
 - hosts: localhost
@@ -225,7 +438,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         var: existing_entries.data
 ```
 
-### ansibleguy.opnsense.frr_ospf3_interface
+#### ansibleguy.opnsense.frr_ospf3_interface
 
 ```yaml
 - hosts: localhost

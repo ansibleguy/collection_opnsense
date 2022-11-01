@@ -18,8 +18,8 @@ except MODULE_EXCEPTIONS:
     module_dependency_error()
 
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md'
+DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md'
+EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md'
 
 
 def run_module():
@@ -36,6 +36,7 @@ def run_module():
                 'frr_bgp_neighbor', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
                 'frr_bgp_as_path', 'frr_ospf_general', 'frr_ospf3_general',
                 'frr_ospf3_interface', 'frr_ospf_prefix_list', 'frr_ospf_interface',
+                'frr_ospf_route_map',
             ],
             description='What part of the running config should be listed'
         ),
@@ -208,6 +209,11 @@ def run_module():
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_interface \
                 import Interface
             target = Interface(module=module, result=result)
+
+        elif module.params['target'] == 'frr_ospf_route_map':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_route_map \
+                import RouteMap
+            target = RouteMap(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields, get_selected, get_selected_list, validate_str_fields
+    is_true, validate_int_fields, get_selected, get_selected_list
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
@@ -17,31 +17,20 @@ class RouteMap:
         'toggle': 'toggleRoutemap',
     }
     API_KEY = 'routemap'
-    API_KEY_1 = 'bgp'
+    API_KEY_1 = 'ospf'
     API_KEY_2 = 'routemaps'
     API_MOD = 'quagga'
-    API_CONT = 'bgp'
+    API_CONT = 'ospfsettings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = [
-        'action', 'description', 'id', 'as_path_list', 'prefix_list',
-        'community_list', 'enabled', 'set',
-    ]
+    FIELDS_CHANGE = ['action', 'id', 'prefix_list', 'enabled', 'set']
     FIELDS_ALL = [FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
-        'as_path_list': 'match',
         'prefix_list': 'match2',
-        'community_list': 'match3',
     }
     INT_VALIDATIONS = {
         'id': {'min': 10, 'max': 99},
-    }
-    STR_VALIDATIONS = {
-        'name': r'^[a-zA-Z0-9._-]{1,64}$'
-    }
-    STR_LEN_VALIDATIONS = {
-        'name': {'min': 1, 'max': 64}
     }
     EXIST_ATTR = 'route_map'
 
@@ -66,14 +55,9 @@ class RouteMap:
         if self.p['state'] == 'present':
             if self.p['id'] in ['', None] or self.p['action'] in ['', None]:
                 self.m.fail_json(
-                    'To create a BGP route-map you need to provide an ID and action!'
+                    'To create a OSPF route-map you need to provide an ID and action!'
                 )
 
-            validate_str_fields(
-                module=self.m, data=self.p,
-                field_regex=self.STR_VALIDATIONS,
-                field_minmax_length=self.STR_LEN_VALIDATIONS
-            )
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         self.b.find(match_fields=[self.FIELD_ID])
@@ -92,10 +76,7 @@ class RouteMap:
             **self.call_cnf, **{'command': self.CMDS['search']}
         })[self.API_KEY_1]
 
-        self.existing_paths = raw['aspaths']['aspath']
         self.existing_prefixes = raw['prefixlists']['prefixlist']
-        self.existing_communities = raw['communitylists']['communitylist']
-
         return raw[self.API_KEY_2][self.API_KEY]
 
     @staticmethod
@@ -104,11 +85,8 @@ class RouteMap:
         return {
             'name': route_map['name'],
             'id': int(route_map['id']),
-            'description': route_map['description'],
             'set': route_map['set'],
-            'as_path_list': get_selected_list(route_map['match']),
-            'prefix_list': get_selected_list(route_map['match2']),
-            'community_list': get_selected_list(route_map['match3']),
+            'prefix_list': get_selected_list(route_map['match2'], remove_empty=True),
             'action': get_selected(route_map['action']),
             'enabled': is_true(route_map['enabled']),
             'uuid': route_map['uuid'],
@@ -116,17 +94,9 @@ class RouteMap:
 
     def _find_links(self):
         links = {
-            'as_path_list': {
-                'key': 'description',
-                'existing': self.existing_paths,
-            },
             'prefix_list': {
                 'key': 'name',
                 'existing': self.existing_prefixes,
-            },
-            'community_list': {
-                'key': 'description',
-                'existing': self.existing_communities,
             },
         }
 
@@ -153,16 +123,6 @@ class RouteMap:
         existing = []
 
         for entry in self.b.get_existing():
-            if len(entry['as_path_list']) > 0:
-                _list = []
-                for path in entry['as_path_list']:
-                    if path in self.existing_paths:
-                        _list.append(
-                            self.existing_paths[path]['description']
-                        )
-
-                entry['as_path_list'] = _list
-
             if len(entry['prefix_list']) > 0:
                 _list = []
                 for pre in entry['prefix_list']:
@@ -172,16 +132,6 @@ class RouteMap:
                         )
 
                 entry['prefix_list'] = _list
-
-            if len(entry['community_list']) > 0:
-                _list = []
-                for comm in entry['community_list']:
-                    if comm in self.existing_communities:
-                        _list.append(
-                            self.existing_communities[comm]['description']
-                        )
-
-                entry['community_list'] = _list
 
             existing.append(entry)
 
