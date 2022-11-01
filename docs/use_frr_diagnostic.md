@@ -1,4 +1,4 @@
-# OPNSense - FRR BFD module
+# OPNSense - FRR Diagnostic module
 
 **STATE**: unstable
 
