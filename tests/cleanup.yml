@@ -132,7 +132,12 @@
       ssl_verify: false
       match_fields: ['description']
 
-    ansibleguy.opnsense.frr_bfd:
+    ansibleguy.opnsense.frr_bfd_general:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.frr_bfd_neighbor:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
@@ -404,8 +409,12 @@
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
 
-    - name: Cleanup FRR BFD
-      ansibleguy.opnsense.frr_bfd:
+    - name: Cleanup FRR BFD general settings
+      ansibleguy.opnsense.frr_bfd_general:
+        enabled: false
+
+    - name: Cleanup FRR BFD neighbors
+      ansibleguy.opnsense.frr_bfd_neighbor:
         ip: "{{ item }}"
         state: 'absent'
       loop:

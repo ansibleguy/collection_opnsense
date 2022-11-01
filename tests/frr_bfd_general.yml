@@ -1,0 +1,28 @@
+---
+
+- name: Testing FRR-BFD General
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_bfd_general:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Enabling BFD
+      ansibleguy.opnsense.frr_bfd_general:
+        enabled: true
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Disabling BFD
+      ansibleguy.opnsense.frr_bfd_general:
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode

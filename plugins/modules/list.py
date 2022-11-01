@@ -32,7 +32,7 @@ def run_module():
                 'unbound_host_alias', 'ipsec_cert', 'shaper_pipe', 'shaper_queue',
                 'shaper_rule', 'monit_service', 'monit_test', 'monit_alert',
                 'wireguard_server', 'wireguard_peer', 'interface_vlan',
-                'interface_vxlan', 'source_nat', 'frr_bfd', 'frr_bgp_general',
+                'interface_vxlan', 'source_nat', 'frr_bfd_neighbor', 'frr_bgp_general',
                 'frr_bgp_neighbor', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
                 'frr_bgp_as_path', 'frr_ospf_general', 'frr_ospf3_general',
                 'frr_ospf3_interface', 'frr_ospf_prefix_list', 'frr_ospf_interface',
@@ -151,8 +151,8 @@ def run_module():
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.source_nat import SNat
             target = SNat(module=module, result=result)
 
-        elif module.params['target'] == 'frr_bfd':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bfd import Neighbor
+        elif module.params['target'] == 'frr_bfd_neighbor':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bfd_neighbor import Neighbor
             target = Neighbor(module=module, result=result)
 
         elif module.params['target'] == 'frr_bgp_general':

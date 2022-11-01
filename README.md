@@ -90,7 +90,8 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Interfaces**           | ansibleguy.opnsense.interface_vlan         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_interface.md)          | unstable |
 | **Interfaces**           | ansibleguy.opnsense.interface_vxlan        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_interface.md)          | unstable |
 | **NAT**                  | ansibleguy.opnsense.source_nat             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_source_nat.md)         | unstable |
-| **Dynamic Routing**      | ansibleguy.opnsense.frr_bfd                | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bfd.md)            | unstable |
+| **Dynamic Routing**      | ansibleguy.opnsense.frr_bfd_general        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bfd.md)            | unstable |
+| **Dynamic Routing**      | ansibleguy.opnsense.frr_bfd_neighbor       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bfd.md)            | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_general        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_neighbor       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_prefix_list    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | unstable |

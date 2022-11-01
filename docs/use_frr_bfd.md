@@ -2,7 +2,7 @@
 
 **STATE**: unstable
 
-**TESTS**: [frr_bfd](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bfd.yml)
+**TESTS**: [frr_bfd_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bfd_general.yml) | [frr_bfd_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bfd_neighbor.yml)
 
 **API DOCS**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
 
@@ -31,7 +31,14 @@ You can also install it using the [package module](https://github.com/ansibleguy
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
 
-### ansibleguy.opnsense.frr_bfd
+### ansibleguy.opnsense.frr_bfd_general
+
+| Parameter   | Type   | Required | Default value | Aliases | Comment                               |
+|:------------|:-------|:---------|:--------------|:--------|:--------------------------------------|
+| enabled     | bool   | false     | true          | -       | En- or disable BFD                    |
+
+
+### ansibleguy.opnsense.frr_bfd_neighbor
 
 | Parameter    | Type            | Required | Default value         | Aliases                          | Comment                                                                                                            |
 |:-------------|:----------------|:---------|:----------------------|:---------------------------------|:-------------------------------------------------------------------------------------------------------------------|
@@ -41,24 +48,48 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
 ## Examples
 
-### ansibleguy.opnsense.frr_bfd
+### ansibleguy.opnsense.frr_bfd_general
 
 ```yaml
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_bfd:
+    ansibleguy.opnsense.frr_bfd_general:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.frr_bfd_general:
+        # enabled: true
+
+    - name: Enabling BFD
+      ansibleguy.opnsense.frr_bfd_general:
+        enabled: true
+
+    - name: Disabling BFD
+      ansibleguy.opnsense.frr_bfd_general:
+        enabled: false
+```
+
+### ansibleguy.opnsense.frr_bfd_neighbor
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_bfd_neighbor:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
-      target: 'frr_bfd'
+      target: 'frr_bfd_neighbor'
 
   tasks:
     - name: Example
-      ansibleguy.opnsense.frr_bfd:
+      ansibleguy.opnsense.frr_bfd_neighbor:
         ip: '10.0.0.1'
         # description: 'test1'
         # enabled: true
@@ -67,19 +98,19 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         # reload: true
 
     - name: Adding neighbor
-      ansibleguy.opnsense.frr_bfd:
+      ansibleguy.opnsense.frr_bfd_neighbor:
         ip: '10.0.0.1'
         description: 'test2'
 
     - name: Disabling neighbor
-      ansibleguy.opnsense.frr_bfd:
+      ansibleguy.opnsense.frr_bfd_neighbor:
         ip: '10.0.0.1'
         description: 'test2'
         enabled: false
 
     - name: Listing neighbors
       ansibleguy.opnsense.list:
-      #  target: 'frr_bfd'
+      #  target: 'frr_bfd_neighbor'
       register: existing_entries
 
     - name: Printing neighbors
@@ -87,7 +118,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         var: existing_entries.data
 
     - name: Removing neighbor 'test3'
-      ansibleguy.opnsense.frr_bfd:
+      ansibleguy.opnsense.frr_bfd_neighbor:
         ip: '10.0.0.1'
         state: 'absent'
 ```
