@@ -9,7 +9,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main 
     DEBUG_CONFIG
 
 
-def profiler(check, log_file: str = '', kwargs: dict = None, sort: str = 'tottime', show_top_n: int = 20):
+def profiler(check, log_file: str = None, kwargs: dict = None, sort: str = 'tottime', show_top_n: int = 20):
     # note: https://stackoverflow.com/questions/10326936/sort-cprofile-output-by-percall-when-profiling-a-python-script
     # sort options: ncalls, tottime, cumtime
     _ = Profile()
@@ -33,13 +33,16 @@ def profiler(check, log_file: str = '', kwargs: dict = None, sort: str = 'tottim
     del cleaned_result[1:5]
     cleaned_result = '\n'.join(cleaned_result)
 
-    if log_file != '':
+    if log_file is not None:
         log_path = Path(DEBUG_CONFIG['path_log'])
         if not log_path.exists():
             log_path.mkdir()
 
         with open(f'{log_path}/{log_file}', 'a+', encoding='utf-8') as log:
             log.write(f"\n{datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')} | {cleaned_result}\n")
+
+    else:
+        print(cleaned_result)
 
     if httpx_error is None:
         return check_response
