@@ -1,0 +1,100 @@
+---
+
+- name: Testing RIP
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_rip:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'frr_rip'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: opn_pre1.failed
+
+    - name: Configuring - failing because of invalid version number
+      ansibleguy.opnsense.frr_rip:
+        version: 3
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Configuring - failing because of invalid metric
+      ansibleguy.opnsense.frr_rip:
+        metric: 50
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Configuring
+      ansibleguy.opnsense.frr_rip:
+        passive_ints: ['lan']
+        redistribute: ['static']
+        networks: ['10.0.10.0/24']
+        enabled: true
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing
+      ansibleguy.opnsense.frr_rip:
+        passive_ints: ['lan']
+        redistribute: ['static', 'ospf']
+        networks: ['10.0.11.0/24']
+        metric: 6
+        enabled: true
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.frr_rip:
+        passive_ints: ['lan']
+        redistribute: ['static', 'ospf']
+        networks: ['10.0.11.0/24']
+        metric: 6
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.frr_rip:
+        passive_ints: ['lan']
+        redistribute: ['static', 'ospf']
+        networks: ['10.0.11.0/24']
+        metric: 6
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.frr_rip:
+        passive_ints: ['lan']
+        redistribute: ['static', 'ospf']
+        networks: ['10.0.11.0/24']
+        metric: 6
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.frr_rip:
+        enabled: false
+      when: not ansible_check_mode

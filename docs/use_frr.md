@@ -24,4 +24,5 @@ You can also install it using the [package module](https://github.com/ansibleguy
 * [BFD Module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bfd.md)
 * [BGP Modules](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)
 * [OSPF Modules](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_ospf.md)
+* [RIP Module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_rip.md)
 * [Diagnostic Module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_diagnostic.md)
