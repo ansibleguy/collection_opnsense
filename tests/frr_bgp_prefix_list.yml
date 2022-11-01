@@ -32,19 +32,12 @@
         opn_pre2.failed or
         opn_pre2.changed
 
-    - name: Adding 1 - failing because of invalid network
-      ansibleguy.opnsense.frr_bgp_prefix_list:
-        name: 'ANSIBLE_TEST_1_1'
-        network: '10.0.100.0/320'
-      register: opn_fail1
-      failed_when: not opn_fail1.failed
-
     - name: Adding 1 - failing because of invalid ip-version
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_1_1'
         version: 'IPv5'
-      register: opn_fail2
-      failed_when: not opn_fail2.failed
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
 
     - name: Adding 1
       ansibleguy.opnsense.frr_bgp_prefix_list:

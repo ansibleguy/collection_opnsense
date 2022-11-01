@@ -66,9 +66,6 @@ class Prefix:
                     'sequence-number and action!'
                 )
 
-            if not is_ip_or_network(self.p['network']):
-                self.m.fail_json(f"Provided network '{self.p['network']}' is not valid!")
-
             validate_str_fields(
                 module=self.m, data=self.p,
                 field_regex=self.STR_VALIDATIONS,
