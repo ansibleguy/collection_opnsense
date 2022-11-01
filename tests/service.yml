@@ -1,0 +1,93 @@
+---
+
+- name: Testing Service
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.service:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Checking syslog status
+      ansibleguy.opnsense.service:
+        name: 'syslog'
+        action: 'status'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        'data' not in opn1 or
+        opn1.data.status != 'running'
+
+    - name: Stopping syslog
+      ansibleguy.opnsense.service:
+        name: 'syslog'
+        action: 'stop'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Checking syslog status (should be stopped)
+      ansibleguy.opnsense.service:
+        name: 'syslog'
+        action: 'status'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        'data' not in opn3 or
+        opn3.data.status != 'stopped'
+      when: not ansible_check_mode
+
+    - name: Starting syslog
+      ansibleguy.opnsense.service:
+        name: 'syslog'
+        action: 'start'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Checking syslog status (should be running again)
+      ansibleguy.opnsense.service:
+        name: 'syslog'
+        action: 'status'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        'data' not in opn5 or
+        opn5.data.status != 'running'
+      when: not ansible_check_mode
+
+    - name: Restarting syslog
+      ansibleguy.opnsense.service:
+        name: 'syslog'
+        action: 'restart'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Reloading syslog
+      ansibleguy.opnsense.service:
+        name: 'syslog'
+        action: 'reload'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Checking syslog status (should still be running)
+      ansibleguy.opnsense.service:
+        name: 'syslog'
+        action: 'status'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        'data' not in opn8 or
+        opn8.data.status != 'running'

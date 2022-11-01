@@ -12,28 +12,75 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import OPN_MOD_ARGS
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
+        OPN_MOD_ARGS
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
+        single_get, single_post
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
 
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md'
+DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_service.md'
+EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_service.md'
+
+# c = api-module, m = custom action-mapping, a = limited actions
+SERVICES = {
+    # core api
+    'captive_portal': {'c': 'captiveportal', 'a': ['reload']},
+    'cron': {'a': ['reload']},
+    'ipsec': {}, 'monit': {}, 'syslog': {},
+    'shaper': {'c': 'trafficshaper', 'm': {'restart': 'flushreload', 'status': 'statistics'}},
+    #   note: these would support more actions:
+    'ids': {}, 'proxy': {}, 'unbound': {},
+    # plugins
+    'ftp_proxy': {'c': 'ftpproxy'},
+    'iperf': {'a': ['reload', 'status', 'start', 'restart']},
+    'mdns_repeater': {'c': 'mdnsrepeater', 'a': ['stop', 'status', 'start', 'restart']},
+    'munin_node': {'c': 'muninnode'},
+    'node_exporter': {'c': 'nodeexporter'},
+    'puppet_agent': {'c': 'puppetagent'},
+    'qemu_guest_agent': {'c': 'qemuguestagent'},
+    'frr': {'c': 'quagga'},
+    'radsec_proxy': {'c': 'radsecproxy'},
+    'zabbix_agent': {'c': 'zabbixagent'},
+    'zabbix_proxy': {'c': 'zabbixproxy'},
+    'apcupsd': {}, 'bind': {}, 'chrony': {}, 'cicap': {}, 'collectd': {},
+    'dyndns': {}, 'fetchmail': {}, 'freeradius': {}, 'haproxy': {}, 'maltrail': {},
+    'netdata': {}, 'netsnmp': {}, 'nrpe': {}, 'nut': {}, 'openconnect': {}, 'proxysso': {},
+    'rspamd': {}, 'shadowsocks': {}, 'softether': {}, 'sslh': {}, 'stunnel': {}, 'tayga': {},
+    'telegraf': {}, 'tftp': {}, 'tinc': {}, 'wireguard': {},
+    #   note: these would support more actions:
+    'acme_client': {'c': 'acmeclient'},
+    'crowdsec': {'a': ['reload', 'status']},
+    'dns_crypt_proxy': {'c': 'dnscryptproxy'},
+    'udp_broadcast_relay': {'c': 'udpbroadcastrelay'},
+    'clamav': {}, 'hwprobe': {}, 'lldpd': {}, 'nginx': {}, 'ntopng': {}, 'postfix': {}, 'redis': {},
+    'relayd': {}, 'siproxd': {}, 'vnstat': {}, 'tor': {},
+}
+
+ACTION_MAPPING = {'reload': 'reconfigure'}
+API_CONTROLLER = 'service'
 
 
 def run_module():
+    service_choices = list(SERVICES.keys())
+    service_choices.sort()
+
     module_args = dict(
-        target=dict(
-            type='str', required=True, aliases=['dom', 'd'],
-            choises=[
-                'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper',
-                'monit', 'wireguard', 'interface_vlan', 'interface_vxlan', 'frr',
-            ],
-            description='What part of the running config should be reloaded'
+        name=dict(
+            type='str', required=True, aliases=['target'],
+            choises=service_choices,
+            description='What service to interact with'
+        ),
+        action=dict(
+            type='str', required=True, aliases=['a'],
+            choises=['reload', 'restart', 'start', 'status', 'stop'],
         ),
         **OPN_MOD_ARGS,
     )
+
+    # raise SystemExit(service_choices)
 
     result = dict(
         changed=False,
@@ -44,71 +91,65 @@ def run_module():
         supports_check_mode=True,
     )
 
-    target = None
+    name = module.params['name']
+    action = module.params['action']
+    service = SERVICES[name]
 
-    try:
-        if module.params['target'] == 'alias':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import Alias
-            target = Alias(module=module, result=result)
+    if 'a' in service and action not in service['a']:
+        module.fail_json(
+            f"Service '{name}' does not support the "
+            f"provided action '{action}'! "
+            f"Supported ones are: {service['a']}"
+        )
 
-        elif module.params['target'] == 'rule':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
-            target = Rule(module=module, result=result)
+    # translate actions to api-commands
+    # pylint: disable=R1715
+    if 'm' in service and action in service['m']:
+        action = service['m'][action]
 
-        elif module.params['target'] == 'route':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.route import Route
-            target = Route(module=module, result=result)
+    elif action in ACTION_MAPPING:
+        action = ACTION_MAPPING[action]
 
-        elif module.params['target'] == 'cron':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.cron import CronJob
-            target = CronJob(module=module, result=result)
+    result['executed'] = action
 
-        elif module.params['target'] == 'unbound':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host import Host
-            target = Host(module=module, result=result)
+    # get api-module
+    if 'c' in service:
+        api_module = service['c']
 
-        elif module.params['target'] == 'syslog':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.syslog import Syslog
-            target = Syslog(module=module, result=result)
+    else:
+        api_module = name
 
-        elif module.params['target'] == 'ipsec':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_cert import KeyPair
-            target = KeyPair(module=module, result=result)
+    # pull status or execute action
+    if module.params['action'] == 'status':
+        info = single_get(
+            module=module,
+            cnf={
+                'module': api_module,
+                'controller': API_CONTROLLER,
+                'command': action,
+            }
+        )
 
-        elif module.params['target'] == 'shaper':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_pipe import Pipe
-            target = Pipe(module=module, result=result)
+        if 'response' in info:
+            info = info['response']
 
-        elif module.params['target'] == 'monit':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_service import Service
-            target = Service(module=module, result=result)
+            if isinstance(info, str):
+                info = info.strip()
 
-        elif module.params['target'] == 'wireguard':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_server import Server
-            target = Server(module=module, result=result)
+        result['data'] = info
 
-        elif module.params['target'] == 'interface_vlan':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vlan import Vlan
-            target = Vlan(module=module, result=result)
-
-        elif module.params['target'] == 'interface_vxlan':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vxlan import Vxlan
-            target = Vxlan(module=module, result=result)
-
-        elif module.params['target'] == 'frr':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_general import General
-            target = General(module=module, result=result)
-
-    except MODULE_EXCEPTIONS:
-        module_dependency_error()
-
-    if target is not None:
+    else:
         result['changed'] = True
-        if not module.check_mode:
-            target.reload()
 
-        if hasattr(target, 's'):
-            target.s.close()
+        if not module.check_mode:
+            single_post(
+                module=module,
+                cnf={
+                    'module': api_module,
+                    'controller': API_CONTROLLER,
+                    'command': action,
+                }
+            )
 
     module.exit_json(**result)
 

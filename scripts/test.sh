@@ -62,6 +62,7 @@ echo ''
 # todo: also: a opt1 interface is needed for some tests
 
 run_test 'reload' 0
+run_test 'service' 1
 run_test 'alias' 1
 run_test 'alias_multi' 1
 run_test 'alias_purge' 0

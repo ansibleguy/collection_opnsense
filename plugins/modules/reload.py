@@ -25,7 +25,7 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 def run_module():
     module_args = dict(
         target=dict(
-            type='str', required=True, aliases=['dom', 'd'],
+            type='str', required=True, aliases=['tgt', 't'],
             choises=[
                 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper',
                 'monit', 'wireguard', 'interface_vlan', 'interface_vxlan', 'frr',
