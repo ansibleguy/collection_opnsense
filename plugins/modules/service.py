@@ -3,8 +3,7 @@
 # Copyright: (C) 2022, AnsibleGuy <guy@ansibleguy.net>
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
-# module to reload running config
-# pylint: disable=R0912,R0915,R0914
+# module to interact with system services
 
 from ansible.module_utils.basic import AnsibleModule
 
