@@ -36,7 +36,7 @@ def run_module():
                 'frr_bgp_neighbor', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
                 'frr_bgp_as_path', 'frr_ospf_general', 'frr_ospf3_general',
                 'frr_ospf3_interface', 'frr_ospf_prefix_list', 'frr_ospf_interface',
-                'frr_ospf_route_map',
+                'frr_ospf_route_map', 'frr_ospf_network',
             ],
             description='What part of the running config should be listed'
         ),
@@ -214,6 +214,11 @@ def run_module():
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_route_map \
                 import RouteMap
             target = RouteMap(module=module, result=result)
+
+        elif module.params['target'] == 'frr_ospf_network':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_network \
+                import Network
+            target = Network(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

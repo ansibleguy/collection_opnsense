@@ -1,0 +1,250 @@
+---
+
+- name: Testing FRR OSPF Networks
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_ospf_network:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['ip', 'mask']
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'frr_ospf_network'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.1.0'
+        mask: 30
+        state: 'absent'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1 - failing because of invalid network mask
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.1.0'
+        mask: 1337
+        area: '0.0.0.0'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding 1 - failing because of invalid network
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.0.5'
+        mask: 30
+        area: '0.0.0.0'
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+
+    - name: Adding 1 - failing because of non-existent prefix-list
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.1.0'
+        mask: 30
+        area: '0.0.0.0'
+        prefix_list_in: 'DOES-NOT-EXIST'
+      register: opn_fail3
+      failed_when: not opn_fail3.failed
+
+    - name: Adding 1
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.1.0'
+        mask: 30
+        area: '0.0.0.0'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.1.0'
+        mask: 30
+        area: '0.0.0.1'
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.1.0'
+        mask: 30
+        area: '0.0.0.1'
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.1.0'
+        mask: 30
+        area: '0.0.0.1'
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.1.0'
+        mask: 30
+        area: '0.0.0.1'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.2.0'
+        mask: 24
+        area: '0.0.10.1'
+        area_range: '192.168.0.0/18'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.2.0'
+        mask: 24
+        area: '0.0.10.1'
+        area_range: '192.168.0.0/18'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.2.0'
+        mask: 24
+        state: 'absent'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn8
+      failed_when: >
+        'data' not in opn8 or
+        opn8.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: "{{ item.ip }}"
+        mask: "{{ item.mask }}"
+        state: 'absent'
+      loop:
+        - {'ip': '10.0.1.0', 'mask': 30}
+        - {'ip': '10.0.2.0', 'mask': 24}
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode
+
+- name: Testing FRR OSPF Networks - linking
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_ospf_network:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['ip', 'mask']
+
+    ansibleguy.opnsense.frr_ospf_prefix_list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'frr_ospf_network'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre3
+      failed_when: >
+        'data' not in opn_pre3 or
+        opn_pre3.data | length != 0
+      when: not ansible_check_mode
+
+    - name: Adding dummy prefix-list
+      ansibleguy.opnsense.frr_ospf_prefix_list:
+        name: 'ANSIBLE_TEST_3_1'
+        seq: 25
+        action: 'permit'
+        network: '10.0.1.0/24'
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        not opn10.changed
+      when: not ansible_check_mode
+
+    - name: Adding network linked to prefix-list
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.3.0'
+        mask: 30
+        area: '0.0.0.0'
+        prefix_list_in: 'ANSIBLE_TEST_3_1'
+      register: opn11
+      failed_when: >
+        opn11.failed or
+        not opn11.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup networks
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: '10.0.3.0'
+        mask: 30
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Cleanup prefix-list
+      ansibleguy.opnsense.frr_ospf_prefix_list:
+        name: 'ANSIBLE_TEST_3_1'
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_clean2
+      failed_when: >
+        'data' not in opn_clean2 or
+        opn_clean2.data | length != 0
+      when: not ansible_check_mode

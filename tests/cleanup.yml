@@ -194,6 +194,12 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.frr_ospf_network:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      match_fields: ['ip', 'mask']
+
   tasks:
     - name: Cleanup Rules
       ansibleguy.opnsense.rule_purge:
@@ -485,6 +491,16 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
 
+    - name: Cleanup OSPF networks
+      ansibleguy.opnsense.frr_ospf_network:
+        ip: "{{ item.ip }}"
+        mask: "{{ item.mask }}"
+        state: 'absent'
+      loop:
+        - {'ip': '10.0.1.0', 'mask': 30}
+        - {'ip': '10.0.2.0', 'mask': 24}
+        - {'ip': '10.0.3.0', 'mask': 24}
+
     - name: Cleanup OSPF prefix-lists
       ansibleguy.opnsense.frr_ospf_prefix_list:
         name: "{{ item }}"
@@ -493,3 +509,4 @@
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
+        - 'ANSIBLE_TEST_3_1'

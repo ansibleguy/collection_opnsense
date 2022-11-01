@@ -39,12 +39,12 @@ def is_ip(host: str) -> bool:
     return valid_ip
 
 
-def is_ip_or_network(entry: str) -> bool:
+def is_ip_or_network(entry: str, strict: bool = False) -> bool:
     valid = is_ip(entry)
 
     if not valid:
         try:
-            ip_network(entry, strict=False)
+            ip_network(entry, strict=strict)
             valid = True
 
         except ValueError:
