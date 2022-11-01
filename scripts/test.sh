@@ -101,7 +101,7 @@ run_test 'frr_bgp_route_map' 1
 run_test 'frr_bgp_neighbor' 1
 run_test 'frr_ospf_general' 1
 run_test 'frr_ospf_prefix_list' 1
-# run_test 'frr_ospf_interface' 1
+run_test 'frr_ospf_interface' 1
 # run_test 'frr_ospf_network' 1
 # run_test 'frr_ospf_route_map' 1
 run_test 'frr_ospf3_general' 1

@@ -15,7 +15,7 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf3_interface import Interface
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_interface import Interface
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -29,11 +29,13 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 def run_module():
     module_args = dict(
         interface=dict(type='str', required=True, aliases=['name', 'int']),
+        auth_type=dict(type='str', required=False, default='', choises=['', 'message-digest']),
+        auth_key=dict(type='str', required=False, default='', no_log=True),
+        auth_key_id=dict(type='int', required=False, default=1),
         area=dict(
             type='str', required=False, default='',
             description='Area in wildcard mask style like 0.0.0.0 and no decimal 0'
         ),
-        passive=dict(type='bool', required=False, default=False),
         cost=dict(type='str', required=False, default=''),
         cost_demoted=dict(type='int', required=False, default=65535),
         carp_depend_on=dict(
@@ -48,7 +50,7 @@ def run_module():
         priority=dict(type='str', required=False, default='', aliases=['prio']),
         network_type=dict(
             type='str', required=False, default='', aliases=['nw_type'],
-            choises=['broadcast', 'point-to-point'],
+            choises=['broadcast', 'non-broadcast', 'point-to-multipoint', 'point-to-point'],
         ),
         match_fields=dict(
             type='list', required=False, elements='str',
@@ -84,7 +86,7 @@ def run_module():
             interface.reload()
 
     if PROFILE or module.params['debug']:
-        profiler(check=process, log_file='frr_ospf3_interface.log')
+        profiler(check=process, log_file='frr_ospf_interface.log')
         # log in /tmp/ansibleguy.opnsense/
 
     else:
