@@ -27,6 +27,9 @@ class TMPL:
     FIELDS_CHANGE = []
     FIELDS_ALL = []
     FIELDS_ALL.extend(FIELDS_CHANGE)
+    FIELDS_TRANSLATE = {
+        'field1': 'apifield1',
+    }
     INT_VALIDATIONS = {
         'field1': {'min': 1, 'max': 100},
     }

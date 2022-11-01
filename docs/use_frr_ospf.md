@@ -73,9 +73,22 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 
 ### ansibleguy.opnsense.frr_ospf3_interface
 
-| Parameter    | Type    | Required | Default value | Aliases   | Comment                                                                                                                                                                                                                                                        |
-|:-------------|:--------|:---------|:--------------|:----------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| reload       | boolean | false    | true          | -         | If the running config should be reloaded on change - this will take some time. You might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+| Parameter    | Type    | Required | Default value         | Aliases   | Comment                                                                                                                                                                                                                                                                                                                                                                |
+|:-------------|:--------|:---------|:----------------------|:----------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| match_fields     | string | false    | ['interface', 'area'] | -                                      | Fields that are used to match configured interface with the running config - if any of those fields are changed, the module will think it's a new entry. At least one of: 'interface', 'area', 'passive', 'carp_depend_on', 'network_type' |
+| interface       | string  | true     | -                     | name, int | Interface to configure. You must provide the network port as shown in 'Interface - Assignments - Interface ID (in brackets)'                                                                                                                                                                                                                                           |
+| area       | string  | false for state changes, else true    | -                     | -         | Area in wildcard mask style like 0.0.0.0 and no decimal 0                                                                                                                                                                                                                                                                                                              |
+| passive       | boolean | false    | false                 | -         |                                                                                                                                                                                                                                                                                                                                                                        |
+| cost       | integer | false    | -                     | -         |                                                                                                                                                                                                                                                                                                                                                                        |
+| cost_demoted       | integer  | false    | -                     | -         |                                                                                                                                                                                                                                                                                                                                                                        |
+| carp_depend_on       | string  | false    | -                     | -         | The carp VHID to depend on, when this virtual address is not in master state, the interface cost will be set to the demoted cost. Integer between 1 and 65535                                                                                                                                                                                                          |
+| hello_interval       | integer  | false    | -                     | hello     | Integer between 0 and 4294967295                                                                                                                                                                                                                                                                                                                                       |
+| dead_interval       | integer  | false    | -                     | dead     | Integer between 0 and 4294967295                                                                                                                                                                                                                                                                                                                                       |
+| retransmit_interval       | integer  | false    | -                     | retransmit     | Integer between 0 and 4294967295                                                                                                                                                                                                                                                                                                                                       |
+| transmit_delay       | integer  | false    | -                     | delay     | Integer between 0 and 4294967295                                                                                                                                                                                                                                                                                                                                       |
+| priority       | integer  | false    | -                     | prio     | Integer between 0 and 4294967295                                                                                                                                                                                                                                                                                                                                       |
+| network_type       | string  | false    | -                     | nw_type         | One of: 'broadcast', 'point-to-point'                                                                                                                                                                                                                                                                                                                                  |
+| reload       | boolean | false    | true                  | -         | If the running config should be reloaded on change - this will take some time. You might want to reload it manually after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md).                                                                                                         |
 
 ### ansibleguy.opnsense.frr_ospf_prefix_list
 
@@ -146,4 +159,124 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
     - name: Printing settings
       ansible.builtin.debug:
         var: existing_entries.data
+```
+
+### ansibleguy.opnsense.frr_ospf3_general
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_ospf3_general:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'frr_ospf3_general'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.frr_ospf3_general:
+        # id: '10.0.0.1'
+        # redistribute: []
+        # carp: false
+        # enabled: true
+
+    - name: Configuring general settings
+      ansibleguy.opnsense.frr_ospf3_general:
+        id: '10.0.1.1'
+        redistribute: ['static']
+
+    - name: Disabling OSPFv3
+      ansibleguy.opnsense.frr_ospf3_general:
+        id: '10.0.1.1'
+        redistribute: ['static']
+        enabled: false
+
+    - name: Pulling settings
+      ansibleguy.opnsense.list:
+      #  target: 'frr_ospf3_general'
+      register: existing_entries
+
+    - name: Printing settings
+      ansible.builtin.debug:
+        var: existing_entries.data
+```
+
+### ansibleguy.opnsense.frr_ospf3_interface
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.frr_ospf3_interface:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      match_fields: ['interface']
+
+    ansibleguy.opnsense.list:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'frr_ospf3_interface'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.frr_ospf3_interface:
+        interface: 'opt1'
+        # area: '0.0.0.0'
+        # cost: 10
+        # cost_demoted: 10
+        # hello_interval: 10
+        # dead_interval: 10
+        # retransmit_interval: 10
+        # transmit_delay: 10
+        # priority: 10
+        # network_type: ''
+        # carp_depend_on: ''
+        # passive: false
+        # enabled: true
+        # match_fields: ['interface', 'area']
+
+    - name: Configuring interface
+      ansibleguy.opnsense.frr_ospf3_interface:
+        interface: 'opt1'
+        area: '0.0.0.0'
+        cost: 500
+        cost_demoted: 2000
+        hello_interval: 60
+        dead_interval: 30
+        retransmit_interval: 60
+        transmit_delay: 60
+        priority: 30
+        network_type: 'point-to-point'
+
+    - name: Disabling interface
+      ansibleguy.opnsense.frr_ospf3_interface:
+        interface: 'opt1'
+        area: '0.0.0.0'
+        cost: 500
+        cost_demoted: 2000
+        hello_interval: 60
+        dead_interval: 30
+        retransmit_interval: 60
+        transmit_delay: 60
+        priority: 30
+        network_type: 'point-to-point'
+        enabled: false
+
+    - name: Pulling settings
+      ansibleguy.opnsense.list:
+      #  target: 'frr_ospf3_interface'
+      register: existing_entries
+
+    - name: Printing settings
+      ansible.builtin.debug:
+        var: existing_entries.data
+
+    - name: Removing interface
+      ansibleguy.opnsense.frr_ospf3_interface:
+        interface: 'opt1'
+        state: 'absent'
 ```

@@ -34,7 +34,8 @@ def run_module():
                 'wireguard_server', 'wireguard_peer', 'interface_vlan',
                 'interface_vxlan', 'source_nat', 'frr_bfd', 'frr_bgp_general',
                 'frr_bgp_neighbor', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
-                'frr_bgp_as_path', 'frr_ospf_general',
+                'frr_bgp_as_path', 'frr_ospf_general', 'frr_ospf3_general',
+                'frr_ospf3_interface',
             ],
             description='What part of the running config should be listed'
         ),
@@ -187,6 +188,16 @@ def run_module():
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_general \
                 import General
             target = General(module=module, result=result)
+
+        elif module.params['target'] == 'frr_ospf3_general':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf3_general \
+                import General
+            target = General(module=module, result=result)
+
+        elif module.params['target'] == 'frr_ospf3_interface':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf3_interface \
+                import Interface
+            target = Interface(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

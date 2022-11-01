@@ -59,6 +59,7 @@ echo ''
 
 # todo: some plugins will be needed as prerequisites - should be installed automatically
 #   os-firewall, os-wireguard, os-frr
+# todo: also: a opt1 interface is needed for some tests
 
 run_test 'reload' 0
 run_test 'alias' 1
@@ -104,7 +105,7 @@ run_test 'frr_ospf_general' 1
 # run_test 'frr_ospf_prefix_list' 1
 # run_test 'frr_ospf_route_map' 1
 run_test 'frr_ospf3_general' 1
-# run_test 'frr_ospf3_interface' 1
+run_test 'frr_ospf3_interface' 1
 run_test 'system' 1
 run_test 'package' 1
 
