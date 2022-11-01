@@ -69,18 +69,16 @@ def run_module():
 
     module_args = dict(
         name=dict(
-            type='str', required=True, aliases=['target'],
+            type='str', required=True, aliases=['service', 'svc', 'target', 'n'],
             choises=service_choices,
             description='What service to interact with'
         ),
         action=dict(
-            type='str', required=True, aliases=['a'],
+            type='str', required=True, aliases=['do', 'a'],
             choises=['reload', 'restart', 'start', 'status', 'stop'],
         ),
         **OPN_MOD_ARGS,
     )
-
-    # raise SystemExit(service_choices)
 
     result = dict(
         changed=False,
