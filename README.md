@@ -98,6 +98,8 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_community_list | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_bgp_as_path        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md)            | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_diagnostic         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_diagnostic.md)     | unstable |
+| **Dynamic Routing**      | ansibleguy.opnsense.frr_ospf_general       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_ospf.md)           | unstable |
+| **Dynamic Routing**      | ansibleguy.opnsense.frr_ospf3_general      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_ospf.md)           | unstable |
 
 
 ### Roadmap

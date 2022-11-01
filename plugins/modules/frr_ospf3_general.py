@@ -15,37 +15,34 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, EN_ONLY_MOD_ARG, RELOAD_MOD_ARG
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_general import General
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf3_general import General
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
 
 PROFILE = False  # create log to profile time consumption
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bgp.md'
+DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_ospf.md'
+EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_ospf.md'
 
 
 def run_module():
     module_args = dict(
-        as_number=dict(type='int', required=True, aliases=['as', 'as_nr']),
-        id=dict(type='str', required=False, default='', aliases=['router_id']),
-        graceful=dict(
-            type='bool', required=False, default=False,
-            description='BGP graceful restart functionality as defined in '
-                        'RFC-4724 defines the mechanisms that allows BGP speaker '
-                        'to continue to forward data packets along known routes '
-                        'while the routing protocol information is being restored'
+        carp=dict(
+            type='bool', required=False, default=False, aliases=['carp_demote'],
+            description='Register CARP status monitor, when no neighbors are found, '
+                        'consider this node less attractive. This feature needs syslog '
+                        'enabled using "Debugging" logging to catch all relevant status '
+                        'events. This option is not compatible with "Enable CARP Failover"'
         ),
-        networks=dict(
-            type='list', elements='str', required=False, default=[],
-            aliases=['nets'],
-            description='Select the network to advertise, you have to set a '
-                        'Null route via System -> Routes'
+        id=dict(
+            type='str', required=False, default='', aliases=['router_id'],
+            description='If you have a CARP setup, you may want to configure a router id '
+                        'in case of a conflict'
         ),
         redistribute=dict(
             type='list', elements='str', required=False, default=[],
-            options=['ospf', 'connected', 'kernel', 'rip', 'static'],
+            options=['connected', 'kernel', 'static'],
             description='Select other routing sources, which should be '
                         'redistributed to the other nodes'
         ),
@@ -68,7 +65,6 @@ def run_module():
     )
 
     module.params['redistribute'].sort()
-    module.params['networks'].sort()
     g = General(module=module, result=result)
 
     def process():
@@ -78,7 +74,7 @@ def run_module():
             g.reload()
 
     if PROFILE or module.params['debug']:
-        profiler(check=process, log_file='frr_bgp_general.log')
+        profiler(check=process, log_file='frr_ospf3_general.log')
         # log in /tmp/ansibleguy.opnsense/
 
     else:
