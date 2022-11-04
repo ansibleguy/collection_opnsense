@@ -14,14 +14,7 @@
       ansibleguy.opnsense.system:
         action: 'update'
 
-    - name: Rebooting with wait
-      ansibleguy.opnsense.system:
-        action: 'reboot'
-        wait: true
-        timeout: 90
-        poll_interval: 2
-
-    - name: Wait for system to start
+    - name: Wait for information to be refreshed
       ansible.builtin.pause:
         seconds: 10
       when: not ansible_check_mode
@@ -31,4 +24,16 @@
         action: 'upgrade'
         wait: true
         timeout: 120
+        poll_interval: 2
+
+    - name: Wait for system to start
+      ansible.builtin.pause:
+        seconds: 10
+      when: not ansible_check_mode
+
+    - name: Rebooting with wait
+      ansibleguy.opnsense.system:
+        action: 'reboot'
+        wait: true
+        timeout: 90
         poll_interval: 2
