@@ -106,7 +106,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_ospf_network       | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_ospf.md)           | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_ospf3_general      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_ospf.md)           | unstable |
 | **Dynamic Routing**      | ansibleguy.opnsense.frr_ospf3_interface    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_ospf.md)           | unstable |
-| **Dynamic Routing**      | ansibleguy.opnsense.use_frr_rip    | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_rip.md)            | unstable |
+| **Dynamic Routing**      | ansibleguy.opnsense.frr_rip                | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_rip.md)            | unstable |
 
 
 ### Roadmap

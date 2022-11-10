@@ -1,6 +1,6 @@
 # OPNSense - FRR BGP modules
 
-**STATE**: testing
+**STATE**: unstable
 
 **TESTS**: [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_general.yml) | 
 [frr_bgp_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_neighbor.yml) | 
