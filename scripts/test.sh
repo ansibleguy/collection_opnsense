@@ -110,7 +110,7 @@ run_test 'frr_ospf3_general' 1
 run_test 'frr_ospf3_interface' 1
 run_test 'bind_acl' 1
 run_test 'bind_general' 1
-run_test 'bind_blacklist' 1
+run_test 'bind_blocklist' 1
 run_test 'bind_domain' 1
 run_test 'bind_record' 1
 run_test 'frr_rip' 1
