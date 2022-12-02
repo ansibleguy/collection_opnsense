@@ -26,7 +26,10 @@ def ensure_list(data: (int, str, list, None)) -> list:
     return [data]
 
 
-def is_ip(host: str) -> bool:
+def is_ip(host: str, ignore_empty: bool = False) -> bool:
+    if ignore_empty and host in ['', ' ']:
+        return True
+
     valid_ip = False
 
     try:
@@ -95,6 +98,35 @@ def get_matching(
             if all(_matching):
                 matching = existing
                 break
+
+    return matching
+
+
+def get_multiple_matching(
+        module: AnsibleModule, existing_items: (dict, list), compare_item: dict,
+        match_fields: list, simplify_func=None,
+) -> list:
+    matching = []
+
+    if len(existing_items) > 0:
+        if isinstance(existing_items, dict):
+            _existing_items_list = []
+            for uuid, existing in existing_items.items():
+                existing['uuid'] = uuid
+                _existing_items_list.append(existing)
+
+            existing_items = _existing_items_list
+
+        for existing in existing_items:
+            _simple = get_matching(
+                module=module,
+                existing_items=[existing],
+                compare_item=compare_item,
+                match_fields=match_fields,
+                simplify_func=simplify_func,
+            )
+            if _simple is not None:
+                matching.append(_simple)
 
     return matching
 
@@ -209,3 +241,57 @@ def format_int(data: str) -> (int, str):
         return int(data)
 
     return data
+
+
+def sort_param_lists(params: dict):
+    for k in params:
+        if isinstance(params[k], list):
+            params[k].sort()
+
+
+def simplify_translate(
+        existing: dict, translate: dict = None, typing: dict = None,
+        bool_invert: list = None,
+) -> dict:
+    simple = {}
+    translate_fields = []
+    if translate is None:
+        translate = {}
+
+    if typing is None:
+        typing = {}
+
+    if bool_invert is None:
+        bool_invert = []
+
+    # translate api-fields to ansible-fields
+    for k, v in translate.items():
+        translate_fields.append(v)
+
+        if v in existing:
+            simple[k] = existing[v]
+
+    for k in existing:
+        if k not in translate_fields:
+            simple[k] = existing[k]
+
+    # correct value types to match (for diff-checks)
+    for t, fields in typing.items():
+        for f in fields:
+            if t == 'bool':
+                simple[f] = is_true(simple[f])
+
+            elif t == 'list':
+                simple[f] = get_selected_list(simple[f])
+
+            elif t == 'select':
+                simple[f] = get_selected(simple[f])
+
+    for k, v in simple.items():
+        if isinstance(v, str) and v.isnumeric():
+            simple[k] = int(simple[k])
+
+        elif isinstance(v, bool) and k in bool_invert:
+            simple[k] = not simple[k]
+
+    return simple

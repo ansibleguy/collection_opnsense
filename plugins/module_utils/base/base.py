@@ -16,11 +16,13 @@ class Base:
         self.i = instance  # module-specific object
         self.e = {}  # existing entry
 
-    def search(self) -> (dict, list):
-        # find response keys in development
-        # raise SystemExit(self.i.s.get(cnf={
-        #     **self.i.call_cnf, **{'command': self.i.CMDS['search']}
-        # }))
+    def search(self, fail_response: bool = False) -> (dict, list):
+        if fail_response:
+            # find response keys in initial development
+            raise SystemExit(self.i.s.get(cnf={
+                **self.i.call_cnf, **{'command': self.i.CMDS['search']}
+            }))
+
         if hasattr(self.i, 'API_KEY_2'):
             return self.i.s.get(cnf={
                 **self.i.call_cnf, **{'command': self.i.CMDS['search']}
@@ -276,12 +278,16 @@ class Base:
     def build_request(self) -> dict:
         request = {}
         translate = {}
+        bool_invert = []
 
         if len(self.e) == 0:
             self.e = getattr(self.i, self.i.EXIST_ATTR)
 
         if hasattr(self.i, 'FIELDS_TRANSLATE'):
             translate = self.i.FIELDS_TRANSLATE
+
+        if hasattr(self.i, 'FIELDS_BOOL_INVERT'):
+            bool_invert = self.i.FIELDS_BOOL_INVERT
 
         for field in self.i.FIELDS_ALL:
             opn_field = field
@@ -295,6 +301,9 @@ class Base:
                 opn_data = self.e[field]
 
             if isinstance(opn_data, bool):
+                if field in bool_invert:
+                    opn_data = not opn_data
+
                 request[opn_field] = to_digit(opn_data)
 
             elif isinstance(opn_data, list):

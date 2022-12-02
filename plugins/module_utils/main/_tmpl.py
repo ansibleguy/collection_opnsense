@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields
+    is_true, validate_int_fields, simplify_translate
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
@@ -29,6 +29,12 @@ class TMPL:
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'field1': 'apifield1',
+    }
+    FIELDS_BOOL_INVERT = []
+    FIELDS_TYPING = {
+        'bool': [],
+        'list': [],
+        'select': [],
     }
     INT_VALIDATIONS = {
         'field1': {'min': 1, 'max': 100},
@@ -85,6 +91,14 @@ class TMPL:
             'param1': stuff['param1'],
             'param2': stuff['param2'],
         }
+
+    def _simplify_existing(self, acl: dict) -> dict:
+        # makes processing easier
+        return simplify_translate(
+            existing=acl,
+            translate=self.FIELDS_TRANSLATE,
+            typing=self.FIELDS_TYPING,
+        )
 
     def process(self):
         self.b.process()

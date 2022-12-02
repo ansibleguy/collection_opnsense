@@ -205,6 +205,31 @@
       ssl_verify: false
       match_fields: ['ip', 'mask']
 
+    ansibleguy.opnsense.bind_general:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.bind_blocklist:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.bind_acl:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.bind_domain:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.bind_record:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Cleanup Rules
       ansibleguy.opnsense.rule_purge:
@@ -519,3 +544,45 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
         - 'ANSIBLE_TEST_3_1'
+
+    - name: Cleanup BIND general settings
+      ansibleguy.opnsense.bind_general:
+        enabled: false
+
+    - name: Cleanup BIND blocklist settings
+      ansibleguy.opnsense.bind_blocklist:
+        enabled: false
+
+    - name: Cleanup BIND Records
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: "{{ item.n }}"
+        type: "{{ item.t | default(omit) }}"
+        state: 'absent'
+      ignore_errors: true  # domain does not exist
+      loop:
+        - {'n': 'test1'}
+        - {'n': 'test2', 't': 'TXT'}
+
+    - name: Cleanup BIND Domains
+      ansibleguy.opnsense.bind_domain:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'test1.ansibleguy'
+        - 'test2.ansibleguy'
+        - 'test3.ansibleguy'
+        - 'test4.ansibleguy'
+
+    - name: Cleanup BIND ACLs
+      ansibleguy.opnsense.bind_acl:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_2_1'
+        - 'ANSIBLE_TEST_2_2'
+        - 'ANSIBLE_TEST_3_1'
+        - 'ANSIBLE_TEST_3_2'
+      when: not ansible_check_mode

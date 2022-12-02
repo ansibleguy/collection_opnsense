@@ -1,0 +1,204 @@
+---
+
+- name: Testing BIND Records
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.bind_record:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.bind_domain:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'bind_record'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1 or
+        opn_pre1.data | length > 0
+
+    - name: Adding - failing because of non-existing domain
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test1'
+        value: '192.168.1.1'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding dummy domain
+      ansibleguy.opnsense.bind_domain:
+        name: 'test4.ansibleguy'
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        not opn10.changed
+      when: not ansible_check_mode
+
+    - name: Adding 1
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test1'
+        value: '192.168.1.1'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test1'
+        value: '192.168.3.1'
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test1'
+        value: '192.168.3.1'
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test1'
+        value: '192.168.3.1'
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test1'
+        value: '192.168.3.1'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test2'
+        value: 'someRandomText'
+        type: 'TXT'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2 - Nothing changed
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test2'
+        value: 'someRandomText'
+        type: 'TXT'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+      when: not ansible_check_mode
+
+    - name: Adding 3 (round robin)
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test1'
+        value: '192.168.4.1'
+        round_robin: true
+      register: opn11
+      failed_when: >
+        opn11.failed or
+        not opn11.changed
+      when: not ansible_check_mode
+
+    - name: Adding 3 - Always changed
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test1'
+        value: '192.168.4.1'
+        round_robin: true
+      register: opn12
+      failed_when: >
+        opn12.failed or
+        not opn12.changed
+      when: not ansible_check_mode
+
+    - name: Adding - failing because of unconfigured round-robin
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test1'
+        value: '192.168.2.1'
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+      when: not ansible_check_mode
+
+    - name: Removing round robin
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test1'
+        state: 'absent'
+      register: opn13
+      failed_when: >
+        opn13.failed or
+        not opn13.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn8
+      failed_when: >
+        'data' not in opn8 or
+        opn8.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: "{{ item.n }}"
+        type: "{{ item.t | default(omit) }}"
+        state: 'absent'
+      loop:
+        - {'n': 'test1'}
+        - {'n': 'test2', 't': 'TXT'}
+      when: not ansible_check_mode
+
+    - name: Cleanup domain
+      ansibleguy.opnsense.bind_domain:
+        name: 'test4.ansibleguy'
+        state: 'absent'
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode

@@ -18,8 +18,8 @@ except MODULE_EXCEPTIONS:
     module_dependency_error()
 
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md'
+DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_list.md'
+EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_list.md'
 
 
 def run_module():
@@ -36,7 +36,8 @@ def run_module():
                 'frr_bgp_neighbor', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
                 'frr_bgp_as_path', 'frr_ospf_general', 'frr_ospf3_general',
                 'frr_ospf3_interface', 'frr_ospf_prefix_list', 'frr_ospf_interface',
-                'frr_ospf_route_map', 'frr_ospf_network', 'frr_rip',
+                'frr_ospf_route_map', 'frr_ospf_network', 'frr_rip', 'bind_general',
+                'bind_blocklist', 'bind_acl', 'bind_domain', 'bind_record',
             ],
             description='What part of the running config should be listed'
         ),
@@ -55,6 +56,8 @@ def run_module():
     target = None
 
     try:
+        # todo: refactor to use config-dict and dynamic imports
+
         if module.params['target'] == 'alias':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import Alias
             target = Alias(module=module, result=result)
@@ -225,6 +228,36 @@ def run_module():
                 import Rip
             target = Rip(module=module, result=result)
 
+        elif module.params['target'] == 'frr_rip':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_rip \
+                import Rip
+            target = Rip(module=module, result=result)
+
+        elif module.params['target'] == 'bind_general':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_general \
+                import General
+            target = General(module=module, result=result)
+
+        elif module.params['target'] == 'bind_blocklist':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_blocklist \
+                import Blocklist
+            target = Blocklist(module=module, result=result)
+
+        elif module.params['target'] == 'bind_acl':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_acl \
+                import Acl
+            target = Acl(module=module, result=result)
+
+        elif module.params['target'] == 'bind_domain':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_domain \
+                import Domain
+            target = Domain(module=module, result=result)
+
+        elif module.params['target'] == 'bind_record':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_record \
+                import Record
+            target = Record(module=module, result=result)
+
     except MODULE_EXCEPTIONS:
         module_dependency_error()
 
@@ -245,6 +278,9 @@ def run_module():
 
         if hasattr(target, 's'):
             target.s.close()
+
+    else:
+        module.fail_json(f"Got unsupported target: '{module.params['target']}'")
 
     module.exit_json(**result)
 

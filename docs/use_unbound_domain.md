@@ -40,7 +40,7 @@ However - it is **recommended** to use/set 'description' as **unique identifier*
 
 ### Mass manage
 
-If you are mass-managing DNS records or using DNS-Blacklists - you might want to disable ```reload: false``` on single module-calls!
+If you are mass-managing DNS records or using DNS-Blocklists - you might want to disable ```reload: false``` on single module-calls!
 
 This takes a long time, as the service gets reloaded every time!
 

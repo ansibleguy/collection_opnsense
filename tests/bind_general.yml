@@ -1,0 +1,257 @@
+---
+
+- name: Testing BIND general settings
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.bind_general:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'bind_general'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Configuring - failing because of invalid rate-limit
+      ansibleguy.opnsense.bind_general:
+        ratelimit_count: 1010
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Configuring - failing because of invalid cache_size
+      ansibleguy.opnsense.bind_general:
+        cache_size: 100
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+
+    - name: Configuring - failing because of non-existent recursion-acl
+      ansibleguy.opnsense.bind_general:
+        recursion_acl: 'DOES-NOT-EXIST'
+      register: opn_fail3
+      failed_when: not opn_fail3.failed
+
+    - name: Configuring - failing because of non-existent transfer-acl
+      ansibleguy.opnsense.bind_general:
+        transfer_acl: 'DOES-NOT-EXIST'
+      register: opn_fail4
+      failed_when: not opn_fail4.failed
+
+    - name: Configuring - failing because of invalid ip addresses
+      ansibleguy.opnsense.bind_general:
+        listen_ipv4: "{{ item.l4 | default(omit) }}"
+        query_source_ipv4: "{{ item.q4 | default(omit) }}"
+        transfer_source_ipv4: "{{ item.t4 | default(omit) }}"
+        listen_ipv6: "{{ item.l6 | default(omit) }}"
+        query_source_ipv6: "{{ item.q6 | default(omit) }}"
+        transfer_source_ipv6: "{{ item.t6 | default(omit) }}"
+      register: opn_fail5
+      failed_when: not opn_fail5.failed
+      loop:
+        - {'l4': ['127.0.0.1', '192.168.0.1000']}
+        - {'l4': ['127.0.0.1', 'NOT-VALID']}
+        - {'q4': ['NOT-VALID']}
+        - {'t4': ['NOT-VALID']}
+        - {'l6': ['NOT-VALID']}
+        - {'q6': ['NOT-VALID']}
+        - {'t6': ['NOT-VALID']}
+
+    - name: Configuring - failing because of empty listen-address
+      ansibleguy.opnsense.bind_general:
+        listen_ipv4: []
+      register: opn_fail6
+      failed_when: not opn_fail6.failed
+
+    - name: Configuring
+      ansibleguy.opnsense.bind_general:
+        listen_ipv4: ['127.0.0.1', '192.168.0.1']
+        query_source_ipv4: '192.168.0.1'
+        transfer_source_ipv4: '192.168.0.1'
+        filter_aaaa_v4: true
+        filter_aaaa_acl: ['192.168.0.2']
+        dnssec_validation: 'no'
+        hide_hostname: true
+        enabled: true
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing
+      ansibleguy.opnsense.bind_general:
+        listen_ipv4: ['127.0.0.1', '192.168.0.1']
+        query_source_ipv4: '192.168.0.1'
+        transfer_source_ipv4: '192.168.0.1'
+        filter_aaaa_v4: false
+        filter_aaaa_acl: ['192.168.0.2', '192.168.0.4']
+        dnssec_validation: 'no'
+        hide_hostname: true
+        enabled: true
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.bind_general:
+        listen_ipv4: ['127.0.0.1', '192.168.0.1']
+        query_source_ipv4: '192.168.0.1'
+        transfer_source_ipv4: '192.168.0.1'
+        filter_aaaa_v4: false
+        filter_aaaa_acl: ['192.168.0.2', '192.168.0.4']
+        dnssec_validation: 'no'
+        hide_hostname: true
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.bind_general:
+        listen_ipv4: ['127.0.0.1', '192.168.0.1']
+        query_source_ipv4: '192.168.0.1'
+        transfer_source_ipv4: '192.168.0.1'
+        filter_aaaa_v4: false
+        filter_aaaa_acl: ['192.168.0.2', '192.168.0.4']
+        dnssec_validation: 'no'
+        hide_hostname: true
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.bind_general:
+        listen_ipv4: ['127.0.0.1', '192.168.0.1']
+        query_source_ipv4: '192.168.0.1'
+        transfer_source_ipv4: '192.168.0.1'
+        filter_aaaa_v4: false
+        filter_aaaa_acl: ['192.168.0.2', '192.168.0.4']
+        dnssec_validation: 'no'
+        hide_hostname: true
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Changing more
+      ansibleguy.opnsense.bind_general:
+        listen_ipv4: ['127.0.0.1', '192.168.0.1']
+        query_source_ipv4: '192.168.0.1'
+        transfer_source_ipv4: '192.168.0.1'
+        filter_aaaa_v4: false
+        filter_aaaa_acl: ['192.168.0.2', '192.168.0.4']
+        dnssec_validation: 'no'
+        hide_hostname: true
+        hide_version: true
+        ratelimit: true
+        prefetch: false
+        ratelimit_count: 50
+        log_size: 10
+        response_policy_zones: false
+        ipv6: false
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+      when: not ansible_check_mode
+
+    - name: Nothing changed
+      ansibleguy.opnsense.bind_general:
+        listen_ipv4: ['127.0.0.1', '192.168.0.1']
+        query_source_ipv4: '192.168.0.1'
+        transfer_source_ipv4: '192.168.0.1'
+        filter_aaaa_v4: false
+        filter_aaaa_acl: ['192.168.0.2', '192.168.0.4']
+        dnssec_validation: 'no'
+        hide_hostname: true
+        hide_version: true
+        ratelimit: true
+        prefetch: false
+        ratelimit_count: 50
+        log_size: 10
+        response_policy_zones: false
+        ipv6: false
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.bind_general:
+        enabled: false
+      when: not ansible_check_mode
+
+- name: Testing BIND general - acl linking
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.bind_general:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.bind_acl:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Adding dummy acl's
+      ansibleguy.opnsense.bind_acl:
+        name: "{{ item.name }}"
+        networks: "{{ item.net }}"
+      loop:
+        - {'name': 'ANSIBLE_TEST_2_1', 'net': '192.168.0.0/25'}
+        - {'name': 'ANSIBLE_TEST_2_2', 'net': '192.168.0.128/25'}
+      when: not ansible_check_mode
+
+    - name: Configuring - setting ACLs
+      ansibleguy.opnsense.bind_general:
+        recursion_acl: 'ANSIBLE_TEST_2_1'
+        transfer_acl: 'ANSIBLE_TEST_2_2'
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        not opn10.changed
+      when: not ansible_check_mode
+
+    - name: Configuring - nothing changed
+      ansibleguy.opnsense.bind_general:
+        recursion_acl: 'ANSIBLE_TEST_2_1'
+        transfer_acl: 'ANSIBLE_TEST_2_2'
+      register: opn11
+      failed_when: >
+        opn11.failed or
+        opn11.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup general settings
+      ansibleguy.opnsense.bind_general:
+        enabled: false
+      when: not ansible_check_mode
+
+    - name: Cleanup ACLs
+      ansibleguy.opnsense.bind_acl:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_2_1'
+        - 'ANSIBLE_TEST_2_2'
+      when: not ansible_check_mode

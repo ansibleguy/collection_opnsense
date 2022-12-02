@@ -47,6 +47,8 @@ def run_module():
     target = None
 
     try:
+        # todo: refactor to use config-dict and dynamic imports
+
         if module.params['target'] == 'alias':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import Alias
             target = Alias(module=module, result=result)
@@ -109,6 +111,9 @@ def run_module():
 
         if hasattr(target, 's'):
             target.s.close()
+
+    else:
+        module.fail_json(f"Got unsupported target: '{module.params['target']}'")
 
     module.exit_json(**result)
 
