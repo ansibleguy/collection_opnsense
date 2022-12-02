@@ -23,7 +23,7 @@ except MODULE_EXCEPTIONS:
 PROFILE = False  # create log to profile time consumption
 
 DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias.yml'
+EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md'
 
 
 def run_module():
@@ -46,10 +46,20 @@ def run_module():
     )
 
     alias = Alias(module=module, result=result)
-    alias.check()
-    alias.process()
-    if result['changed'] and module.params['reload']:
-        alias.reload()
+
+    def process():
+        alias.check()
+        alias.process()
+
+        if result['changed'] and module.params['reload']:
+            alias.reload()
+
+    if PROFILE or module.params['debug']:
+        profiler(check=process, log_file='alias.log')
+        # log in /tmp/ansibleguy.opnsense/
+
+    else:
+        process()
 
     alias.s.close()
     result['diff'] = diff_remove_empty(result['diff'])

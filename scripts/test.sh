@@ -58,7 +58,7 @@ echo '##############################'
 echo ''
 
 # todo: some plugins will be needed as prerequisites - should be installed automatically
-#   os-firewall, os-wireguard, os-frr
+#   os-firewall, os-wireguard, os-frr, os-bind
 # todo: also: a opt1 interface is needed for some tests
 
 run_test 'reload' 0

@@ -150,7 +150,7 @@ def validate_port(module: AnsibleModule, port: (int, str), error_func=None) -> b
     return True
 
 
-def validate_int_fields(module: AnsibleModule, data: dict, field_minmax: dict, error_func = None):
+def validate_int_fields(module: AnsibleModule, data: dict, field_minmax: dict, error_func=None):
     if error_func is None:
         error_func = module.fail_json
 

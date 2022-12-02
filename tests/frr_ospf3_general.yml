@@ -19,6 +19,7 @@
     - name: Listing
       ansibleguy.opnsense.list:
       register: opn_pre1
+      failed_when: >
         opn_pre1.failed or
         'data' not in opn_pre1
 

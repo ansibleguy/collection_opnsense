@@ -7,8 +7,6 @@ readme: 'README.md'
 authors:
   - 'AnsibleGuy <guy@ansibleguy.net>'
 description: "Ansible Collection to manage OPNSense firewalls using its API's"
-license:
-  - 'GPL-3.0-or-later'
 license_file: 'LICENSE.txt'
 tags:
   - 'firewall'
@@ -17,7 +15,7 @@ tags:
   - 'iac'
 dependencies: {}
 repository: 'https://github.com/ansibleguy/collection_opnsense'
-documentation: http://docs.example.com
+documentation: 'https://github.com/ansibleguy/collection_opnsense/tree/stable/docs'
 homepage: 'https://ansibleguy.net'
 issues: 'https://github.com/ansibleguy/collection_opnsense/issues'
 build_ignore: []

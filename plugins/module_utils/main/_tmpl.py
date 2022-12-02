@@ -81,16 +81,16 @@ class TMPL:
             **self.call_cnf, **{'command': self.CMDS['detail']}
         })['stuff']
 
-    @staticmethod
-    def _simplify_existing(stuff: dict) -> dict:
-        # makes processing easier
-        return {
-            'enabled': is_true(stuff['enabled']),
-            'description': stuff['description'],
-            'uuid': stuff['uuid'],
-            'param1': stuff['param1'],
-            'param2': stuff['param2'],
-        }
+    # @staticmethod
+    # def _simplify_existing(stuff: dict) -> dict:
+    #     # makes processing easier
+    #     return {
+    #         'enabled': is_true(stuff['enabled']),
+    #         'description': stuff['description'],
+    #         'uuid': stuff['uuid'],
+    #         'param1': stuff['param1'],
+    #         'param2': stuff['param2'],
+    #     }
 
     def _simplify_existing(self, acl: dict) -> dict:
         # makes processing easier

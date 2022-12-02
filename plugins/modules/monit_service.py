@@ -17,7 +17,7 @@ try:
         OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_service import Service
 
-except MODULE_EXCEPTIONS as e:
+except MODULE_EXCEPTIONS:
     module_dependency_error()
 
 PROFILE = False  # create log to profile time consumption

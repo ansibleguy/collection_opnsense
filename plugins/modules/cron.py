@@ -84,10 +84,20 @@ def run_module():
     )
 
     job = CronJob(module=module, result=result)
-    job.check()
-    job.process()
-    if result['changed'] and module.params['reload']:
-        job.reload()
+
+    def process():
+        job.check()
+        job.process()
+
+        if result['changed'] and module.params['reload']:
+            job.reload()
+
+    if PROFILE or module.params['debug']:
+        profiler(check=process, log_file='cron.log')
+        # log in /tmp/ansibleguy.opnsense/
+
+    else:
+        process()
 
     job.s.close()
     result['diff'] = diff_remove_empty(result['diff'])
