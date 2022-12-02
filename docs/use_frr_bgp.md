@@ -228,6 +228,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         # route_map_out: 'map2'
         # enabled: true
         # reload: true
+        # match_fields: ['ip', 'description']
 
     - name: Creating neighbor
       ansibleguy.opnsense.frr_bgp_neighbor:
@@ -240,6 +241,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         multi_protocol: true
         keepalive: 45
         hold_down: 135
+        # match_fields: ['ip']
 
     - name: Disabling neighbor
       ansibleguy.opnsense.frr_bgp_neighbor:
@@ -253,6 +255,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
         keepalive: 45
         hold_down: 135
         enabled: false
+        # match_fields: ['ip']
 
     - name: Pulling neighbors
       ansibleguy.opnsense.list:
