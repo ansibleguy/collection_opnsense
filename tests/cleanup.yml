@@ -479,13 +479,15 @@
 
     - name: Cleanup FRR BGP prefix lists
       ansibleguy.opnsense.frr_bgp_prefix_list:
-        name: "{{ item }}"
+        name: "{{ item.n }}"
+        seq: "{{ item.s | default(omit) }}"
         state: 'absent'
       loop:
-        - 'ANSIBLE_TEST_1_1'
-        - 'ANSIBLE_TEST_1_2'
-        - 'ANSIBLE_TEST_2_1'
-        - 'ANSIBLE_TEST_3_1'
+        - {'n': 'ANSIBLE_TEST_1_1', 's': 55}
+        - {'n': 'ANSIBLE_TEST_1_2', 's': 56}
+        - {'n': 'ANSIBLE_TEST_1_2', 's': 57}
+        - {'n': 'ANSIBLE_TEST_2_1', 's': 50}
+        - {'n': 'ANSIBLE_TEST_3_1', 's': 50}
 
     - name: Cleanup FRR BGP community lists
       ansibleguy.opnsense.frr_bgp_community_list:

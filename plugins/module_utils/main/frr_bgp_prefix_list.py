@@ -8,7 +8,6 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base impo
 
 
 class Prefix:
-    FIELD_ID = 'name'
     CMDS = {
         'add': 'addPrefixlist',
         'del': 'delPrefixlist',
@@ -24,9 +23,10 @@ class Prefix:
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'network', 'description', 'version', 'seq', 'action', 'enabled',
+        'network', 'description', 'version', 'action', 'enabled',
     ]
-    FIELDS_ALL = [FIELD_ID]
+    FIELDS_MATCH = ['seq', 'name']
+    FIELDS_ALL = FIELDS_MATCH.copy()
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'seq': 'seqnumber',
@@ -73,7 +73,7 @@ class Prefix:
             )
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
-        self.b.find(match_fields=[self.FIELD_ID])
+        self.b.find(match_fields=self.FIELDS_MATCH)
         if self.exists:
             self.call_cnf['params'] = [self.prefix_list['uuid']]
 

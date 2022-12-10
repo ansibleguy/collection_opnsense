@@ -129,7 +129,7 @@ You could either invoke this module:
 
     - name: Purging all non-configured rules
       ansibleguy.opnsense.rule_purge:
-        aliases: {...}
+        rules: {...}
         # action: 'disable'  # default = remove
         # match_fields: ['description']
         # key_field: 'description'

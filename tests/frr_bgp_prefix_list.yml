@@ -26,6 +26,7 @@
     - name: Removing - does not exist
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_1_1'
+        seq: 55
         state: 'absent'
       register: opn_pre2
       failed_when: >
@@ -43,7 +44,7 @@
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_1_1'
         network: '10.0.10.0/24'
-        seq: 50
+        seq: 55
         action: 'permit'
       register: opn1
       failed_when: >
@@ -53,7 +54,7 @@
     - name: Changing 1
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_1_1'
-        network: '10.0.10.0/24'
+        network: '10.0.11.0/24'
         seq: 55
         action: 'permit'
       register: opn9
@@ -64,7 +65,7 @@
     - name: Disabling 1
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_1_1'
-        network: '10.0.10.0/24'
+        network: '10.0.11.0/24'
         seq: 55
         action: 'permit'
         enabled: false
@@ -77,7 +78,7 @@
     - name: Disabling 1 - nothing changed
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_1_1'
-        network: '10.0.10.0/24'
+        network: '10.0.11.0/24'
         seq: 55
         action: 'permit'
         enabled: false
@@ -90,7 +91,7 @@
     - name: Enabling 1
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_1_1'
-        network: '10.0.10.0/24'
+        network: '10.0.11.0/24'
         seq: 55
         action: 'permit'
       register: opn4
@@ -122,9 +123,22 @@
         opn6.changed
       when: not ansible_check_mode
 
+    - name: Adding 3 (same name, different sequence)
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_1_2'
+        network: '10.0.30.0/24'
+        seq: 57
+        action: 'deny'
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        not opn10.changed
+      when: not ansible_check_mode
+
     - name: Removing 2
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_1_2'
+        seq: 56
         state: 'absent'
       register: opn7
       failed_when: >
@@ -137,16 +151,18 @@
       register: opn8
       failed_when: >
         'data' not in opn8 or
-        opn8.data | length != 1
+        opn8.data | length != 2
       when: not ansible_check_mode
 
     - name: Cleanup
       ansibleguy.opnsense.frr_bgp_prefix_list:
-        name: "{{ item }}"
+        name: "{{ item.n }}"
+        seq: "{{ item.s | default(omit) }}"
         state: 'absent'
       loop:
-        - 'ANSIBLE_TEST_1_1'
-        - 'ANSIBLE_TEST_1_2'
+        - {'n': 'ANSIBLE_TEST_1_1', 's': 55}
+        - {'n': 'ANSIBLE_TEST_1_2', 's': 56}
+        - {'n': 'ANSIBLE_TEST_1_2', 's': 57}
       when: not ansible_check_mode
 
     - name: Listing

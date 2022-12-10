@@ -29,13 +29,13 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 def run_module():
     module_args = dict(
         name=dict(type='str', required=True),
+        seq=dict(type='str', required=True, aliases=['seq_number']),
         network=dict(type='str', required=False, aliases=['net']),
         description=dict(type='str', required=False, default='', aliases=['desc']),
         version=dict(
             type='str', required=False, default='IPv4', options=['IPv4', 'IPv6'],
             aliases=['ipv']
         ),
-        seq=dict(type='str', required=False, default='', aliases=['seq_number']),
         action=dict(type='str', required=False, default='', options=['permit', 'deny']),
         **STATE_MOD_ARG,
         **RELOAD_MOD_ARG,
