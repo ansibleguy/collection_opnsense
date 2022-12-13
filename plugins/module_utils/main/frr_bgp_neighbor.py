@@ -67,8 +67,6 @@ class Neighbor:
         'keepalive': {'min': 1, 'max': 1000},
         'hold_down': {'min': 3, 'max': 3000},
         'connect_timer': {'min': 1, 'max': 65000},
-        'prefix_list_in_seq': {'min': 1, 'max': 4294967294},
-        'prefix_list_out_seq': {'min': 1, 'max': 4294967294},
     }
     EXIST_ATTR = 'neighbor'
 
