@@ -253,6 +253,7 @@ def simplify_translate(
         existing: dict, translate: dict = None, typing: dict = None,
         bool_invert: list = None,
 ) -> dict:
+    # pylint: disable=R0912
     simple = {}
     translate_fields = []
     if translate is None:
