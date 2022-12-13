@@ -305,6 +305,7 @@
     - name: Cleanup prefix-list
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_3_1'
+        seq: 50
         state: 'absent'
       when: not ansible_check_mode
 
