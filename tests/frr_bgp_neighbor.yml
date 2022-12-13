@@ -255,12 +255,16 @@
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_2_1'
         network: '10.0.10.0/24'
+        seq: 51
+        action: 'permit'
+      when: not ansible_check_mode
+
+    - name: Adding dummy prefix-list 2 (same name, other sequence)
+      ansibleguy.opnsense.frr_bgp_prefix_list:
+        name: 'ANSIBLE_TEST_2_1'
+        network: '10.0.11.0/24'
         seq: 50
         action: 'permit'
-      register: opn10
-      failed_when: >
-        opn10.failed or
-        not opn10.changed
       when: not ansible_check_mode
 
     - name: Adding neighbor linked to prefix-list
@@ -280,10 +284,6 @@
         name: 'ANSIBLE_TEST_3_1'
         id: 50
         action: 'permit'
-      register: opn12
-      failed_when: >
-        opn12.failed or
-        not opn12.changed
       when: not ansible_check_mode
 
     - name: Adding neighbor linked to route-map
@@ -310,8 +310,11 @@
     - name: Cleanup prefix-list
       ansibleguy.opnsense.frr_bgp_prefix_list:
         name: 'ANSIBLE_TEST_2_1'
-        seq: 50
+        seq: "{{ item }}"
         state: 'absent'
+      loop:
+        - 50
+        - 51
       when: not ansible_check_mode
 
     - name: Cleanup route-map

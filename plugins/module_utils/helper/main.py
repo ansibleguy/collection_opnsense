@@ -281,6 +281,9 @@ def simplify_translate(
             if t == 'bool':
                 simple[f] = is_true(simple[f])
 
+            elif t == 'int':
+                simple[f] = int(simple[f])
+
             elif t == 'list':
                 simple[f] = get_selected_list(simple[f])
 

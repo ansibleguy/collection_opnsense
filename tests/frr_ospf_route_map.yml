@@ -197,10 +197,6 @@
         network: '10.0.10.0/24'
         seq: 50
         action: 'permit'
-      register: opn10
-      failed_when: >
-        opn10.failed or
-        not opn10.changed
       when: not ansible_check_mode
 
     - name: Adding route-map linked to prefix-list

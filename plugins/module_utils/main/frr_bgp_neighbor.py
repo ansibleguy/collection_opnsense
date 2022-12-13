@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields, get_selected, is_ip
+    validate_int_fields, is_ip, simplify_translate
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
@@ -51,12 +51,24 @@ class Neighbor:
         'route_map_in': 'linkedRoutemapIn',
         'route_map_out': 'linkedRoutemapOut',
     }
+    FIELDS_TYPING = {
+        'bool': [
+            'next_hop_self', 'next_hop_self_all', 'multi_hop', 'multi_protocol', 'enabled',
+            'rrclient', 'bfd', 'send_default_route', 'as_override', 'disable_connected_check',
+        ],
+        'select': [
+            'source_int', 'ipv6_link_local_int', 'prefix_list_in', 'prefix_list_out',
+            'route_map_in', 'route_map_out',
+        ],
+    }
     INT_VALIDATIONS = {
         'as_number': {'min': 1, 'max': 4294967295},
         'weight': {'min': 0, 'max': 65535},
         'keepalive': {'min': 1, 'max': 1000},
         'hold_down': {'min': 3, 'max': 3000},
         'connect_timer': {'min': 1, 'max': 65000},
+        'prefix_list_in_seq': {'min': 1, 'max': 4294967294},
+        'prefix_list_out_seq': {'min': 1, 'max': 4294967294},
     }
     EXIST_ATTR = 'neighbor'
 
@@ -112,82 +124,66 @@ class Neighbor:
 
         return raw[self.API_KEY_2][self.API_KEY]
 
-    @staticmethod
-    def _simplify_existing(neighbor: dict) -> dict:
+    def _simplify_existing(self, neighbor: dict) -> dict:
         # makes processing easier
-        return {
-            'ip': neighbor['address'],
-            'as_number': neighbor['remoteas'],
-            'password': neighbor['password'],
-            'weight': neighbor['weight'],
-            'local_ip': neighbor['localip'],
-            'source_int': get_selected(neighbor['updatesource']),
-            'ipv6_link_local_int': get_selected(neighbor['linklocalinterface']),
-            'next_hop_self': is_true(neighbor['nexthopself']),
-            'next_hop_self_all': is_true(neighbor['nexthopselfall']),
-            'multi_hop': is_true(neighbor['multihop']),
-            'multi_protocol': is_true(neighbor['multiprotocol']),
-            'rrclient': is_true(neighbor['rrclient']),
-            'bfd': is_true(neighbor['bfd']),
-            'send_default_route': is_true(neighbor['defaultoriginate']),
-            'as_override': is_true(neighbor['asoverride']),
-            'disable_connected_check': is_true(neighbor['disable_connected_check']),
-            'keepalive': neighbor['keepalive'],
-            'hold_down': neighbor['holddown'],
-            'connect_timer': neighbor['connecttimer'],
-            'description': neighbor['description'],
-            'prefix_list_in': get_selected(neighbor['linkedPrefixlistIn']),
-            'prefix_list_out': get_selected(neighbor['linkedPrefixlistOut']),
-            'route_map_in': get_selected(neighbor['linkedRoutemapIn']),
-            'route_map_out': get_selected(neighbor['linkedRoutemapOut']),
-            'enabled': is_true(neighbor['enabled']),
-            'uuid': neighbor['uuid'],
-        }
+        return simplify_translate(
+            existing=neighbor,
+            typing=self.FIELDS_TYPING,
+            translate=self.FIELDS_TRANSLATE,
+        )
 
     def _find_links(self):
         links = {
-            'prefix-list': {
-                'in': 'prefix_list_in',
-                'out': 'prefix_list_out',
-                'in_found': False,
-                'out_found': False,
+            'prefix-list-in': {
+                'found': False,
                 'existing': self.existing_prefixes,
+                'match_fields': {'name': 'prefix_list_in'}
             },
-            'route-map': {
-                'in': 'route_map_in',
-                'out': 'route_map_out',
-                'in_found': False,
-                'out_found': False,
+            'prefix-list-out': {
+                'found': False,
+                'existing': self.existing_prefixes,
+                'match_fields': {'name': 'prefix_list_out'}
+            },
+            'route-map-in': {
+                'found': False,
                 'existing': self.existing_maps,
-            }
+                'match_fields': {'name': 'route_map_in'}
+            },
+            'route-map-out': {
+                'found': False,
+                'existing': self.existing_maps,
+                'match_fields': {'name': 'route_map_out'}
+            },
         }
 
         for key, values in links.items():
-            in_provided = self.p[values['in']] not in ['', None]
-            out_provided = self.p[values['out']] not in ['', None]
+            value_name = values['match_fields']['name']
+            provided = self.p[value_name] not in ['', None]
+            seq_uuid_mapping = {}
 
-            if len(values['existing']) > 0 and (in_provided or out_provided):
-                for uuid, prefix in values['existing'].items():
-                    if prefix['name'] == self.p[values['in']]:
-                        self.p[values['in']] = uuid
-                        values['in_found'] = True
+            if len(values['existing']) > 0 and provided:
+                for uuid, entry in values['existing'].items():
+                    matching = []
 
-                    if prefix['name'] == self.p[values['out']]:
-                        self.p[values['out']] = uuid
-                        values['out_found'] = True
+                    for api_field, ans_field in values['match_fields'].items():
+                        if self.p[ans_field] not in ['', None]:
+                            matching.append(str(entry[api_field]) == str(self.p[ans_field]))
 
-                    if values['in_found'] and values['out_found']:
-                        break
+                    if all(matching):
+                        self.p[value_name] = uuid
+                        values['found'] = True
 
-            if in_provided and not values['in_found']:
+                        if 'seqnumber' in entry:
+                            seq_uuid_mapping[int(entry['seqnumber'])] = uuid
+
+            if provided and not values['found']:
                 self.m.fail_json(
-                    f"Provided in-{key} '{self.p[values['in']]}' was not found!"
+                    f"Provided {key} '{value_name}' was not found!"
                 )
 
-            if out_provided and not values['out_found']:
-                self.m.fail_json(
-                    f"Provided out-{key} '{self.p[values['out']]}' was not found!"
-                )
+            if len(seq_uuid_mapping) > 0:
+                # only the lowest prefix-list uuid is linkable - all others are just extensions of the first one
+                self.p[value_name] = seq_uuid_mapping[min(seq_uuid_mapping.keys())]
 
     def get_existing(self) -> list:
         existing = []

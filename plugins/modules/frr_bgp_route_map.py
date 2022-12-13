@@ -41,7 +41,10 @@ def run_module():
             type='list', elements='str', required=False, default=[], aliases=['as_path']
         ),
         prefix_list=dict(
-            type='list', elements='str', required=False, default=[], aliases=['prefix']
+            type='dict', required=False, default={}, aliases=['prefix', 'pre'],
+            description='Dictionary of prefixes to link. Per example: '
+                        "\"{prefix_name: [seq1, seq2]}\" or \"{'pre1': [5, 6]}\" will link "
+                        "prefixes with the name 'pre1' and sequence 5-6"
         ),
         community_list=dict(
             type='list', elements='str', required=False, default=[], aliases=['community']

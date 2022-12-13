@@ -210,10 +210,6 @@
         seq: 25
         action: 'permit'
         network: '10.0.1.0/24'
-      register: opn10
-      failed_when: >
-        opn10.failed or
-        not opn10.changed
       when: not ansible_check_mode
 
     - name: Adding network linked to prefix-list

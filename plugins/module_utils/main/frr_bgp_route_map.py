@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields, get_selected, get_selected_list, validate_str_fields
+    validate_int_fields, simplify_translate, validate_str_fields
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
@@ -33,6 +33,12 @@ class RouteMap:
         'as_path_list': 'match',
         'prefix_list': 'match2',
         'community_list': 'match3',
+    }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'int': ['id'],
+        'list': ['as_path_list', 'prefix_list', 'community_list'],
+        'select': ['action'],
     }
     INT_VALIDATIONS = {
         'id': {'min': 10, 'max': 99},
@@ -98,45 +104,27 @@ class RouteMap:
 
         return raw[self.API_KEY_2][self.API_KEY]
 
-    @staticmethod
-    def _simplify_existing(route_map: dict) -> dict:
+    def _simplify_existing(self, route_map: dict) -> dict:
         # makes processing easier
-        return {
-            'name': route_map['name'],
-            'id': int(route_map['id']),
-            'description': route_map['description'],
-            'set': route_map['set'],
-            'as_path_list': get_selected_list(route_map['match']),
-            'prefix_list': get_selected_list(route_map['match2']),
-            'community_list': get_selected_list(route_map['match3']),
-            'action': get_selected(route_map['action']),
-            'enabled': is_true(route_map['enabled']),
-            'uuid': route_map['uuid'],
-        }
+        return simplify_translate(
+            existing=route_map,
+            typing=self.FIELDS_TYPING,
+            translate=self.FIELDS_TRANSLATE,
+        )
 
     def _find_links(self):
         links = {
-            'as_path_list': {
-                'key': 'description',
-                'existing': self.existing_paths,
-            },
-            'prefix_list': {
-                'key': 'name',
-                'existing': self.existing_prefixes,
-            },
-            'community_list': {
-                'key': 'description',
-                'existing': self.existing_communities,
-            },
+            'as_path_list': self.existing_paths,
+            'community_list': self.existing_communities,
         }
 
-        for key, values in links.items():
+        for key, existing in links.items():
             provided = len(self.p[key]) > 0
             uuids = []
 
-            if len(self.existing_prefixes) > 0 and provided:
-                for uuid, entry in values['existing'].items():
-                    if entry[values['key']] in self.p[key]:
+            if len(existing) > 0 and provided:
+                for uuid, entry in existing.items():
+                    if entry['description'] in self.p[key]:
                         uuids.append(uuid)
 
                     if len(uuids) == len(self.p[key]):
@@ -148,6 +136,35 @@ class RouteMap:
                 )
 
             self.p[key] = uuids
+
+        key = 'prefix_list'
+        if len(self.p[key]) > 0:
+            uuids = []
+            provided_count = 0
+            provided_prefixes = {}
+
+            for k, v in self.p[key].items():
+                if not isinstance(v, list):
+                    v = [v]
+
+                provided_count += len(v)
+                provided_prefixes[k] = [int(_v) for _v in v]
+
+            if len(self.existing_prefixes) > 0:
+                for uuid, entry in self.existing_prefixes.items():
+                    if entry['name'] in provided_prefixes and \
+                            int(entry['seqnumber']) in provided_prefixes[entry['name']]:
+                        uuids.append(uuid)
+
+            if len(uuids) != provided_count:
+                self.m.fail_json(
+                    'At least one of the provided prefix-list entries was not found!'
+                )
+
+            self.p[key] = uuids
+
+        else:
+            self.p[key] = []
 
     def get_existing(self) -> list:
         existing = []

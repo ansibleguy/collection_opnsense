@@ -487,7 +487,9 @@
         - {'n': 'ANSIBLE_TEST_1_2', 's': 56}
         - {'n': 'ANSIBLE_TEST_1_2', 's': 57}
         - {'n': 'ANSIBLE_TEST_2_1', 's': 50}
+        - {'n': 'ANSIBLE_TEST_2_1', 's': 51}
         - {'n': 'ANSIBLE_TEST_3_1', 's': 50}
+        - {'n': 'ANSIBLE_TEST_3_1', 's': 51}
 
     - name: Cleanup FRR BGP community lists
       ansibleguy.opnsense.frr_bgp_community_list:
