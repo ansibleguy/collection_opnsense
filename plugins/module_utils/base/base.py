@@ -11,6 +11,13 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main im
 class Base:
     DIFF_FLOAT_ROUND = 1
     RESP_JOIN_CHAR = ','
+    ATTR_JOIN_CHAR = 'JOIN_CHAR'
+    ATTR_AK2 = 'API_KEY_2'
+    ATTR_BOOL_INVERT = 'FIELDS_BOOL_INVERT'
+    ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
+    ATTR_DIFF_EXCL = 'FIELDS_DIFF_EXCLUDE'
+    ATTR_RELOAD = 'API_CONT_REL'
+    ATTR_HEADERS = 'call_headers'
 
     def __init__(self, instance):
         self.i = instance  # module-specific object
@@ -23,7 +30,7 @@ class Base:
                 **self.i.call_cnf, **{'command': self.i.CMDS['search']}
             }))
 
-        if hasattr(self.i, 'API_KEY_2'):
+        if hasattr(self.i, self.ATTR_AK2):
             return self.i.s.get(cnf={
                 **self.i.call_cnf, **{'command': self.i.CMDS['search']}
             })[self.i.API_KEY_1][self.i.API_KEY_2][self.i.API_KEY]
@@ -92,7 +99,7 @@ class Base:
                 }
             })
 
-    def update(self, enable_switch: bool = False) -> dict:
+    def update(self, enable_switch: bool = True) -> dict:
         if len(self.e) == 0:
             self.e = getattr(self.i, self.i.EXIST_ATTR)
 
@@ -134,19 +141,30 @@ class Base:
 
         elif enable_switch:
             if getattr(self.i, self.i.EXIST_ATTR)['enabled'] != self.i.p['enabled']:
-                if self.i.p['enabled']:
+                BOOL_INVERT_FIELDS = []
+                enable = self.i.p['enabled']
+                invert = False
+
+                if hasattr(self.i, self.ATTR_BOOL_INVERT):
+                    BOOL_INVERT_FIELDS = getattr(self.i, self.ATTR_BOOL_INVERT)
+
+                if 'enabled' in BOOL_INVERT_FIELDS:
+                    invert = True
+                    enable = not enable
+
+                if enable:
                     if hasattr(self.i, 'enable'):
                         self.i.enable()
 
                     else:
-                        self.enable()
+                        self.enable(invert=invert)
 
                 else:
                     if hasattr(self.i, 'disable'):
                         self.i.disable()
 
                     else:
-                        self.disable()
+                        self.disable(invert=invert)
 
     def delete(self) -> dict:
         self.i.r['changed'] = True
@@ -169,8 +187,8 @@ class Base:
 
     def reload(self) -> dict:
         # reload the running config
-        if hasattr(self.i, 'API_CONT_REL'):
-            cont_rel = self.i.API_CONT_REL
+        if hasattr(self.i, self.ATTR_RELOAD):
+            cont_rel = getattr(self.i, self.ATTR_RELOAD)
 
         else:
             cont_rel = self.i.API_CONT
@@ -198,8 +216,16 @@ class Base:
             }
         })
 
-    def enable(self) -> dict:
-        if self.i.exists and not getattr(self.i, self.i.EXIST_ATTR)['enabled']:
+    def _is_enabled(self, invert: bool) -> bool:
+        is_enabled = getattr(self.i, self.i.EXIST_ATTR)['enabled']
+
+        if invert:
+            is_enabled = not is_enabled
+
+        return is_enabled
+
+    def enable(self, invert: bool = False) -> dict:
+        if self.i.exists and not self._is_enabled(invert=invert):
             self.i.r['changed'] = True
             self.i.r['diff']['before'] = {'enabled': False}
             self.i.r['diff']['after'] = {'enabled': True}
@@ -207,8 +233,8 @@ class Base:
             if not self.i.m.check_mode:
                 return self._change_enabled_state(1)
 
-    def disable(self) -> dict:
-        if self.i.exists and getattr(self.i, self.i.EXIST_ATTR)['enabled']:
+    def disable(self, invert: bool = False) -> dict:
+        if self.i.exists and self._is_enabled(invert=invert):
             self.i.r['changed'] = True
             self.i.r['diff']['before'] = {'enabled': True}
             self.i.r['diff']['after'] = {'enabled': False}
@@ -221,8 +247,9 @@ class Base:
             self.e = getattr(self.i, self.i.EXIST_ATTR)
 
         EXCLUDE_FIELDS = []
-        if hasattr(self.i, 'FIELDS_DIFF_EXCLUDE'):
-            EXCLUDE_FIELDS = getattr(self.i, 'FIELDS_DIFF_EXCLUDE')
+
+        if hasattr(self.i, self.ATTR_DIFF_EXCL):
+            EXCLUDE_FIELDS = getattr(self.i, self.ATTR_DIFF_EXCL)
 
         if not isinstance(self.e, dict):
             raise ValueError('The existing attribute must be of type dict!')
@@ -277,22 +304,22 @@ class Base:
 
     def build_request(self) -> dict:
         request = {}
-        translate = {}
-        bool_invert = []
+        TRANSLATE_FIELDS = {}
+        BOOL_INVERT_FIELDS = []
 
         if len(self.e) == 0:
             self.e = getattr(self.i, self.i.EXIST_ATTR)
 
-        if hasattr(self.i, 'FIELDS_TRANSLATE'):
-            translate = self.i.FIELDS_TRANSLATE
+        if hasattr(self.i, self.ATTR_TRANSLATE):
+            TRANSLATE_FIELDS = getattr(self.i, self.ATTR_TRANSLATE)
 
-        if hasattr(self.i, 'FIELDS_BOOL_INVERT'):
-            bool_invert = self.i.FIELDS_BOOL_INVERT
+        if hasattr(self.i, self.ATTR_BOOL_INVERT):
+            BOOL_INVERT_FIELDS = getattr(self.i, self.ATTR_BOOL_INVERT)
 
         for field in self.i.FIELDS_ALL:
             opn_field = field
-            if field in translate:
-                opn_field = translate[field]
+            if field in TRANSLATE_FIELDS:
+                opn_field = TRANSLATE_FIELDS[field]
 
             if field in self.i.p:
                 opn_data = self.i.p[field]
@@ -301,7 +328,7 @@ class Base:
                 opn_data = self.e[field]
 
             if isinstance(opn_data, bool):
-                if field in bool_invert:
+                if field in BOOL_INVERT_FIELDS:
                     opn_data = not opn_data
 
                 request[opn_field] = to_digit(opn_data)
@@ -309,8 +336,8 @@ class Base:
             elif isinstance(opn_data, list):
                 join_char = self.RESP_JOIN_CHAR
 
-                if hasattr(self.i, 'JOIN_CHAR'):
-                    join_char = self.i.JOIN_CHAR
+                if hasattr(self.i, self.ATTR_JOIN_CHAR):
+                    join_char = getattr(self.i, self.ATTR_JOIN_CHAR)
 
                 request[opn_field] = join_char.join(opn_data)
 
@@ -339,16 +366,33 @@ class Base:
 
         return call_simple
 
-    def _api_post(self, cnf: dict) -> (dict, list):
-        if hasattr(self.i, 's'):
-            return self.i.s.post(cnf=cnf)
+    def _api_headers(self) -> dict:
+        if hasattr(self.i, self.ATTR_HEADERS):
+            return getattr(self.i, self.ATTR_HEADERS)
 
         else:
-            return single_post(cnf=cnf, module=self.i.m)
+            return {}
+
+    def _api_post(self, cnf: dict) -> (dict, list):
+        if hasattr(self.i, 's'):
+            return self.i.s.post(
+                cnf=cnf,
+                headers=self._api_headers()
+            )
+
+        else:
+            return single_post(
+                cnf=cnf,
+                module=self.i.m,
+                headers=self._api_headers()
+            )
 
     def _api_get(self, cnf: dict) -> (dict, list):
         if hasattr(self.i, 's'):
             return self.i.s.get(cnf=cnf)
 
         else:
-            return single_get(cnf=cnf, module=self.i.m)
+            return single_get(
+                cnf=cnf,
+                module=self.i.m
+            )

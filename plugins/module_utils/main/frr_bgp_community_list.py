@@ -23,10 +23,8 @@ class Community:
     API_CONT = 'bgp'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = [
-        'number', 'seq', 'action', 'community', 'enabled',
-    ]
-    FIELDS_ALL = [FIELD_ID]
+    FIELDS_CHANGE = ['number', 'seq', 'action', 'community']
+    FIELDS_ALL = [FIELD_ID, 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'seq': 'seqnumber',
@@ -95,12 +93,6 @@ class Community:
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def reload(self):
         self.b.reload()

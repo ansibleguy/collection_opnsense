@@ -109,7 +109,7 @@ class KeyPair:
         self.b.create()
 
     def update(self):
-        self.b.update()
+        self.b.update(enable_switch=False)
 
     def process(self):
         self.b.process()

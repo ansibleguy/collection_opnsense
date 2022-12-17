@@ -24,10 +24,10 @@ class CronJob:
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'enabled', 'minutes', 'hours', 'days', 'months',
+        'minutes', 'hours', 'days', 'months',
         'weekdays', 'command', 'who', 'parameters'
     ]
-    FIELDS_ALL = ['description']
+    FIELDS_ALL = ['description', 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     EXIST_ATTR = 'cron'
 

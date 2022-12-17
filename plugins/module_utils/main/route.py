@@ -3,7 +3,7 @@ from ipaddress import ip_network
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, to_digit
+    simplify_translate
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
@@ -16,13 +16,23 @@ class Route:
         'del': 'delroute',
         'set': 'setroute',
         'search': 'searchroute',
+        'toggle': 'toggleroute',
     }
     API_KEY = 'route'
     API_MOD = 'routes'
     API_CONT = 'routes'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = ['network', 'gateway', 'description', 'enabled']
-    FIELDS_ALL = FIELDS_CHANGE
+    FIELDS_CHANGE = ['network', 'gateway', 'description']
+    FIELDS_ALL = ['enabled']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
+    FIELDS_BOOL_INVERT = ['enabled']
+    FIELDS_TRANSLATE = {
+        'description': 'descr',
+        'enabled': 'disabled',
+    }
+    FIELDS_TYPING = {
+        'bool': ['enabled']
+    }
     EXIST_ATTR = 'route'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
@@ -56,26 +66,16 @@ class Route:
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['rows']
 
-    @staticmethod
-    def _simplify_existing(route: dict) -> dict:
+    def _simplify_existing(self, route: dict) -> dict:
         # makes processing easier
-        return {
-            'uuid': route['uuid'],
-            'network': route['network'],
-            'gateway': route['gateway'].rsplit('-', 1)[0].strip(),
-            'description': route['descr'],
-            'enabled': not is_true(route['disabled']),
-        }
-
-    def _build_request(self) -> dict:
-        return {
-            self.API_KEY: {
-                'network': self.p['network'],
-                'gateway': self.p['gateway'],
-                'descr': self.p['description'],
-                'disabled': to_digit(not self.p['enabled']),
-            }
-        }
+        simple = simplify_translate(
+            existing=route,
+            typing=self.FIELDS_TYPING,
+            translate=self.FIELDS_TRANSLATE,
+            bool_invert=self.FIELDS_BOOL_INVERT,
+        )
+        simple['gateway'] = route['gateway'].rsplit('-', 1)[0].strip()
+        return simple
 
     def get_existing(self) -> list:
         return self.b.get_existing()

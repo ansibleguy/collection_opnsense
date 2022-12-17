@@ -512,10 +512,9 @@ If a change is needed, you will have to run the module using 'state=absent' firs
     - name: Example
       ansibleguy.opnsense.bind_record_multi:
         records:
-          'template.ansibleguy':
+          'template.ansibleguy':  # domain
             - name: 'example'
               value: '192.168.1.1'
-        name: 'example'
         # fail_verification: false
         # fail_processing: false
         # enabled: true

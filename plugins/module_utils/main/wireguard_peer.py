@@ -134,16 +134,10 @@ class Peer:
         self.b.create()
 
     def update(self):
-        self.b.update(enable_switch=True)
+        self.b.update()
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def reload(self):
         self.b.reload()

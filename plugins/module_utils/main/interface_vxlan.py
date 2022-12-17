@@ -96,16 +96,10 @@ class Vxlan:
         self.b.create()
 
     def update(self):
-        self.b.update()
+        self.b.update(enable_switch=False)
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def reload(self):
         self.b.reload()

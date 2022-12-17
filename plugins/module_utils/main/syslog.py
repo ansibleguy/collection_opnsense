@@ -16,6 +16,7 @@ class Syslog:
         'del': 'delDestination',
         'set': 'setDestination',
         'search': 'get',
+        'toggle': 'toggleDestination',
     }
     API_KEY = 'destination'
     API_KEY_1 = 'syslog'
@@ -26,9 +27,9 @@ class Syslog:
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
         'target', 'transport', 'facility', 'program', 'level', 'certificate',
-        'port', 'description', 'enabled',
+        'port', 'description',
     ]
-    FIELDS_ALL = ['rfc5424']
+    FIELDS_ALL = ['rfc5424', 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'target': 'hostname',

@@ -25,9 +25,9 @@ class RouteMap:
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
         'action', 'description', 'id', 'as_path_list', 'prefix_list',
-        'community_list', 'enabled', 'set',
+        'community_list', 'set',
     ]
-    FIELDS_ALL = [FIELD_ID]
+    FIELDS_ALL = [FIELD_ID, 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'as_path_list': 'match',
@@ -212,12 +212,6 @@ class RouteMap:
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def reload(self):
         self.b.reload()

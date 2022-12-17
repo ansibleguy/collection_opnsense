@@ -40,6 +40,7 @@
       ansibleguy.opnsense.unbound_forward:
         domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.1'
+        reload: false  # speed
       register: opn4
       failed_when: >
         opn4.failed or
@@ -49,6 +50,7 @@
       ansibleguy.opnsense.unbound_forward:
         domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.2'
+        reload: false  # speed
       register: opn5
       failed_when: >
         opn5.failed or
@@ -70,6 +72,7 @@
         domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.2'
         enabled: false
+        reload: false  # speed
       register: opn9
       failed_when: >
         opn9.failed or
@@ -80,6 +83,7 @@
       ansibleguy.opnsense.unbound_forward:
         domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.2'
+        reload: false  # speed
       register: opn7
       failed_when: >
         opn7.failed or
@@ -91,6 +95,7 @@
         domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.2'
         state: 'absent'
+        reload: false  # speed
       register: opn8
       failed_when: >
         opn8.failed or

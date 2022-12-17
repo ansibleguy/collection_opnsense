@@ -84,7 +84,7 @@ class General:
         return self._search_call()
 
     def update(self):
-        self.b.update()
+        self.b.update(enable_switch=False)
 
     def reload(self):
         self.b.reload()

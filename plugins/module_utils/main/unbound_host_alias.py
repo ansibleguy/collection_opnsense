@@ -15,14 +15,16 @@ class Alias:
         'del': 'delHostAlias',
         'set': 'setHostAlias',
         'search': 'get',
+        'toggle': 'toggleHostAlias',
     }
     API_KEY = 'alias'
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = ['target', 'domain', 'alias',  'description', 'enabled']
-    FIELDS_ALL = FIELDS_CHANGE
+    FIELDS_CHANGE = ['target', 'domain', 'alias',  'description']
+    FIELDS_ALL = ['enabled']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
     EXIST_ATTR = 'alias'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):

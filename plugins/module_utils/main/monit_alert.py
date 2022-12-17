@@ -15,6 +15,7 @@ class Alert:
         'del': 'delAlert',
         'set': 'setAlert',
         'search': 'get',
+        'toggle': 'toggleAlert',
     }
     API_KEY = 'alert'
     API_KEY_1 = 'monit'
@@ -22,11 +23,9 @@ class Alert:
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = [
-        'recipient', 'not_on', 'events', 'format', 'reminder', 'description',
-        'enabled',
-    ]
-    FIELDS_ALL = FIELDS_CHANGE
+    FIELDS_CHANGE = ['recipient', 'not_on', 'events', 'format', 'reminder', 'description']
+    FIELDS_ALL = ['enabled']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'not_on': 'noton',
     }

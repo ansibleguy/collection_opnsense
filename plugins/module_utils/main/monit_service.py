@@ -15,6 +15,7 @@ class Service:
         'del': 'delService',
         'set': 'setService',
         'search': 'get',
+        'toggle': 'toggleService',
     }
     API_KEY = 'service'
     API_MOD = 'monit'
@@ -23,9 +24,9 @@ class Service:
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
         'type', 'pidfile', 'match', 'path', 'service_timeout', 'address', 'interface',
-        'start', 'stop', 'tests', 'depends', 'polltime', 'description', 'enabled',
+        'start', 'stop', 'tests', 'depends', 'polltime', 'description',
     ]
-    FIELDS_ALL = ['name']
+    FIELDS_ALL = ['name', 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     INT_VALIDATIONS = {
         'service_timeout': {'min': 1, 'max': 86400},

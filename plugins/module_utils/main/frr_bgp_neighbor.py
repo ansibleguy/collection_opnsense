@@ -28,10 +28,11 @@ class Neighbor:
         'multi_hop', 'multi_protocol', 'rrclient', 'bfd', 'send_default_route',
         'as_override', 'disable_connected_check', 'keepalive', 'hold_down',
         'connect_timer', 'description', 'prefix_list_in', 'prefix_list_out',
-        'route_map_in', 'route_map_out', 'enabled',
+        'route_map_in', 'route_map_out',
     ]
     FIELDS_DIFF_EXCLUDE = ['password']
-    FIELDS_ALL = FIELDS_CHANGE
+    FIELDS_ALL = ['enabled']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'as_number': 'remoteas',
         'ip': 'address',
@@ -215,12 +216,6 @@ class Neighbor:
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def reload(self):
         self.b.reload()

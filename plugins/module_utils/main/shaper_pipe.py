@@ -108,7 +108,7 @@ class Pipe:
         self.b.create()
 
     def update(self):
-        self.b.update(enable_switch=True)
+        self.b.update()
 
     def process(self):
         self.b.process()

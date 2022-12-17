@@ -6,7 +6,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound
     validate_domain
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_port, is_true
+    validate_port, is_true, simplify_translate
 
 
 class Forward:
@@ -15,17 +15,22 @@ class Forward:
         'del': 'delDot',
         'set': 'setDot',
         'search': 'get',
+        'toggle': 'toggleDot',
     }
     API_KEY = 'dot'
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = ['domain', 'target', 'enabled', 'port']
-    FIELDS_ALL = ['type']
+    FIELDS_CHANGE = ['domain', 'target', 'port']
+    FIELDS_ALL = ['type', 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'target': 'server',
+    }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'int': ['port'],
     }
     EXIST_ATTR = 'fwd'
 
@@ -72,58 +77,12 @@ class Forward:
 
         return fwds
 
-    def create(self):
-        self.r['changed'] = True
-
-        if not self.m.check_mode:
-            self.s.post(
-                cnf={
-                    **self.call_cnf, **{
-                        'command': self.CMDS['add'],
-                        'data': self.b.build_request(),
-                    }
-                },
-                headers=self.call_headers,
-            )
-
-    def update(self):
-        # checking if changed
-        for field in self.FIELDS_CHANGE:
-            if self.fwd[field] != self.p[field]:
-                self.r['changed'] = True
-                break
-
-        # update if changed
-        if self.r['changed']:
-            if self.p['debug']:
-                self.m.warn(f"{self.r['diff']}")
-
-            if not self.m.check_mode:
-                self.s.post(
-                    cnf={
-                        **self.call_cnf, **{
-                            'command': self.CMDS['set'],
-                            'data': self.b.build_request(),
-                        }
-                    },
-                    headers=self.call_headers,
-                )
-
-    @staticmethod
-    def _simplify_existing(fwd: dict) -> dict:
+    def _simplify_existing(self, fwd: dict) -> dict:
         # makes processing easier
-        return {
-            'uuid': fwd['uuid'],
-            'domain': fwd['domain'],
-            'target': fwd['server'],
-            'port': int(fwd['port']),
-            'enabled': is_true(fwd['enabled']),
-        }
-
-    def _delete_call(self) -> dict:
-        return self.s.post(
-            cnf={**self.call_cnf, **{'command': self.CMDS['del']}},
-            headers=self.call_headers,
+        return simplify_translate(
+            existing=fwd,
+            typing=self.FIELDS_TYPING,
+            translate=self.FIELDS_TRANSLATE,
         )
 
     def get_existing(self) -> list:
@@ -131,6 +90,12 @@ class Forward:
 
     def process(self):
         self.b.process()
+
+    def create(self):
+        self.b.create()
+
+    def update(self):
+        self.b.update()
 
     def delete(self):
         self.b.delete()

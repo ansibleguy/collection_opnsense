@@ -56,6 +56,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         server: '192.168.0.1'
         description: 'ANSIBLE_TEST_1_1'
+        reload: false  # speed
       register: opn4
       failed_when: >
         opn4.failed or
@@ -67,6 +68,7 @@
         server: '192.168.0.1'
         description: 'ANSIBLE_TEST_1_1'
         enabled: false
+        reload: false  # speed
       register: opn6
       failed_when: >
         opn6.failed or
@@ -79,6 +81,7 @@
         server: '192.168.0.1'
         description: 'ANSIBLE_TEST_1_1'
         enabled: false
+        reload: false  # speed
       register: opn9
       failed_when: >
         opn9.failed or
@@ -90,6 +93,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         server: '192.168.0.1'
         description: 'ANSIBLE_TEST_1_1'
+        reload: false  # speed
       register: opn7
       failed_when: >
         opn7.failed or
@@ -101,6 +105,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         server: '192.168.1.1'
         description: 'ANSIBLE_TEST_1_2'
+        reload: false  # speed
       register: opn5
       failed_when: >
         opn5.failed or
@@ -111,6 +116,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         server: '192.168.1.1'
         description: 'ANSIBLE_TEST_1_2'
+        reload: false  # speed
       register: opn13
       failed_when: >
         opn13.failed or
@@ -123,6 +129,7 @@
         domain: 'dummy.local'
         server: '192.168.1.1'
         state: 'absent'
+        reload: false  # speed
       register: opn8
       failed_when: >
         opn8.failed or

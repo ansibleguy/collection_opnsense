@@ -23,7 +23,7 @@ class General:
         'forwarders', 'filter_aaaa_v4', 'filter_aaaa_v6', 'filter_aaaa_acl', 'log_size',
         'cache_size', 'recursion_acl', 'transfer_acl', 'dnssec_validation', 'hide_hostname',
         'hide_version', 'prefetch', 'ratelimit', 'ratelimit_count', 'ratelimit_except',
-        'enabled',
+        'enabled'
     ]
     FIELDS_ALL = FIELDS_CHANGE
     FIELDS_TRANSLATE = {
@@ -163,7 +163,7 @@ class General:
         return self._search_call()
 
     def update(self):
-        self.b.update()
+        self.b.update(enable_switch=False)
 
     def reload(self):
         self.b.reload()

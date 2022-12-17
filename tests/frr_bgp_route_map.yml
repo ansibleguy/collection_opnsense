@@ -233,7 +233,6 @@
         prefix_list: {'ANSIBLE_TEST_3_1': 50}
         id: 65
         action: 'permit'
-        debug: true
       register: opn11
       failed_when: >
         opn11.failed or

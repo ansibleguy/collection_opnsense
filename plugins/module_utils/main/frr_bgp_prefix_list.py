@@ -22,11 +22,10 @@ class Prefix:
     API_CONT = 'bgp'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = [
-        'network', 'description', 'version', 'action', 'enabled',
-    ]
+    FIELDS_CHANGE = ['network', 'description', 'version', 'action']
     FIELDS_MATCH = ['seq', 'name']
-    FIELDS_ALL = FIELDS_MATCH.copy()
+    FIELDS_ALL = ['enabled']
+    FIELDS_ALL.extend(FIELDS_MATCH)
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'seq': 'seqnumber',
@@ -108,12 +107,6 @@ class Prefix:
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def reload(self):
         self.b.reload()

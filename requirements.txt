@@ -1,0 +1,3 @@
+# pip requirements
+httpx
+validators

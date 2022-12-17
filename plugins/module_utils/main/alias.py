@@ -102,7 +102,7 @@ class Alias:
     def update(self):
         # checking if alias changed
         if self.alias['type'] == self.p['type']:
-            self.b.update(enable_switch=True)
+            self.b.update()
 
         else:
             self.r['changed'] = True

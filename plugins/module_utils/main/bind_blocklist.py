@@ -18,8 +18,8 @@ class Blocklist:
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'safe_google', 'safe_duckduckgo', 'safe_youtube', 'safe_bing', 'enabled',
-        'exclude', 'block'
+        'safe_google', 'safe_duckduckgo', 'safe_youtube', 'safe_bing',
+        'exclude', 'block', 'enabled',
     ]
     FIELDS_ALL = FIELDS_CHANGE
     FIELDS_TRANSLATE = {
@@ -77,7 +77,7 @@ class Blocklist:
         return self._search_call()
 
     def update(self):
-        self.b.update()
+        self.b.update(enable_switch=False)
 
     def reload(self):
         self.b.reload()

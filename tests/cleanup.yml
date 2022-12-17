@@ -230,7 +230,7 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
-    ansibleguy.opnsense.bind_record:
+    ansibleguy.opnsense.bind_record_multi:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
@@ -563,15 +563,20 @@
         enabled: false
 
     - name: Cleanup BIND Records
-      ansibleguy.opnsense.bind_record:
-        domain: 'test4.ansibleguy'
-        name: "{{ item.n }}"
-        type: "{{ item.t | default(omit) }}"
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'test4.ansibleguy':
+            - 'test1'
+            - name: 'test1'
+              type: 'TXT'
+            - 'test2'
+            - name: 'test2'
+              type: 'TXT'
+            - 'test3'
+            - name: 'test4'
+              type: 'CNAME'
         state: 'absent'
       ignore_errors: true  # domain does not exist
-      loop:
-        - {'n': 'test1'}
-        - {'n': 'test2', 't': 'TXT'}
 
     - name: Cleanup BIND Domains
       ansibleguy.opnsense.bind_domain:

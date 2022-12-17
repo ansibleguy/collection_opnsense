@@ -15,6 +15,7 @@ class Domain:
         'del': 'delDomainOverride',
         'set': 'setDomainOverride',
         'search': 'get',
+        'toggle': 'toggleDomainOverride',
     }
     API_KEY_1 = 'unbound'
     API_KEY_2 = 'domains'
@@ -23,8 +24,9 @@ class Domain:
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = ['domain', 'server', 'description', 'enabled']
-    FIELDS_ALL = FIELDS_CHANGE
+    FIELDS_CHANGE = ['domain', 'server', 'description']
+    FIELDS_ALL = ['enabled']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'target': 'server',
     }

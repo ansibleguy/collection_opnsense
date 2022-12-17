@@ -25,9 +25,10 @@ class Interface:
     FIELDS_CHANGE = [
         'interface', 'area', 'passive', 'cost', 'cost_demoted', 'carp_depend_on',
         'hello_interval', 'dead_interval', 'retransmit_interval', 'transmit_delay',
-        'priority', 'network_type', 'enabled',
+        'priority', 'network_type',
     ]
-    FIELDS_ALL = FIELDS_CHANGE
+    FIELDS_ALL = ['enabled']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
     INT_VALIDATIONS = {
         'cost': {'min': 0, 'max': 4294967295},
         'hello_interval': {'min': 0, 'max': 4294967295},
@@ -111,12 +112,6 @@ class Interface:
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def reload(self):
         self.b.reload()

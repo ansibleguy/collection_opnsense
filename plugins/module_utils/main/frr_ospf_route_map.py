@@ -23,8 +23,8 @@ class RouteMap:
     API_CONT = 'ospfsettings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = ['action', 'id', 'prefix_list', 'enabled', 'set']
-    FIELDS_ALL = [FIELD_ID]
+    FIELDS_CHANGE = ['action', 'id', 'prefix_list', 'set']
+    FIELDS_ALL = [FIELD_ID, 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'prefix_list': 'match2',
@@ -145,12 +145,6 @@ class RouteMap:
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def reload(self):
         self.b.reload()

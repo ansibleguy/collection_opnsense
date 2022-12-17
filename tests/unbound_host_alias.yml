@@ -40,6 +40,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         value: '192.168.0.1'
         description: 'ANSIBLE_TEST_2_1'
+        reload: false  # speed
 
     - name: Removing - does not exist
       ansibleguy.opnsense.unbound_host_alias:
@@ -76,6 +77,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         target: 'host.opnsense.test.ansibleguy.net'
         description: 'ANSIBLE_TEST_1_1'
+        reload: false  # speed
       register: opn4
       failed_when: >
         opn4.failed or
@@ -89,6 +91,7 @@
         target: 'host.opnsense.test.ansibleguy.net'
         description: 'ANSIBLE_TEST_1_1'
         enabled: false
+        reload: false  # speed
       register: opn6
       failed_when: >
         opn6.failed or
@@ -102,6 +105,7 @@
         target: 'host.opnsense.test.ansibleguy.net'
         description: 'ANSIBLE_TEST_1_1'
         enabled: false
+        reload: false  # speed
       register: opn9
       failed_when: >
         opn9.failed or
@@ -114,6 +118,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         target: 'host.opnsense.test.ansibleguy.net'
         description: 'ANSIBLE_TEST_1_1'
+        reload: false  # speed
       register: opn7
       failed_when: >
         opn7.failed or
@@ -126,6 +131,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         target: 'host.opnsense.test.ansibleguy.net'
         description: 'ANSIBLE_TEST_1_2'
+        reload: false  # speed
       register: opn5
       failed_when: >
         opn5.failed or
@@ -138,6 +144,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         target: 'host.opnsense.test.ansibleguy.net'
         description: 'ANSIBLE_TEST_1_2'
+        reload: false  # speed
       register: opn13
       failed_when: >
         opn13.failed or
@@ -150,6 +157,7 @@
         alias: 'd'
         domain: 'opnsense.test.ansibleguy.net'
         state: 'absent'
+        reload: false  # speed
       register: opn8
       failed_when: >
         opn8.failed or

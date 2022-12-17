@@ -23,8 +23,8 @@ class Prefix:
     API_CONT = 'ospfsettings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = ['seq', 'action', 'network', 'enabled']
-    FIELDS_ALL = [FIELD_ID]
+    FIELDS_CHANGE = ['seq', 'action', 'network']
+    FIELDS_ALL = [FIELD_ID, 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     INT_VALIDATIONS = {
         'seq': {'min': 10, 'max': 99},
@@ -91,12 +91,6 @@ class Prefix:
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def reload(self):
         self.b.reload()

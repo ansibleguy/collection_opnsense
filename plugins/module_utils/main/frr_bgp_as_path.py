@@ -23,10 +23,8 @@ class AsPath:
     API_CONT = 'bgp'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = [
-        'number', 'action', 'as_pattern', 'enabled',
-    ]
-    FIELDS_ALL = [FIELD_ID]
+    FIELDS_CHANGE = ['number', 'action', 'as_pattern']
+    FIELDS_ALL = [FIELD_ID, 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'as_pattern': 'as',
@@ -94,12 +92,6 @@ class AsPath:
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def reload(self):
         self.b.reload()

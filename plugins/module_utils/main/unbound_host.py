@@ -15,6 +15,7 @@ class Host:
         'del': 'delHostOverride',
         'set': 'setHostOverride',
         'search': 'get',
+        'toggle': 'toggleHostOverride',
     }
     API_KEY = 'host'
     API_KEY_1 = 'unbound'
@@ -25,9 +26,10 @@ class Host:
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
         'hostname', 'domain', 'record_type', 'prio', 'value',
-        'description', 'enabled'
+        'description',
     ]
-    FIELDS_ALL = FIELDS_CHANGE
+    FIELDS_ALL = ['enabled']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
     EXIST_ATTR = 'host'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):

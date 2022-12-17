@@ -20,8 +20,8 @@ class Neighbor:
     API_KEY_1 = 'neighbors'
     API_MOD = 'quagga'
     API_CONT = 'bfd'
-    FIELDS_CHANGE = ['description', 'enabled']
-    FIELDS_ALL = [FIELD_ID]
+    FIELDS_CHANGE = ['description']
+    FIELDS_ALL = [FIELD_ID, 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     EXIST_ATTR = 'neighbor'
     FIELDS_TRANSLATE = {
@@ -82,9 +82,3 @@ class Neighbor:
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()

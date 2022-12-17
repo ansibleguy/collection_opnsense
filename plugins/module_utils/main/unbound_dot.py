@@ -15,6 +15,7 @@ class DnsOverTls:
         'del': 'delForward',
         'set': 'setForward',
         'search': 'get',
+        'toggle': 'toggleForward',
     }
     API_KEY = 'dot'
     API_KEY_1 = 'unbound'
@@ -23,8 +24,8 @@ class DnsOverTls:
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = ['domain', 'target', 'enabled', 'port', 'verify']
-    FIELDS_ALL = ['type']
+    FIELDS_CHANGE = ['domain', 'target', 'port', 'verify']
+    FIELDS_ALL = ['type', 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'target': 'server',

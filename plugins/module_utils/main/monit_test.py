@@ -101,7 +101,7 @@ class Test:
         self.b.create()
 
     def update(self):
-        self.b.update()
+        self.b.update(enable_switch=False)
 
     def delete(self):
         self.b.delete()

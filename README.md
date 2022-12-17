@@ -70,7 +70,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Packages**            | ansibleguy.opnsense.package                | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)            | stable   |
 | **System**              | ansibleguy.opnsense.system                 | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)             | unstable |
 | **Cron-Jobs**           | ansibleguy.opnsense.cron                   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_cron.md)               | unstable |
-| **Routes**              | ansibleguy.opnsense.route                  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_route.md)              | stable |
+| **Routes**              | ansibleguy.opnsense.route                  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_route.md)              | unstable |
 | **DNS**                 | ansibleguy.opnsense.unbound_forward        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_forwarding.md) | stable   |
 | **DNS**                 | ansibleguy.opnsense.unbound_dot            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_dot.md)        | stable   |
 | **DNS**                 | ansibleguy.opnsense.unbound_host           | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host.md)       | stable   |

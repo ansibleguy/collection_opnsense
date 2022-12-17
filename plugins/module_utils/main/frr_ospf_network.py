@@ -22,10 +22,9 @@ class Network:
     API_CONT = 'ospfsettings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = [
-        'ip', 'mask', 'area', 'area_range', 'prefix_list_in', 'prefix_list_out', 'enabled',
-    ]
-    FIELDS_ALL = FIELDS_CHANGE
+    FIELDS_CHANGE = ['ip', 'mask', 'area', 'area_range', 'prefix_list_in', 'prefix_list_out']
+    FIELDS_ALL = ['enabled']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'ip': 'ipaddr',
         'mask': 'netmask',
@@ -165,12 +164,6 @@ class Network:
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def reload(self):
         self.b.reload()

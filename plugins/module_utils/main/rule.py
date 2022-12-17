@@ -136,7 +136,7 @@ class Rule:
         self.b.create()
 
     def update(self):
-        self.b.update(enable_switch=True)
+        self.b.update()
 
     def delete(self):
         self.b.delete()
