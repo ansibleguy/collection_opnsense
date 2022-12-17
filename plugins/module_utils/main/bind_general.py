@@ -113,10 +113,10 @@ class General(BaseModule):
         if self.acls_needed:
             self._find_links()
 
-        self.r['diff']['before'] = self.settings
-        self.r['diff']['after'] = {
+        self.r['diff']['before'] = self.b.build_diff(self.settings)
+        self.r['diff']['after'] = self.b.build_diff({
             k: v for k, v in self.p.items() if k in self.settings
-        }
+        })
 
     def get_existing(self) -> dict:
         if self.acls_needed:

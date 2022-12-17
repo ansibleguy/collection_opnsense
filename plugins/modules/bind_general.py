@@ -73,7 +73,7 @@ def run_module():
             description='Specify the IPv6 address used as a source for zone transfers'
         ),
         forwarders=dict(
-            type='list', elements='str', required=False, default=[''],
+            type='list', elements='str', required=False, default=[],
             aliases=['fwd'],
             description='Set one or more hosts to send your DNS queries if the request is unknown'
         ),
@@ -86,7 +86,7 @@ def run_module():
             description='This will filter AAAA records on IPv6 Clients'
         ),
         filter_aaaa_acl=dict(
-            type='list', elements='str', required=False, default=[''],
+            type='list', elements='str', required=False, default=[],
             description='Specifies a list of client addresses for which AAAA filtering is to be applied'
         ),
         log_size=dict(

@@ -35,7 +35,7 @@ def run_module():
             type='str', required=False, default='master', choises=['master', 'slave']
         ),
         master=dict(
-            type='list', elements='str', required=False, aliases=['master_ip'], default=[''],
+            type='list', elements='str', required=False, aliases=['master_ip'], default=[],
             description='Set the IP address of master server when using slave mode'
         ),
         transfer_key_algo=dict(
@@ -48,7 +48,7 @@ def run_module():
         transfer_key_name=dict(type='str', required=False, default=''),
         transfer_key=dict(type='str', required=False, default='', no_log=True),
         allow_notify=dict(
-            type='list', elements='str', required=False, default=[''],
+            type='list', elements='str', required=False, default=[],
             aliases=['allow_notify_slave'],
             description='A list of allowed IP addresses to receive notifies from'
         ),
