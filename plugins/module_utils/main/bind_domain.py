@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    simplify_translate, validate_int_fields, is_ip
+    simplify_translate, validate_int_fields, is_ip, get_selected
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
 
@@ -72,6 +72,7 @@ class Domain:
         }
         self.existing_entries = None
         self.existing_acls = None
+        self.existing_records = None
         self.acls_needed = False
         self.b = Base(instance=self)
 
@@ -90,13 +91,26 @@ class Domain:
                 self.CMDS['add'] = 'addSlaveDomain'
 
             if self.p['query_acl'] != '' or self.p['transfer_acl'] != '':
-                # to save time on call if not needed
                 self.acls_needed = True
+                self._search_acls()
 
         self.b.find(match_fields=[self.FIELD_ID])
 
         if self.exists:
             self.call_cnf['params'] = [self.domain['uuid']]
+
+            if self.p['state'] != 'present':
+                # checking if domain has any record left before removing it; plugin seems to lack validation
+                self._search_records()
+
+                if self.existing_records is not None and len(self.existing_records) > 0:
+                    for record in self.existing_records.values():
+                        if get_selected(record['domain']) == self.domain['uuid']:
+                            self.m.fail_json(
+                                f"Unable to remove domain '{self.domain['name']}' - it has at least "
+                                f"one existing record: '{get_selected(record['type'])}: "
+                                f"{record['name']}.{self.domain['name']}'"
+                            )
 
         if self.acls_needed:
             self._find_links()
@@ -132,13 +146,16 @@ class Domain:
     def process(self):
         self.b.process()
 
-    def _search_call(self) -> list:
-        if self.acls_needed:
-            self.existing_acls = self.s.get(cnf={
-                **self.call_cnf, **{'command': self.CMDS['search'], 'controller': 'acl'}
-            })['acl']['acls']['acl']
+    def _search_acls(self):
+        self.existing_acls = self.s.get(cnf={
+            **self.call_cnf, **{'command': self.CMDS['search'], 'controller': 'acl'}
+        })['acl']['acls']['acl']
 
-        return self.b.search()
+    def _search_records(self):
+        # to check if domain is still in use
+        self.existing_records = self.s.get(cnf={
+            **self.call_cnf, **{'command': self.CMDS['search'], 'controller': 'record'}
+        })['record']['records']['record']
 
     def get_existing(self) -> list:
         return self.b.get_existing()

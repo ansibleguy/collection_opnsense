@@ -179,6 +179,14 @@
         opn8.data | length != 1
       when: not ansible_check_mode
 
+    - name: Fail to cleanup domain with active records (would leave orphaned config)
+      ansibleguy.opnsense.bind_domain:
+        name: 'test4.ansibleguy'
+        state: 'absent'
+      register: opn14
+      failed_when: not opn14.failed
+      when: not ansible_check_mode
+
     - name: Cleanup
       ansibleguy.opnsense.bind_record:
         domain: 'test4.ansibleguy'
