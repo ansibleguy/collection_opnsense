@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, simplify_translate, validate_str_fields
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields, validate_str_fields
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class RouteMap:
+class RouteMap(BaseModule):
     FIELD_ID = 'name'
     CMDS = {
         'add': 'addRoutemap',
@@ -52,18 +52,12 @@ class RouteMap:
     EXIST_ATTR = 'route_map'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.route_map = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.b = Base(instance=self)
-        self.existing_entries = None
         self.existing_paths = None
         self.existing_prefixes = None
         self.existing_communities = None
@@ -90,9 +84,6 @@ class RouteMap:
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    def process(self):
-        self.b.process()
-
     def _search_call(self) -> dict:
         raw = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
@@ -103,14 +94,6 @@ class RouteMap:
         self.existing_communities = raw['communitylists']['communitylist']
 
         return raw[self.API_KEY_2][self.API_KEY]
-
-    def _simplify_existing(self, route_map: dict) -> dict:
-        # makes processing easier
-        return simplify_translate(
-            existing=route_map,
-            typing=self.FIELDS_TYPING,
-            translate=self.FIELDS_TRANSLATE,
-        )
 
     def _find_links(self):
         links = {
@@ -203,15 +186,3 @@ class RouteMap:
             existing.append(entry)
 
         return existing
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

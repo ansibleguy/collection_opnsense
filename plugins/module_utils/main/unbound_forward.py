@@ -4,12 +4,12 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_port, is_true, simplify_translate
+    validate_port, is_true
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Forward:
+class Forward(BaseModule):
     CMDS = {
         'add': 'addDot',
         'del': 'delDot',
@@ -35,11 +35,7 @@ class Forward:
     EXIST_ATTR = 'fwd'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.fwd = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
@@ -50,8 +46,6 @@ class Forward:
         }
         # else the type will always be 'dns-over-tls':
         #   https://github.com/opnsense/core/commit/6832fd75a0b41e376e80f287f8ad3cfe599ea3d1
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         validate_domain(module=self.m, domain=self.p['domain'])
@@ -76,29 +70,3 @@ class Forward:
                     fwds.append(dot)
 
         return fwds
-
-    def _simplify_existing(self, fwd: dict) -> dict:
-        # makes processing easier
-        return simplify_translate(
-            existing=fwd,
-            typing=self.FIELDS_TYPING,
-            translate=self.FIELDS_TRANSLATE,
-        )
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def process(self):
-        self.b.process()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

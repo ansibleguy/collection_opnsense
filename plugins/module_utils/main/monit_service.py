@@ -3,12 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_matching, is_true, get_simple_existing, validate_int_fields, \
-    get_selected, get_selected_list, is_ip
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    get_simple_existing, validate_int_fields, is_ip
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Service:
+class Service(BaseModule):
     FIELD_ID = 'name'
     CMDS = {
         'add': 'addService',
@@ -34,22 +33,22 @@ class Service:
     FIELDS_TRANSLATE = {
         'service_timeout': 'timeout',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'list': ['tests', 'depends'],
+        'select': ['type', 'interface'],
+        'int': ['service_timeout'],
+    }
     EXIST_ATTR = 'service'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.service = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_services = None
         self.existing_tests = None
-        self.b = Base(instance=self)
 
     def check(self):
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
@@ -75,8 +74,7 @@ class Service:
                     f"The address value '{self.p['address']}' is not a valid IP!"
                 )
 
-        # checking if item exists
-        self._find_service()
+        self.b.find(match_fields=[self.FIELD_ID])
         if self.exists:
             self.call_cnf['params'] = [self.service['uuid']]
 
@@ -84,21 +82,6 @@ class Service:
             self.p['tests'] = self._find_tests()
             self.p['depends'] = self._find_dependencies()
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    def _find_service(self):
-        if self.existing_services is None:
-            self.existing_services = self._search_call()
-
-        match = get_matching(
-            module=self.m, existing_items=self.existing_services,
-            compare_item=self.p, match_fields=[self.FIELD_ID],
-            simplify_func=self._simplify_existing,
-        )
-
-        if match is not None:
-            self.service = match
-            self.r['diff']['before'] = self.b.build_diff(data=self.service)
-            self.exists = True
 
     def _find_tests(self) -> list:
         tests = []
@@ -122,8 +105,8 @@ class Service:
         existing = {}
 
         if len(self.p['depends']) > 0:
-            if len(self.existing_services) > 0:
-                for uuid, svc in self.existing_services.items():
+            if len(self.existing_entries) > 0:
+                for uuid, svc in self.existing_entries.items():
                     existing[svc['name']] = uuid
 
             for svc in self.p['depends']:
@@ -135,9 +118,10 @@ class Service:
         return services
 
     def get_existing(self) -> list:
+        # pylint: disable=W0212
         existing = get_simple_existing(
             entries=self._search_call(),
-            simplify_func=self._simplify_existing
+            simplify_func=self.b._simplify_existing
         )
 
         for svc in existing:
@@ -160,40 +144,3 @@ class Service:
         })['monit']
         self.existing_tests = raw['test']
         return raw[self.API_KEY]
-
-    @staticmethod
-    def _simplify_existing(service: dict) -> dict:
-        # makes processing easier
-        return {
-            'enabled': is_true(service['enabled']),
-            'uuid': service['uuid'],
-            'name': service['name'],
-            'type': get_selected(service['type']),
-            'pidfile': service['pidfile'],
-            'match': service['match'],
-            'path': service['path'],
-            'service_timeout': int(service['timeout']),
-            'address': service['address'],
-            'interface': get_selected(service['interface']),
-            'start': service['start'],
-            'stop': service['stop'],
-            'tests': get_selected_list(service['tests']),
-            'depends': get_selected_list(service['depends']),
-            'polltime': service['polltime'],
-            'description': service['description'],
-        }
-
-    def process(self):
-        self.b.process()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

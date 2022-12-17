@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields, get_selected
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class AsPath:
+class AsPath(BaseModule):
     FIELD_ID = 'description'
     CMDS = {
         'add': 'addAspath',
@@ -29,24 +29,22 @@ class AsPath:
     FIELDS_TRANSLATE = {
         'as_pattern': 'as',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'select': ['action'],
+    }
     INT_VALIDATIONS = {
         'number': {'min': 10, 'max': 99},
     }
     EXIST_ATTR = 'as_path'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.as_path = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.b = Base(instance=self)
-        self.existing_entries = None
 
     def check(self):
         if self.p['state'] == 'present':
@@ -65,33 +63,3 @@ class AsPath:
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    def process(self):
-        self.b.process()
-
-    @staticmethod
-    def _simplify_existing(as_path: dict) -> dict:
-        # makes processing easier
-        return {
-            'description': as_path['description'],
-            'number': as_path['number'],
-            'as_pattern': as_path['as'],
-            'action': get_selected(as_path['action']),
-            'enabled': is_true(as_path['enabled']),
-            'uuid': as_path['uuid'],
-        }
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

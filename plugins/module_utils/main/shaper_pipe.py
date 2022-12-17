@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-     is_true, get_selected, validate_int_fields
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+     validate_int_fields
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Pipe:
+class Pipe(BaseModule):
     CMDS = {
         'add': 'addPipe',
         'del': 'delPipe',
@@ -33,6 +33,10 @@ class Pipe:
     FIELDS_TRANSLATE = {
         'bandwidth_metric': 'bandwidthMetric',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled', 'pie_enable', 'codel_enable', 'codel_ecn_enable'],
+        'select': ['bandwidth_metric', 'mask', 'scheduler'],
+    }
     INT_VALIDATIONS = {
         # 'id': {'min': 1, 'max': 65535},
         'queue': {'min': 2, 'max': 100},
@@ -48,21 +52,16 @@ class Pipe:
     TIMEOUT = 20.0  # 'get' timeout
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.s = Session(
             module=module,
             timeout=self.TIMEOUT,
         ) if session is None else session
-        self.exists = False
         self.pipe = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         if self.p['state'] == 'present' and self.p['bandwidth'] is None:
@@ -76,45 +75,3 @@ class Pipe:
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    @staticmethod
-    def _simplify_existing(pipe: dict) -> dict:
-        # makes processing easier
-        return {
-            'uuid': pipe['uuid'],
-            'enabled': is_true(pipe['enabled']),
-            'bandwidth': pipe['bandwidth'],
-            'bandwidth_metric': get_selected(pipe['bandwidthMetric']),
-            'queue': pipe['queue'],
-            'mask': get_selected(pipe['mask']),
-            'buckets': pipe['buckets'],
-            'scheduler': get_selected(pipe['scheduler']),
-            'pie_enable': is_true(pipe['pie_enable']),
-            'codel_enable': is_true(pipe['codel_enable']),
-            'codel_ecn_enable': is_true(pipe['codel_ecn_enable']),
-            'codel_target': pipe['codel_target'],
-            'codel_interval': pipe['codel_interval'],
-            'fqcodel_quantum': pipe['fqcodel_quantum'],
-            'fqcodel_limit': pipe['fqcodel_limit'],
-            'fqcodel_flows': pipe['fqcodel_flows'],
-            'delay': pipe['delay'],
-            'description': pipe['description'],
-        }
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def process(self):
-        self.b.process()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields, get_selected, validate_str_fields
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields, validate_str_fields
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Prefix:
+class Prefix(BaseModule):
     CMDS = {
         'add': 'addPrefixlist',
         'del': 'delPrefixlist',
@@ -30,6 +30,10 @@ class Prefix:
     FIELDS_TRANSLATE = {
         'seq': 'seqnumber',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'select': ['version', 'action'],
+    }
     INT_VALIDATIONS = {
         'seq': {'min': 1, 'max': 4294967294},
     }
@@ -42,18 +46,12 @@ class Prefix:
     EXIST_ATTR = 'prefix_list'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.prefix_list = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.b = Base(instance=self)
-        self.existing_entries = None
         self.existing_prefixes = None
         self.existing_maps = None
 
@@ -81,20 +79,6 @@ class Prefix:
 
     def process(self):
         self.b.process()
-
-    @staticmethod
-    def _simplify_existing(prefix_list: dict) -> dict:
-        # makes processing easier
-        return {
-            'name': prefix_list['name'],
-            'network': prefix_list['network'],
-            'description': prefix_list['description'],
-            'version': get_selected(prefix_list['version']),
-            'seq': prefix_list['seqnumber'],
-            'action': get_selected(prefix_list['action']),
-            'enabled': is_true(prefix_list['enabled']),
-            'uuid': prefix_list['uuid'],
-        }
 
     def get_existing(self) -> list:
         return self.b.get_existing()

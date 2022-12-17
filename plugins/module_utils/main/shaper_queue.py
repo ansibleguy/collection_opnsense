@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, get_selected, validate_int_fields
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Queue:
+class Queue(BaseModule):
     CMDS = {
         'add': 'addQueue',
         'del': 'delQueue',
@@ -34,27 +34,26 @@ class Queue:
         'codel_target': {'min': 1, 'max': 10000},
         'codel_interval': {'min': 1, 'max': 10000},
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled', 'pie_enable', 'codel_enable', 'codel_ecn_enable'],
+        'select': ['mask', 'pipe'],
+    }
     EXIST_ATTR = 'queue'
     TIMEOUT = 20.0  # 'get' timeout
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.s = Session(
             module=module,
             timeout=self.TIMEOUT,
         ) if session is None else session
-        self.exists = False
         self.queue = {}
         self.pipe_found = False
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
         self.existing_pipes = None
-        self.b = Base(instance=self)
 
     def check(self):
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
@@ -90,24 +89,6 @@ class Queue:
         self.existing_pipes = raw['pipes']['pipe']
         return raw[self.API_KEY_2][self.API_KEY]
 
-    @staticmethod
-    def _simplify_existing(queue: dict) -> dict:
-        # makes processing easier
-        return {
-            'uuid': queue['uuid'],
-            'enabled': is_true(queue['enabled']),
-            'weight': queue['weight'],
-            'mask': get_selected(queue['mask']),
-            'buckets': queue['buckets'],
-            'pie_enable': is_true(queue['pie_enable']),
-            'codel_enable': is_true(queue['codel_enable']),
-            'codel_ecn_enable': is_true(queue['codel_ecn_enable']),
-            'codel_target': queue['codel_target'],
-            'codel_interval': queue['codel_interval'],
-            'description': queue['description'],
-            'pipe': get_selected(queue['pipe']),
-        }
-
     def _find_pipe(self):
         if len(self.existing_pipes) > 0:
             for uuid, pipe in self.existing_pipes.items():
@@ -124,18 +105,3 @@ class Queue:
             existing.append(entry)
 
         return existing
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def process(self):
-        self.b.process()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

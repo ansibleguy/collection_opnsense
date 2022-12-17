@@ -6,10 +6,10 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main im
     simplify_translate
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Route:
+class Route(BaseModule):
     FIELD_ID = 'uuid'
     CMDS = {
         'add': 'addroute',
@@ -36,18 +36,12 @@ class Route:
     EXIST_ATTR = 'route'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.route = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         try:
@@ -76,21 +70,3 @@ class Route:
         )
         simple['gateway'] = route['gateway'].rsplit('-', 1)[0].strip()
         return simple
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def process(self):
-        self.b.process()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

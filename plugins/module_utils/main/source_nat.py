@@ -3,13 +3,13 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields, get_selected
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.rule import \
     validate_values
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class SNat:
+class SNat(BaseModule):
     CMDS = {
         'add': 'addRule',
         'del': 'delRule',
@@ -35,24 +35,24 @@ class SNat:
         'destination_invert': 'destination_not',
         'no_nat': 'nonat',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled', 'log', 'source_invert', 'no_nat', 'destination_invert'],
+        'list': [],
+        'select': ['interface', 'ip_protocol', 'protocol'],
+        'int': [],
+    }
     INT_VALIDATIONS = {
         'sequence': {'min': 1, 'max': 99999},
     }
     EXIST_ATTR = 'rule'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.rule = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         if self.p['state'] == 'present':
@@ -77,29 +77,6 @@ class SNat:
             validate_values(module=self.m, cnf=self.p, error_func=self.m.fail_json)
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    @staticmethod
-    def _simplify_existing(rule: dict) -> dict:
-        # makes processing easier
-        simple = {
-            'uuid': rule['uuid'],
-            'enabled': is_true(rule['enabled']),
-            'log': is_true(rule['log']),
-            'source_invert': is_true(rule['source_not']),
-            'no_nat': is_true(rule['nonat']),
-            'destination_invert': is_true(rule['destination_not']),
-            'interface': get_selected(data=rule['interface']),
-            'ip_protocol': get_selected(data=rule['ipprotocol']),
-            'protocol': get_selected(data=rule['protocol']),
-        }
-
-        for field in [
-            'sequence', 'source_net', 'source_port', 'destination_net',
-            'destination_port', 'description', 'target', 'target_port',
-        ]:
-            simple[field] = rule[field]
-
-        return simple
-
     def _build_log_name(self) -> str:
         if self.p['description'] not in [None, '']:
             log_name = self.p['description']
@@ -119,24 +96,3 @@ class SNat:
             log_name += f" =NAT=> {self.p['target']}:{self.p['target_port']}"
 
         return log_name
-
-    def process(self):
-        self.b.process()
-
-    def _search_call(self) -> list:
-        return self.b.search()
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

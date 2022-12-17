@@ -4,10 +4,10 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     get_selected
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class KeyPair:
+class KeyPair(BaseModule):
     FIELD_ID = 'name'
     CMDS = {
         'add': 'addItem',
@@ -35,21 +35,16 @@ class KeyPair:
     TIMEOUT = 30.0  # ipsec reload
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.s = Session(
             module=module,
             timeout=self.TIMEOUT,
         ) if session is None else session
-        self.exists = False
         self.key = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         if self.p['state'] == 'present':
@@ -102,20 +97,5 @@ class KeyPair:
 
         return simple
 
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
     def update(self):
         self.b.update(enable_switch=False)
-
-    def process(self):
-        self.b.process()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

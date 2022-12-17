@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields, get_selected, is_ip_or_network
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields, is_ip_or_network
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Network:
+class Network(BaseModule):
     CMDS = {
         'add': 'addNetwork',
         'del': 'delNetwork',
@@ -32,24 +32,22 @@ class Network:
         'prefix_list_in': 'linkedPrefixlistIn',
         'prefix_list_out': 'linkedPrefixlistOut',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'select': ['prefix_list_in', 'prefix_list_out'],
+    }
     INT_VALIDATIONS = {
         'mask': {'min': 0, 'max': 32},
     }
     EXIST_ATTR = 'net'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.net = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.b = Base(instance=self)
-        self.existing_entries = None
         self.existing_paths = None
         self.existing_prefixes = None
         self.existing_communities = None
@@ -77,9 +75,6 @@ class Network:
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    def process(self):
-        self.b.process()
-
     def _search_call(self) -> dict:
         raw = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
@@ -87,20 +82,6 @@ class Network:
 
         self.existing_prefixes = raw['prefixlists']['prefixlist']
         return raw[self.API_KEY_2][self.API_KEY]
-
-    @staticmethod
-    def _simplify_existing(net: dict) -> dict:
-        # makes processing easier
-        return {
-            'ip': net['ipaddr'],
-            'mask': net['netmask'],
-            'area': net['area'],
-            'area_range': net['arearange'],
-            'prefix_list_in': get_selected(net['linkedPrefixlistIn']),
-            'prefix_list_out': get_selected(net['linkedPrefixlistOut']),
-            'enabled': is_true(net['enabled']),
-            'uuid': net['uuid'],
-        }
 
     def _find_links(self):
         links = {
@@ -155,15 +136,3 @@ class Network:
             existing.append(entry)
 
         return existing
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

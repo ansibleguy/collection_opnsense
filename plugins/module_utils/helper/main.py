@@ -1,3 +1,4 @@
+from typing import Callable
 from ipaddress import ip_address, ip_network
 from re import match as regex_match
 
@@ -66,7 +67,7 @@ def valid_hostname(name: str) -> bool:
 
 def get_matching(
         module: AnsibleModule, existing_items: (dict, list), compare_item: dict,
-        match_fields: list, simplify_func=None,
+        match_fields: list, simplify_func: Callable = None,
 ) -> (dict, None):
     matching = None
 
@@ -104,7 +105,7 @@ def get_matching(
 
 def get_multiple_matching(
         module: AnsibleModule, existing_items: (dict, list), compare_item: dict,
-        match_fields: list, simplify_func=None,
+        match_fields: list, simplify_func: Callable = None,
 ) -> list:
     matching = []
 
@@ -131,7 +132,7 @@ def get_multiple_matching(
     return matching
 
 
-def validate_port(module: AnsibleModule, port: (int, str), error_func=None) -> bool:
+def validate_port(module: AnsibleModule, port: (int, str), error_func: Callable = None) -> bool:
     if error_func is None:
         error_func = module.fail_json
 
@@ -150,7 +151,10 @@ def validate_port(module: AnsibleModule, port: (int, str), error_func=None) -> b
     return True
 
 
-def validate_int_fields(module: AnsibleModule, data: dict, field_minmax: dict, error_func=None):
+def validate_int_fields(
+        module: AnsibleModule, data: dict, field_minmax: dict,
+        error_func: Callable = None
+):
     if error_func is None:
         error_func = module.fail_json
 
@@ -171,15 +175,20 @@ def is_true(data: (str, int, bool)) -> bool:
 
 
 def get_selected(data: dict) -> (str, None):
-    if len(data) > 0:
+    if isinstance(data, dict):
         for key, values in data.items():
             if is_true(values['selected']):
                 return key
 
-    return None
+    # if function is re-applied
+    return data
 
 
 def get_selected_list(data: dict, remove_empty: bool = False) -> list:
+    if isinstance(data, list):
+        # if function is re-applied
+        return data
+
     selected = []
     if len(data) > 0:
         for key, values in data.items():
@@ -197,7 +206,10 @@ def to_digit(data: bool) -> int:
     return 1 if data else 0
 
 
-def get_simple_existing(entries: (dict, list), add_filter=None, simplify_func=None) -> list:
+def get_simple_existing(
+        entries: (dict, list), add_filter: Callable = None,
+        simplify_func: Callable = None
+) -> list:
     simple_entries = []
 
     if isinstance(entries, dict):
@@ -254,7 +266,7 @@ def sort_param_lists(params: dict):
 
 def simplify_translate(
         existing: dict, translate: dict = None, typing: dict = None,
-        bool_invert: list = None,
+        bool_invert: list = None, ignore: list = None
 ) -> dict:
     # pylint: disable=R0912
     simple = {}
@@ -268,6 +280,9 @@ def simplify_translate(
     if bool_invert is None:
         bool_invert = []
 
+    if ignore is None:
+        ignore = []
+
     # translate api-fields to ansible-fields
     for k, v in translate.items():
         translate_fields.append(v)
@@ -276,7 +291,7 @@ def simplify_translate(
             simple[k] = existing[v]
 
     for k in existing:
-        if k not in translate_fields:
+        if k not in translate_fields and k not in ignore:
             simple[k] = existing[k]
 
     # correct value types to match (for diff-checks)
@@ -286,10 +301,10 @@ def simplify_translate(
                 simple[f] = is_true(simple[f])
 
             elif t == 'int':
-                simple[f] = int(simple[f])
+                simple[f] = format_int(simple[f])
 
             elif t == 'list':
-                simple[f] = get_selected_list(simple[f])
+                simple[f] = get_selected_list(data=simple[f], remove_empty=True)
 
             elif t == 'select':
                 simple[f] = get_selected(simple[f])

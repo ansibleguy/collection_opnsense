@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, get_selected, is_ip
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields, is_ip
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Vxlan:
+class Vxlan(BaseModule):
     FIELD_ID = 'id'
     CMDS = {
         'add': 'addItem',
@@ -31,6 +31,10 @@ class Vxlan:
         'group': 'vxlangroup',
         'interface': 'vxlandev',
     }
+    FIELDS_TYPING = {
+        'select': ['interface'],
+        'int': ['id'],
+    }
     INT_VALIDATIONS = {
         'id': {'min': 0, 'max': 16777215},
     }
@@ -38,18 +42,12 @@ class Vxlan:
     EXIST_ATTR = 'vxlan'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.vxlan = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         if self.p['state'] == 'present':
@@ -71,35 +69,5 @@ class Vxlan:
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    @staticmethod
-    def _simplify_existing(vxlan: dict) -> dict:
-        # makes processing easier
-        return {
-            'uuid': vxlan['uuid'],
-            'id': int(vxlan['vxlanid']),
-            'interface': get_selected(vxlan['vxlandev']),
-            'local': vxlan['vxlanlocal'],
-            'remote': vxlan['vxlanremote'],
-            'group': vxlan['vxlangroup'],
-        }
-
-    def process(self):
-        self.b.process()
-
-    def _search_call(self) -> list:
-        return self.b.search()
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
     def update(self):
         self.b.update(enable_switch=False)
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

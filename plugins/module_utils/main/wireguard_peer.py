@@ -5,12 +5,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields, validate_str_fields, is_ip, validate_port, \
-    get_selected_list, format_int, is_ip_or_network
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields, validate_str_fields, is_ip, validate_port, is_ip_or_network
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Peer:
+class Peer(BaseModule):
     FIELD_ID = 'name'
     CMDS = {
         'add': 'addClient',
@@ -37,6 +36,11 @@ class Peer:
         'endpoint': 'serveraddress',
         'port': 'serverport',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'list': ['allowed_ips'],
+        'int': ['port', 'keepalive'],
+    }
     FIELDS_DIFF_EXCLUDE = ['psk']
     INT_VALIDATIONS = {
         'keepalive': {'min': 1, 'max': 86400},
@@ -50,19 +54,13 @@ class Peer:
     EXIST_ATTR = 'peer'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.peer = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
         self.existing_peers = None
-        self.b = Base(instance=self)
 
     def check(self):
         validate_port(module=self.m, port=self.p['port'])
@@ -105,39 +103,3 @@ class Peer:
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    @staticmethod
-    def _simplify_existing(peer: dict) -> dict:
-        # makes processing easier
-        return {
-            'enabled': is_true(peer['enabled']),
-            'uuid': peer['uuid'],
-            'name': peer['name'],
-            'public_key': peer['pubkey'],
-            'psk': peer['psk'],
-            'allowed_ips': get_selected_list(peer['tunneladdress'], remove_empty=True),
-            'endpoint': peer['serveraddress'],
-            'port': format_int(peer['serverport']),
-            'keepalive': format_int(peer['keepalive']),
-        }
-
-    def process(self):
-        self.b.process()
-
-    def search_call(self) -> list:
-        return self.b.search()
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

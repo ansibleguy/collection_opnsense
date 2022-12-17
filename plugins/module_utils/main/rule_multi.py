@@ -13,7 +13,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule impo
 
 def process(m: AnsibleModule, p: dict, r: dict):
     s = Session(module=m)
-    existing_rules = Rule(module=m, session=s, result={}).search_call()
+    existing_rules = Rule(module=m, session=s, result={}).get_existing()
 
     if isinstance(p['key_field'], list):
         # edge case

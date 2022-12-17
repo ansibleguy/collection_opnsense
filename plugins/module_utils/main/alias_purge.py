@@ -20,6 +20,9 @@ def process(m: AnsibleModule, p: dict, r: dict):
         if p['debug'] or p['output_info']:
             m.warn(f"Purging alias '{alias_to_purge['name']}'!")
 
+        if 'debug' not in aliases_to_purge:
+            alias_to_purge['debug'] = p['debug']
+
         _alias = Alias(
             module=m,
             result={'changed': False, 'diff': {'before': {}, 'after': {}}},
@@ -45,8 +48,11 @@ def process(m: AnsibleModule, p: dict, r: dict):
         for alias in existing_aliases:
             if not builtin_alias(name=alias['name']):
                 purge(
-                    module=m, result=r, diff_param='name',
-                    obj_func=obj_func, item_to_purge=alias,
+                    module=m,
+                    result=r,
+                    diff_param='name',
+                    obj_func=obj_func,
+                    item_to_purge=alias,
                 )
 
     else:
@@ -70,8 +76,11 @@ def process(m: AnsibleModule, p: dict, r: dict):
         for alias in aliases_to_purge:
             r['changed'] = True
             purge(
-                module=m, result=r, diff_param='name',
-                obj_func=obj_func, item_to_purge=alias,
+                module=m,
+                result=r,
+                diff_param='name',
+                obj_func=obj_func,
+                item_to_purge=alias,
             )
 
     if r['changed'] and p['reload']:

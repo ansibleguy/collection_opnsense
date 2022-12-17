@@ -6,11 +6,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_ip, validate_port, get_selected, get_selected_list, is_true
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    is_ip, validate_port
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Syslog:
+class Syslog(BaseModule):
     CMDS = {
         'add': 'addDestination',
         'del': 'delDestination',
@@ -34,25 +34,26 @@ class Syslog:
     FIELDS_TRANSLATE = {
         'target': 'hostname',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled', 'rfc5424'],
+        'list': ['program', 'level', 'facility'],
+        'select': ['certificate', 'transport'],
+        'int': ['port'],
+    }
     EXIST_ATTR = 'dest'
     TIMEOUT = 40.0  # reload using unresolvable dns
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.s = Session(
             module=module,
             timeout=self.TIMEOUT,
         ) if session is None else session
-        self.exists = False
         self.dest = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         if not is_ip(self.p['target']) and \
@@ -95,41 +96,3 @@ class Syslog:
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(self.p)
-            self.p['program'].sort()
-            self.p['level'].sort()
-            self.p['facility'].sort()
-
-    @staticmethod
-    def _simplify_existing(dest: dict) -> dict:
-        # makes processing easier
-        return {
-            'enabled': is_true(dest['enabled']),
-            'rfc5424': is_true(dest['rfc5424']),
-            'target': dest['hostname'],
-            'description': dest['description'],
-            'port': int(dest['port']),
-            'uuid': dest['uuid'],
-            'certificate': get_selected(data=dest['certificate']),
-            'transport': get_selected(data=dest['transport']),
-            'program': get_selected_list(data=dest['program']),
-            'level': get_selected_list(data=dest['level']),
-            'facility': get_selected_list(data=dest['facility']),
-        }
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def process(self):
-        self.b.process()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

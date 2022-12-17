@@ -271,8 +271,11 @@ def run_module():
         elif hasattr(target, 'search_call'):
             target_func = getattr(target, 'search_call')
 
-        else:
+        elif hasattr(target, '_search_call'):
             target_func = getattr(target, '_search_call')
+
+        else:
+            target_func = getattr(target.b, 'get_existing')
 
         result['data'] = target_func()
 

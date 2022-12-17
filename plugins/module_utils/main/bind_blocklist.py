@@ -4,10 +4,10 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     simplify_translate
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Blocklist:
+class Blocklist(BaseModule):
     CMDS = {
         'set': 'set',
         'search': 'get',
@@ -40,27 +40,24 @@ class Blocklist:
     EXIST_ATTR = 'settings'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.settings = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
-        self.settings = self._search_call()
+        self.settings = self.get_existing()
         self.r['diff']['before'] = self.settings
         self.r['diff']['after'] = {
             k: v for k, v in self.p.items() if k in self.settings
         }
 
-    def _search_call(self) -> dict:
+    def process(self):
+        self.update()
+
+    def get_existing(self) -> dict:
         return simplify_translate(
             existing=self.s.get(cnf={
                 **self.call_cnf, **{'command': self.CMDS['search']}
@@ -70,14 +67,5 @@ class Blocklist:
             bool_invert=self.FIELDS_BOOL_INVERT,
         )
 
-    def process(self):
-        self.update()
-
-    def get_existing(self) -> dict:
-        return self._search_call()
-
     def update(self):
         self.b.update(enable_switch=False)
-
-    def reload(self):
-        self.b.reload()

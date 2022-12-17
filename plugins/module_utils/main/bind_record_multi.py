@@ -16,7 +16,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_reco
 def process(m: AnsibleModule, p: dict, r: dict):
     s = Session(module=m)
     meta_record = Record(module=m, session=s, result={})
-    existing_records = meta_record.b.search()
+    existing_records = meta_record.get_existing()
     existing_domains = meta_record.search_call_domains()
     defaults = {}
     overrides = {

@@ -2,14 +2,12 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, to_digit
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Alias:
+class Alias(BaseModule):
     CMDS = {
         'add': 'addHostAlias',
         'del': 'delHostAlias',
@@ -26,22 +24,24 @@ class Alias:
     FIELDS_ALL = ['enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     EXIST_ATTR = 'alias'
+    FIELDS_TRANSLATE = {
+        'target': 'host',
+        'alias': 'hostname',
+    }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'select': ['target'],
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.alias = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
         self.existing_hosts = None
-        self.target = None
-        self.b = Base(instance=self)
+        self.target_found = False
 
     def check(self):
         if self.p['state'] == 'present':
@@ -57,7 +57,7 @@ class Alias:
         if self.p['state'] == 'present':
             self._find_target()
 
-            if self.target is None:
+            if not self.target_found:
                 self.m.fail_json(f"Alias-target '{self.p['target']}' was not found!")
 
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
@@ -66,7 +66,8 @@ class Alias:
         if len(self.existing_hosts) > 0:
             for uuid, host in self.existing_hosts.items():
                 if f"{host['hostname']}.{host['domain']}" == self.p['target']:
-                    self.target = uuid
+                    self.target_found = True
+                    self.p['target'] = uuid
                     break
 
     def _search_call(self) -> dict:
@@ -75,48 +76,3 @@ class Alias:
         })['unbound']
         self.existing_hosts = unbound['hosts']['host']
         return unbound['aliases'][self.API_KEY]
-
-    @staticmethod
-    def _simplify_existing(alias: dict) -> dict:
-        # makes processing easier
-        simple = {
-            'enabled': is_true(alias['enabled']),
-            'domain': alias['domain'],
-            'uuid': alias['uuid'],
-            'alias': alias['hostname'],
-            'description': alias['description'],
-        }
-
-        if len(alias['host']) > 0:
-            simple['target'] = [v['value'] for v in alias['host'].values()][0]
-
-        return simple
-
-    def _build_request(self) -> dict:
-        return {
-            self.API_KEY: {
-                'enabled': to_digit(self.p['enabled']),
-                'hostname': self.p['alias'],
-                'host': self.target,
-                'domain': self.p['domain'],
-                'description': self.p['description'],
-            }
-        }
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def process(self):
-        self.b.process()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

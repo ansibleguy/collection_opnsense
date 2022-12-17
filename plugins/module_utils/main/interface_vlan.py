@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, get_selected
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Vlan:
+class Vlan(BaseModule):
     FIELD_ID = 'description'
     CMDS = {
         'add': 'addItem',
@@ -30,6 +30,10 @@ class Vlan:
         'priority': 'pcp',
         'description': 'descr',
     }
+    FIELDS_TYPING = {
+        'select': ['interface', 'priority'],
+        'int': ['vlan', 'priority'],
+    }
     INT_VALIDATIONS = {
         'vlan': {'min': 1, 'max': 4096},
         'priority': {'min': 0, 'max': 7},
@@ -37,18 +41,12 @@ class Vlan:
     EXIST_ATTR = 'vlan'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.vlan = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         if self.p['state'] == 'present':
@@ -67,35 +65,5 @@ class Vlan:
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    @staticmethod
-    def _simplify_existing(vlan: dict) -> dict:
-        # makes processing easier
-        return {
-            'uuid': vlan['uuid'],
-            'generic_name': vlan['vlanif'],
-            'interface': get_selected(vlan['if']),
-            'vlan': int(vlan['tag']),
-            'priority': int(get_selected(vlan['pcp'])),
-            'description': vlan['descr'],
-        }
-
-    def process(self):
-        self.b.process()
-
-    def _search_call(self) -> list:
-        return self.b.search()
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
     def update(self):
         self.b.update(enable_switch=False)
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

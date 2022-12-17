@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, get_selected, validate_int_fields, get_selected_list, validate_port
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields, validate_port
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Rule:
+class Rule(BaseModule):
     CMDS = {
         'add': 'addrule',
         'del': 'delrule',
@@ -39,6 +39,14 @@ class Rule:
         'destination_invert': 'destination_not',
         'destination_port': 'dst_port',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled', 'source_invert', 'destination_invert'],
+        'list': ['dscp'],
+        'select': [
+            'interface', 'interface2', 'protocol', 'destination_net', 'source_net',
+            'direction', 'target',
+        ],
+    }
     INT_VALIDATIONS = {
         'sequence': {'min': 1, 'max': 1000000},
         'max_packet_length': {'min': 2, 'max': 65535},
@@ -47,24 +55,19 @@ class Rule:
     TIMEOUT = 20.0  # 'get' timeout
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.s = Session(
             module=module,
             timeout=self.TIMEOUT,
         ) if session is None else session
-        self.exists = False
         self.rule = {}
         self.target_found = False
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
         self.existing_queues = None
         self.existing_pipes = None
-        self.b = Base(instance=self)
 
     def check(self):
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
@@ -95,7 +98,6 @@ class Rule:
                     f"'{self.p[f'target_{target_type}']}'"
                 )
 
-            self.p['dscp'].sort()
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _search_call(self) -> dict:
@@ -105,32 +107,6 @@ class Rule:
         self.existing_pipes = raw['pipes']['pipe']
         self.existing_queues = raw['queues']['queue']
         return raw[self.API_KEY_2][self.API_KEY]
-
-    @staticmethod
-    def _simplify_existing(rule: dict) -> dict:
-        # makes processing easier
-        target_uuid = get_selected(rule['target'])
-        simple = {
-            'uuid': rule['uuid'],
-            'sequence': rule['sequence'],
-            'enabled': is_true(rule['enabled']),
-            'interface': get_selected(rule['interface']),
-            'interface2': get_selected(rule['interface2']),
-            'protocol': get_selected(rule['proto']),
-            'source_invert': is_true(rule['source_not']),
-            'destination_invert': is_true(rule['destination_not']),
-            'destination_net': get_selected(rule['destination']),
-            'source_net': get_selected(rule['source']),
-            'source_port': rule['src_port'],
-            'destination_port': rule['dst_port'],
-            'max_packet_length': rule['iplen'],
-            'direction': get_selected(rule['direction']),
-            'dscp': get_selected_list(rule['dscp']),
-            'description': rule['description'],
-            'target': target_uuid,
-        }
-        simple['dscp'].sort()
-        return simple
 
     def _find_pipe(self):
         if self.p['target_pipe'] not in ['', None] and len(self.existing_pipes) > 0:
@@ -166,18 +142,3 @@ class Rule:
             existing.append(entry)
 
         return existing
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def process(self):
-        self.b.process()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

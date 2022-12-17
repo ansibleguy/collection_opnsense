@@ -5,11 +5,11 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, simplify_translate
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class TMPL:
+class TMPL(BaseModule):
     FIELD_ID = 'name'
     CMDS = {
         'add': 'addItem',
@@ -34,9 +34,10 @@ class TMPL:
     }
     FIELDS_BOOL_INVERT = []
     FIELDS_TYPING = {
-        'bool': [],
+        'bool': ['enabled'],
         'list': [],
         'select': [],
+        'int': [],
     }
     INT_VALIDATIONS = {
         'field1': {'min': 1, 'max': 100},
@@ -44,19 +45,13 @@ class TMPL:
     EXIST_ATTR = 'stuff'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.fail = False
         self.stuff = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         # custom argument validation
@@ -91,7 +86,6 @@ class TMPL:
 
     # @staticmethod
     # def _simplify_existing(stuff: dict) -> dict:
-    #     # makes processing easier
     #     return {
     #         'enabled': is_true(stuff['enabled']),
     #         'description': stuff['description'],
@@ -99,32 +93,3 @@ class TMPL:
     #         'param1': stuff['param1'],
     #         'param2': stuff['param2'],
     #     }
-
-    def _simplify_existing(self, acl: dict) -> dict:
-        # makes processing easier
-        return simplify_translate(
-            existing=acl,
-            translate=self.FIELDS_TRANSLATE,
-            typing=self.FIELDS_TYPING,
-        )
-
-    def process(self):
-        self.b.process()
-
-    def _search_call(self) -> list:
-        return self.b.search()
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

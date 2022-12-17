@@ -3,13 +3,13 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_ip, valid_hostname, get_selected, is_true, to_digit
+    is_ip, valid_hostname, to_digit, simplify_translate
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Host:
+class Host(BaseModule):
     CMDS = {
         'add': 'addHostOverride',
         'del': 'delHostOverride',
@@ -31,20 +31,23 @@ class Host:
     FIELDS_ALL = ['enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     EXIST_ATTR = 'host'
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'select': ['record_type'],
+    }
+    FIELDS_TRANSLATE = {
+        'record_type': 'rr',
+        # 'prio': 'mxprio',
+        # 'value': 'mx',  # mx or server
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.host = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         if self.p['state'] == 'present':
@@ -70,27 +73,22 @@ class Host:
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    @staticmethod
-    def _simplify_existing(host: dict) -> dict:
-        # makes processing easier
-        data = {
-            'enabled': is_true(host['enabled']),
-            'hostname': host['hostname'],
-            'uuid': host['uuid'],
-            'domain': host['domain'],
-            'description': host['description'],
-            'record_type': get_selected(host['rr']),
-        }
+    def _simplify_existing(self, host: dict) -> dict:
+        simple = simplify_translate(
+            existing=host,
+            typing=self.FIELDS_TYPING,
+            translate=self.FIELDS_TRANSLATE,
+        )
 
-        if data['record_type'] == 'MX':
-            data['prio'] = host['mxprio']
-            data['value'] = host['mx']
+        if simple['record_type'] == 'MX':
+            simple['prio'] = host['mxprio']
+            simple['value'] = host['mx']
 
         else:
-            data['value'] = host['server']
-            data['prio'] = None
+            simple['value'] = host['server']
+            simple['prio'] = None
 
-        return data
+        return simple
 
     def _build_request(self) -> dict:
         data = {
@@ -111,21 +109,3 @@ class Host:
         return {
             self.API_KEY: data
         }
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def process(self):
-        self.b.process()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

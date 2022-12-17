@@ -3,13 +3,13 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_ip, is_true
+    is_ip
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Domain:
+class Domain(BaseModule):
     CMDS = {
         'add': 'addDomainOverride',
         'del': 'delDomainOverride',
@@ -27,24 +27,18 @@ class Domain:
     FIELDS_CHANGE = ['domain', 'server', 'description']
     FIELDS_ALL = ['enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
-    FIELDS_TRANSLATE = {
-        'target': 'server',
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
     }
     EXIST_ATTR = 'domain'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.domain = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         validate_domain(module=self.m, domain=self.p['domain'])
@@ -57,32 +51,3 @@ class Domain:
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    @staticmethod
-    def _simplify_existing(domain: dict) -> dict:
-        # makes processing easier
-        return {
-            'enabled': is_true(domain['enabled']),
-            'uuid': domain['uuid'],
-            'domain': domain['domain'],
-            'server': domain['server'],
-            'description': domain['description'],
-        }
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def process(self):
-        self.b.process()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

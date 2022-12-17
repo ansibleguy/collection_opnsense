@@ -5,11 +5,11 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    simplify_translate, get_multiple_matching
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    get_multiple_matching
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Record:
+class Record(BaseModule):
     CMDS = {
         'add': 'addRecord',
         'del': 'delRecord',
@@ -37,13 +37,10 @@ class Record:
             self, module: AnsibleModule, result: dict, cnf: dict = None,
             session: Session = None, fail_verify: bool = True, fail_proc: bool = True
     ):
-        self.m = module
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.p = self.m.params if cnf is None else cnf  # to allow override by bind_record_multi
-        self.r = result
-        self.s = Session(module=module) if session is None else session
         self.fail_verify = fail_verify
         self.fail_proc = fail_proc
-        self.exists = False
         self.existing = []
         self.record = {}
         self.call_cnf = {  # config shared by all calls
@@ -52,8 +49,8 @@ class Record:
         }
         self.existing_entries = None
         self.existing_domains = None
+        self.exists = False
         self.exists_rr = False
-        self.b = Base(instance=self)
 
     def check(self):
         if self.p['state'] == 'present' and self.p['value'] is None:
@@ -64,7 +61,7 @@ class Record:
 
         # custom matching as dns round-robin allows for multiple records to match..
         if self.existing_entries is None:
-            self.existing_entries = self.b.search()
+            self.existing_entries = self.get_existing()
 
         if self.existing_domains is None:
             self.existing_domains = self.search_call_domains()
@@ -85,10 +82,11 @@ class Record:
                 'You may have to create it before managing its records.'
             )
 
+        # pylint: disable=W0212
         self.existing = get_multiple_matching(
             module=self.m, existing_items=self.existing_entries,
             compare_item=self.p, match_fields=self.p['match_fields'],
-            simplify_func=self._simplify_existing,
+            simplify_func=self.b._simplify_existing,
         )
 
         self.exists_rr = len(self.existing) > 1
@@ -125,13 +123,6 @@ class Record:
         for record in self.existing:
             self.call_cnf['params'] = [record['uuid']]
             self.delete()
-
-    def _simplify_existing(self, record: dict) -> dict:
-        # makes processing easier
-        return simplify_translate(
-            existing=record,
-            typing=self.FIELDS_TYPING,
-        )
 
     def process(self):
         if self.exists_rr or self.p['round_robin']:
@@ -181,18 +172,3 @@ class Record:
 
         self.r['diff']['after'] = {**_before, **_after}
         self.r['diff']['before'] = _before
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

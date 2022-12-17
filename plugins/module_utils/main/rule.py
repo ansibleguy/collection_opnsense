@@ -3,14 +3,14 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
     ModuleSoftError
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    simplify_translate, validate_int_fields
+    validate_int_fields
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.rule import \
     validate_values
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Rule:
+class Rule(BaseModule):
     CMDS = {
         'add': 'addRule',
         'del': 'delRule',
@@ -51,8 +51,7 @@ class Rule:
             self, module: AnsibleModule, result: dict, cnf: dict = None,
             session: Session = None, fail_verify: bool = True, fail_proc: bool = True
     ):
-        self.m = module
-        self.r = result
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.s = Session(
             module=module,
             timeout=self.TIMEOUT,
@@ -60,23 +59,12 @@ class Rule:
         self.p = self.m.params if cnf is None else cnf  # to allow override by rule_multi
         self.fail_verify = fail_verify
         self.fail_proc = fail_proc
-        self.exists = False
         self.rule = {}
         self.log_name = None
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
-
-    def simplify_existing(self, rule: dict):
-        # makes processing easier
-        return simplify_translate(
-            existing=rule,
-            typing=self.FIELDS_TYPING,
-            translate=self.FIELDS_TRANSLATE,
-        )
 
     def _build_log_name(self) -> str:
         if self.p['description'] not in [None, '']:
@@ -125,21 +113,3 @@ class Rule:
         else:
             self.m.warn(msg)
             raise ModuleSoftError
-
-    def process(self):
-        self.b.process()
-
-    def search_call(self) -> (dict, list):
-        return self.b.search()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()

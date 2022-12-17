@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, is_ip_or_network
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    is_ip_or_network
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Neighbor:
+class Neighbor(BaseModule):
     FIELD_ID = 'ip'
     CMDS = {
         'add': 'addNeighbor',
@@ -27,20 +27,17 @@ class Neighbor:
     FIELDS_TRANSLATE = {
         'ip': 'address',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.neighbor = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         if not is_ip_or_network(self.p[self.FIELD_ID]):
@@ -53,32 +50,7 @@ class Neighbor:
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    @staticmethod
-    def _simplify_existing(neighbor: dict) -> dict:
-        # makes processing easier
-        return {
-            'enabled': is_true(neighbor['enabled']),
-            'description': neighbor['description'],
-            'uuid': neighbor['uuid'],
-            'ip': neighbor['address'],
-        }
-
-    def process(self):
-        self.b.process()
-
     def _search_call(self) -> list:
         return self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })['rows']
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()

@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields, get_selected
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Interface:
+class Interface(BaseModule):
     CMDS = {
         'add': 'addInterface',
         'del': 'delInterface',
@@ -50,21 +50,19 @@ class Interface:
         'auth_key': 'authkey',
         'auth_key_id': 'authkey_id',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'select': ['interface', 'carp_depend_on', 'network_type', 'auth_type'],
+    }
     EXIST_ATTR = 'int'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.int = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         if self.p['state'] == 'present':
@@ -86,43 +84,3 @@ class Interface:
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    @staticmethod
-    def _simplify_existing(interface: dict) -> dict:
-        # makes processing easier
-        return {
-            'enabled': is_true(interface['enabled']),
-            'interface': get_selected(interface['interfacename']),
-            'carp_depend_on': get_selected(interface['carp_depend_on']),
-            'network_type': get_selected(interface['networktype']),
-            'uuid': interface['uuid'],
-            'hello_interval': interface['hellointerval'],
-            'dead_interval': interface['deadinterval'],
-            'retransmit_interval': interface['retransmitinterval'],
-            'transmit_delay': interface['transmitdelay'],
-            'area': interface['area'],
-            'cost': interface['cost'],
-            'cost_demoted': interface['cost_demoted'],
-            'priority': interface['priority'],
-            'auth_type': get_selected(interface['authtype']),
-            'auth_key': interface['authkey'],
-            'auth_key_id': interface['authkey_id'],
-        }
-
-    def process(self):
-        self.b.process()
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

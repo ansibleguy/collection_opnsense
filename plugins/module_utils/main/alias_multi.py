@@ -16,8 +16,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule impo
 def process(m: AnsibleModule, p: dict, r: dict, ):
     session = Session(module=m)
     meta_alias = Alias(module=m, session=session, result={})
-    existing_aliases = meta_alias.search_call()
-    existing_rules = Rule(module=m, session=session, result={}).search_call()
+    existing_aliases = meta_alias.get_existing()
+    existing_rules = Rule(module=m, session=session, result={}).get_existing()
 
     defaults = {}
     overrides = {

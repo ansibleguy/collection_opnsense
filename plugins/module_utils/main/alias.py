@@ -5,14 +5,14 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.alias import \
-    validate_values, alias_in_use_by_rule, filter_builtin_alias
+    validate_values, filter_builtin_alias, alias_in_use_by_rule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     get_simple_existing, simplify_translate
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Alias:
+class Alias(BaseModule):
     FIELD_ID = 'name'
     CMDS = {
         'add': 'addItem',
@@ -46,24 +46,20 @@ class Alias:
             self, module: AnsibleModule, result: dict, cnf: dict = None,
             session: Session = None, fail_verify: bool = True, fail_proc: bool = True
     ):
-        self.m = module
-        self.r = result
-        self.s = Session(
-            module=module,
-            timeout=self.TIMEOUT,
-        ) if session is None else session
-        self.p = self.m.params if cnf is None else cnf  # to allow override by alias_multi
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.fail_verify = fail_verify
         self.fail_proc = fail_proc
-        self.exists = False
         self.alias = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.existing_rules = None  # used to check if alias is in use
-        self.b = Base(instance=self)
+        self.s = Session(
+            module=module,
+            timeout=self.TIMEOUT,
+        ) if session is None else session
+        self.p = self.m.params if cnf is None else cnf  # to allow override by alias_multi
+        self.existing_rules = None
 
     def check(self):
         if len(self.p['name']) > self.MAX_ALIAS_LEN:
@@ -81,14 +77,23 @@ class Alias:
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def simplify_existing(self, alias: dict) -> dict:
-        # makes processing easier
-        simple = simplify_translate(
-            existing=alias,
-            typing=self.FIELDS_TYPING,
-            translate=self.FIELDS_TRANSLATE,
-        )
+        simple = {}
 
-        simple['content'] = [item for item in alias['content'].keys() if item != '']
+        if isinstance(alias['content'], dict):
+            simple['content'] = [item for item in alias['content'].keys() if item != '']
+
+        else:
+            # if function is re-applied
+            return alias
+
+        simple = {
+            **simplify_translate(
+                existing=alias,
+                typing=self.FIELDS_TYPING,
+                translate=self.FIELDS_TRANSLATE,
+            ),
+            **simple,
+        }
 
         if simple['type'] == 'urltable':
             try:
@@ -120,36 +125,18 @@ class Alias:
                 module=self.m,
                 result={},
                 session=self.s,
-            ).search_call()
+            ).get_existing()
 
         if alias_in_use_by_rule(rules=self.existing_rules, alias=self.p[self.FIELD_ID]):
             # this is to fix lacking server-side checks for the automation-rules
             # see: https://forum.opnsense.org/index.php?topic=30077.msg145259#msg145259
-            alias_deletion = 'in_use'
-
-        else:
-            if not self.m.check_mode:
-                # broad 'in-use' validation will be done on the server-side
-                alias_deletion = self._delete_call()
-
-            else:
-                alias_deletion = ''
-
-        if 'in_use' in alias_deletion:
-            self.r['changed'] = False
             self._error(
                 msg=f"Unable to delete alias '{self.p[self.FIELD_ID]}' as it is currently referenced!",
                 verification=False,
             )
 
         else:
-            self.r['diff']['before'] = {self.p[self.FIELD_ID]: self.alias['content']}
-
-            if self.m.params['debug']:
-                self.m.warn(f"{self.r['diff']}")
-
-    def _delete_call(self) -> dict:
-        return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
+            self.b.delete()
 
     def _error(self, msg: str, verification: bool = True):
         if (verification and self.fail_verify) or (not verification and self.fail_proc):
@@ -166,15 +153,3 @@ class Alias:
                 simplify_func=self.simplify_existing,
             )
         )
-
-    def search_call(self) -> list:
-        return self.b.search()
-
-    def process(self):
-        self.b.process()
-
-    def create(self):
-        self.b.create()
-
-    def reload(self):
-        self.b.reload()

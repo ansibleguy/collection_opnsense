@@ -2,22 +2,26 @@
 
 # pylint: disable=W0212,R0912
 
+from typing import Callable
+
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     single_get, single_post
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_simple_existing, to_digit, get_matching
+    get_simple_existing, to_digit, get_matching, simplify_translate
 
 
 class Base:
     DIFF_FLOAT_ROUND = 1
     RESP_JOIN_CHAR = ','
     ATTR_JOIN_CHAR = 'JOIN_CHAR'
+    ATTR_AK1 = 'API_KEY_1'
     ATTR_AK2 = 'API_KEY_2'
     ATTR_BOOL_INVERT = 'FIELDS_BOOL_INVERT'
     ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
     ATTR_DIFF_EXCL = 'FIELDS_DIFF_EXCLUDE'
     ATTR_RELOAD = 'API_CONT_REL'
     ATTR_HEADERS = 'call_headers'
+    ATTR_TYPING = 'FIELDS_TYPING'
 
     def __init__(self, instance):
         self.i = instance  # module-specific object
@@ -35,9 +39,14 @@ class Base:
                 **self.i.call_cnf, **{'command': self.i.CMDS['search']}
             })[self.i.API_KEY_1][self.i.API_KEY_2][self.i.API_KEY]
 
+        if hasattr(self.i, self.ATTR_AK1):
+            return self.i.s.get(cnf={
+                **self.i.call_cnf, **{'command': self.i.CMDS['search']}
+            })[self.i.API_KEY_1][self.i.API_KEY]
+
         return self.i.s.get(cnf={
             **self.i.call_cnf, **{'command': self.i.CMDS['search']}
-        })[self.i.API_KEY_1][self.i.API_KEY]
+        })[self.i.API_KEY]
 
     def get_existing(self, diff_filter: bool = False) -> list:
         if diff_filter:
@@ -77,16 +86,28 @@ class Base:
                 self.i.call_cnf['params'] = [match['uuid']]
 
     def process(self) -> None:
-        if self.i.p['state'] == 'absent':
+        if 'state' in self.i.p and self.i.p['state'] == 'absent':
             if self.i.exists:
-                self.i.delete()
+                if hasattr(self.i, 'delete'):
+                    self.i.delete()
+
+                else:
+                    self.delete()
 
         else:
-            if self.i.exists:
-                self.i.update()
+            if 'state' not in self.i.p or self.i.exists:
+                if hasattr(self.i, 'update'):
+                    self.i.update()
+
+                else:
+                    self.update()
 
             else:
-                self.i.create()
+                if hasattr(self.i, 'create'):
+                    self.i.create()
+
+                else:
+                    self.create()
 
     def create(self) -> dict:
         self.i.r['changed'] = True
@@ -346,25 +367,44 @@ class Base:
 
         return {self.i.API_KEY: request}
 
-    def _call_search(self) -> (dict, list):
-        call_search = self.search
+    def _simplify_existing(self, existing: dict) -> dict:
+        translate, typing, bool_invert = {}, {}, []
 
-        if hasattr(self.i, '_search_call'):
-            call_search = self.i._search_call
+        if hasattr(self.i, self.ATTR_TRANSLATE):
+            translate = getattr(self.i, self.ATTR_TRANSLATE)
 
-        elif hasattr(self.i, 'search_call'):
-            call_search = self.i.search_call
+        if hasattr(self.i, self.ATTR_TYPING):
+            typing = getattr(self.i, self.ATTR_TYPING)
 
-        return call_search()
+        if hasattr(self.i, self.ATTR_BOOL_INVERT):
+            bool_invert = getattr(self.i, self.ATTR_BOOL_INVERT)
 
-    def _call_simple(self):
+        return simplify_translate(
+            existing=existing,
+            typing=typing,
+            translate=translate,
+            bool_invert=bool_invert,
+        )
+
+    def _call_simple(self) -> Callable:
         if hasattr(self.i, 'simplify_existing'):
-            call_simple = self.i.simplify_existing
+            return self.i.simplify_existing
+
+        elif hasattr(self.i, '_simplify_existing'):
+            return self.i._simplify_existing
 
         else:
-            call_simple = self.i._simplify_existing
+            return self._simplify_existing
 
-        return call_simple
+    def _call_search(self) -> (list, dict):
+        if hasattr(self.i, '_search_call'):
+            return self.i._search_call()
+
+        elif hasattr(self.i, 'search_call'):
+            return self.i.search_call()
+
+        else:
+            return self.search()
 
     def _api_headers(self) -> dict:
         if hasattr(self.i, self.ATTR_HEADERS):

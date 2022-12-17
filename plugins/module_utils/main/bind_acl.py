@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    simplify_translate, validate_str_fields, is_ip_or_network
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_str_fields, is_ip_or_network
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Acl:
+class Acl(BaseModule):
     FIELD_ID = 'name'
     CMDS = {
         'add': 'addAcl',
@@ -36,18 +36,12 @@ class Acl:
     EXIST_ATTR = 'acl'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.acl = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
-        self.b = Base(instance=self)
 
     def check(self):
         validate_str_fields(
@@ -71,31 +65,3 @@ class Acl:
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    def _simplify_existing(self, acl: dict) -> dict:
-        # makes processing easier
-        return simplify_translate(
-            existing=acl,
-            typing=self.FIELDS_TYPING,
-        )
-
-    def process(self):
-        self.b.process()
-
-    def _search_call(self) -> list:
-        return self.b.search()
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

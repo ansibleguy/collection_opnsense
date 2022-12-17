@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields, get_selected
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Community:
+class Community(BaseModule):
     FIELD_ID = 'description'
     CMDS = {
         'add': 'addCommunitylist',
@@ -29,6 +29,10 @@ class Community:
     FIELDS_TRANSLATE = {
         'seq': 'seqnumber',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'select': ['action'],
+    }
     INT_VALIDATIONS = {
         'number': {'min': 1, 'max': 500},
         'seq': {'min': 10, 'max': 99},
@@ -36,18 +40,12 @@ class Community:
     EXIST_ATTR = 'community_list'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.community_list = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.b = Base(instance=self)
-        self.existing_entries = None
 
     def check(self):
         if self.p['state'] == 'present':
@@ -65,34 +63,3 @@ class Community:
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    def process(self):
-        self.b.process()
-
-    @staticmethod
-    def _simplify_existing(community_list: dict) -> dict:
-        # makes processing easier
-        return {
-            'description': community_list['description'],
-            'number': community_list['number'],
-            'seq': community_list['seqnumber'],
-            'community': community_list['community'],
-            'action': get_selected(community_list['action']),
-            'enabled': is_true(community_list['enabled']),
-            'uuid': community_list['uuid'],
-        }
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

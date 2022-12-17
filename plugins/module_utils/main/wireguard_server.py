@@ -3,13 +3,12 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, validate_int_fields, validate_str_fields, is_ip, validate_port, \
-    get_selected_list, format_int, is_ip_or_network
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields, validate_str_fields, is_ip, validate_port, is_ip_or_network
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_peer import Peer
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Server:
+class Server(BaseModule):
     FIELD_ID = 'name'
     CMDS = {
         'add': 'addServer',
@@ -38,6 +37,11 @@ class Server:
         'allowed_ips': 'tunneladdress',
         'disable_routes': 'disableroutes',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled', 'disable_routes'],
+        'list': ['dns_servers', 'allowed_ips', 'peers'],
+        'int': ['port', 'mtu', 'instance'],
+    }
     FIELDS_DIFF_EXCLUDE = ['private_key']
     INT_VALIDATIONS = {
         'mtu': {'min': 1, 'max': 9300},
@@ -51,19 +55,13 @@ class Server:
     EXIST_ATTR = 'server'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.server = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
         self.existing_peers = None
-        self.b = Base(instance=self)
 
     def check(self):
         validate_port(module=self.m, port=self.p['port'])
@@ -115,12 +113,11 @@ class Server:
         if self.existing_peers is None:
             self.existing_peers = Peer(
                 module=self.m, result={}, session=self.s
-            ).search_call()
+            ).get_existing()
 
         if len(self.p['peers']) > 0:
-            if len(self.existing_peers) > 0:
-                for uuid, peer in self.existing_peers.items():
-                    existing[peer['name']] = uuid
+            for peer in self.existing_peers:
+                existing[peer['name']] = peer['uuid']
 
             for peer in self.p['peers']:
                 if peer not in existing:
@@ -129,43 +126,3 @@ class Server:
                 peers.append(existing[peer])
 
         return peers
-
-    @staticmethod
-    def _simplify_existing(server: dict) -> dict:
-        # makes processing easier
-        return {
-            'enabled': is_true(server['enabled']),
-            'uuid': server['uuid'],
-            'name': server['name'],
-            'instance': format_int(server['instance']),
-            'public_key': server['pubkey'],
-            'private_key': server['privkey'],
-            'port': format_int(server['port']),
-            'mtu': format_int(server['mtu']),
-            'dns_servers': get_selected_list(data=server['dns'], remove_empty=True),
-            'allowed_ips': get_selected_list(data=server['tunneladdress'], remove_empty=True),
-            'disable_routes': is_true(server['disableroutes']),
-            'gateway': server['gateway'],
-            'peers': get_selected_list(server['peers']),
-        }
-
-    def process(self):
-        self.b.process()
-
-    def _search_call(self) -> list:
-        return self.b.search()
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

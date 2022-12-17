@@ -3,11 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    simplify_translate, validate_int_fields, is_ip, get_selected
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+    validate_int_fields, is_ip, get_selected
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Domain:
+class Domain(BaseModule):
     FIELD_ID = 'name'
     CMDS = {
         'add': 'addMasterDomain',
@@ -60,21 +60,15 @@ class Domain:
     EXIST_ATTR = 'domain'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.domain = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
         self.existing_acls = None
         self.existing_records = None
         self.acls_needed = False
-        self.b = Base(instance=self)
 
     def check(self):
         if self.p['state'] == 'present':
@@ -118,14 +112,6 @@ class Domain:
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    def _simplify_existing(self, domain: dict) -> dict:
-        # makes processing easier
-        return simplify_translate(
-            existing=domain,
-            typing=self.FIELDS_TYPING,
-            translate=self.FIELDS_TRANSLATE,
-        )
-
     def _find_links(self):
         fields = ['transfer_acl', 'query_acl']
 
@@ -143,9 +129,6 @@ class Domain:
                         f"Provided {field} '{self.p[field]}' was not found!"
                     )
 
-    def process(self):
-        self.b.process()
-
     def _search_acls(self):
         self.existing_acls = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search'], 'controller': 'acl'}
@@ -156,18 +139,3 @@ class Domain:
         self.existing_records = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search'], 'controller': 'record'}
         })['record']['records']['record']
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

@@ -4,10 +4,10 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main im
     is_true
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class CronJob:
+class CronJob(BaseModule):
     FIELD_ID = 'description'
     CMDS = {
         'add': 'addJob',
@@ -32,19 +32,13 @@ class CronJob:
     EXIST_ATTR = 'cron'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        self.m = module
-        self.p = module.params
-        self.r = result
-        self.s = Session(module=module) if session is None else session
-        self.exists = False
+        BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.cron = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }
-        self.existing_entries = None
         self.available_commands = []
-        self.b = Base(instance=self)
 
     def check(self):
         # basic validation of conditional parameters
@@ -82,21 +76,3 @@ class CronJob:
                     break
 
         return simple
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self):
-        self.b.create()
-
-    def update(self):
-        self.b.update()
-
-    def process(self):
-        self.b.process()
-
-    def delete(self):
-        self.b.delete()
-
-    def reload(self):
-        self.b.reload()

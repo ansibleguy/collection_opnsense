@@ -87,7 +87,6 @@ def run_module():
     )
 
     sort_param_lists(module.params)
-
     syslog = Syslog(module=module, result=result)
 
     def process():

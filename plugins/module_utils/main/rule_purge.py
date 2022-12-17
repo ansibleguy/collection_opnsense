@@ -10,8 +10,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule impo
 
 def process(m: AnsibleModule, p: dict, r: dict):
     s = Session(module=m)
-    meta_rule = Rule(module=m, session=s, result={})
-    existing_rules = meta_rule.get_existing()
+    existing_rules = Rule(module=m, session=s, result={}).get_existing()
     rules_to_purge = []
 
     def obj_func(rule_to_purge: dict) -> Rule:
