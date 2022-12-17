@@ -48,7 +48,7 @@ class Interface(BaseModule):
     }
     FIELDS_TYPING = {
         'bool': ['enabled', 'passive'],
-        'select': ['interfacename', 'carp_depend_on', 'networktype'],
+        'select': ['interface', 'carp_depend_on', 'network_type'],
     }
     EXIST_ATTR = 'int'
 
