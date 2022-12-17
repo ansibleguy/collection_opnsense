@@ -113,6 +113,7 @@ run_test 'bind_general' 1
 run_test 'bind_blocklist' 1
 run_test 'bind_domain' 1
 run_test 'bind_record' 1
+run_test 'bind_record_multi' 1
 run_test 'frr_rip' 1
 run_test 'system' 1
 run_test 'package' 1
