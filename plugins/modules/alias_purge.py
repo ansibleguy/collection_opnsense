@@ -34,7 +34,7 @@ def run_module():
         ),
         fail_all=dict(
             type='bool', required=False, default=False, aliases=['fail'],
-            description='Fail module if single alias fails the be purged.'
+            description='Fail module if single alias fails to be purged.'
         ),
         **RELOAD_MOD_ARG,
         **INFO_MOD_ARG,

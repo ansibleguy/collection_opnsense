@@ -26,7 +26,8 @@ def process(m: AnsibleModule, p: dict, r: dict):
             result={'changed': False, 'diff': {'before': {}, 'after': {}}},
             cnf=rule_to_purge,
             session=s,
-            fail=p['fail_all']
+            fail_verify=p['fail_all'],
+            fail_proc=p['fail_all'],
         )
         _rule.rule = rule_to_purge
         _rule.call_cnf['params'] = [rule_to_purge['uuid']]

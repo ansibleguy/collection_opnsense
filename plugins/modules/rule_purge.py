@@ -36,7 +36,7 @@ def run_module():
         ),
         fail_all=dict(
             type='bool', required=False, default=False, aliases=['fail'],
-            description='Fail module if single rule fails the be purged.'
+            description='Fail module if single rule fails to be purged.'
         ),
         **PURGE_MOD_ARGS,
         **INFO_MOD_ARG,

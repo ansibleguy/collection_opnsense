@@ -25,7 +25,8 @@ def process(m: AnsibleModule, p: dict, r: dict):
             result={'changed': False, 'diff': {'before': {}, 'after': {}}},
             cnf=alias_to_purge,
             session=s,
-            fail=p['fail_all']
+            fail_verify=p['fail_all'],
+            fail_proc=p['fail_all'],
         )
         _alias.alias = alias_to_purge
         _alias.existing_rules = existing_rules
