@@ -19,7 +19,7 @@ def purge(module: AnsibleModule, result: dict, item_to_purge: dict, diff_param: 
             _obj.delete()
 
         else:
-            _obj.disable()
+            _obj.b.disable()
 
 
 def check_purge_filter(module: AnsibleModule, item: dict) -> bool:
