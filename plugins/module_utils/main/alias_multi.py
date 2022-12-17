@@ -1,5 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
+    ModuleSoftError
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.alias import \
     ALIAS_DEFAULTS, ALIAS_MOD_ARGS, ALIAS_MOD_ARG_ALIASES
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
@@ -17,13 +19,17 @@ def process(m: AnsibleModule, p: dict, r: dict, ):
     existing_aliases = meta_alias.search_call()
     existing_rules = Rule(module=m, session=session, result={}).search_call()
 
-    overrides = {'debug': p['debug']}
+    defaults = {}
+    overrides = {
+        'debug': p['debug'],
+        'firewall': p['firewall'],
+    }
 
     if p['state'] is not None:
-        overrides['state'] = p['state']
+        defaults['state'] = p['state']
 
     if p['enabled'] is not None:
-        overrides['enabled'] = p['enabled']
+        defaults['enabled'] = p['enabled']
 
     # build list of valid aliases or fail if invalid config is not permitted
     valid_aliases = []
@@ -36,11 +42,9 @@ def process(m: AnsibleModule, p: dict, r: dict, ):
 
         real_cnf = {
             **ALIAS_DEFAULTS,
+            **defaults,
             **alias_config,
-            **{
-                'name': alias_name,
-                'firewall': p['firewall'],
-            },
+            **{'name': alias_name},
             **overrides,
         }
         real_cnf['content'] = list(map(str, ensure_list(real_cnf['content'])))
@@ -69,29 +73,34 @@ def process(m: AnsibleModule, p: dict, r: dict, ):
         if p['debug'] or p['output_info']:
             m.warn(f"Processing alias: '{alias_config}'")
 
-        alias = Alias(
-            module=m,
-            result=alias_result,
-            cnf=alias_config,
-            session=session,
-            fail=p['fail_verification'],
-        )
-        # save on requests
-        alias.existing_entries = existing_aliases
-        alias.existing_rules = existing_rules
+        try:
+            alias = Alias(
+                module=m,
+                result=alias_result,
+                cnf=alias_config,
+                session=session,
+                fail_verify=p['fail_verification'],
+                fail_proc=p['fail_processing'],
+            )
+            # save on requests
+            alias.existing_entries = existing_aliases
+            alias.existing_rules = existing_rules
 
-        alias.check()
-        alias.process()
+            alias.check()
+            alias.process()
 
-        if alias_result['changed']:
-            r['changed'] = True
-            alias_result['diff'] = diff_remove_empty(alias_result['diff'])
+            if alias_result['changed']:
+                r['changed'] = True
+                alias_result['diff'] = diff_remove_empty(alias_result['diff'])
 
-            if 'before' in alias_result['diff']:
-                r['diff']['before'].update(alias_result['diff']['before'])
+                if 'before' in alias_result['diff']:
+                    r['diff']['before'].update(alias_result['diff']['before'])
 
-            if 'after' in alias_result['diff']:
-                r['diff']['after'].update(alias_result['diff']['after'])
+                if 'after' in alias_result['diff']:
+                    r['diff']['after'].update(alias_result['diff']['after'])
+
+        except ModuleSoftError:
+            continue
 
     if r['changed'] and p['reload']:
         meta_alias.reload()

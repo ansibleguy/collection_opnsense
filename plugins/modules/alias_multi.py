@@ -13,7 +13,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
 try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.utils import profiler
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
-        OPN_MOD_ARGS, INFO_MOD_ARG, STATE_MOD_ARG_MULTI, RELOAD_MOD_ARG
+        OPN_MOD_ARGS, INFO_MOD_ARG, STATE_MOD_ARG_MULTI, RELOAD_MOD_ARG, FAIL_MOD_ARG_MULTI
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias_multi import process
 
@@ -30,12 +30,9 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/t
 def run_module():
     module_args = dict(
         aliases=dict(type='dict', required=True),
-        fail_verification=dict(
-            type='bool', required=False, default=False, aliases=['fail'],
-            description='Fail module if single alias fails the verification.'
-        ),
-        **RELOAD_MOD_ARG,
+        **FAIL_MOD_ARG_MULTI,
         **STATE_MOD_ARG_MULTI,
+        **RELOAD_MOD_ARG,
         **INFO_MOD_ARG,
         **OPN_MOD_ARGS,
     )

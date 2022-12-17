@@ -1,11 +1,13 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
+    ModuleSoftError
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.alias import \
     validate_values, alias_in_use_by_rule, filter_builtin_alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_simple_existing, is_true, get_selected
+    get_simple_existing, simplify_translate
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 
@@ -25,11 +27,15 @@ class Alias:
     API_MOD = 'firewall'
     API_CONT = 'alias'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = ['enabled', 'content', 'description']
-    FIELDS_ALL = ['name', 'type']
+    FIELDS_CHANGE = ['content', 'description']
+    FIELDS_ALL = ['name', 'type', 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'updatefreq_days': 'updatefreq',
+    }
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'select': ['type'],
     }
     EXIST_ATTR = 'alias'
     JOIN_CHAR = '\n'
@@ -38,7 +44,7 @@ class Alias:
 
     def __init__(
             self, module: AnsibleModule, result: dict, cnf: dict = None,
-            session: Session = None, fail: bool = True
+            session: Session = None, fail_verify: bool = True, fail_proc: bool = True
     ):
         self.m = module
         self.r = result
@@ -47,7 +53,8 @@ class Alias:
             timeout=self.TIMEOUT,
         ) if session is None else session
         self.p = self.m.params if cnf is None else cnf  # to allow override by alias_multi
-        self.fail = fail
+        self.fail_verify = fail_verify
+        self.fail_proc = fail_proc
         self.exists = False
         self.alias = {}
         self.call_cnf = {  # config shared by all calls
@@ -62,7 +69,7 @@ class Alias:
         if len(self.p['name']) > self.MAX_ALIAS_LEN:
             self._error(
                 f"Alias name '{self.p['name']}' is invalid - "
-                f"must be shorter than {self.MAX_ALIAS_LEN} characters"
+                f"must be shorter than {self.MAX_ALIAS_LEN} characters",
             )
 
         if self.p['state'] == 'present':
@@ -73,17 +80,15 @@ class Alias:
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    @staticmethod
-    def simplify_existing(alias: dict) -> dict:
+    def simplify_existing(self, alias: dict) -> dict:
         # makes processing easier
-        simple = {
-            'uuid': alias['uuid'],
-            'name': alias['name'],
-            'content': [item for item in alias['content'].keys() if item != ''],
-            'description': alias['description'],
-            'type': get_selected(alias['type']),
-            'enabled': is_true(alias['enabled']),
-        }
+        simple = simplify_translate(
+            existing=alias,
+            typing=self.FIELDS_TYPING,
+            translate=self.FIELDS_TRANSLATE,
+        )
+
+        simple['content'] = [item for item in alias['content'].keys() if item != '']
 
         if simple['type'] == 'urltable':
             try:
@@ -97,13 +102,14 @@ class Alias:
     def update(self):
         # checking if alias changed
         if self.alias['type'] == self.p['type']:
-            self.b.update()
+            self.b.update(enable_switch=True)
 
         else:
             self.r['changed'] = True
             self._error(
-                f"Unable to update alias '{self.p[self.FIELD_ID]}' - it is not of the same type! "
-                f"You need to delete the current one first!"
+                msg=f"Unable to update alias '{self.p[self.FIELD_ID]}' - it is not of the same type! "
+                    f"You need to delete the current one first!",
+                verification=False,
             )
 
     def delete(self):
@@ -131,7 +137,10 @@ class Alias:
 
         if 'in_use' in alias_deletion:
             self.r['changed'] = False
-            self._error(msg=f"Unable to delete alias '{self.p[self.FIELD_ID]}' as it is currently referenced!")
+            self._error(
+                msg=f"Unable to delete alias '{self.p[self.FIELD_ID]}' as it is currently referenced!",
+                verification=False,
+            )
 
         else:
             self.r['diff']['before'] = {self.p[self.FIELD_ID]: self.alias['content']}
@@ -142,12 +151,13 @@ class Alias:
     def _delete_call(self) -> dict:
         return self.s.post(cnf={**self.call_cnf, **{'command': self.CMDS['del']}})
 
-    def _error(self, msg: str):
-        if self.fail:
+    def _error(self, msg: str, verification: bool = True):
+        if (verification and self.fail_verify) or (not verification and self.fail_proc):
             self.m.fail_json(msg)
 
         else:
             self.m.warn(msg)
+            raise ModuleSoftError
 
     def get_existing(self) -> list:
         return filter_builtin_alias(
@@ -168,9 +178,3 @@ class Alias:
 
     def reload(self):
         self.b.reload()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()

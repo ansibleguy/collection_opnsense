@@ -1,5 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
+    ModuleSoftError
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.multi import \
     validate_single, convert_aliases
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.rule import \
@@ -17,17 +19,19 @@ def process(m: AnsibleModule, p: dict, r: dict):
         # edge case
         p['key_field'] = p['key_field'][0]
 
+    defaults = {}
     overrides = {
         **p['override'],
         'match_fields': p['match_fields'],
-        'debug': p['debug']
+        'debug': p['debug'],
+        'firewall': p['firewall'],
     }
 
     if p['state'] is not None:
-        overrides['state'] = p['state']
+        defaults['state'] = p['state']
 
     if p['enabled'] is not None:
-        overrides['enabled'] = p['enabled']
+        defaults['enabled'] = p['enabled']
 
     # build list of valid rules or fail if invalid config is not permitted
     valid_rules = {}
@@ -41,12 +45,10 @@ def process(m: AnsibleModule, p: dict, r: dict):
 
         real_cnf = {
             **RULE_DEFAULTS,
+            **defaults,
             **p['defaults'],
             **rule_config,
-            **{
-                p['key_field']: rule_key,
-                'firewall': p['firewall'],
-            },
+            **{p['key_field']: rule_key},
             **overrides,
         }
 
@@ -75,27 +77,32 @@ def process(m: AnsibleModule, p: dict, r: dict):
         if p['debug'] or p['output_info']:
             m.warn(f"Processing rule: '{rule_key} => {rule_config}'")
 
-        rule = Rule(
-            module=m,
-            result=rule_result,
-            cnf=rule_config,
-            session=s,
-            fail=p['fail_verification'],
-        )
-        # save on requests
-        rule.existing_entries = existing_rules
+        try:
+            rule = Rule(
+                module=m,
+                result=rule_result,
+                cnf=rule_config,
+                session=s,
+                fail_verify=p['fail_verification'],
+                fail_proc=p['fail_processing'],
+            )
+            # save on requests
+            rule.existing_entries = existing_rules
 
-        rule.check()
-        rule.process()
+            rule.check()
+            rule.process()
 
-        if rule_result['changed']:
-            r['changed'] = True
-            rule_result['diff'] = diff_remove_empty(rule_result['diff'])
+            if rule_result['changed']:
+                r['changed'] = True
+                rule_result['diff'] = diff_remove_empty(rule_result['diff'])
 
-            if 'before' in rule_result['diff']:
-                r['diff']['before'][rule_key] = rule_result['diff']['before']
+                if 'before' in rule_result['diff']:
+                    r['diff']['before'][rule_key] = rule_result['diff']['before']
 
-            if 'after' in rule_result['diff']:
-                r['diff']['after'][rule_key] = rule_result['diff']['after']
+                if 'after' in rule_result['diff']:
+                    r['diff']['after'][rule_key] = rule_result['diff']['after']
+
+        except ModuleSoftError:
+            continue
 
     s.close()

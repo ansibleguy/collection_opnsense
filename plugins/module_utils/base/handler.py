@@ -6,3 +6,7 @@ def module_dependency_error():
         'For this Ansible-module to work you must install its dependencies first: '
         "'python3 -m pip install validators httpx'"
     )
+
+
+class ModuleSoftError(Exception):
+    pass

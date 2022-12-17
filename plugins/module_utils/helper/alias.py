@@ -1,4 +1,6 @@
 from re import match as regex_match
+from typing import Callable
+
 import validators
 
 from ansible.module_utils.basic import AnsibleModule
@@ -7,7 +9,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main 
     BUILTIN_ALIASES, BUILTIN_INTERFACE_ALIASES_REG
 
 
-def validate_values(error_func, cnf: dict) -> None:
+def validate_values(cnf: dict, error_func: Callable) -> None:
     v_type = cnf['type']
 
     for value in cnf['content']:

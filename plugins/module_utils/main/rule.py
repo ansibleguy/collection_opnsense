@@ -1,7 +1,9 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
+    ModuleSoftError
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, get_selected_list, get_selected, validate_int_fields
+    simplify_translate, validate_int_fields
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.rule import \
     validate_values
@@ -34,6 +36,11 @@ class Rule:
         'source_invert': 'source_not',
         'destination_invert': 'destination_not',
     }
+    FIELDS_TYPING = {
+        'bool': ['enabled', 'log', 'quick', 'source_invert', 'destination_invert'],
+        'select': ['action', 'direction', 'ip_protocol', 'protocol', 'gateway'],
+        'list': ['interface'],
+    }
     EXIST_ATTR = 'rule'
     TIMEOUT = 60.0  # urltable etc reload
     INT_VALIDATIONS = {
@@ -42,7 +49,7 @@ class Rule:
 
     def __init__(
             self, module: AnsibleModule, result: dict, cnf: dict = None,
-            session: Session = None, fail: bool = True
+            session: Session = None, fail_verify: bool = True, fail_proc: bool = True
     ):
         self.m = module
         self.r = result
@@ -51,7 +58,8 @@ class Rule:
             timeout=self.TIMEOUT,
         ) if session is None else session
         self.p = self.m.params if cnf is None else cnf  # to allow override by rule_multi
-        self.fail = fail
+        self.fail_verify = fail_verify
+        self.fail_proc = fail_proc
         self.exists = False
         self.rule = {}
         self.log_name = None
@@ -62,31 +70,13 @@ class Rule:
         self.existing_entries = None
         self.b = Base(instance=self)
 
-    @staticmethod
-    def simplify_existing(rule):
+    def simplify_existing(self, rule: dict):
         # makes processing easier
-        simple = {
-            'uuid': rule['uuid'],
-            'enabled': is_true(rule['enabled']),
-            'log': is_true(rule['log']),
-            'quick': is_true(rule['quick']),
-            'source_invert': is_true(rule['source_not']),
-            'destination_invert': is_true(rule['destination_not']),
-            'action': get_selected(data=rule['action']),
-            'interface': get_selected_list(data=rule['interface']),
-            'direction': get_selected(data=rule['direction']),
-            'ip_protocol': get_selected(data=rule['ipprotocol']),
-            'protocol': get_selected(data=rule['protocol']),
-            'gateway': get_selected(data=rule['gateway']),
-        }
-
-        for field in [
-            'sequence', 'source_net', 'source_port', 'destination_net',
-            'destination_port', 'description'
-        ]:
-            simple[field] = rule[field]
-
-        return simple
+        return simplify_translate(
+            existing=rule,
+            typing=self.FIELDS_TYPING,
+            translate=self.FIELDS_TRANSLATE,
+        )
 
     def _build_log_name(self) -> str:
         if self.p['description'] not in [None, '']:
@@ -108,7 +98,12 @@ class Rule:
         return log_name
 
     def check(self):
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS, error_func=self._error)
+        validate_int_fields(
+            module=self.m,
+            data=self.p,
+            field_minmax=self.INT_VALIDATIONS,
+            error_func=self._error
+        )
         self._build_log_name()
 
         self.b.find(match_fields=self.p['match_fields'])
@@ -116,15 +111,20 @@ class Rule:
             self.call_cnf['params'] = [self.rule['uuid']]
 
         if self.p['state'] == 'present':
-            validate_values(error_func=self._error, module=self.m, cnf=self.p)
+            validate_values(
+                error_func=self._error,
+                module=self.m,
+                cnf=self.p
+            )
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    def _error(self, msg: str):
-        if self.fail:
+    def _error(self, msg: str, verification: bool = True):
+        if (verification and self.fail_verify) or (not verification and self.fail_proc):
             self.m.fail_json(msg)
 
         else:
             self.m.warn(msg)
+            raise ModuleSoftError
 
     def process(self):
         self.b.process()
@@ -140,12 +140,6 @@ class Rule:
 
     def delete(self):
         self.b.delete()
-
-    def enable(self):
-        self.b.enable()
-
-    def disable(self):
-        self.b.disable()
 
     def get_existing(self) -> list:
         return self.b.get_existing()

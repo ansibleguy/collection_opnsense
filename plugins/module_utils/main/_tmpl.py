@@ -1,5 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
+    ModuleSoftError
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
@@ -47,6 +49,7 @@ class TMPL:
         self.r = result
         self.s = Session(module=module) if session is None else session
         self.exists = False
+        self.fail = False
         self.stuff = {}
         self.call_cnf = {  # config shared by all calls
             'module': self.API_MOD,
@@ -73,7 +76,12 @@ class TMPL:
 
     def _error(self, msg: str):
         # for special handling of errors
-        self.m.fail_json(msg)
+        if self.fail:
+            self.m.fail_json(msg)
+
+        else:
+            self.m.warn(msg)
+            raise ModuleSoftError
 
     def detail_call(self) -> dict:
         # return base_detail(self)

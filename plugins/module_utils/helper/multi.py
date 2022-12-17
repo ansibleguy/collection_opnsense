@@ -38,17 +38,20 @@ def validate_single(
 def convert_aliases(cnf: dict, aliases: dict) -> dict:
     # would be done by ansible-module in default-modules
     converted = {}
+    all_aliases = []
 
-    for _param, _aliases in aliases.items():
-        value = cnf[_param] if _param in cnf else None
+    # convert aliases
+    for p, a in aliases.items():
+        all_aliases.extend(a)
 
-        if value is None:
-            for alias in _aliases:
-                if alias in cnf:
-                    value = cnf[alias]
-                    break
+        for _a in a:
+            if _a in cnf:
+                converted[p] = cnf[_a]
+                break
 
-        if value is not None:
-            converted[_param] = value
+    # keep non-aliases
+    for p, v in cnf.items():
+        if p not in all_aliases:
+            converted[p] = v
 
     return converted

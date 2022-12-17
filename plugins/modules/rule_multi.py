@@ -14,7 +14,7 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.utils import profiler
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
-        OPN_MOD_ARGS, STATE_MOD_ARG_MULTI, INFO_MOD_ARG
+        OPN_MOD_ARGS, STATE_MOD_ARG_MULTI, INFO_MOD_ARG, FAIL_MOD_ARG_MULTI
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.rule import \
         RULE_MATCH_FIELDS_ARG, RULE_MOD_ARG_KEY_FIELD
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule_multi import process
@@ -29,18 +29,17 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 
 
 def run_module():
+    FAIL_MOD_ARG_MULTI['fail_verification']['default'] = True
+
     module_args = dict(
         rules=dict(type='dict', required=True),
-        fail_verification=dict(
-            type='bool', required=False, default=True, aliases=['fail'],
-            description='Fail module if single rule fails the verification.'
-        ),
         override=dict(
             type='dict', required=False, default={}, description='Parameters to override for all rules'
         ),
         defaults=dict(
             type='dict', required=False, default={}, description='Default values for all rules'
         ),
+        **FAIL_MOD_ARG_MULTI,
         **STATE_MOD_ARG_MULTI,
         **INFO_MOD_ARG,
         **RULE_MOD_ARG_KEY_FIELD,

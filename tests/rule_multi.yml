@@ -100,18 +100,6 @@
       failed_when: opn7.failed
       when: ansible_check_mode  # else the server-side will reject it
 
-    - name: Fail on server-side validation
-      ansibleguy.opnsense.rule_multi:
-        rules:
-          ANSIBLE_TEST_2_1:
-          ANSIBLE_TEST_2_2:
-            destination_port: 'XXX'
-          ANSIBLE_TEST_2_3:
-        fail_verification: false
-      when: not ansible_check_mode
-      register: opn8
-      failed_when: not opn8.failed
-
     - name: Listing rules
       ansibleguy.opnsense.list:
       register: opn4

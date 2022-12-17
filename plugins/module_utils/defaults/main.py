@@ -76,6 +76,17 @@ RELOAD_MOD_ARG_DEF_FALSE = dict(
     )
 )
 
+FAIL_MOD_ARG_MULTI = dict(
+    fail_verification=dict(
+        type='bool', required=False, default=False, aliases=['fail_verify'],
+        description='Fail module if a single entry fails the verification.'
+    ),
+    fail_processing=dict(
+        type='bool', required=False, default=True, aliases=['fail_proc'],
+        description='Fail module if a single entry fails to be processed.'
+    ),
+)
+
 DEBUG_CONFIG = dict(
     path_log='/tmp/ansibleguy.opnsense',
     log_api_calls='api_calls.log',
