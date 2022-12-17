@@ -55,6 +55,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | ratelimit     | bool    | false     | false                | -                                                      | If DNS replies should be rate limited                                                                            |
 | ratelimit_count     | integer | false     | -                    | -                                                      | Set how many replies per second are allowed                                                                            |
 | ratelimit_except     | list    | false     | ['127.0.0.1', '::1'] | -                                                      | Except a list of IPs from rate-limiting                                                                            |
+| reload       | boolean | false    | true                 | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 
 ### ansibleguy.opnsense.bind_blocklist
@@ -68,6 +69,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | safe_duckduckgo  | boolean | false    | -                     | safe_search_duckduckgo                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |                                                                                                                                                  |
 | safe_youtube  | boolean | false    | -                     | safe_search_youtube                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |                                                                                                                                                  |
 | safe_bing  | boolean | false    | -                     | safe_search_bing                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |                                                                                                                                                  |
+| reload       | boolean | false    | true                 | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 ### ansibleguy.opnsense.bind_acl
 
@@ -75,6 +77,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 |:----------|:-------|:---------|:--------------|:--------|:---------------------------------------------------------------------------------------------------------------------|
 | name      | string | true     | -             | -       | Unique name of the ACL. Some restrictions apply! Length < 32 and neither of: 'any', 'localhost', 'localnets', 'none' |
 | networks  | list   | false for state changes, else true     | -             | nets   | List of networks to add to the ACL                                                                                   |
+| reload       | boolean | false    | true                 | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 ### ansibleguy.opnsense.bind_domain
 
@@ -96,27 +99,57 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | negative  | integer | false    | 3600             | -                   | The time in seconds after which an entry for a non-existent record should expire from cache. Between 60 and 86400                                                                                                                                       |
 | admin_mail  | string | false    | 'mail.opnsense.localdomain             | -                   | The mail address of zone admin. A @-sign will automatically be replaced with a dot in the zone data |
 | server  | string | false    | 'opnsense.localdomain             | dns_server          | The DNS server hosting this file. This should usually be the FQDN of your firewall where the BIND plugin is installed |
+| reload       | boolean | false    | true                 | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+
+**Note:**
+
+A domain can only be removed if no records linked to it exist.
+
+Else it will leave the configuration in a state where you'll have to edit the backup-xml and restore it to remove those records as they will not show in the Web-UI and cannot be addressed using the module.
+
+It seems the plugin lacks validation in that case.
+
 
 ### ansibleguy.opnsense.bind_record
 
-| Parameter | Type    | Required | Default value | Aliases     | Comment                                                                                                                   |
-|:----------|:--------|:---------|:--------------|:------------|:--------------------------------------------------------------------------------------------------------------------------|
-| name      | string  | true     | -             | record      | Name of the record                                                                                                        |
-| domain      | string  | true     | -             | domain_name | Existing domain/zone for the record                                                                                       |
-| type      | string  | false    | 'A'           | -           | Type of the record. One of: 'A', 'AAAA', 'CAA', 'CNAME', 'DNSKEY', 'DS', 'MX', 'NS', 'PTR', 'RRSIG', 'SRV', 'TLSA', 'TXT' |
-| value      | string  | false    | ''            | -           | Value the record should hold                                                                                              |
-| round_robin      | boolean | false    | false         | -           | If multiple records with the same domain/name/type combination exist - the module will only execute 'state=absent' if set to 'false'. To create multiple ones set this to 'true'. Records will only be created, NOT UPDATED! (no matching is done)                                                                                              |
+| Parameter | Type    | Required | Default value | Aliases     | Comment                                                                                                                                                                                                                                            |
+|:----------|:--------|:---------|:--------------|:------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| match_fields     | list  | false     | ['domain', 'name', 'type']             | -           | Fields that are used to match configured records with the running config - if any of those fields are changed, the module will think it's a new record. At least one of: 'domain', 'name', 'type', 'value'                                         |
+| name      | string  | true     | -             | record      | Name of the record                                                                                                                                                                                                                                 |
+| domain      | string  | true     | -             | domain_name | Existing domain/zone for the record                                                                                                                                                                                                                |
+| type      | string  | false    | 'A'           | -           | Type of the record. One of: 'A', 'AAAA', 'CAA', 'CNAME', 'DNSKEY', 'DS', 'MX', 'NS', 'PTR', 'RRSIG', 'SRV', 'TLSA', 'TXT'                                                                                                                          |
+| value      | false for state changes, else true  | false    | ''            | -           | Value the record should hold                                                                                                                                                                                                                       |
+| round_robin      | boolean | false    | false         | -           | If multiple records with the same domain/name/type combination exist - the module will only execute 'state=absent' if set to 'false'. To create multiple ones set this to 'true'. Records will only be created, NOT UPDATED! (no matching is done) |
+| reload       | boolean | false    | true                 | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+
+
+### ansibleguy.opnsense.bind_record_multi
+
+| Parameter | Type                               | Required | Default value              | Aliases | Comment                                                                                                                                                                                                                                                                                  |
+|:----------|:-----------------------------------|:---------|:---------------------------|:--------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| records      | dictionary                         | true     | -                          | record  | Records to process. Format of the dictionary: {'domain1': [{'name': 'record1', 'value': '192.168.0.1'}, {'name': 'record2', 'type': 'TXT', 'value': 'random'}]} (_dictionary of domains with a list of record-dictionaries_)                                                             |
+| match_fields     | list  | false     | ['domain', 'name', 'type'] | -       | Fields that are used to match configured records with the running config - if any of those fields are changed, the module will think it's a new record. At least one of: 'domain', 'name', 'type', 'value'                                                                               |
+| fail_verification | boolean    | false    | false                      | fail_verify | Fail module if single record fails the verification                                                                                                                                                                                                                                      |
+| fail_processing   | boolean    | false    | true                       | fail_proc   | Fail module if single record fails to be processed                                                                                                                                                                                                                                       |
+| state | string     | false   | 'present'                  | -       | Options: 'present', 'absent'                                                                                                                                                                                                                                                             |
+| enabled | boolean    | false | true                       | -       | If all records should be en- or disabled                                                                                                                                                                                                                                                 |
+| output_info | boolean    | false | false                      | info    | Enable to show some information on processing at runtime. Will be hidden if the tasks 'no_log' parameter is set to 'true'.                                                                                                                                                               |
+| reload       | boolean | false    | true                       | -         | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
 
 
 ## Info
 
 ### Mass manage
 
-If you are mass-managing DNS records or using DNS-Blocklists - you might want to disable ```reload: false``` on single module-calls!
+If you want to mass-manage DNS records - use the [bind_record_multi](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_bind.md#ansibleguyopnsensebind_record_multi-1) module. It scales better for that use-case!
 
-This takes a long time, as the service gets reloaded every time!
+For other modules:
 
-You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md)
+* If you are mass-managing DNS records or using DNS-Blocklists - you might want to disable ```reload: false``` on single module-calls!
+
+* This takes a long time, as the service gets reloaded every time!
+
+* You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md)
 
 ### Round-Robin
 
@@ -462,5 +495,97 @@ If a change is needed, you will have to run the module using 'state=absent' firs
       ansibleguy.opnsense.bind_record:
         domain: 'template.ansibleguy'
         name: 'test1'
+        state: 'absent'
+```
+
+### ansibleguy.opnsense.bind_record_multi
+
+```yaml
+- hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.bind_record_multi:
+      firewall: 'opnsense.template.ansibleguy.net'
+      api_credential_file: '/home/guy/.secret/opn.key'
+
+  tasks:
+    - name: Example
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'template.ansibleguy':
+            - name: 'example'
+              value: '192.168.1.1'
+        name: 'example'
+        # fail_verification: false
+        # fail_processing: false
+        # enabled: true
+        # match_fields: ['domain', 'name', 'type']
+        # reload: true
+        # output_info: false
+
+    - name: Adding
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'template.ansibleguy':
+            - name: 'test1'
+              value: '192.168.1.1'
+            - name: 'test1'
+              type: 'TXT'
+              value: 'random'
+            - name: 'test2'
+              value: '192.168.2.1'
+            - name: 'test3'
+              value: '192.168.3.1'
+            - name: 'test4'
+              type: 'CNAME'
+              value: 'test1.test3.ansibleguy'
+
+    - name: Changing
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'template.ansibleguy':
+            - name: 'test1'
+              value: '192.168.1.2'
+            - name: 'test1'
+              type: 'TXT'
+              value: 'random_new'
+            - name: 'test2'
+              value: '192.168.2.1'
+              enabled: false
+            - name: 'test3'
+              state: 'absent'
+            - name: 'test4'
+              type: 'CNAME'
+              value: 'test2.test3.ansibleguy'
+
+    - name: Disabling all
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'template.ansibleguy':
+            - name: 'test1'
+              value: '192.168.1.2'
+            - name: 'test1'
+              type: 'TXT'
+              value: 'random_new'
+            - name: 'test2'
+              value: '192.168.2.1'
+            - name: 'test3'
+              state: 'absent'
+            - name: 'test4'
+              type: 'CNAME'
+              value: 'test2.test3.ansibleguy'
+        enabled: false
+
+    - name: Removing all
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'template.ansibleguy':
+            - 'test1'
+            - name: 'test1'
+              type: 'TXT'
+            - 'test2'
+            - 'test3'
+            - name: 'test4'
+              type: 'CNAME'
         state: 'absent'
 ```

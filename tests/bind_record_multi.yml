@@ -1,0 +1,139 @@
+---
+
+- name: Testing BIND Multi-Records
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.bind_record_multi:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.bind_domain:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'bind_record'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1 or
+        opn_pre1.data | length > 0
+
+    - name: Adding dummy domain
+      ansibleguy.opnsense.bind_domain:
+        name: 'test4.ansibleguy'
+      when: not ansible_check_mode
+
+    - name: Adding 1
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'test4.ansibleguy':
+            - name: 'test1'
+              value: '192.168.1.1'
+            - name: 'test1'
+              type: 'TXT'
+              value: 'random'
+            - name: 'test2'
+              value: '192.168.2.1'
+            - name: 'test3'
+              value: '192.168.3.1'
+            - name: 'test4'
+              type: 'CNAME'
+              value: 'test1.test3.ansibleguy'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'test4.ansibleguy':
+            - name: 'test1'
+              value: '192.168.1.2'
+            - name: 'test1'
+              type: 'TXT'
+              value: 'random_new'
+            - name: 'test2'
+              value: '192.168.2.1'
+              enabled: false
+            - name: 'test3'
+              state: 'absent'
+            - name: 'test4'
+              type: 'CNAME'
+              value: 'test2.test3.ansibleguy'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Nothing changed
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'test4.ansibleguy':
+            - name: 'test1'
+              value: '192.168.1.2'
+            - name: 'test1'
+              type: 'TXT'
+              value: 'random_new'
+            - name: 'test2'
+              value: '192.168.2.1'
+              enabled: false
+            - name: 'test3'
+              state: 'absent'
+            - name: 'test4'
+              type: 'CNAME'
+              value: 'test2.test3.ansibleguy'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn8
+      failed_when: >
+        'data' not in opn8 or
+        opn8.data | length != 3
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'test4.ansibleguy':
+            - 'test1'
+            - name: 'test1'
+              type: 'TXT'
+            - 'test2'
+            - 'test3'
+            - name: 'test4'
+              type: 'CNAME'
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Cleanup domain
+      ansibleguy.opnsense.bind_domain:
+        name: 'test4.ansibleguy'
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode

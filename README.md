@@ -59,10 +59,10 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 |:------------------------|:-------------------------------------------|:-----------------------------------------------------------------------------------------------------|:---------|
 | **Base**                | ansibleguy.opnsense.list                   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_list.md)               | stable   |
 | **Base**                | ansibleguy.opnsense.reload                 | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md)             | stable   |
-| **Base**                | ansibleguy.opnsense.service                | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_service.md)            | unstable |
+| **Base**                | ansibleguy.opnsense.service                | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_service.md)            | stable |
 | **Alias**               | ansibleguy.opnsense.alias                  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias.md)              | stable   | 
 | **Alias**               | ansibleguy.opnsense.alias_multi            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md)        | stable   |
-| **Alias**               | ansibleguy.opnsense.alias_purge            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md)        | stable   |
+| **Alias**               | ansibleguy.opnsense.alias_purge            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md)        | unstable   |
 | **Rules**               | ansibleguy.opnsense.rule                   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule.md)               | unstable |
 | **Rules**               | ansibleguy.opnsense.rule_multi             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)         | unstable |
 | **Rules**               | ansibleguy.opnsense.rule_purge             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md)         | unstable |
@@ -70,11 +70,11 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Packages**            | ansibleguy.opnsense.package                | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md)            | stable   |
 | **System**              | ansibleguy.opnsense.system                 | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_system.md)             | unstable |
 | **Cron-Jobs**           | ansibleguy.opnsense.cron                   | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_cron.md)               | unstable |
-| **Routes**              | ansibleguy.opnsense.route                  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_route.md)              | unstable |
+| **Routes**              | ansibleguy.opnsense.route                  | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_route.md)              | stable |
 | **DNS**                 | ansibleguy.opnsense.unbound_forward        | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_forwarding.md) | stable   |
 | **DNS**                 | ansibleguy.opnsense.unbound_dot            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_dot.md)        | stable   |
 | **DNS**                 | ansibleguy.opnsense.unbound_host           | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host.md)       | stable   |
-| **DNS**                 | ansibleguy.opnsense.unbound_domain         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_domain.md)     | unstable |
+| **DNS**                 | ansibleguy.opnsense.unbound_domain         | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_domain.md)     | stable |
 | **DNS**                 | ansibleguy.opnsense.unbound_host_alias     | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_unbound_host_alias.md) | unstable |
 | **Syslog**              | ansibleguy.opnsense.syslog                 | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_syslog.md)             | stable   |
 | **IPSec**               | ansibleguy.opnsense.ipsec_cert             | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_ipsec.md)              | unstable |
@@ -112,6 +112,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **DNS**                 | ansibleguy.opnsense.bind_acl               | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_bind.md)               | unstable |
 | **DNS**                 | ansibleguy.opnsense.bind_domain            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_bind.md)               | unstable |
 | **DNS**                 | ansibleguy.opnsense.bind_record            | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_bind.md)               | unstable |
+| **DNS**                 | ansibleguy.opnsense.bind_record_multi      | [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_bind.md)               | unstable |
 
 
 ### Roadmap

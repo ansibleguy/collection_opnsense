@@ -15,11 +15,9 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
         diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
-        OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.bind_record import \
-        RECORD_MOD_ARGS
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_record import \
-        Record
+        OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG, INFO_MOD_ARG, FAIL_MOD_ARG_MULTI
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_record_multi import \
+        process
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -32,7 +30,18 @@ EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/u
 
 def run_module():
     module_args = dict(
-        **RECORD_MOD_ARGS,
+        records=dict(type='dict', required=True),
+        match_fields=dict(
+            type='list', required=False, elements='str',
+            description='Fields that are used to match configured records with the running config - '
+                        "if any of those fields are changed, the module will think it's a new entry",
+            choises=['domain', 'name', 'type', 'value'],
+            default=['domain', 'name', 'type'],
+        ),
+        **FAIL_MOD_ARG_MULTI,
+        **STATE_MOD_ARG,
+        **INFO_MOD_ARG,
+        **OPN_MOD_ARGS,
         **RELOAD_MOD_ARG,
     )
 
@@ -49,22 +58,19 @@ def run_module():
         supports_check_mode=True,
     )
 
-    r = Record(module=module, result=result)
-
-    def process():
-        r.check()
-        r.process()
-        if result['changed'] and module.params['reload']:
-            r.reload()
-
     if PROFILE or module.params['debug']:
-        profiler(check=process, log_file='bind_record.log')
+        profiler(
+            check=process,
+            kwargs=dict(
+                m=module, p=module.params, r=result,
+            ),
+            log_file='bind_record_multi.log'
+        )
         # log in /tmp/ansibleguy.opnsense/
 
     else:
-        process()
+        process(m=module, p=module.params, r=result)
 
-    r.s.close()
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 

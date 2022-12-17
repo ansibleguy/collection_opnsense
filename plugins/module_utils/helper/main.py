@@ -170,10 +170,13 @@ def is_true(data: (str, int, bool)) -> bool:
     return data in [1, '1', True]
 
 
-def get_selected(data: dict) -> str:
-    for key, values in data.items():
-        if is_true(values['selected']):
-            return key
+def get_selected(data: dict) -> (str, None):
+    if len(data) > 0:
+        for key, values in data.items():
+            if is_true(values['selected']):
+                return key
+
+    return None
 
 
 def get_selected_list(data: dict, remove_empty: bool = False) -> list:

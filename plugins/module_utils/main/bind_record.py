@@ -1,5 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
+    ModuleSoftError
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
@@ -31,11 +33,16 @@ class Record:
     }
     EXIST_ATTR = 'record'
 
-    def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
+    def __init__(
+            self, module: AnsibleModule, result: dict, cnf: dict = None,
+            session: Session = None, fail_verify: bool = True, fail_proc: bool = True
+    ):
         self.m = module
-        self.p = module.params
+        self.p = self.m.params if cnf is None else cnf  # to allow override by bind_record_multi
         self.r = result
         self.s = Session(module=module) if session is None else session
+        self.fail_verify = fail_verify
+        self.fail_proc = fail_proc
         self.exists = False
         self.existing = []
         self.record = {}
@@ -49,17 +56,21 @@ class Record:
         self.b = Base(instance=self)
 
     def check(self):
+        if self.p['state'] == 'present' and self.p['value'] is None:
+            self._error(
+                'You need to supply a value to create the record '
+                f"'{self.p['name']}.{self.p['domain']}'"
+            )
+
         # custom matching as dns round-robin allows for multiple records to match..
         if self.existing_entries is None:
             self.existing_entries = self.b.search()
 
         if self.existing_domains is None:
-            self.existing_domains = self.s.get(cnf={
-                **self.call_cnf, **{'command': self.CMDS['search'], 'controller': 'domain'}
-            })['domain']['domains']['domain']
+            self.existing_domains = self.search_call_domains()
 
         if len(self.existing_domains) == 0:
-            self.m.fail_json('No existing domain found! Create one before managing its records.')
+            self._error('No existing domain found! Create one before managing its records.')
 
         domain_found = False
         for uuid, dom in self.existing_domains.items():
@@ -69,7 +80,7 @@ class Record:
                 break
 
         if not domain_found:
-            self.m.fail_json(
+            self._error(
                 f"The provided domain '{self.p['domain']}' was not found! "
                 'You may have to create it before managing its records.'
             )
@@ -95,6 +106,19 @@ class Record:
             if self.p['state'] == 'present':
                 self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
+    def search_call_domains(self) -> dict:
+        return self.s.get(cnf={
+            **self.call_cnf, **{'command': self.CMDS['search'], 'controller': 'domain'}
+        })['domain']['domains']['domain']
+
+    def _error(self, msg: str, verification: bool = True):
+        if (verification and self.fail_verify) or (not verification and self.fail_proc):
+            self.m.fail_json(msg)
+
+        else:
+            self.m.warn(msg)
+            raise ModuleSoftError
+
     def _delete_rr(self):
         self.r['diff']['after'] = {}
 
@@ -114,10 +138,11 @@ class Record:
             # round-robin exists
             if not self.p['round_robin']:
                 if self.p['state'] == 'present':
-                    self.m.fail_json(
-                        'Multiple records with the provided domain/type/name combination exist! '
-                        "To create 'round_robin' records - set the argument to 'true'. "
-                        "Else remove all existing records by re-calling the module with 'state=absent'"
+                    self._error(
+                        msg='Multiple records with the provided domain/type/name combination exist! '
+                            "To create 'round_robin' records - set the argument to 'true'. "
+                            "Else remove all existing records by re-calling the module with 'state=absent'",
+                        verification=False,
                     )
 
                 else:
