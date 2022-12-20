@@ -1,2 +1,4 @@
 # pip requirements to build docs
-sphinx sphinx-rtd-theme myst-parser
+sphinx
+sphinx-rtd-theme
+myst-parser
