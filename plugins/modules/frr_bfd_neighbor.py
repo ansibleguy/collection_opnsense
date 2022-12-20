@@ -22,8 +22,8 @@ except MODULE_EXCEPTIONS:
 
 PROFILE = False  # create log to profile time consumption
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bfd.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bfd.md'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/frr_bfd.html'
+EXAMPLES = 'https://opnsense.ansibleguy.net/modules/frr_bfd.html'
 
 
 def run_module():

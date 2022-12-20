@@ -24,8 +24,8 @@ except MODULE_EXCEPTIONS:
 
 PROFILE = False  # create log to profile time consumption
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_rule_multi.md'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/rule_multi.html'
+EXAMPLES = 'https://opnsense.ansibleguy.net/modules/rule_multi.html'
 
 
 def run_module():

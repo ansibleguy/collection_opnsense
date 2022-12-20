@@ -24,8 +24,8 @@ except MODULE_EXCEPTIONS:
 
 PROFILE = False  # create log to profile time consumption
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_source_nat.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_source_nat.md'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/source_nat.html'
+EXAMPLES = 'https://opnsense.ansibleguy.net/modules/source_nat.html'
 
 
 def run_module():

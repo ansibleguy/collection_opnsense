@@ -18,8 +18,8 @@ except MODULE_EXCEPTIONS:
     module_dependency_error()
 
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_list.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_list.md'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/list.html'
+EXAMPLES = 'https://opnsense.ansibleguy.net/modules/list.html'
 
 
 def run_module():

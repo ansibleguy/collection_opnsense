@@ -18,8 +18,8 @@ except MODULE_EXCEPTIONS:
     module_dependency_error()
 
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/reload.html'
+EXAMPLES = 'https://opnsense.ansibleguy.net/modules/reload.html'
 
 
 def run_module():

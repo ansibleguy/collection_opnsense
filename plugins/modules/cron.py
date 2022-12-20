@@ -22,8 +22,8 @@ except MODULE_EXCEPTIONS:
 
 PROFILE = False  # create log to profile time consumption
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_cron.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_cron.md'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/cron.html'
+EXAMPLES = 'https://opnsense.ansibleguy.net/modules/cron.html'
 
 
 def run_module():

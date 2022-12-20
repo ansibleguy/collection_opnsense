@@ -20,8 +20,8 @@ try:
 except MODULE_EXCEPTIONS:
     module_dependency_error()
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bfd.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_bfd.md'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/frr_bfd.html#ansibleguy-opnsense-frr-bfd-general'
+EXAMPLES = 'https://opnsense.ansibleguy.net/modules/frr_bfd.html#id1'
 
 
 def run_module():

@@ -22,7 +22,7 @@ except MODULE_EXCEPTIONS:
 
 PROFILE = False  # create log to profile time consumption
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_alias_multi.md'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/alias_multi.html'
 EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/tests/alias_multi.yml'
 
 

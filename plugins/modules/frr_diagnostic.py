@@ -18,8 +18,8 @@ try:
 except MODULE_EXCEPTIONS:
     module_dependency_error()
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_diagnostic.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr_diagnostic.md'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/frr_diagnostic.html'
+EXAMPLES = 'https://opnsense.ansibleguy.net/modules/frr_diagnostic.html'
 
 
 def run_module():

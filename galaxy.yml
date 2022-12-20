@@ -2,7 +2,7 @@
 
 namespace: 'ansibleguy'
 name: 'opnsense'
-version: 1.0.17
+version: 1.0.18
 readme: 'README.md'
 authors:
   - 'AnsibleGuy <guy@ansibleguy.net>'
@@ -15,7 +15,7 @@ tags:
   - 'iac'
 dependencies: {}
 repository: 'https://github.com/ansibleguy/collection_opnsense'
-documentation: 'https://github.com/ansibleguy/collection_opnsense/tree/stable/docs'
+documentation: 'https://opnsense.ansibleguy.net/'
 homepage: 'https://ansibleguy.net'
 issues: 'https://github.com/ansibleguy/collection_opnsense/issues'
 build_ignore: []

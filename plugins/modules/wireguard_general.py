@@ -20,8 +20,8 @@ try:
 except MODULE_EXCEPTIONS:
     module_dependency_error()
 
-DOCUMENTATION = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_wireguard.md'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_wireguard.md'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/wireguard.html'
+EXAMPLES = 'https://opnsense.ansibleguy.net/modules/wireguard.html'
 
 
 def run_module():
