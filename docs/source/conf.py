@@ -1,5 +1,7 @@
 from datetime import datetime
 
+# pylint: disable=W0622
+
 project = 'Ansible Collection - OPNSense'
 copyright = f'{datetime.now().year}, AnsibleGuy'
 author = 'AnsibleGuy'
