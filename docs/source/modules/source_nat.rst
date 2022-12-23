@@ -33,11 +33,14 @@ This plugin has some limitations you need to know of:
 
 * ports don't support aliases
 * each of these parameters only takes ONE value per rule:
+
   * port
   * protocol (*or 'any'; 'TCP/UDP' is NOT valid*)
   * ip-protocol (*IPv4/IPv6*)
+
 * the ruleset managed by this plugin is SEPARATE from the default WEB-UI rules (*Firewall - NAT - Outbound*) - combined usage might bring complications
 * interfaces must be provided as used in the network config (*p.e. 'opt1' instead of 'DMZ'*)
+
   * per example see menu: 'Interface - Assignments - Interface ID (in brackets)'
   * this brings problems if the interface-names are not the same on both nodes when using HA-setups
 

@@ -42,6 +42,8 @@ This module manages VIP configuration that can be found in the WEB-UI menu: 'Int
 Definition
 **********
 
+.. include:: ../_include/param_basic.rst
+
 ansibleguy.opnsense.interface_vlan
 ==================================
 

@@ -15,6 +15,7 @@
 The description is used to match the configured entries with the existing ones. It must be unique!
 
 Interfaces for 'shaper_rules' must be provided as used in the network config (_p.e. 'opt1' instead of 'DMZ'_)
+
   * per example see menu: 'Interface - Assignments - Interface ID (in brackets)'
   * this brings problems if the interface-names are not the same on both nodes when using HA-setups
 
