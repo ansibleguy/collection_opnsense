@@ -327,10 +327,13 @@ class Base:
 
         return diff
 
-    def build_request(self) -> dict:
+    def build_request(self, ignore_fields: list = None) -> dict:
         request = {}
         TRANSLATE_FIELDS = {}
         BOOL_INVERT_FIELDS = []
+
+        if ignore_fields is None:
+            ignore_fields = []
 
         if len(self.e) == 0:
             self.e = getattr(self.i, self.i.EXIST_ATTR)
@@ -342,6 +345,9 @@ class Base:
             BOOL_INVERT_FIELDS = getattr(self.i, self.ATTR_BOOL_INVERT)
 
         for field in self.i.FIELDS_ALL:
+            if field in ignore_fields:
+                continue
+
             opn_field = field
             if field in TRANSLATE_FIELDS:
                 opn_field = TRANSLATE_FIELDS[field]

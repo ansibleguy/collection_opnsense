@@ -1,0 +1,90 @@
+---
+
+- name: WebProxy Traffic Settings
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.webproxy_traffic:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'webproxy_traffic'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Configuring
+      ansibleguy.opnsense.webproxy_traffic:
+        download_kb_max: 40960
+        upload_kb_max: 10240
+        throttle_kb_bandwidth: 81920
+        throttle_kb_host_bandwidth: 10240
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.webproxy_traffic:
+        download_kb_max: 20480
+        upload_kb_max: 5120
+        throttle_kb_bandwidth: 40960
+        throttle_kb_host_bandwidth: 5120
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1
+      ansibleguy.opnsense.webproxy_traffic:
+        download_kb_max: 20480
+        upload_kb_max: 5120
+        throttle_kb_bandwidth: 40960
+        throttle_kb_host_bandwidth: 5120
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.webproxy_traffic:
+        download_kb_max: 20480
+        upload_kb_max: 5120
+        throttle_kb_bandwidth: 40960
+        throttle_kb_host_bandwidth: 5120
+        enabled: false
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        opn4.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.webproxy_traffic:
+        download_kb_max: 20480
+        upload_kb_max: 5120
+        throttle_kb_bandwidth: 40960
+        throttle_kb_host_bandwidth: 5120
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.webproxy_traffic:
+        enabled: false
+      when: not ansible_check_mode

@@ -1,0 +1,122 @@
+---
+
+# todo: logging settings not working; request via gui seems to work that way..
+
+- name: WebProxy General Settings
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.webproxy_general:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'webproxy_general'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Configuring - failing because of invalid connect_timeout
+      ansibleguy.opnsense.webproxy_general:
+        connect_timeout: 200
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Configuring
+      ansibleguy.opnsense.webproxy_general:
+        errors: 'custom'
+        icp_port: 50000
+        log: true
+        log_store: true
+        # log_target: 'file_json'
+        dns_servers: ['192.168.0.1', '192.168.10.1']
+        handling_forwarded_for: 'truncate'
+        suppress_version: true
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.webproxy_general:
+        errors: 'squid'
+        icp_port: 30000
+        log: true
+        log_store: true
+        # log_target: 'syslog'
+        # log_ignore: ['192.168.50.0/24']
+        email: 'netadmin@ansibleguy.net'
+        handling_forwarded_for: 'truncate'
+        suppress_version: false
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1
+      ansibleguy.opnsense.webproxy_general:
+        errors: 'squid'
+        icp_port: 30000
+        log: true
+        log_store: true
+        # log_target: 'syslog'
+        # log_ignore: ['192.168.50.0/24']
+        email: 'netadmin@ansibleguy.net'
+        handling_forwarded_for: 'truncate'
+        suppress_version: false
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.webproxy_general:
+        errors: 'squid'
+        icp_port: 30000
+        log: true
+        log_store: true
+        # log_target: 'syslog'
+        # log_ignore: ['192.168.50.0/24']
+        email: 'netadmin@ansibleguy.net'
+        handling_forwarded_for: 'truncate'
+        suppress_version: false
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.webproxy_general:
+        errors: 'squid'
+        icp_port: 30000
+        log: true
+        log_store: true
+        # log_target: 'syslog'
+        # log_ignore: ['192.168.50.0/24']
+        email: 'netadmin@ansibleguy.net'
+        handling_forwarded_for: 'truncate'
+        suppress_version: false
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.webproxy_general:
+        enabled: false
+      when: not ansible_check_mode

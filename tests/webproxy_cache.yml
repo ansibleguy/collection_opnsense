@@ -1,0 +1,73 @@
+---
+
+- name: WebProxy Cache Settings
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.webproxy_cache:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'webproxy_cache'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Configuring - failing because of invalid max-size
+      ansibleguy.opnsense.webproxy_parent:
+        size_mb_max: 1000000
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Configuring
+      ansibleguy.opnsense.webproxy_cache:
+        memory_mb: 512
+        size_mb: 2048
+        memory_cache_mode: 'always'
+        cache_windows_updates: true
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.webproxy_cache:
+        memory_mb: 256
+        size_mb: 1024
+        memory_cache_mode: 'always'
+        cache_linux_packages: true
+        cache_windows_updates: false
+        layer_2: 512
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 - nothing changed
+      ansibleguy.opnsense.webproxy_cache:
+        memory_mb: 256
+        size_mb: 1024
+        memory_cache_mode: 'always'
+        cache_linux_packages: true
+        cache_windows_updates: false
+        layer_2: 512
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.webproxy_cache:
+      when: not ansible_check_mode

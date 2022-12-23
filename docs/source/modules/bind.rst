@@ -48,8 +48,8 @@ ansibleguy.opnsense.bind_general
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "enabled","bool","false","true","\-","En- or disable the BIND service"
-    "ipv6","bool","false","false","\-","En- or disable IPv6"
+    "enabled","boolean","false","true","\-","En- or disable the BIND service"
+    "ipv6","boolean","false","false","\-","En- or disable IPv6"
     "response_policy_zones","bool","false","false","rpz","En- or disable response policy zones"
     "port","integer","false","53530","p","Port the BIND service should listen on. Integer between 1 and 65535"
     "listen_ipv4","list","false","['127.0.0.1']","listen_v4, listen","IPv4 addresses the service should listen on"
@@ -81,7 +81,7 @@ ansibleguy.opnsense.bind_blocklist
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "enabled","bool","false","true","\-","En- or disable Blocklists"
+    "enabled","boolean","false","true","\-","En- or disable Blocklists"
     "block","list","false","\-","lists","Blocklist's you want to enable. At least one of: 'AdAway List', 'AdGuard List', 'Blocklist.site Ads', 'Blocklist.site Fraud', 'Blocklist.site Phishing', 'Cameleon List', 'Easy List', 'EMD Malicious Domains List', 'Easyprivacy List', 'hpHosts Ads', 'hpHosts FSA', 'hpHosts PSH', 'hpHosts PUP', 'Malwaredomain List', 'NoCoin List', 'PornTop1M List', 'Ransomware Tracker List', 'Simple Ad List', 'Simple Tracker List', 'Steven Black List', 'WindowsSpyBlocker (spy)', 'WindowsSpyBlocker (update)', 'WindowsSpyBlocker (extra)', 'YoYo List'"
     "exclude","list","false","\-","safe_list","Domains to exclude from the filter"
     "safe_google","boolean","false","\-","safe_search_google","\-"

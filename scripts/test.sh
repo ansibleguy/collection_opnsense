@@ -91,6 +91,7 @@ run_test 'wireguard_general' 1
 run_test 'wireguard_show' 1
 run_test 'interface_vlan' 1
 run_test 'interface_vxlan' 1
+# run_test 'interface_vip' 1
 run_test 'source_nat' 1
 run_test 'frr_diagnostic' 1
 run_test 'frr_bfd_general' 1
@@ -108,13 +109,17 @@ run_test 'frr_ospf_route_map' 1
 run_test 'frr_ospf_network' 1
 run_test 'frr_ospf3_general' 1
 run_test 'frr_ospf3_interface' 1
+run_test 'frr_rip' 1
 run_test 'bind_acl' 1
 run_test 'bind_general' 1
 run_test 'bind_blocklist' 1
 run_test 'bind_domain' 1
 run_test 'bind_record' 1
 run_test 'bind_record_multi' 1
-run_test 'frr_rip' 1
+run_test 'webproxy_general' 1
+run_test 'webproxy_cache' 1
+run_test 'webproxy_parent' 1
+run_test 'webproxy_traffic' 1
 run_test 'system' 1
 run_test 'package' 1
 

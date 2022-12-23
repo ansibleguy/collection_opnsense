@@ -15,8 +15,8 @@ class BaseModule:
         self.exists = False
         self.existing_entries = None
 
-    def _search_call(self) -> list:
-        return self.b.search()
+    def _search_call(self, fail_response: bool = False) -> list:
+        return self.b.search(fail_response=fail_response)
 
     def get_existing(self) -> list:
         return self.b.get_existing()

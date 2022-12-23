@@ -24,7 +24,6 @@ class Vip(BaseModule):
         'advertising_base', 'advertising_skew', 'description', 'interface',
     ]
     FIELDS_ALL = FIELDS_CHANGE
-    FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'address': 'subnet',
         'cidr': 'subnet_bits',
@@ -34,6 +33,7 @@ class Vip(BaseModule):
         'advertising_skew': 'advskew',
         'description': 'descr',
     }
+    FIELDS_DIFF_EXCLUDE = ['password']
     FIELDS_BOOL_INVERT = ['expand', 'bind']
     FIELDS_TYPING = {
         'bool': ['expand', 'bind'],

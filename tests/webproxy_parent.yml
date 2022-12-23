@@ -1,0 +1,127 @@
+---
+
+- name: WebProxy ProxyParent Settings
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.webproxy_parent:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'webproxy_parent'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Configuring - failing because of missing host
+      ansibleguy.opnsense.webproxy_parent:
+        enabled: true
+        port: 1000
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Configuring - failing because of missing port
+      ansibleguy.opnsense.webproxy_parent:
+        enabled: true
+        host: '192.168.0.1'
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+
+    - name: Configuring - failing because of invalid host
+      ansibleguy.opnsense.webproxy_parent:
+        enabled: true
+        host: '192.168.0.1000'
+        port: 1000
+      register: opn_fail3
+      failed_when: not opn_fail3.failed
+
+    - name: Configuring
+      ansibleguy.opnsense.webproxy_parent:
+        auth: true
+        host: '192.168.0.1'
+        port: 1000
+        user: 'test'
+        password: 'secret'
+        local_ips: ['192.168.10.0/24', '192.168.2.0/29']
+        local_domains: ['ansibleguy.lan']
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.webproxy_parent:
+        auth: true
+        host: '192.168.0.10'
+        port: 1500
+        user: 'test'
+        password: 'secret_new'
+        local_ips: ['192.168.10.0/24', '192.168.3.0/29']
+        local_domains: ['ansibleguy.lan']
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1
+      ansibleguy.opnsense.webproxy_parent:
+        auth: true
+        host: '192.168.0.10'
+        port: 1500
+        user: 'test'
+        password: 'secret_new'
+        local_ips: ['192.168.10.0/24', '192.168.3.0/29']
+        local_domains: ['ansibleguy.lan']
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.webproxy_parent:
+        auth: true
+        host: '192.168.0.10'
+        port: 1500
+        user: 'test'
+        password: 'secret_new'
+        local_ips: ['192.168.10.0/24', '192.168.3.0/29']
+        local_domains: ['ansibleguy.lan']
+        enabled: false
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        opn4.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.webproxy_parent:
+        auth: true
+        host: '192.168.0.10'
+        port: 1500
+        user: 'test'
+        password: 'secret_new'
+        local_ips: ['192.168.10.0/24', '192.168.3.0/29']
+        local_domains: ['ansibleguy.lan']
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.webproxy_parent:
+        enabled: false
+      when: not ansible_check_mode

@@ -49,13 +49,10 @@ class Rip(BaseModule):
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         self.settings = self._search_call()
-        self.r['diff']['before'] = self.settings
-        self.r['diff']['after'] = {
+        self.r['diff']['before'] = self.b.build_diff(self.settings)
+        self.r['diff']['after'] = self.b.build_diff({
             k: v for k, v in self.p.items() if k in self.settings
-        }
-
-    def process(self):
-        self.update()
+        })
 
     def _search_call(self) -> dict:
         return simplify_translate(
