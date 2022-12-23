@@ -7,9 +7,9 @@
 [wireguard_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_general.yml) | 
 [wireguard_show](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_show.yml) 
 
-**API DOCS**: [Plugin - Wireguard](https://docs.opnsense.org/development/api/plugins/wireguard.html)
+**API Docs**: [Plugin - Wireguard](https://docs.opnsense.org/development/api/plugins/wireguard.html)
 
-**BASE DOCS**: [WireGuard - Site to Site](https://docs.opnsense.org/manual/how-tos/wireguard-s2s.html) | [WireGuard - Client to Site](https://docs.opnsense.org/manual/how-tos/wireguard-client.html)
+**Service Docs**: [WireGuard - Site to Site](https://docs.opnsense.org/manual/how-tos/wireguard-s2s.html) | [WireGuard - Client to Site](https://docs.opnsense.org/manual/how-tos/wireguard-client.html)
 
 ## Prerequisites
 

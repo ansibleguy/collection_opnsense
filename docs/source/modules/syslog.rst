@@ -10,7 +10,7 @@ Syslog
 
 **TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/syslog.yml>`_
 
-**API DOCS**: `Core - Syslog <https://docs.opnsense.org/development/api/core/syslog.html>`_
+**API Docs**: `Core - Syslog <https://docs.opnsense.org/development/api/core/syslog.html>`_
 
 
 Definition

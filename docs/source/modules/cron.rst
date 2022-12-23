@@ -10,7 +10,7 @@ Cron Jobs
 
 **TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/cron.yml>`_
 
-**API DOCS**: `Core - Cron <https://docs.opnsense.org/development/api/core/cron.html>`_
+**API Docs**: `Core - Cron <https://docs.opnsense.org/development/api/core/cron.html>`_
 
 
 Definition

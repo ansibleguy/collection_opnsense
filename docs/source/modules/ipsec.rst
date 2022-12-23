@@ -10,9 +10,9 @@ IPSec
 
 **TESTS**: `ipsec_cert <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_cert.yml>`_
 
-**API DOCS**: `Core - IPSec <https://docs.opnsense.org/development/api/core/ipsec.html>`_
+**API Docs**: `Core - IPSec <https://docs.opnsense.org/development/api/core/ipsec.html>`_
 
-**BASE DOCS**: `Routes <https://docs.opnsense.org/manual/vpnet.html#ipsec>`_
+**Service Docs**: `Routes <https://docs.opnsense.org/manual/vpnet.html#ipsec>`_
 
 
 Limitations

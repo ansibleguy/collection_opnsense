@@ -10,9 +10,9 @@ Package
 
 **TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/package.yml>`_
 
-**API DOCS**: `Core - Firmware <https://docs.opnsense.org/development/api/core/firmware.html>`_
+**API Docs**: `Core - Firmware <https://docs.opnsense.org/development/api/core/firmware.html>`_
 
-**BASE DOCS**: `Plugins <https://docs.opnsense.org/manual/firmware.html#plugins>`_
+**Service Docs**: `Plugins <https://docs.opnsense.org/manual/firmware.html#plugins>`_
 
 
 Info

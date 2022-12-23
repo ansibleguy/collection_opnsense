@@ -41,7 +41,7 @@ class Prefix(BaseModule):
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.prefix = {}
-        self.call_cnf = {  # config shared by all calls
+        self.call_cnf = {
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }

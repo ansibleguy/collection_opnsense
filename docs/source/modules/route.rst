@@ -10,9 +10,9 @@ Route
 
 **TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/route.yml>`_
 
-**API DOCS**: `Core - Routes <https://docs.opnsense.org/development/api/core/routes.html>`_
+**API Docs**: `Core - Routes <https://docs.opnsense.org/development/api/core/routes.html>`_
 
-**BASE DOCS**: `Routes <https://docs.opnsense.org/manual/routes.html>`_
+**Service Docs**: `Routes <https://docs.opnsense.org/manual/routes.html>`_
 
 Definition
 **********

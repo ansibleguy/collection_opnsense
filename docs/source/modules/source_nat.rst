@@ -10,9 +10,9 @@ Source NAT
 
 **TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/source_nat.yml>`_
 
-**API DOCS**: `Core - Firewall <https://docs.opnsense.org/development/api/core/firewall.html>`_
+**API Docs**: `Core - Firewall <https://docs.opnsense.org/development/api/core/firewall.html>`_
 
-**BASE DOCS**: `Aliases <https://docs.opnsense.org/manual/nat.html#outbound>`_
+**Service Docs**: `Outbound NAT <https://docs.opnsense.org/manual/nat.html#outbound>`_
 
 
 Prerequisites

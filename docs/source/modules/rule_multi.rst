@@ -11,9 +11,9 @@ Rule - Mass Management
 **TESTS**: `rule_multi <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule_multi.yml>`_ |
 `rule_purge <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule_multi.yml>`_
 
-**API DOCS**: `Core - Firewall <https://docs.opnsense.org/development/api/core/firewall.html>`_
+**API Docs**: `Core - Firewall <https://docs.opnsense.org/development/api/core/firewall.html>`_
 
-**BASE DOCS**: `Rules <https://docs.opnsense.org/manual/firewall.html#rules.html>`_
+**Service Docs**: `Rules <https://docs.opnsense.org/manual/firewall.html#rules.html>`_
 
 Info
 ****

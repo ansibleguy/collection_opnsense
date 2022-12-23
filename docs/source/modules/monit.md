@@ -4,9 +4,9 @@
 
 **TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/monit.yml)
 
-**API DOCS**: [Core - Monit](https://docs.opnsense.org/development/api/core/monit.html)
+**API Docs**: [Core - Monit](https://docs.opnsense.org/development/api/core/monit.html)
 
-**BASE DOCS**: [Monit](https://docs.opnsense.org/manual/monit.html)
+**Service Docs**: [Monit](https://docs.opnsense.org/manual/monit.html)
 
 ## Info
 

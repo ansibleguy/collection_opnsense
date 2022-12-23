@@ -50,7 +50,7 @@ class Alias(BaseModule):
         self.fail_verify = fail_verify
         self.fail_proc = fail_proc
         self.alias = {}
-        self.call_cnf = {  # config shared by all calls
+        self.call_cnf = {
             'module': self.API_MOD,
             'controller': self.API_CONT,
         }

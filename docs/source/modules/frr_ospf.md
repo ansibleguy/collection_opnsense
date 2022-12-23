@@ -8,14 +8,14 @@
 [frr_ospf_route_map](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf_route_map.yml) |
 [frr_ospf_network](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf_network.yml) |
 [frr_ospf3_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf3_general.yml) |
-[frr_ospf3_interface](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf3_interface.yml) |
+[frr_ospf3_interface](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_ospf3_interface.yml)
 
 
-**API DOCS**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
+**API Docs**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
 
-**BASE DOCS**: [Dynamic Routing](https://docs.opnsense.org/manual/dynamic_routing.html)
+**Service Docs**: [Dynamic Routing](https://docs.opnsense.org/manual/dynamic_routing.html)
 
-**FRR DOCS**: [FRRouting](https://docs.frrouting.org/) (_make sure you are looking at the current OPNSense package version!_)
+**FRR Docs**: [FRRouting](https://docs.frrouting.org/) (_make sure you are looking at the current OPNSense package version!_)
 
 ## Sponsoring
 

@@ -4,11 +4,11 @@
 
 **TESTS**: [frr_bfd_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bfd_general.yml) | [frr_bfd_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bfd_neighbor.yml)
 
-**API DOCS**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
+**API Docs**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
 
-**BASE DOCS**: [Dynamic Routing](https://docs.opnsense.org/manual/dynamic_routing.html)
+**Service Docs**: [Dynamic Routing](https://docs.opnsense.org/manual/dynamic_routing.html)
 
-**FRR DOCS**: [FRRouting](https://docs.frrouting.org/) (_make sure you are looking at the current OPNSense package version!_)
+**FRR Docs**: [FRRouting](https://docs.frrouting.org/) (_make sure you are looking at the current OPNSense package version!_)
 
 ## Sponsoring
 

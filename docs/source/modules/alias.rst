@@ -10,9 +10,9 @@ Alias
 
 **TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/alias.yml>`_
 
-**API DOCS**: `Core - Firewall <https://docs.opnsense.org/development/api/core/firewall.html>`_
+**API Docs**: `Core - Firewall <https://docs.opnsense.org/development/api/core/firewall.html>`_
 
-**BASE DOCS**: `Aliases <https://docs.opnsense.org/manual/aliases.html>`_
+**Service Docs**: `Aliases <https://docs.opnsense.org/manual/aliases.html>`_
 
 This module allows you to manage single aliases.
 

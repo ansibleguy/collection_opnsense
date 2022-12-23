@@ -10,9 +10,9 @@ DNS - Unbound - Host Alias
 
 **TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/unbound_host_alias.yml>`_
 
-**API DOCS**: `Core - Unbound <https://docs.opnsense.org/development/api/core/unbound.html>`_
+**API Docs**: `Core - Unbound <https://docs.opnsense.org/development/api/core/unbound.html>`_
 
-**BASE DOCS**: `Unbound <https://docs.opnsense.org/manual/unbound.html>`_
+**Service Docs**: `Unbound <https://docs.opnsense.org/manual/unbound.html>`_
 
 Definition
 **********

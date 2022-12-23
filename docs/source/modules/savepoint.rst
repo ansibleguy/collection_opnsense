@@ -12,7 +12,7 @@ Firewall Savepoint
 
 **TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/savepoint.yml>`_
 
-**API DOCS**: `Core - Firewall <https://docs.opnsense.org/development/api/core/firewall.html>`_
+**API Docs**: `Core - Firewall <https://docs.opnsense.org/development/api/core/firewall.html>`_
 
 
 Info

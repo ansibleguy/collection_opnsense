@@ -16,7 +16,9 @@ DNS - BIND
 `bind_record <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/bind_record.yml>`_ |
 `bind_record_multi <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/bind_record_multi.yml>`_
 
-**API DOCS**: `Plugins - Bind <https://docs.opnsense.org/development/api/plugins/bind.html>`_
+**API Docs**: `Plugins - Bind <https://docs.opnsense.org/development/api/plugins/bind.html>`_
+
+**Service Docs**: `Bind <https://docs.opnsense.org/manual/how-tos/bind.html>`_
 
 Sponsoring
 **********
