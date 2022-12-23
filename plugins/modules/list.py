@@ -38,6 +38,7 @@ def run_module():
                 'frr_ospf3_interface', 'frr_ospf_prefix_list', 'frr_ospf_interface',
                 'frr_ospf_route_map', 'frr_ospf_network', 'frr_rip', 'bind_general',
                 'bind_blocklist', 'bind_acl', 'bind_domain', 'bind_record',
+                'interface_vip',
             ],
             description='What part of the running config should be listed'
         ),
@@ -257,6 +258,10 @@ def run_module():
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_record \
                 import Record
             target = Record(module=module, result=result)
+
+        elif module.params['target'] == 'interface_vip':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vip import Vip
+            target = Vip(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

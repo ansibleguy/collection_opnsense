@@ -127,6 +127,10 @@ class Base:
         # checking if changed
         for field in self.i.FIELDS_CHANGE:
             if field in self.i.p:
+                if 'match_fields' in self.i.p:
+                    if field in self.i.p['match_fields']:
+                        continue
+
                 if str(self.e[field]) != str(self.i.p[field]):
                     self.i.r['changed'] = True
 
