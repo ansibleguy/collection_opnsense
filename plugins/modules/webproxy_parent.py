@@ -38,11 +38,11 @@ def run_module():
             description='Enable authentication against the parent proxy'
         ),
         user=dict(
-            type='str', required=False, default='',
+            type='str', required=False, default='placeholder',
             description='Set a username if parent proxy requires authentication'
         ),
         password=dict(
-            type='str', required=False, default='', no_log=True,
+            type='str', required=False, default='placeholder', no_log=True,
             description='Set a username if parent proxy requires authentication'
         ),
         port=dict(type='str', required=False, default='', aliases=['p']),

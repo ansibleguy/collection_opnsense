@@ -178,6 +178,14 @@ ansibleguy.opnsense.webproxy_general
             # reload: true
             # debug: false
 
+        - name: Pulling settings
+          ansibleguy.opnsense.list:
+          #  target: 'webproxy_general'
+          register: existing_entries
+
+        - name: Printing settings
+          ansible.builtin.debug:
+            var: existing_entries.data
 
 ansibleguy.opnsense.webproxy_cache
 ----------------------------------
@@ -212,6 +220,14 @@ ansibleguy.opnsense.webproxy_cache
             # reload: true
             # debug: false
 
+        - name: Pulling settings
+          ansibleguy.opnsense.list:
+          #  target: 'webproxy_cache'
+          register: existing_entries
+
+        - name: Printing settings
+          ansible.builtin.debug:
+            var: existing_entries.data
 
 ansibleguy.opnsense.webproxy_parent
 -----------------------------------
@@ -244,6 +260,15 @@ ansibleguy.opnsense.webproxy_parent
             # reload: true
             # debug: false
 
+        - name: Pulling settings
+          ansibleguy.opnsense.list:
+          #  target: 'webproxy_parent'
+          register: existing_entries
+
+        - name: Printing settings
+          ansible.builtin.debug:
+            var: existing_entries.data
+
 ansibleguy.opnsense.webproxy_traffic
 ------------------------------------
 
@@ -271,3 +296,12 @@ ansibleguy.opnsense.webproxy_traffic
             # enabled: true
             # reload: true
             # debug: false
+
+        - name: Pulling settings
+          ansibleguy.opnsense.list:
+          #  target: 'webproxy_traffic'
+          register: existing_entries
+
+        - name: Printing settings
+          ansible.builtin.debug:
+            var: existing_entries.data
