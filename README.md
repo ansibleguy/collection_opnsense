@@ -125,6 +125,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_cache         | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html)     | development              |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_parent        | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html)     | development              |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_traffic       | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html)     | development              |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_forward       | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html)     | development              |
 
 
 ### Roadmap

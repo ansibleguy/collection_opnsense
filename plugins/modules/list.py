@@ -39,7 +39,7 @@ def run_module():
                 'frr_ospf_route_map', 'frr_ospf_network', 'frr_rip', 'bind_general',
                 'bind_blocklist', 'bind_acl', 'bind_domain', 'bind_record',
                 'interface_vip', 'webproxy_general', 'webproxy_cache', 'webproxy_parent',
-                'webproxy_traffic',
+                'webproxy_traffic', 'webproxy_forward',
             ],
             description='What part of the running config should be listed'
         ),
@@ -279,6 +279,10 @@ def run_module():
         elif module.params['target'] == 'webproxy_parent':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_parent import Parent
             target = Parent(module=module, result=result)
+
+        elif module.params['target'] == 'webproxy_forward':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_forward import General
+            target = General(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

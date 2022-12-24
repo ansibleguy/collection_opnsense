@@ -235,6 +235,31 @@
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
+    ansibleguy.opnsense.webproxy_cache:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.webproxy_forward:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.webproxy_general:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.webproxy_parent:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.webproxy_traffic:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
   tasks:
     - name: Cleanup Rules
       ansibleguy.opnsense.rule_purge:
@@ -600,3 +625,21 @@
         - 'ANSIBLE_TEST_3_1'
         - 'ANSIBLE_TEST_3_2'
       when: not ansible_check_mode
+
+    - name: Cleanup WebProxy General
+      ansibleguy.opnsense.webproxy_general:
+        enabled: false
+
+    - name: Cleanup WebProxy Cache
+      ansibleguy.opnsense.webproxy_cache:
+
+    - name: Cleanup WebProxy Parent
+      ansibleguy.opnsense.webproxy_parent:
+        enabled: false
+
+    - name: Cleanup WebProxy Traffic
+      ansibleguy.opnsense.webproxy_traffic:
+        enabled: false
+
+    - name: Cleanup WebProxy Forward
+      ansibleguy.opnsense.webproxy_forward:

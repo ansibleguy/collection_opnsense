@@ -120,6 +120,7 @@ run_test 'webproxy_general' 1
 run_test 'webproxy_cache' 1
 run_test 'webproxy_parent' 1
 run_test 'webproxy_traffic' 1
+run_test 'webproxy_forward' 1
 run_test 'system' 1
 run_test 'package' 1
 

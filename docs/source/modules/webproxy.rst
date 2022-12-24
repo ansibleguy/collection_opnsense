@@ -11,7 +11,8 @@ Web Proxy
 **TESTS**: `webproxy_general <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_general.yml>`_ |
 `webproxy_cache <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_cache.yml>`_ |
 `webproxy_parent <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_parent.yml>`_ |
-`webproxy_traffic <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_traffic.yml>`_
+`webproxy_traffic <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_traffic.yml>`_ |
+`webproxy_forward <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_forward.yml>`_
 
 **API Docs**: `Core - Proxy <https://docs.opnsense.org/development/api/core/proxy.html>`_
 
@@ -44,6 +45,18 @@ ansibleguy.opnsense.webproxy_traffic
 ------------------------------------
 
 This module manages the Web-Proxy traffic-management settings that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - General Proxy Settings - Traffic Management Settings (*DropDown*)' (*URL 'ui/proxy#subtab_proxy-general-traffic'*)
+
+Forward
+=======
+
+ansibleguy.opnsense.webproxy_forward
+------------------------------------
+
+This module manages the Web-Proxy forwarding settings that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - Forward Proxy
+
+* General Forward Settings (*DropDown*)' (*URL 'ui/proxy#subtab_proxy-forward-general'*)
+* FTP Proxy Settings (*DropDown*)' (*URL 'ui/proxy#subtab_proxy-forward-ftp'*)
+* SNMP Agent Settings (*DropDown*)' (*URL 'ui/proxy#subtab_proxy-forward-snmp'*)
 
 
 Definition
@@ -129,6 +142,36 @@ ansibleguy.opnsense.webproxy_traffic
     "throttle_kb_bandwidth","integer","false","1024","throttle_bandwidth, throttle_bw, bandwidth, bw","The allowed overall bandwidth in kilobits per second (leave empty to disable)"
     "throttle_kb_host_bandwidth","integer","false","256","throttle_host_bandwidth, throttle_host_bw, host_bandwidth, host_bw","The allowed per host bandwidth in kilobits per second (leave empty to disable)"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
+Forward
+=======
+
+ansibleguy.opnsense.webproxy_forward
+------------------------------------
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "transparent","boolean","false","false","transparent_mode","Enable transparent proxy mode. You will need a firewall rule to forward traffic from the firewall to the proxy server. You may leave the proxy interfaces empty, but remember to set a valid ACL in that case"
+    "ssl_inspection","boolean","false","false","ssl_inspect, ssl","Enable SSL inspection mode, which allows to log HTTPS connections information, such as requested URL and/or make the proxy act as a man in the middle between the internet and your clients. Be aware of the security implications before enabling this option. If you plan to use transparent HTTPS mode, you need nat rules to reflect your traffic"
+    "ssl_inspection_sni_only","boolean","false","false","ssl_sni_only","Do not decode and/or filter SSL content, only log requested domains and IP addresses. Some old servers may not provide SNI, so their addresses will not be indicated"
+    "interfaces","list","false","['lan']","ints","Interface(s) the proxy will bind to"
+    "allow_interface_subnets","boolean","false","true","allow_subnets","When enabled the subnets of the selected interfaces will be added to the allow access list"
+    "port","integer","false","3128","p","\-"
+    "port_ssl","integer","false","3129","p_ssl","\-"
+    "ssl_ca","string","false","\-","ca","Select a Certificate Authority to use"
+    "ssl_exclude","list","false","\-","\-","A list of sites which may not be inspected, for example bank sites. Prefix the domain with a . to accept all subdomains (e.g. .google.com)"
+    "ssl_cache_mb","integer","false","4","ssl_cache, cache","The maximum size (in MB) to use for SSL certificates"
+    "ssl_workers","integer","false","5","workers","The number of ssl certificate workers to use (sslcrtd_children)"
+    "snmp","boolean","false","false","\-","Enable or disable the squid SNMP Agent"
+    "port_snmp","integer","false","3401","p_snmp","\-"
+    "snmp_password","string","false","public","snmp_community, snmp_pwd","The password for access to SNMP agent"
+    "interfaces_ftp","list","false","\-","ints_ftp","Interface(s) the ftp proxy will bind to"
+    "port_ftp","integer","false","2121","p_ftp","\-"
+    "transparent_ftp","boolean","false","false","\-","Enable transparent ftp proxy mode to forward all requests or destination port 21 to the proxy server without any additional configuration"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
 
 
 Examples
@@ -300,6 +343,58 @@ ansibleguy.opnsense.webproxy_traffic
         - name: Pulling settings
           ansibleguy.opnsense.list:
           #  target: 'webproxy_traffic'
+          register: existing_entries
+
+        - name: Printing settings
+          ansible.builtin.debug:
+            var: existing_entries.data
+
+Forward
+=======
+
+ansibleguy.opnsense.webproxy_forward
+------------------------------------
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        ansibleguy.opnsense.webproxy_forward:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'webproxy_forward'
+          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.webproxy_forward:
+            # interfaces: ['lan']
+            # port: 3238
+            # port_ssl: 3239
+            # transparent: false
+            # ssl_inspection: false
+            # ssl_inspection_sni_only: false
+            # ssl_ca: ''
+            # ssl_exclude: []
+            # ssl_cache_mb: 4
+            # ssl_workers: 5
+            # allow_interface_subnets: true
+            # snmp: true
+            # port_snmp: 3401
+            # snmp_password: 'public'
+            # interfaces_ftp: []
+            # port_ftp: 2121
+            # transparent_ftp: false
+            # reload: true
+            # debug: false
+
+        - name: Pulling settings
+          ansibleguy.opnsense.list:
+          #  target: 'webproxy_forward'
           register: existing_entries
 
         - name: Printing settings

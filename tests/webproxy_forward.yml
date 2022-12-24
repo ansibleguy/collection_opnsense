@@ -1,0 +1,89 @@
+---
+
+- name: WebProxy Forward Settings
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.webproxy_forward:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'webproxy_forward'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Configuring - failing because of invalid cache-size
+      ansibleguy.opnsense.webproxy_forward:
+        ssl_cache_mb: 70000
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Configuring
+      ansibleguy.opnsense.webproxy_forward:
+        interfaces: ['lan', 'opt1']
+        interfaces_ftp: ['lan']
+        port: 3228
+        port_ssl: 3229
+        ssl_inspection: false
+        ssl_cache_mb: 30
+        ssl_workers: 10
+        transparent_ftp: true
+        snmp: true
+        snmp_password: 'test'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.webproxy_forward:
+        interfaces: ['lan', 'opt1']
+        interfaces_ftp: ['lan']
+        port: 3238
+        port_ssl: 3239
+        ssl_inspection: false
+        ssl_cache_mb: 34
+        ssl_workers: 10
+        transparent_ftp: false
+        transparent: true
+        snmp: true
+        snmp_password: 'test'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 - nothing changed
+      ansibleguy.opnsense.webproxy_forward:
+        interfaces: ['lan', 'opt1']
+        interfaces_ftp: ['lan']
+        port: 3238
+        port_ssl: 3239
+        ssl_inspection: false
+        ssl_cache_mb: 34
+        ssl_workers: 10
+        transparent_ftp: false
+        transparent: true
+        snmp: true
+        snmp_password: 'test'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.webproxy_forward:
+      when: not ansible_check_mode
