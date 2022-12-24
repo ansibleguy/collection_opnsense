@@ -4,10 +4,10 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     simplify_translate, validate_int_fields, is_ip
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import GeneralModule
 
 
-class General(BaseModule):
+class General(GeneralModule):
     CMDS = {
         'set': 'set',
         'search': 'get',
@@ -65,15 +65,9 @@ class General(BaseModule):
         'log_size': {'min': 1, 'max': 1000},
         'port': {'min': 1, 'max': 65535},
     }
-    EXIST_ATTR = 'settings'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        BaseModule.__init__(self=self, m=module, r=result, s=session)
-        self.settings = {}
-        self.call_cnf = {
-            'module': self.API_MOD,
-            'controller': self.API_CONT,
-        }
+        GeneralModule.__init__(self=self, m=module, r=result, s=session)
         self.existing_acls = None
         self.acls_needed = False
 
@@ -149,6 +143,3 @@ class General(BaseModule):
                     self.m.fail_json(
                         f"Provided {field} '{self.p[field]}' was not found!"
                     )
-
-    def update(self):
-        self.b.update(enable_switch=False)

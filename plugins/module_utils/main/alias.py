@@ -50,14 +50,6 @@ class Alias(BaseModule):
         self.fail_verify = fail_verify
         self.fail_proc = fail_proc
         self.alias = {}
-        self.call_cnf = {
-            'module': self.API_MOD,
-            'controller': self.API_CONT,
-        }
-        self.s = Session(
-            module=module,
-            timeout=self.TIMEOUT,
-        ) if session is None else session
         self.p = self.m.params if cnf is None else cnf  # to allow override by alias_multi
         self.existing_rules = None
 

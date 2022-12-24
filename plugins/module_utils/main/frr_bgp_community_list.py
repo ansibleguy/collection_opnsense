@@ -42,10 +42,6 @@ class Community(BaseModule):
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.community_list = {}
-        self.call_cnf = {
-            'module': self.API_MOD,
-            'controller': self.API_CONT,
-        }
 
     def check(self):
         if self.p['state'] == 'present':

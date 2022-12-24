@@ -53,15 +53,7 @@ class Pipe(BaseModule):
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
-        self.s = Session(
-            module=module,
-            timeout=self.TIMEOUT,
-        ) if session is None else session
         self.pipe = {}
-        self.call_cnf = {
-            'module': self.API_MOD,
-            'controller': self.API_CONT,
-        }
 
     def check(self):
         if self.p['state'] == 'present' and self.p['bandwidth'] is None:

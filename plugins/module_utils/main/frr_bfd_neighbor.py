@@ -34,10 +34,6 @@ class Neighbor(BaseModule):
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.neighbor = {}
-        self.call_cnf = {
-            'module': self.API_MOD,
-            'controller': self.API_CONT,
-        }
 
     def check(self):
         if not is_ip_or_network(self.p[self.FIELD_ID]):

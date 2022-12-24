@@ -16,6 +16,7 @@ class Base:
     ATTR_JOIN_CHAR = 'JOIN_CHAR'
     ATTR_AK1 = 'API_KEY_1'
     ATTR_AK2 = 'API_KEY_2'
+    ATTR_AK3 = 'API_KEY_3'
     ATTR_BOOL_INVERT = 'FIELDS_BOOL_INVERT'
     ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
     ATTR_DIFF_EXCL = 'FIELDS_DIFF_EXCLUDE'
@@ -33,6 +34,11 @@ class Base:
             raise SystemExit(self.i.s.get(cnf={
                 **self.i.call_cnf, **{'command': self.i.CMDS['search']}
             }))
+
+        if hasattr(self.i, self.ATTR_AK3):
+            return self.i.s.get(cnf={
+                **self.i.call_cnf, **{'command': self.i.CMDS['search']}
+            })[self.i.API_KEY_1][self.i.API_KEY_2][self.i.API_KEY_3][self.i.API_KEY]
 
         if hasattr(self.i, self.ATTR_AK2):
             return self.i.s.get(cnf={

@@ -52,19 +52,11 @@ class Rule(BaseModule):
             session: Session = None, fail_verify: bool = True, fail_proc: bool = True
     ):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
-        self.s = Session(
-            module=module,
-            timeout=self.TIMEOUT,
-        ) if session is None else session
         self.p = self.m.params if cnf is None else cnf  # to allow override by rule_multi
         self.fail_verify = fail_verify
         self.fail_proc = fail_proc
         self.rule = {}
         self.log_name = None
-        self.call_cnf = {
-            'module': self.API_MOD,
-            'controller': self.API_CONT,
-        }
 
     def _build_log_name(self) -> str:
         if self.p['description'] not in [None, '']:

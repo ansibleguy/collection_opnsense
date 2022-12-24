@@ -43,10 +43,6 @@ class Record(BaseModule):
         self.fail_proc = fail_proc
         self.existing = []
         self.record = {}
-        self.call_cnf = {
-            'module': self.API_MOD,
-            'controller': self.API_CONT,
-        }
         self.existing_entries = None
         self.existing_domains = None
         self.exists = False

@@ -2,12 +2,10 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, simplify_translate
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import GeneralModule
 
 
-class Cache(BaseModule):
+class Cache(GeneralModule):
     CMDS = {
         'set': 'set',
         'search': 'get',
@@ -46,46 +44,7 @@ class Cache(BaseModule):
         'size_mb_max': {'min': 1, 'max': 99999},
         'memory_kb_max': {'min': 1, 'max': 99999},
     }
-    EXIST_ATTR = 'settings'
     TIMEOUT = 60.0
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        BaseModule.__init__(self=self, m=module, r=result, s=session)
-        self.settings = {}
-        self.call_cnf = {
-            'module': self.API_MOD,
-            'controller': self.API_CONT,
-        }
-        self.s = Session(
-            module=module,
-            timeout=self.TIMEOUT,
-        ) if session is None else session
-
-    def check(self):
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
-
-        self.settings = self._search_call()
-        self.r['diff']['before'] = self.b.build_diff(self.settings)
-        self.r['diff']['after'] = self.b.build_diff({
-            k: v for k, v in self.p.items() if k in self.settings
-        })
-
-    def _search_call(self) -> dict:
-        settings = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })[self.API_KEY_1][self.API_KEY_2][self.API_KEY_3][self.API_KEY]
-
-        return simplify_translate(
-            existing=settings,
-            typing=self.FIELDS_TYPING,
-            translate=self.FIELDS_TRANSLATE,
-        )
-
-    def get_existing(self) -> dict:
-        return self._search_call()
-
-    def _build_request(self) -> dict:
-        return {self.API_KEY_1: {self.API_KEY_2: {self.API_KEY_3: self.b.build_request()}}}
-
-    def update(self):
-        self.b.update(enable_switch=False)
+        GeneralModule.__init__(self=self, m=module, r=result, s=session)

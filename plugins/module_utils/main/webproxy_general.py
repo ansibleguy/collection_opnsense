@@ -3,12 +3,11 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, is_true, get_selected, get_selected_list, simplify_translate, \
-    to_digit
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
+    is_true, get_selected, get_selected_list, simplify_translate, to_digit
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import GeneralModule
 
 
-class General(BaseModule):
+class General(GeneralModule):
     CMDS = {
         'set': 'set',
         'search': 'get',
@@ -46,7 +45,6 @@ class General(BaseModule):
         'log_target': 'target',
         'log_ignore': 'ignoreLogACL',
     }
-    FIELDS_BOOL_INVERT = []
     FIELDS_TYPING = {
         'bool': [
             'enabled', 'pinger', 'suppress_version', 'use_via_header', 'dns_prio_ipv4',
@@ -62,29 +60,10 @@ class General(BaseModule):
         'connect_timeout': {'min': 1, 'max': 120},
         'icp_port': {'min': 1, 'max': 65535},
     }
-    EXIST_ATTR = 'settings'
     TIMEOUT = 60.0
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        BaseModule.__init__(self=self, m=module, r=result, s=session)
-        self.settings = {}
-        self.call_cnf = {
-            'module': self.API_MOD,
-            'controller': self.API_CONT,
-        }
-        self.s = Session(
-            module=module,
-            timeout=self.TIMEOUT,
-        ) if session is None else session
-
-    def check(self):
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
-
-        self.settings = self._search_call()
-        self.r['diff']['before'] = self.b.build_diff(self.settings)
-        self.r['diff']['after'] = self.b.build_diff({
-            k: v for k, v in self.p.items() if k in self.settings
-        })
+        GeneralModule.__init__(self=self, m=module, r=result, s=session)
 
     def _search_call(self) -> dict:
         settings = self.s.get(cnf={
@@ -95,7 +74,6 @@ class General(BaseModule):
             existing=settings,
             typing=self.FIELDS_TYPING,
             translate=self.FIELDS_TRANSLATE,
-            bool_invert=self.FIELDS_BOOL_INVERT,
             ignore=self.FIELDS_IGNORE,
         )
 
@@ -114,9 +92,6 @@ class General(BaseModule):
 
         return simple
 
-    def get_existing(self) -> dict:
-        return self._search_call()
-
     def _build_request(self) -> dict:
         raw_request = self.b.build_request(
             ignore_fields=['log', 'log_store', 'log_target', 'log_ignore']
@@ -133,6 +108,3 @@ class General(BaseModule):
         }
 
         return {self.API_KEY_1: raw_request}
-
-    def update(self):
-        self.b.update(enable_switch=False)

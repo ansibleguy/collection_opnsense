@@ -74,10 +74,6 @@ class Neighbor(BaseModule):
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.neighbor = {}
-        self.call_cnf = {
-            'module': self.API_MOD,
-            'controller': self.API_CONT,
-        }
         self.existing_prefixes = None
         self.existing_maps = None
 
