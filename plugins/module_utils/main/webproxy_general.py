@@ -121,17 +121,17 @@ class General(BaseModule):
         raw_request = self.b.build_request(
             ignore_fields=['log', 'log_store', 'log_target', 'log_ignore']
         )
-        # todo: logging settings not working; request via gui seems to work that way..
-        raw_request['logging'] = {
+        raw_request[self.API_KEY]['logging'] = {
             'enable': {
-                self.FIELDS_TRANSLATE_SPECIAL['log']: to_digit(self.settings['log']),
-                self.FIELDS_TRANSLATE_SPECIAL['log_store']: to_digit(self.settings['log_store']),
+                self.FIELDS_TRANSLATE_SPECIAL['log']: to_digit(self.p['log']),
+                self.FIELDS_TRANSLATE_SPECIAL['log_store']: to_digit(self.p['log_store']),
             },
-            self.FIELDS_TRANSLATE_SPECIAL['log_target']: self.settings['log_target'],
+            self.FIELDS_TRANSLATE_SPECIAL['log_target']: self.p['log_target'],
             self.FIELDS_TRANSLATE_SPECIAL['log_ignore']: self.b.RESP_JOIN_CHAR.join(
-                self.settings['log_ignore']
+                self.p['log_ignore']
             ),
         }
+
         return {self.API_KEY_1: raw_request}
 
     def update(self):

@@ -66,7 +66,7 @@ ansibleguy.opnsense.webproxy_general
     "icp_port","integer","false","\-","icp","\-"
     "log","boolean","false","true","\-","\-"
     "log_store","boolean","false","true","\-","\-"
-    "log_target","string","false","true","\-","One of: 'file', 'file_extendend', 'file_json', 'syslog', 'syslog_json'. Send log data to the selected target. When syslog is selected, facility local 4 will be used to send messages of info level for these logs"
+    "log_target","string","false","file","\-","One of: 'file', 'file_extendend', 'file_json', 'syslog', 'syslog_json'. Send log data to the selected target. When syslog is selected, facility local 4 will be used to send messages of info level for these logs"
     "log_ignore","list","false","\-","\-","Type subnets/addresses you want to ignore for the access.log"
     "dns_servers","list","false","\-","\-","IPs of alternative DNS servers you like to use"
     "dns_prio_ipv4","boolean","false","false","dns_ipv4_first","This option reverses the order of preference to make Squid contact dual-stack websites over IPv4 first. Squid will still perform both IPv6 and IPv4 DNS lookups before connecting. This option will restrict the situations under which IPv6 connectivity is used (and tested) and will hide network problems which would otherwise be detected and warned about"
@@ -94,7 +94,7 @@ ansibleguy.opnsense.webproxy_cache
     "layer_2","integer","false","256","layer2, l2","The number of second-level subdirectories for the local cache"
     "size_mb_max","integer","false","4","maximum_object_size, max_size","The maximum object size"
     "memory_kb_max","integer","false","512","maximum_object_size_in_memory, max_memory, max_mem","The maximum object size"
-    "memory_cache_mode","integer","false","default","cache_mode, mode","One of: 'always', 'disk', 'network', 'default'. Controls which objects to keep in the memory cache (cache_mem) always: Keep most recently fetched objects in memory (default) disk: Only disk cache hits are kept in memory, which means an object must first be cached on disk and then hit a second time before cached in memory. network: Only objects fetched from network is kept in memory"
+    "memory_cache_mode","string","false","default","cache_mode, mode","One of: 'always', 'disk', 'network', 'default'. Controls which objects to keep in the memory cache (cache_mem) always: Keep most recently fetched objects in memory (default) disk: Only disk cache hits are kept in memory, which means an object must first be cached on disk and then hit a second time before cached in memory. network: Only objects fetched from network is kept in memory"
     "cache_linux_packages","boolean","false","false","\-","Enable or disable the caching of packages for linux distributions. This makes sense if you have multiple servers in your network and do not host your own package mirror. This will reduce internet traffic usage but increase disk access"
     "cache_windows_updates","boolean","false","false","\-","Enable or disable the caching of Windows updates. This makes sense if you don't have a WSUS server. If you can setup a WSUS server, this solution should be preferred"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
@@ -111,7 +111,7 @@ ansibleguy.opnsense.webproxy_parent
     "auth","boolean","false","false","\-","Enable authentication against the parent proxy"
     "user","string","false","\-","\-","Set a username if parent proxy requires authentication"
     "password","string","false","\-","\-","Set a username if parent proxy requires authentication"
-    "port","string","false","\-","p","\-"
+    "port","integer","false","\-","p","\-"
     "local_domains","list","false","\-","domains","Domains not to be sent via parent proxy"
     "local_ips","list","false","\-","ips","IP addresses not to be sent via parent proxy"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst

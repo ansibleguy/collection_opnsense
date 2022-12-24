@@ -1,7 +1,5 @@
 ---
 
-# todo: logging settings not working; request via gui seems to work that way..
-
 - name: WebProxy General Settings
   hosts: localhost
   gather_facts: no
@@ -37,7 +35,7 @@
         icp_port: 50000
         log: true
         log_store: true
-        # log_target: 'file_json'
+        log_target: 'file_json'
         dns_servers: ['192.168.0.1', '192.168.10.1']
         handling_forwarded_for: 'truncate'
         suppress_version: true
@@ -52,8 +50,8 @@
         icp_port: 30000
         log: true
         log_store: true
-        # log_target: 'syslog'
-        # log_ignore: ['192.168.50.0/24']
+        log_target: 'syslog'
+        log_ignore: ['192.168.50.0/24']
         email: 'netadmin@ansibleguy.net'
         handling_forwarded_for: 'truncate'
         suppress_version: false
@@ -69,8 +67,8 @@
         icp_port: 30000
         log: true
         log_store: true
-        # log_target: 'syslog'
-        # log_ignore: ['192.168.50.0/24']
+        log_target: 'syslog'
+        log_ignore: ['192.168.50.0/24']
         email: 'netadmin@ansibleguy.net'
         handling_forwarded_for: 'truncate'
         suppress_version: false
@@ -87,8 +85,8 @@
         icp_port: 30000
         log: true
         log_store: true
-        # log_target: 'syslog'
-        # log_ignore: ['192.168.50.0/24']
+        log_target: 'syslog'
+        log_ignore: ['192.168.50.0/24']
         email: 'netadmin@ansibleguy.net'
         handling_forwarded_for: 'truncate'
         suppress_version: false
@@ -105,8 +103,8 @@
         icp_port: 30000
         log: true
         log_store: true
-        # log_target: 'syslog'
-        # log_ignore: ['192.168.50.0/24']
+        log_target: 'syslog'
+        log_ignore: ['192.168.50.0/24']
         email: 'netadmin@ansibleguy.net'
         handling_forwarded_for: 'truncate'
         suppress_version: false
