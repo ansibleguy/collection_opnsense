@@ -6,7 +6,7 @@
 Web Proxy
 =========
 
-**STATE**: development
+**STATE**: unstable
 
 **TESTS**: `webproxy_general <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_general.yml>`_ |
 `webproxy_cache <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_cache.yml>`_ |

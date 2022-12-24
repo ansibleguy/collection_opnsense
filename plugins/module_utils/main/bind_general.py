@@ -72,6 +72,7 @@ class General(GeneralModule):
         self.acls_needed = False
 
     def check(self):
+        # pylint: disable=W0201
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         for field in [
@@ -107,10 +108,7 @@ class General(GeneralModule):
         if self.acls_needed:
             self._find_links()
 
-        self.r['diff']['before'] = self.b.build_diff(self.settings)
-        self.r['diff']['after'] = self.b.build_diff({
-            k: v for k, v in self.p.items() if k in self.settings
-        })
+        self._build_diff()
 
     def get_existing(self) -> dict:
         if self.acls_needed:

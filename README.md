@@ -121,11 +121,11 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **DNS**             | ansibleguy.opnsense.bind_domain            | [Docs](https://opnsense.ansibleguy.net/modules/bind.html#ansibleguy-opnsense-bind-domain)               | unstable              |
 | **DNS**             | ansibleguy.opnsense.bind_record            | [Docs](https://opnsense.ansibleguy.net/modules/bind.html#ansibleguy-opnsense-bind-record)               | unstable              |
 | **DNS**             | ansibleguy.opnsense.bind_record_multi      | [Docs](https://opnsense.ansibleguy.net/modules/bind.html#ansibleguy-opnsense-bind-record-multi)         | unstable              |
-| **Web Proxy**       | ansibleguy.opnsense.webproxy_general       | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html)     | development              |
-| **Web Proxy**       | ansibleguy.opnsense.webproxy_cache         | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html)     | development              |
-| **Web Proxy**       | ansibleguy.opnsense.webproxy_parent        | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html)     | development              |
-| **Web Proxy**       | ansibleguy.opnsense.webproxy_traffic       | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html)     | development              |
-| **Web Proxy**       | ansibleguy.opnsense.webproxy_forward       | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html)     | development              |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_general       | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id2)     | unstable              |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_cache         | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id3)     | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_parent        | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id4)     | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_traffic       | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id5)     | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_forward       | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id7)     | unstable           |
 
 
 ### Roadmap

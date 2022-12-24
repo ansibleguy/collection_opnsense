@@ -81,14 +81,11 @@ class GeneralModule:
         if hasattr(self.b.i, 'INT_VALIDATIONS'):
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.b.i.INT_VALIDATIONS)
 
-        existing = self._search_call()
-        setattr(self.b.i, self.b.i.EXIST_ATTR, existing)
-        self.r['diff']['before'] = self.b.build_diff(existing)
-        self.r['diff']['after'] = self.b.build_diff({
-            k: v for k, v in self.p.items() if k in existing
-        })
+        self.settings = self._search_call()
+        self._build_diff()
 
     def _search_call(self, fail_response: bool = False) -> dict:
+        # pylint: disable=W0212
         return self.b._simplify_existing(
             self.b.search(
                 fail_response=fail_response
@@ -106,6 +103,12 @@ class GeneralModule:
 
     def reload(self):
         self.b.reload()
+
+    def _build_diff(self):
+        self.r['diff']['before'] = self.b.build_diff(self.settings)
+        self.r['diff']['after'] = self.b.build_diff({
+            k: v for k, v in self.p.items() if k in self.settings
+        })
 
     def _build_request(self) -> dict:
         if hasattr(self.b.i, self.b.ATTR_AK3):
