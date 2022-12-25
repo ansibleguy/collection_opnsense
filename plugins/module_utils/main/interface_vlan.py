@@ -15,8 +15,7 @@ class Vlan(BaseModule):
         'set': 'setItem',
         'search': 'get',
     }
-    API_KEY = 'vlan'
-    API_KEY_1 = 'vlan'
+    API_KEY_PATH = 'vlan.vlan'
     API_MOD = 'interfaces'
     API_CONT = 'vlan_settings'
     API_CMD_REL = 'reconfigure'

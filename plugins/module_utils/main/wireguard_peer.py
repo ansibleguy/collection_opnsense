@@ -18,9 +18,7 @@ class Peer(BaseModule):
         'search': 'get',
         'toggle': 'toggleClient',
     }
-    API_KEY = 'client'
-    API_KEY_1 = 'client'
-    API_KEY_2 = 'clients'
+    API_KEY_PATH = 'client.clients.client'
     API_MOD = 'wireguard'
     API_CONT = 'client'
     API_CONT_REL = 'service'

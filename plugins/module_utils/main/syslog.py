@@ -18,9 +18,7 @@ class Syslog(BaseModule):
         'search': 'get',
         'toggle': 'toggleDestination',
     }
-    API_KEY = 'destination'
-    API_KEY_1 = 'syslog'
-    API_KEY_2 = 'destinations'
+    API_KEY_PATH = 'syslog.destinations.destination'
     API_MOD = 'syslog'
     API_CONT = 'settings'
     API_CONT_REL = 'service'

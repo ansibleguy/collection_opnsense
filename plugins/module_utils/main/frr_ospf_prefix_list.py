@@ -16,9 +16,7 @@ class Prefix(BaseModule):
         'search': 'get',
         'toggle': 'togglePrefixlist',
     }
-    API_KEY = 'prefixlist'
-    API_KEY_1 = 'ospf'
-    API_KEY_2 = 'prefixlists'
+    API_KEY_PATH = 'ospf.prefixlists.prefixlist'
     API_MOD = 'quagga'
     API_CONT = 'ospfsettings'
     API_CONT_REL = 'service'

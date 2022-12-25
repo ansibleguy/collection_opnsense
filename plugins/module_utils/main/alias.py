@@ -21,9 +21,7 @@ class Alias(BaseModule):
         'search': 'get',
         'toggle': 'toggleItem',
     }
-    API_KEY = 'alias'
-    API_KEY_1 = 'alias'
-    API_KEY_2 = 'aliases'
+    API_KEY_PATH = 'alias.aliases.alias'
     API_MOD = 'firewall'
     API_CONT = 'alias'
     API_CMD_REL = 'reconfigure'

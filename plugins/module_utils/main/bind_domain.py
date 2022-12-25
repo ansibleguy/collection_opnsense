@@ -16,9 +16,7 @@ class Domain(BaseModule):
         'search': 'get',
         'toggle': 'toggleDomain',
     }
-    API_KEY = 'domain'
-    API_KEY_1 = 'domain'
-    API_KEY_2 = 'domains'
+    API_KEY_PATH = 'domain.domains.domain'
     API_MOD = 'bind'
     API_CONT = 'domain'
     API_CONT_REL = 'service'

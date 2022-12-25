@@ -14,9 +14,14 @@ class Base:
     DIFF_FLOAT_ROUND = 1
     RESP_JOIN_CHAR = ','
     ATTR_JOIN_CHAR = 'JOIN_CHAR'
+    ATTR_AK = 'API_KEY'  # ak 0-3 used for edge-cases
     ATTR_AK1 = 'API_KEY_1'
     ATTR_AK2 = 'API_KEY_2'
     ATTR_AK3 = 'API_KEY_3'
+    ATTR_AK_PATH = 'API_KEY_PATH'
+    ATTR_AK_PATH_REQ = 'API_KEY_PATH_REQ'  # if a custom path depth is needed
+    ATTR_REQ_NO_AK = 'REQUEST_NO_API_KEY'
+    ATTR_AK_PATH_SPLIT_CHAR = '.'
     ATTR_BOOL_INVERT = 'FIELDS_BOOL_INVERT'
     ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
     ATTR_DIFF_EXCL = 'FIELDS_DIFF_EXCLUDE'
@@ -28,6 +33,12 @@ class Base:
         self.i = instance  # module-specific object
         self.e = {}  # existing entry
 
+        if not hasattr(self.i, self.ATTR_AK) and not hasattr(self.i, self.ATTR_AK_PATH):
+            raise ValueError(
+                f"Module has neither '{self.ATTR_AK_PATH}' nor "
+                f"'{self.ATTR_AK}' attributes set!"
+            )
+
     def search(self, fail_response: bool = False) -> (dict, list):
         if fail_response:
             # find response keys in initial development
@@ -35,24 +46,35 @@ class Base:
                 **self.i.call_cnf, **{'command': self.i.CMDS['search']}
             }))
 
-        if hasattr(self.i, self.ATTR_AK3):
-            return self.i.s.get(cnf={
-                **self.i.call_cnf, **{'command': self.i.CMDS['search']}
-            })[self.i.API_KEY_1][self.i.API_KEY_2][self.i.API_KEY_3][self.i.API_KEY]
+        AK = {}
 
-        if hasattr(self.i, self.ATTR_AK2):
-            return self.i.s.get(cnf={
-                **self.i.call_cnf, **{'command': self.i.CMDS['search']}
-            })[self.i.API_KEY_1][self.i.API_KEY_2][self.i.API_KEY]
+        for _ak in [self.ATTR_AK, self.ATTR_AK1, self.ATTR_AK2, self.ATTR_AK3]:
+            if hasattr(self.i, _ak):
+                AK[_ak] = getattr(self.i, _ak)
 
-        if hasattr(self.i, self.ATTR_AK1):
-            return self.i.s.get(cnf={
-                **self.i.call_cnf, **{'command': self.i.CMDS['search']}
-            })[self.i.API_KEY_1][self.i.API_KEY]
-
-        return self.i.s.get(cnf={
+        data = self.i.s.get(cnf={
             **self.i.call_cnf, **{'command': self.i.CMDS['search']}
-        })[self.i.API_KEY]
+        })
+
+        if hasattr(self.i, self.ATTR_AK_PATH):
+            for k in getattr(self.i, self.ATTR_AK_PATH).split(self.ATTR_AK_PATH_SPLIT_CHAR):
+                data = data[k]
+
+            if self.ATTR_AK in AK:
+                data = data[AK[self.ATTR_AK]]
+
+            return data
+
+        if self.ATTR_AK3 in AK:
+            return data[AK[self.ATTR_AK1]][AK[self.ATTR_AK2]][AK[self.ATTR_AK3]][AK[self.ATTR_AK]]
+
+        if self.ATTR_AK2 in AK:
+            return data[AK[self.ATTR_AK1]][AK[self.ATTR_AK2]][AK[self.ATTR_AK]]
+
+        if self.ATTR_AK1 in AK:
+            return data[AK[self.ATTR_AK1]][AK[self.ATTR_AK]]
+
+        return data[AK[self.ATTR_AK]]
 
     def get_existing(self, diff_filter: bool = False) -> list:
         if diff_filter:
@@ -67,11 +89,6 @@ class Base:
             entries=self._call_search(),
             simplify_func=self._call_simple(),
         )
-
-    def detail(self) -> (dict, list):
-        return self.i.s.get(cnf={
-            **self.i.call_cnf, **{'command': self.i.CMDS['detail']}
-        })[self.i.API_KEY]
 
     def find(self, match_fields: list):
         if self.i.existing_entries is None:
@@ -127,8 +144,7 @@ class Base:
             })
 
     def update(self, enable_switch: bool = True) -> dict:
-        if len(self.e) == 0:
-            self.e = getattr(self.i, self.i.EXIST_ATTR)
+        self._set_existing()
 
         # checking if changed
         for field in self.i.FIELDS_CHANGE:
@@ -274,16 +290,15 @@ class Base:
                 return self._change_enabled_state(0)
 
     def build_diff(self, data: dict) -> dict:
-        if len(self.e) == 0:
-            self.e = getattr(self.i, self.i.EXIST_ATTR)
+        if not isinstance(data, dict):
+            raise ValueError('The diff-source object must be of type dict!')
 
         EXCLUDE_FIELDS = []
 
         if hasattr(self.i, self.ATTR_DIFF_EXCL):
             EXCLUDE_FIELDS = getattr(self.i, self.ATTR_DIFF_EXCL)
 
-        if not isinstance(self.e, dict):
-            raise ValueError('The existing attribute must be of type dict!')
+        self._set_existing()
 
         diff = {
             'uuid': self.e['uuid'] if 'uuid' in self.e else None
@@ -381,7 +396,32 @@ class Base:
             else:
                 request[opn_field] = opn_data
 
-        return {self.i.API_KEY: request}
+        payload = request
+
+        if not hasattr(self.i, self.ATTR_REQ_NO_AK):
+            if hasattr(self.i, self.ATTR_AK):
+                payload = {getattr(self.i, self.ATTR_AK): payload}
+
+            elif hasattr(self.i, self.ATTR_AK_PATH_REQ):
+                ak_path = getattr(self.i, self.ATTR_AK_PATH_REQ).split(self.ATTR_AK_PATH_SPLIT_CHAR)
+                ak_path.reverse()
+
+                for k in ak_path:
+                    payload = {k: payload}
+
+            elif hasattr(self.i, self.ATTR_AK_PATH):
+                # request only needs the last key
+                attr_ak = getattr(self.i, self.ATTR_AK_PATH).rsplit(self.ATTR_AK_PATH_SPLIT_CHAR, 1)[1]
+                payload = {attr_ak: payload}
+
+        return payload
+
+    def _set_existing(self):
+        if len(self.e) == 0:
+            _existing = getattr(self.i, self.i.EXIST_ATTR)
+
+            if _existing is not None and len(_existing) > 0:
+                self.e = _existing
 
     def _simplify_existing(self, existing: dict) -> dict:
         translate, typing, bool_invert = {}, {}, []

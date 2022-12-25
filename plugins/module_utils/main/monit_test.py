@@ -13,8 +13,7 @@ class Test(BaseModule):
         'set': 'setTest',
         'search': 'get',
     }
-    API_KEY = 'test'
-    API_KEY_1 = 'monit'
+    API_KEY_PATH = 'monit.test'
     API_MOD = 'monit'
     API_CONT = 'settings'
     API_CONT_REL = 'service'

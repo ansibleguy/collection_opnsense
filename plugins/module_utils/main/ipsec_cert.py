@@ -15,9 +15,7 @@ class KeyPair(BaseModule):
         'set': 'setItem',
         'search': 'get',
     }
-    API_KEY = 'keyPair'
-    API_KEY_1 = 'ipsec'
-    API_KEY_2 = 'keyPairs'
+    API_KEY_PATH = 'ipsec.keyPairs.keyPair'
     API_MOD = 'ipsec'
     API_CONT = 'key_pairs'
     API_CONT_REL = 'legacy_subsystem'

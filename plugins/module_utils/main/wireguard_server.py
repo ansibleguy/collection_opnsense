@@ -17,9 +17,7 @@ class Server(BaseModule):
         'search': 'get',
         'toggle': 'toggleserver',
     }
-    API_KEY = 'server'
-    API_KEY_1 = 'server'
-    API_KEY_2 = 'servers'
+    API_KEY_PATH = 'server.servers.server'
     API_MOD = 'wireguard'
     API_CONT = 'server'
     API_CONT_REL = 'service'

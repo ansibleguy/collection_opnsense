@@ -16,9 +16,7 @@ class AsPath(BaseModule):
         'search': 'get',
         'toggle': 'toggleAspath',
     }
-    API_KEY = 'aspath'
-    API_KEY_1 = 'bgp'
-    API_KEY_2 = 'aspaths'
+    API_KEY_PATH = 'bgp.aspaths.aspath'
     API_MOD = 'quagga'
     API_CONT = 'bgp'
     API_CONT_REL = 'service'

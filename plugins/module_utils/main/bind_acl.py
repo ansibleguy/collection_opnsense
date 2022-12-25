@@ -16,9 +16,7 @@ class Acl(BaseModule):
         'search': 'get',
         'toggle': 'toggleAcl',
     }
-    API_KEY = 'acl'
-    API_KEY_1 = 'acl'
-    API_KEY_2 = 'acls'
+    API_KEY_PATH = 'acl.acls.acl'
     API_MOD = 'bind'
     API_CONT = 'acl'
     API_CONT_REL = 'service'

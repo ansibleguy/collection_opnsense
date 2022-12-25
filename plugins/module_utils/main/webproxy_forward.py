@@ -10,8 +10,8 @@ class General(GeneralModule):
         'set': 'set',
         'search': 'get',
     }
-    API_KEY_1 = 'proxy'
-    API_KEY = 'forward'
+    API_KEY_PATH = 'proxy.forward'
+    API_KEY_PATH_REQ = API_KEY_PATH
     API_MOD = 'proxy'
     API_CONT = 'settings'
     API_CONT_REL = 'service'

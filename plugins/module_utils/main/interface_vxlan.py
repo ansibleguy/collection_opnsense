@@ -15,8 +15,7 @@ class Vxlan(BaseModule):
         'set': 'setItem',
         'search': 'get',
     }
-    API_KEY = 'vxlan'
-    API_KEY_1 = 'vxlan'
+    API_KEY_PATH = 'vxlan.vxlan'
     API_MOD = 'interfaces'
     API_CONT = 'vxlan_settings'
     API_CMD_REL = 'reconfigure'

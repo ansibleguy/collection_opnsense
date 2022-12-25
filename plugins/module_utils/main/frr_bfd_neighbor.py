@@ -16,8 +16,7 @@ class Neighbor(BaseModule):
         'search': 'searchNeighbor',
         'toggle': 'toggleNeighbor',
     }
-    API_KEY = 'neighbor'
-    API_KEY_1 = 'neighbors'
+    API_KEY_PATH = 'neighbors.neighbor'
     API_MOD = 'quagga'
     API_CONT = 'bfd'
     FIELDS_CHANGE = ['description']

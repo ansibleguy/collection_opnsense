@@ -15,9 +15,7 @@ class Interface(BaseModule):
         'search': 'get',
         'toggle': 'toggleInterface',
     }
-    API_KEY = 'interface'
-    API_KEY_1 = 'ospf6'
-    API_KEY_2 = 'interfaces'
+    API_KEY_PATH = 'ospf6.interfaces.interface'
     API_MOD = 'quagga'
     API_CONT = 'ospf6settings'
     API_CONT_REL = 'service'

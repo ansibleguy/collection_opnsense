@@ -17,9 +17,7 @@ class SNat(BaseModule):
         'search': 'get',
         'toggle': 'toggleRule',
     }
-    API_KEY = 'rule'
-    API_KEY_1 = 'filter'
-    API_KEY_2 = 'snatrules'
+    API_KEY_PATH = 'filter.snatrules.rule'
     API_MOD = 'firewall'
     API_CONT = 'source_nat'
     FIELDS_CHANGE = [

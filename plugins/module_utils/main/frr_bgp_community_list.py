@@ -16,9 +16,7 @@ class Community(BaseModule):
         'search': 'get',
         'toggle': 'toggleCommunitylist',
     }
-    API_KEY = 'communitylist'
-    API_KEY_1 = 'bgp'
-    API_KEY_2 = 'communitylists'
+    API_KEY_PATH = 'bgp.communitylists.communitylist'
     API_MOD = 'quagga'
     API_CONT = 'bgp'
     API_CONT_REL = 'service'

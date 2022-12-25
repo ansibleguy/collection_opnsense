@@ -18,8 +18,7 @@ class Host(BaseModule):
         'toggle': 'toggleHostOverride',
     }
     API_KEY = 'host'
-    API_KEY_1 = 'unbound'
-    API_KEY_2 = 'hosts'
+    API_KEY_PATH = f'unbound.hosts.{API_KEY}'
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'

@@ -17,9 +17,7 @@ class Record(BaseModule):
         'search': 'get',
         'toggle': 'toggleRecord',
     }
-    API_KEY = 'record'
-    API_KEY_1 = 'record'
-    API_KEY_2 = 'records'
+    API_KEY_PATH = 'record.records.record'
     API_MOD = 'bind'
     API_CONT = 'record'
     API_CONT_REL = 'service'

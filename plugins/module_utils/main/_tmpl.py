@@ -16,12 +16,9 @@ class TMPL(BaseModule):
         'del': 'delItem',
         'set': 'setItem',
         'search': 'get',
-        'detail': 'getItem',
         'toggle': 'toggleItem',
     }
-    API_KEY = 'stuff'
-    API_KEY_1 = 'category'
-    # API_KEY_2 = 'sub-category'
+    API_KEY_PATH = 'category.sub_category.stuff'
     API_MOD = 'API_Module'
     API_CONT = 'API_Controller'
     API_CONT_REL = 'API_Controller_reload'  # if other
@@ -73,12 +70,6 @@ class TMPL(BaseModule):
         else:
             self.m.warn(msg)
             raise ModuleSoftError
-
-    def detail_call(self) -> dict:
-        # return base_detail(self)
-        return self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['detail']}
-        })['stuff']
 
     # @staticmethod
     # def _simplify_existing(stuff: dict) -> dict:

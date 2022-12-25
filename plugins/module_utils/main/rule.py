@@ -18,9 +18,7 @@ class Rule(BaseModule):
         'search': 'get',
         'toggle': 'toggleRule',
     }
-    API_KEY = 'rule'
-    API_KEY_1 = 'filter'
-    API_KEY_2 = 'rules'
+    API_KEY_PATH = 'filter.rules.rule'
     API_MOD = 'firewall'
     API_CONT = 'filter'
     FIELDS_CHANGE = [

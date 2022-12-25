@@ -15,9 +15,7 @@ class Prefix(BaseModule):
         'search': 'get',
         'toggle': 'togglePrefixlist',
     }
-    API_KEY = 'prefixlist'
-    API_KEY_1 = 'bgp'
-    API_KEY_2 = 'prefixlists'
+    API_KEY_PATH = 'bgp.prefixlists.prefixlist'
     API_MOD = 'quagga'
     API_CONT = 'bgp'
     API_CONT_REL = 'service'

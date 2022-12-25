@@ -14,8 +14,7 @@ class Vip(BaseModule):
         'set': 'setItem',
         'search': 'get',
     }
-    API_KEY = 'vip'
-    API_KEY_1 = 'vip'
+    API_KEY_PATH = 'vip.vip'
     API_MOD = 'interfaces'
     API_CONT = 'vip_settings'
     API_CMD_REL = 'reconfigure'

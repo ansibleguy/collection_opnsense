@@ -17,8 +17,7 @@ class Alert(BaseModule):
         'search': 'get',
         'toggle': 'toggleAlert',
     }
-    API_KEY = 'alert'
-    API_KEY_1 = 'monit'
+    API_KEY_PATH = 'monit.alert'
     API_MOD = 'monit'
     API_CONT = 'settings'
     API_CONT_REL = 'service'

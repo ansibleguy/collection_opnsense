@@ -15,9 +15,7 @@ class Pipe(BaseModule):
         'search': 'get',
         'toggle': 'togglePipe',
     }
-    API_KEY = 'pipe'
-    API_KEY_1 = 'ts'
-    API_KEY_2 = 'pipes'
+    API_KEY_PATH = 'ts.pipes.pipe'
     API_MOD = 'trafficshaper'
     API_CONT = 'settings'
     API_CONT_REL = 'service'

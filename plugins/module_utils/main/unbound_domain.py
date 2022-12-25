@@ -17,9 +17,7 @@ class Domain(BaseModule):
         'search': 'get',
         'toggle': 'toggleDomainOverride',
     }
-    API_KEY_1 = 'unbound'
-    API_KEY_2 = 'domains'
-    API_KEY = 'domain'
+    API_KEY_PATH = 'unbound.domains.domain'
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
