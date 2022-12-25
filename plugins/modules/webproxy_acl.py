@@ -15,7 +15,7 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
         diff_remove_empty, sort_param_lists
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
-        OPN_MOD_ARGS, EN_ONLY_MOD_ARG, RELOAD_MOD_ARG
+        OPN_MOD_ARGS, RELOAD_MOD_ARG
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_acl import General
 
 except MODULE_EXCEPTIONS:

@@ -59,6 +59,15 @@ This module manages the Web-Proxy forwarding settings that can be found in the W
 * FTP Proxy Settings (*DropDown*)' (*URL 'ui/proxy#subtab_proxy-forward-ftp'*)
 * SNMP Agent Settings (*DropDown*)' (*URL 'ui/proxy#subtab_proxy-forward-snmp'*)
 
+ansibleguy.opnsense.webproxy_acl
+--------------------------------
+
+This module manages the Web-Proxy forwarding ACLs that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - General Proxy Settings - Access Control List (*DropDown*)' (*URL 'ui/proxy#subtab_proxy-forward-acl'*)
+
+ansibleguy.opnsense.webproxy_icap
+---------------------------------
+
+This module manages the Web-Proxy ICAP settings that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - General Proxy Settings - ICAP Settings (*DropDown*)' (*URL 'ui/proxy#subtab_proxy-icap'*)
 
 Definition
 **********
@@ -191,6 +200,26 @@ ansibleguy.opnsense.webproxy_acl
     "youtube_filter","string","false","\-","youtube","One of: 'strict', 'moderate'. Youtube filter level"
     "ports_tcp","list","false","['80:http', '21:ftp', '443:https', '70:gopher', '210:wais', '1025-65535:unregistered ports', '280:http-mgmt', '488:gss-http', '591:filemaker', '777:multiling http']","p_tcp","Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh)"
     "ports_ssl","list","false","['443:https']","p_ssl","Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh)"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
+ansibleguy.opnsense.webproxy_acl
+--------------------------------
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "enabled","boolean","false","true","\-","If this checkbox is checked, you can use an ICAP server to filter or replace content"
+    "request_url","string","false","icap://[::1]:1344/avscan","request, request_target","The url where the REQMOD requests should be sent to"
+    "response_url","string","false","icap://[::1]:1344/avscan","response, response_target","The url where the RESPMOD requests should be sent to"
+    "ttl","integer","false","60","default_ttl","\-"
+    "send_client_ip","boolean","false","true","send_client","If you enable this option, the client IP address will be sent to the ICAP server. This can be useful if you want to filter traffic based on IP addresses"
+    "send_username","boolean","false","false","send_user","If you enable this option, the username of the client will be sent to the ICAP server. This can be useful if you want to filter traffic based on usernames. Authentication is required to use usernames"
+    "encode_username","boolean","false","false","user_encode, encode_user, enc_user","Use this option if your usernames need to be encoded"
+    "header_username","string","false","X-Username","header_user, user_header","The header which should be used to send the username to the ICAP server"
+    "preview","boolean","false","true","\-","If you use previews, only a part of the data is sent to the ICAP server. Setting this option can improve the performance"
+    "preview_size","integer","false","1024","\-","Size of the preview which is sent to the ICAP server"
+    "exclude","list","false","\-","\-","Exclusion list destination domains.You may use a regular expression, use a comma or press Enter for new item. Examples: 'mydomain.com' matches on '*.mydomain.com'; 'https://([a-zA-Z]+)\\.mydomain\\.' matches on 'http(s)://textONLY.mydomain.*'; '\\.gif$' matches on '\\*.gif' but not on '\\*.gif\\test'; '\\[0-9]+\\.gif$' matches on '\\123.gif' but not on '\\test.gif'"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 Examples
@@ -461,6 +490,49 @@ ansibleguy.opnsense.webproxy_acl
         - name: Pulling settings
           ansibleguy.opnsense.list:
           #  target: 'webproxy_acl'
+          register: current_config
+
+        - name: Printing settings
+          ansible.builtin.debug:
+            var: current_config.data
+
+ansibleguy.opnsense.webproxy_icap
+---------------------------------
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        ansibleguy.opnsense.webproxy_icap:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'webproxy_icap'
+          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.webproxy_icap:
+            # request_url: 'icap://[::1]:1344/avscan'
+            # response_url: 'icap://[::1]:1344/avscan'
+            # ttl: 60
+            # send_client_ip: true
+            # send_username: false
+            # encode_username: false
+            # header_username: 'X-Username'
+            # preview: true
+            # preview_size: 1024
+            # exclude: []
+            # enabled: true
+            # reload: true
+            # debug: false
+
+        - name: Pulling settings
+          ansibleguy.opnsense.list:
+          #  target: 'webproxy_icap'
           register: current_config
 
         - name: Printing settings

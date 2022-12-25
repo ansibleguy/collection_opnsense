@@ -39,7 +39,7 @@ def run_module():
                 'frr_ospf_route_map', 'frr_ospf_network', 'frr_rip', 'bind_general',
                 'bind_blocklist', 'bind_acl', 'bind_domain', 'bind_record',
                 'interface_vip', 'webproxy_general', 'webproxy_cache', 'webproxy_parent',
-                'webproxy_traffic', 'webproxy_forward', 'webproxy_acl',
+                'webproxy_traffic', 'webproxy_forward', 'webproxy_acl', 'webproxy_icap',
             ],
             description='What part of the running config should be listed'
         ),
@@ -286,6 +286,10 @@ def run_module():
 
         elif module.params['target'] == 'webproxy_acl':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_acl import General
+            target = General(module=module, result=result)
+
+        elif module.params['target'] == 'webproxy_icap':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_icap import General
             target = General(module=module, result=result)
 
     except MODULE_EXCEPTIONS:

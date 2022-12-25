@@ -1,0 +1,126 @@
+---
+
+- name: WebProxy Forward-ICAP Settings
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.webproxy_icap:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'webproxy_icap'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Configuring - failing because of invalid user-header
+      ansibleguy.opnsense.webproxy_parent:
+        header_username: '!INVALID-'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Configuring
+      ansibleguy.opnsense.webproxy_icap:
+        response_url: 'icap://av.lan:1344/avscan'
+        ttl: 70
+        send_username: true
+        send_client_ip: true
+        encode_username: true
+        preview_size: 3072
+        exclude: ['ansibleguy.net']
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.webproxy_icap:
+        response_url: 'icap://av.lan:1345/avscan'
+        ttl: 50
+        send_username: false
+        send_client_ip: true
+        encode_username: true
+        preview_size: 2048
+        exclude: ['ansibleguy.net', 'random.site']
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 - nothing changed
+      ansibleguy.opnsense.webproxy_icap:
+        response_url: 'icap://av.lan:1345/avscan'
+        ttl: 50
+        send_username: false
+        send_client_ip: true
+        encode_username: true
+        preview_size: 2048
+        exclude: ['ansibleguy.net', 'random.site']
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1
+      ansibleguy.opnsense.webproxy_icap:
+        response_url: 'icap://av.lan:1345/avscan'
+        ttl: 50
+        send_username: false
+        send_client_ip: true
+        encode_username: true
+        preview_size: 2048
+        exclude: ['ansibleguy.net', 'random.site']
+        enabled: false
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.webproxy_icap:
+        response_url: 'icap://av.lan:1345/avscan'
+        ttl: 50
+        send_username: false
+        send_client_ip: true
+        encode_username: true
+        preview_size: 2048
+        exclude: ['ansibleguy.net', 'random.site']
+        enabled: false
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        opn4.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.webproxy_icap:
+        response_url: 'icap://av.lan:1345/avscan'
+        ttl: 50
+        send_username: false
+        send_client_ip: true
+        encode_username: true
+        preview_size: 2048
+        exclude: ['ansibleguy.net', 'random.site']
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.webproxy_icap:
+        enabled: false
+      when: not ansible_check_mode
