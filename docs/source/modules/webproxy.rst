@@ -76,6 +76,16 @@ ansibleguy.opnsense.webproxy_auth
 
 This module manages the Web-Proxy authentication settings that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - General Proxy Settings - Authentication Settings (*DropDown*)' (*URL 'ui/proxy#subtab_proxy-general-authentication'*)
 
+Remote ACL
+==========
+
+ansibleguy.opnsense.webproxy_remote_acl
+---------------------------------------
+
+This module manages the Remote ACL entries that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - Remote Access Control Lists
+
+The configured lists are matched by its unique file-name.
+
 
 Definition
 **********
@@ -243,6 +253,25 @@ ansibleguy.opnsense.webproxy_auth
     "group","string","false","\-","local_group",""
     "ttl_h","integer","false","2","ttl, ttl_hours, credential_ttl","This specifies for how long (in hours) the proxy server assumes an externally validated username and password combination is valid (Time To Live). When the TTL expires, the user will be prompted for credentials again"
     "processes","integer","false","5","proc","The total number of authenticator processes to spawn"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
+Remote ACL
+==========
+
+ansibleguy.opnsense.webproxy_remote_acl
+---------------------------------------
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "file","string","true","\-","filename","Unique file-name to store the remote acl in. Used to match existing entries with configured ones"
+    "url","string","false for state changes, else true","\-","\-","Url to fetch the acl from"
+    "description","string","false for state changes, else true","\-","desc","A description to explain what this blacklist is intended for"
+    "username","string","false","\-","user","Optional user for authentication"
+    "password","string","false","\-","pwd","Optional password for authentication"
+    "categories","list","false","\-","cat, filter","Select categories to use, leave empty for all. Categories are visible in the WEB-UI after initial download"
+    "verify_ssl","boolean","false","true","verify","If certificate validation should be done - relevant if self-signed certificates are used on the target server!"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 
@@ -599,3 +628,69 @@ ansibleguy.opnsense.webproxy_auth
         - name: Printing settings
           ansible.builtin.debug:
             var: current_config.data
+
+Remote ACL
+==========
+
+ansibleguy.opnsense.webproxy_remote_acl
+---------------------------------------
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        ansibleguy.opnsense.webproxy_remote_acl:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'webproxy_remote_acl'
+          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.webproxy_remote_acl:
+            file: 'example'
+            url: 'https://example.ansibleguy.net/rac1'
+            description: 'example ACL'
+            # categories: []
+            # username: ''
+            # password: ''
+            # verify_ssl: true
+            # enabled: true
+            # reload: true
+            # debug: false
+
+        - name: Adding
+          ansibleguy.opnsense.webproxy_remote_acl:
+            file: 'test1'
+            url: 'https://test.lan/rac1'
+            username: 'random'
+            password: 'random'
+            verify_ssl: true
+            description: 'test'
+
+        - name: Disabling
+          ansibleguy.opnsense.webproxy_remote_acl:
+            file: 'test1'
+            url: 'https://test.lan/rac2'
+            username: 'random'
+            password: 'random2'
+            description: 'Custom ACL'
+            enabled: false
+
+        - name: Pulling settings
+          ansibleguy.opnsense.list:
+          #  target: 'webproxy_remote_acl'
+          register: existing_entries
+
+        - name: Printing settings
+          ansible.builtin.debug:
+            var: existing_entries.data
+
+        - name: Removing
+          ansibleguy.opnsense.webproxy_remote_acl:
+            file: 'test1'
+            state: 'absent'

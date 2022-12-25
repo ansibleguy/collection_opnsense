@@ -568,3 +568,14 @@
         firewall: "{{ run.f }}"
         api_credential_file: "{{ run.c }}"
         ssl_verify: false
+
+    - name: Cleanup WebProxy Remote-ACLs
+      ansibleguy.opnsense.webproxy_remote_acl:
+        file: "{{ item }}"
+        state: 'absent'
+        firewall: "{{ run.f }}"
+        api_credential_file: "{{ run.c }}"
+        ssl_verify: false
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
