@@ -126,8 +126,8 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_parent        | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id4)                                       | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_traffic       | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id5)                                       | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_forward       | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id7)                                       | unstable           |
-| **Web Proxy**       | ansibleguy.opnsense.webproxy_acl           | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id20)                                      | unstable           |
-| **Web Proxy**       | ansibleguy.opnsense.webproxy_icap          | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id22)                                      | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_acl           | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id8)                                       | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_icap          | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id9)                                       | unstable           |
 
 
 ### Roadmap

@@ -202,8 +202,8 @@ ansibleguy.opnsense.webproxy_acl
     "ports_ssl","list","false","['443:https']","p_ssl","Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh)"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
-ansibleguy.opnsense.webproxy_acl
---------------------------------
+ansibleguy.opnsense.webproxy_icap
+---------------------------------
 
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
