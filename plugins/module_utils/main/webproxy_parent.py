@@ -42,7 +42,6 @@ class Parent(GeneralModule):
         'password': r'^([0-9a-zA-Z\._\-]){1,32}$',
     }
     FIELDS_DIFF_EXCLUDE = ['password']
-    TIMEOUT = 60.0
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         GeneralModule.__init__(self=self, m=module, r=result, s=session)

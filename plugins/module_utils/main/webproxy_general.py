@@ -60,7 +60,7 @@ class General(GeneralModule):
         'connect_timeout': {'min': 1, 'max': 120},
         'icp_port': {'min': 1, 'max': 65535},
     }
-    TIMEOUT = 60.0
+    TIMEOUT = 60.0  # 'disable' taking long
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         GeneralModule.__init__(self=self, m=module, r=result, s=session)

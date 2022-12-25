@@ -44,7 +44,6 @@ class Cache(GeneralModule):
         'size_mb_max': {'min': 1, 'max': 99999},
         'memory_kb_max': {'min': 1, 'max': 99999},
     }
-    TIMEOUT = 60.0
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         GeneralModule.__init__(self=self, m=module, r=result, s=session)

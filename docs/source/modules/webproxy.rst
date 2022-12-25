@@ -12,7 +12,8 @@ Web Proxy
 `webproxy_cache <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_cache.yml>`_ |
 `webproxy_parent <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_parent.yml>`_ |
 `webproxy_traffic <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_traffic.yml>`_ |
-`webproxy_forward <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_forward.yml>`_
+`webproxy_forward <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_forward.yml>`_ |
+`webproxy_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_acl.yml>`_
 
 **API Docs**: `Core - Proxy <https://docs.opnsense.org/development/api/core/proxy.html>`_
 
@@ -172,7 +173,25 @@ ansibleguy.opnsense.webproxy_forward
     "transparent_ftp","boolean","false","false","\-","Enable transparent ftp proxy mode to forward all requests or destination port 21 to the proxy server without any additional configuration"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
+ansibleguy.opnsense.webproxy_acl
+--------------------------------
 
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "allow","list","false","\-","allow_subnets, subnets","IPs and Subnets you want to allow access to the proxy server"
+    "exclude","list","false","\-","unrestricted, ignore","IPs and Subnets you want to bypass the proxy server"
+    "banned","list","false","\-","blocked, block, ban","IPs and Subnets you want to deny access to the  proxy server"
+    "exclude_domains","list","false","\-","safe_list, whitelist","You may use a regular expression, use a comma or press Enter for new item. Examples: 'mydomain.com' matches on '*.mydomain.com'; '^https?:\\/\\/([a-zA-Z]+)\\.mydomain\\.' matches on 'http(s)://textONLY.mydomain.*'; '\\.gif$' matches on '\\*.gif' but not on '\\*.gif\\test'; '\\[0-9]+\\.gif$' matches on '\\123.gif' but not on '\\test.gif'"
+    "block_domains","list","false","\-","block, block_list, blacklist","You may use a regular expression, use a comma or press Enter for new item. Examples: 'mydomain.com' matches on '*.mydomain.com'; '^https?:\\/\\/([a-zA-Z]+)\\.mydomain\\.' matches on 'http(s)://textONLY.mydomain.*'; '\\.gif$' matches on '\\*.gif' but not on '\\*.gif\\test'; '\\[0-9]+\\.gif$' matches on '\\123.gif' but not on '\\test.gif'"
+    "block_user_agents","list","false","\-","block_ua, block_list_ua","Block user-agents. You may use a regular expression, use a comma or press Enter for new item. Examples: '^(.)+Macintosh(.)+Firefox/37\\.0' matches on 'Macintosh version of Firefox revision 37.0'; '^Mozilla' matches on 'all Mozilla based browsers'"
+    "block_mime_types","list","false","\-","block_mime, block_list_mime","Block specific MIME type reply. You may use a regular expression, use a comma or press Enter for new item. Examples: 'video/flv' matches on 'Flash Video'; 'application/x-javascript' matches on 'javascripts'"
+    "exclude_google","list","false","\-","safe_list_google","The domain that will be allowed to use Google GSuite. All accounts that are not in this domain will be blocked to use it"
+    "youtube_filter","string","false","\-","youtube","One of: 'strict', 'moderate'. Youtube filter level"
+    "ports_tcp","list","false","['80:http', '21:ftp', '443:https', '70:gopher', '210:wais', '1025-65535:unregistered ports', '280:http-mgmt', '488:gss-http', '591:filemaker', '777:multiling http']","p_tcp","Allowed destination TCP ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh)"
+    "ports_ssl","list","false","['443:https']","p_ssl","Allowed destination SSL ports, you may use ranges (ex. 222-226) and add comments with colon (ex. 22:ssh)"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 Examples
 ********
@@ -224,11 +243,11 @@ ansibleguy.opnsense.webproxy_general
         - name: Pulling settings
           ansibleguy.opnsense.list:
           #  target: 'webproxy_general'
-          register: existing_entries
+          register: current_config
 
         - name: Printing settings
           ansible.builtin.debug:
-            var: existing_entries.data
+            var: current_config.data
 
 ansibleguy.opnsense.webproxy_cache
 ----------------------------------
@@ -266,11 +285,11 @@ ansibleguy.opnsense.webproxy_cache
         - name: Pulling settings
           ansibleguy.opnsense.list:
           #  target: 'webproxy_cache'
-          register: existing_entries
+          register: current_config
 
         - name: Printing settings
           ansible.builtin.debug:
-            var: existing_entries.data
+            var: current_config.data
 
 ansibleguy.opnsense.webproxy_parent
 -----------------------------------
@@ -306,11 +325,11 @@ ansibleguy.opnsense.webproxy_parent
         - name: Pulling settings
           ansibleguy.opnsense.list:
           #  target: 'webproxy_parent'
-          register: existing_entries
+          register: current_config
 
         - name: Printing settings
           ansible.builtin.debug:
-            var: existing_entries.data
+            var: current_config.data
 
 ansibleguy.opnsense.webproxy_traffic
 ------------------------------------
@@ -343,11 +362,11 @@ ansibleguy.opnsense.webproxy_traffic
         - name: Pulling settings
           ansibleguy.opnsense.list:
           #  target: 'webproxy_traffic'
-          register: existing_entries
+          register: current_config
 
         - name: Printing settings
           ansible.builtin.debug:
-            var: existing_entries.data
+            var: current_config.data
 
 Forward
 =======
@@ -392,11 +411,58 @@ ansibleguy.opnsense.webproxy_forward
             # reload: true
             # debug: false
 
+ansibleguy.opnsense.webproxy_acl
+--------------------------------
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        ansibleguy.opnsense.webproxy_acl:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'webproxy_acl'
+          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.webproxy_acl:
+            # allow: []
+            # exclude: []
+            # banned: []
+            # exclude_domains: []
+            # block_domains: []
+            # block_user_agents: []
+            # block_mime_types: []
+            # exclude_google: []
+            # youtube_filter: ''
+            # ports_tcp: ['80:http', '21:ftp', '443:https', '70:gopher', '210:wais', '1025-65535:unregistered ports', '280:http-mgmt', '488:gss-http', '591:filemaker', '777:multiling http']
+            # ports_ssl: ['443:https']
+            # reload: true
+            # debug: false
+
+        - name: Configuring
+          ansibleguy.opnsense.webproxy_acl:
+            allow: ['192.168.0.0/24', '172.16.1.0/29', '172.16.0.5']
+            exclude: ['192.168.2.0/28', '172.16.1.5']
+            banned: ['172.16.3.0/24', '172.16.2.5']
+            exclude_domains: ['ansibleguy.net']
+            block_domains: ['ansibleguy.com']
+            block_user_agents: ['test1', 'test2']
+            block_mime_types: ['video/flv', 'test']
+            ports_tcp: ['80:http', '21:ftp']
+            ports_ssl: ['443:https', '8443:random']
+            youtube_filter: 'moderate'
+
         - name: Pulling settings
           ansibleguy.opnsense.list:
-          #  target: 'webproxy_forward'
-          register: existing_entries
+          #  target: 'webproxy_acl'
+          register: current_config
 
         - name: Printing settings
           ansible.builtin.debug:
-            var: existing_entries.data
+            var: current_config.data
