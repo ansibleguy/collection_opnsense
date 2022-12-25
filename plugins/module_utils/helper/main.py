@@ -180,6 +180,8 @@ def get_selected(data: dict) -> (str, None):
             if is_true(values['selected']):
                 return key
 
+        return ''  # none selected
+
     # if function is re-applied
     return data
 

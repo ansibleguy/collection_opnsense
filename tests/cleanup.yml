@@ -550,15 +550,21 @@
         api_credential_file: "{{ run.c }}"
         ssl_verify: false
 
-    - name: Cleanup
+    - name: Cleanup WebProxy ACL
       ansibleguy.opnsense.webproxy_acl:
         firewall: "{{ run.f }}"
         api_credential_file: "{{ run.c }}"
         ssl_verify: false
 
-    - name: Cleanup
+    - name: Cleanup WebProxy ICAP
       ansibleguy.opnsense.webproxy_icap:
         firewall: "{{ run.f }}"
         api_credential_file: "{{ run.c }}"
         ssl_verify: false
         enabled: false
+
+    - name: Cleanup WebProxy Auth
+      ansibleguy.opnsense.webproxy_auth:
+        firewall: "{{ run.f }}"
+        api_credential_file: "{{ run.c }}"
+        ssl_verify: false

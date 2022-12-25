@@ -13,7 +13,9 @@ Web Proxy
 `webproxy_parent <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_parent.yml>`_ |
 `webproxy_traffic <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_traffic.yml>`_ |
 `webproxy_forward <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_forward.yml>`_ |
-`webproxy_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_acl.yml>`_
+`webproxy_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_acl.yml>`_ |
+`webproxy_icap <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_icap.yml>`_ |
+`webproxy_auth <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_auth.yml>`_
 
 **API Docs**: `Core - Proxy <https://docs.opnsense.org/development/api/core/proxy.html>`_
 
@@ -68,6 +70,12 @@ ansibleguy.opnsense.webproxy_icap
 ---------------------------------
 
 This module manages the Web-Proxy ICAP settings that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - General Proxy Settings - ICAP Settings (*DropDown*)' (*URL 'ui/proxy#subtab_proxy-icap'*)
+
+ansibleguy.opnsense.webproxy_auth
+---------------------------------
+
+This module manages the Web-Proxy authentication settings that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - General Proxy Settings - Authentication Settings (*DropDown*)' (*URL 'ui/proxy#subtab_proxy-general-authentication'*)
+
 
 Definition
 **********
@@ -221,6 +229,22 @@ ansibleguy.opnsense.webproxy_icap
     "preview_size","integer","false","1024","\-","Size of the preview which is sent to the ICAP server"
     "exclude","list","false","\-","\-","Exclusion list destination domains.You may use a regular expression, use a comma or press Enter for new item. Examples: 'mydomain.com' matches on '*.mydomain.com'; 'https://([a-zA-Z]+)\\.mydomain\\.' matches on 'http(s)://textONLY.mydomain.*'; '\\.gif$' matches on '\\*.gif' but not on '\\*.gif\\test'; '\\[0-9]+\\.gif$' matches on '\\123.gif' but not on '\\test.gif'"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
+ansibleguy.opnsense.webproxy_auth
+---------------------------------
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "method","string","false","\-","type, target","The authentication backend to use - as shown in the WEB-UI at 'System - Access - Servers'. Per example: 'Local Database'"
+    "group","string","false","\-","local_group","Restrict access to users in the selected (local)group. **NOTE**: please be aware that users (or vouchers) which aren't administered locally will be denied when using this option"
+    "prompt","string","false","OPNsense proxy authentication","realm","The prompt will be displayed in the authentication request window"
+    "group","string","false","\-","local_group",""
+    "ttl_h","integer","false","2","ttl, ttl_hours, credential_ttl","This specifies for how long (in hours) the proxy server assumes an externally validated username and password combination is valid (Time To Live). When the TTL expires, the user will be prompted for credentials again"
+    "processes","integer","false","5","proc","The total number of authenticator processes to spawn"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
 
 Examples
 ********
@@ -533,6 +557,43 @@ ansibleguy.opnsense.webproxy_icap
         - name: Pulling settings
           ansibleguy.opnsense.list:
           #  target: 'webproxy_icap'
+          register: current_config
+
+        - name: Printing settings
+          ansible.builtin.debug:
+            var: current_config.data
+
+ansibleguy.opnsense.webproxy_auth
+---------------------------------
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        ansibleguy.opnsense.webproxy_auth:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'webproxy_auth'
+          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.webproxy_auth:
+            # method: ''
+            # group: ''
+            # prompt: 'OPNsense proxy authentication'
+            # ttl_h: 2
+            # processes: 5
+            # reload: true
+            # debug: false
+
+        - name: Pulling settings
+          ansibleguy.opnsense.list:
+          #  target: 'webproxy_auth'
           register: current_config
 
         - name: Printing settings

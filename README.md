@@ -66,7 +66,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 |:--------------------|:-------------------------------------------|:--------------------------------------------------------------------------------------------------------|:----------------------|
 | **Base**            | ansibleguy.opnsense.list                   | [Docs](https://opnsense.ansibleguy.net/modules/2_list.html)                                             | stable                |
 | **Base**            | ansibleguy.opnsense.reload                 | [Docs](https://opnsense.ansibleguy.net/modules/2_reload.html)                                           | stable                |
-| **Base**            | ansibleguy.opnsense.service                | [Docs](https://opnsense.ansibleguy.net/modules/2_service.html)                                          | stable                |
+| **Services**        | ansibleguy.opnsense.service                | [Docs](https://opnsense.ansibleguy.net/modules/service.html)                                            | stable                |
 | **Alias**           | ansibleguy.opnsense.alias                  | [Docs](https://opnsense.ansibleguy.net/modules/alias.html)                                              | stable                | 
 | **Alias**           | ansibleguy.opnsense.alias_multi            | [Docs](https://opnsense.ansibleguy.net/modules/alias_multi.html)                                        | stable                |
 | **Alias**           | ansibleguy.opnsense.alias_purge            | [Docs](https://opnsense.ansibleguy.net/modules/alias_multi.html#ansibleguy-opnsense-alias-purge)        | unstable              |
@@ -128,6 +128,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_forward       | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id7)                                       | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_acl           | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id8)                                       | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_icap          | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id9)                                       | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_auth          | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id10)                                      | unstable           |
 
 
 ### Roadmap

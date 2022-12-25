@@ -1,0 +1,63 @@
+---
+
+- name: WebProxy Forward-Auth Settings
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.webproxy_auth:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'webproxy_auth'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Configuring
+      ansibleguy.opnsense.webproxy_auth:
+        method: 'Local Database'
+        prompt: 'AnsibleGuy Test'
+        ttl_h: 4
+        processes: 8
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.webproxy_auth:
+        method: 'Local Database'
+        prompt: 'AnsibleGuy Test NEW'
+        ttl_h: 3
+        processes: 6
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 - nothing changed
+      ansibleguy.opnsense.webproxy_auth:
+        method: 'Local Database'
+        prompt: 'AnsibleGuy Test NEW'
+        ttl_h: 3
+        processes: 6
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.webproxy_auth:
+      when: not ansible_check_mode

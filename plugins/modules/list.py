@@ -40,6 +40,7 @@ def run_module():
                 'bind_blocklist', 'bind_acl', 'bind_domain', 'bind_record',
                 'interface_vip', 'webproxy_general', 'webproxy_cache', 'webproxy_parent',
                 'webproxy_traffic', 'webproxy_forward', 'webproxy_acl', 'webproxy_icap',
+                'webproxy_auth',
             ],
             description='What part of the running config should be listed'
         ),
@@ -290,6 +291,10 @@ def run_module():
 
         elif module.params['target'] == 'webproxy_icap':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_icap import General
+            target = General(module=module, result=result)
+
+        elif module.params['target'] == 'webproxy_auth':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_auth import General
             target = General(module=module, result=result)
 
     except MODULE_EXCEPTIONS:

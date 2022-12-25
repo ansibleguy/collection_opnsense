@@ -123,6 +123,7 @@ run_test 'webproxy_traffic' 1
 run_test 'webproxy_forward' 1
 run_test 'webproxy_acl' 1
 run_test 'webproxy_icap' 1
+run_test 'webproxy_auth' 1
 run_test 'system' 1
 run_test 'package' 1
 
