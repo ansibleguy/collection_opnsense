@@ -15,7 +15,8 @@ Web Proxy
 `webproxy_forward <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_forward.yml>`_ |
 `webproxy_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_acl.yml>`_ |
 `webproxy_icap <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_icap.yml>`_ |
-`webproxy_auth <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_auth.yml>`_
+`webproxy_auth <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_auth.yml>`_ |
+`webproxy_remote_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_remote_acl.yml>`_
 
 **API Docs**: `Core - Proxy <https://docs.opnsense.org/development/api/core/proxy.html>`_
 

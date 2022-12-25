@@ -60,8 +60,10 @@ class Base:
             for k in getattr(self.i, self.ATTR_AK_PATH).split(self.ATTR_AK_PATH_SPLIT_CHAR):
                 data = data[k]
 
-            if self.ATTR_AK in AK:
-                data = data[AK[self.ATTR_AK]]
+            if self.ATTR_AK in AK and \
+                    isinstance(data, dict):  # if AK_PATH includes AK
+                if AK[self.ATTR_AK] in data:
+                    data = data[AK[self.ATTR_AK]]
 
             return data
 
