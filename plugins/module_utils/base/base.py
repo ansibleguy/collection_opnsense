@@ -195,34 +195,37 @@ class Base:
                 return response
 
         elif enable_switch:
-            existing = getattr(self.i, self.i.EXIST_ATTR)
+            self._update_enabled()
 
-            if hasattr(existing, 'enabled'):
-                if existing['enabled'] != self.i.p['enabled']:
-                    BOOL_INVERT_FIELDS = []
-                    enable = self.i.p['enabled']
-                    invert = False
+    def _update_enabled(self):
+        existing = getattr(self.i, self.i.EXIST_ATTR)
 
-                    if hasattr(self.i, self.ATTR_BOOL_INVERT):
-                        BOOL_INVERT_FIELDS = getattr(self.i, self.ATTR_BOOL_INVERT)
+        if 'enabled' in existing:
+            if existing['enabled'] != self.i.p['enabled']:
+                BOOL_INVERT_FIELDS = []
+                enable = self.i.p['enabled']
+                invert = False
 
-                    if 'enabled' in BOOL_INVERT_FIELDS:
-                        invert = True
-                        enable = not enable
+                if hasattr(self.i, self.ATTR_BOOL_INVERT):
+                    BOOL_INVERT_FIELDS = getattr(self.i, self.ATTR_BOOL_INVERT)
 
-                    if enable:
-                        if hasattr(self.i, 'enable'):
-                            self.i.enable()
+                if 'enabled' in BOOL_INVERT_FIELDS:
+                    invert = True
+                    enable = not enable
 
-                        else:
-                            self.enable(invert=invert)
+                if enable:
+                    if hasattr(self.i, 'enable'):
+                        self.i.enable()
 
                     else:
-                        if hasattr(self.i, 'disable'):
-                            self.i.disable()
+                        self.enable(invert=invert)
 
-                        else:
-                            self.disable(invert=invert)
+                else:
+                    if hasattr(self.i, 'disable'):
+                        self.i.disable()
+
+                    else:
+                        self.disable(invert=invert)
 
     def delete(self) -> dict:
         self.i.r['changed'] = True
