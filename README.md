@@ -123,9 +123,10 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_acl           | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id8)                                       | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_icap          | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id9)                                       | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_auth          | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id10)                                      | unstable           |
-| **Web Proxy**       | ansibleguy.opnsense.webproxy_remote_acl    | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id11)                                      | unstable           |
-| **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_proxy     | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id12)                                      | unstable           |
-| **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_match     | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id13)                                      | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_remote_acl    | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id12)                                      | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_proxy     | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id14)                                      | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_match     | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id15)                                      | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_rule      | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id16)                                      | unstable           |
 
 
 ### Roadmap

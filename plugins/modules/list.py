@@ -41,7 +41,7 @@ def run_module():
                 'interface_vip', 'webproxy_general', 'webproxy_cache', 'webproxy_parent',
                 'webproxy_traffic', 'webproxy_forward', 'webproxy_acl', 'webproxy_icap',
                 'webproxy_auth', 'webproxy_remote_acl', 'webproxy_pac_proxy',
-                'webproxy_pac_match',
+                'webproxy_pac_match', 'webproxy_pac_rule',
             ],
             description='What part of the running config should be listed'
         ),
@@ -309,6 +309,10 @@ def run_module():
         elif module.params['target'] == 'webproxy_pac_match':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_pac_match import Match
             target = Match(module=module, result=result)
+
+        elif module.params['target'] == 'webproxy_pac_rule':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_pac_rule import Rule
+            target = Rule(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

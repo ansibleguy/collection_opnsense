@@ -127,6 +127,7 @@ run_test 'webproxy_auth' 1
 run_test 'webproxy_remote_acl' 1
 run_test 'webproxy_pac_proxy' 1
 run_test 'webproxy_pac_match' 1
+run_test 'webproxy_pac_rule' 1
 run_test 'system' 1
 run_test 'package' 1
 

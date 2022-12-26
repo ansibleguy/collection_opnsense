@@ -84,7 +84,10 @@ class RouteMap(BaseModule):
             provided = len(self.p[key]) > 0
             uuids = []
 
-            if len(self.existing_prefixes) > 0 and provided:
+            if not provided:
+                continue
+
+            if len(self.existing_prefixes) > 0:
                 for uuid, entry in values['existing'].items():
                     if entry[values['key']] in self.p[key]:
                         uuids.append(uuid)
@@ -92,7 +95,7 @@ class RouteMap(BaseModule):
                     if len(uuids) == len(self.p[key]):
                         break
 
-            if provided and len(uuids) != len(self.p[key]):
+            if len(uuids) != len(self.p[key]):
                 self.m.fail_json(
                     f"At least one of the provided {key} entries was not found!"
                 )

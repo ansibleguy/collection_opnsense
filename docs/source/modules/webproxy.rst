@@ -18,7 +18,8 @@ Web Proxy
 `webproxy_auth <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_auth.yml>`_ |
 `webproxy_remote_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_remote_acl.yml>`_ |
 `webproxy_pac_proxy <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_pac_proxy.yml>`_ |
-`webproxy_pac_match <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_pac_match.yml>`_
+`webproxy_pac_match <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_pac_match.yml>`_ |
+`webproxy_pac_rule <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_pac_rule.yml>`_
 
 **API Docs**: `Core - Proxy <https://docs.opnsense.org/development/api/core/proxy.html>`_
 
@@ -111,6 +112,11 @@ You need to **provide arguments** for different **match-types**:
 * 'time_range' needs 'hour_from' and 'hour_to' to be provided
 * 'weekday_range' needs 'weekday_from' and 'weekday_to' to be provided
 * 'dns_domain_levels' needs 'domain_level_from' and 'domain_level_to' to be provided
+
+ansibleguy.opnsense.webproxy_pac_rule
+-------------------------------------
+
+This module manages the Proxy-Auto-Config Rule entries that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - Proxy Auto-Config - Rules (*DropDown*)' (*URL 'ui/proxy#subtab_pac_rules'*)
 
 
 Definition
@@ -334,10 +340,25 @@ ansibleguy.opnsense.webproxy_pac_match
     "domain_level_to","integer","false","0","domain_to","The maximum amount of dots in the domain name"
     "hour_from","integer","false","0","time_from","Start hour for match-period"
     "hour_to","integer","false","0","time_to","End hour for match-period"
-    "month_from","integer","false","0","date_from","Start month for match-period"
-    "month_to","integer","false","0","date_to","End hour month match-period"
-    "weekday_from","integer","false","0","day_from","Start weekday for match-period. 1 = monday, 7 = sunday"
-    "weekday_to","integer","false","0","day_to","End hour weekday match-period. 1 = monday, 7 = sunday"
+    "month_from","integer","false","1","date_from","Start month for match-period"
+    "month_to","integer","false","1","date_to","End hour month match-period"
+    "weekday_from","integer","false","1","day_from","Start weekday for match-period. 1 = monday, 7 = sunday"
+    "weekday_to","integer","false","1","day_to","End hour weekday match-period. 1 = monday, 7 = sunday"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
+ansibleguy.opnsense.webproxy_pac_rule
+-------------------------------------
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "description","string","true","\-","desc, name","Unique description used to identify existing rules"
+    "matches","list","false for state changes, else true","\-","\-","Matches you want to use in this rule. This matches are joined using the selected separator"
+    "proxies","list","false for state changes, else true","\-","\-","Proxies you want to use address using this rule"
+    "join_type","string","false","and","join","One of: 'and', 'or'. A separator to join the matches. 'or' means any match can be true which can be used to configure the same proxy for multiple networks while 'and' means all matches must be true which can be used to assign the proxy in a more detailed way"
+    "match_type","string","false","if","operator","One of: 'if', 'unless'. Choose 'if' in case any case you want to ensure a match to evaluate as is, else choose 'unless' if you want the negated version. Unless is used if you want to use the proxy for every host but not for some special ones"
+    "enabled","boolean","false","true","\-","En- or disable the rule"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 
@@ -842,10 +863,10 @@ ansibleguy.opnsense.webproxy_pac_match
             # domain_level_to: 0
             # hour_from: 0
             # hour_to: 0
-            # month_from: 0
-            # month_to: 0
-            # weekday_from: 0
-            # weekday_to: 0
+            # month_from: 1
+            # month_to: 1
+            # weekday_from: 1
+            # weekday_to: 1
             # reload: true
             # debug: false
 
@@ -875,4 +896,54 @@ ansibleguy.opnsense.webproxy_pac_match
         - name: Removing
           ansibleguy.opnsense.webproxy_pac_match:
             file: 'test1'
+            state: 'absent'
+
+ansibleguy.opnsense.webproxy_pac_rule
+-------------------------------------
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        ansibleguy.opnsense.webproxy_pac_rule:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'webproxy_pac_rule'
+          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.webproxy_pac_rule:
+            description: 'example'
+            matches: []
+            proxies: []
+            # join_type: 'and'
+            # match_type: 'if'
+            # reload: true
+            # debug: false
+
+        - name: Adding - linking to existing match & proxy
+          ansibleguy.opnsense.webproxy_pac_rule:
+            description: 'test_rule'
+            matches: ['test_match']
+            proxies: ['test_proxy']
+            join_type: 'and'
+            match_type: 'unless'
+
+        - name: Pulling settings
+          ansibleguy.opnsense.list:
+          #  target: 'webproxy_pac_rule'
+          register: existing_entries
+
+        - name: Printing settings
+          ansible.builtin.debug:
+            var: existing_entries.data
+
+        - name: Removing
+          ansibleguy.opnsense.webproxy_pac_rule:
+            file: 'test_rule'
             state: 'absent'

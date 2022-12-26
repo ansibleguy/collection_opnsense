@@ -580,6 +580,17 @@
         - 'ANSIBLETEST1'
         - 'ANSIBLETEST2'
 
+    - name: Cleanup WebProxy PAC-Rule
+      ansibleguy.opnsense.webproxy_pac_rule:
+        description: "{{ item }}"
+        state: 'absent'
+        firewall: "{{ run.f }}"
+        api_credential_file: "{{ run.c }}"
+        ssl_verify: false
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+
     - name: Cleanup WebProxy PAC-Proxy
       ansibleguy.opnsense.webproxy_pac_proxy:
         name: "{{ item }}"
@@ -590,3 +601,17 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_2_1'
+
+    - name: Cleanup WebProxy PAC-Match
+      ansibleguy.opnsense.webproxy_pac_match:
+        name: "{{ item }}"
+        state: 'absent'
+        firewall: "{{ run.f }}"
+        api_credential_file: "{{ run.c }}"
+        ssl_verify: false
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_2_1'
+

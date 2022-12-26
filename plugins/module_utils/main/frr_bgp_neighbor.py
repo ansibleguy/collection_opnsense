@@ -139,7 +139,10 @@ class Neighbor(BaseModule):
             provided = self.p[value_name] not in ['', None]
             seq_uuid_mapping = {}
 
-            if len(values['existing']) > 0 and provided:
+            if not provided:
+                continue
+
+            if len(values['existing']) > 0:
                 for uuid, entry in values['existing'].items():
                     matching = []
 
@@ -154,7 +157,7 @@ class Neighbor(BaseModule):
                         if 'seqnumber' in entry:
                             seq_uuid_mapping[int(entry['seqnumber'])] = uuid
 
-            if provided and not values['found']:
+            if not values['found']:
                 self.m.fail_json(
                     f"Provided {key} '{value_name}' was not found!"
                 )

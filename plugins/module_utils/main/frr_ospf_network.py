@@ -94,7 +94,10 @@ class Network(BaseModule):
             in_provided = self.p[values['in']] not in ['', None]
             out_provided = self.p[values['out']] not in ['', None]
 
-            if len(values['existing']) > 0 and (in_provided or out_provided):
+            if not in_provided and not out_provided:
+                continue
+
+            if len(values['existing']) > 0:
                 for uuid, prefix in values['existing'].items():
                     if prefix['name'] == self.p[values['in']]:
                         self.p[values['in']] = uuid
