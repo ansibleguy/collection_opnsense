@@ -29,6 +29,7 @@ def run_module():
             choises=[
                 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper',
                 'monit', 'wireguard', 'interface_vlan', 'interface_vxlan', 'frr',
+                'webproxy',
             ],
             description='What part of the running config should be reloaded'
         ),
@@ -99,6 +100,10 @@ def run_module():
 
         elif module.params['target'] == 'frr':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_general import General
+            target = General(module=module, result=result)
+
+        elif module.params['target'] == 'webproxy':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_general import General
             target = General(module=module, result=result)
 
     except MODULE_EXCEPTIONS:
