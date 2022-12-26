@@ -1,5 +1,4 @@
 from ipaddress import IPv6Address, IPv4Address, AddressValueError, NetmaskValueError
-import validators
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -8,6 +7,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     is_ip, validate_port, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validate import \
+    is_valid_domain
 
 
 class Syslog(BaseModule):
@@ -47,7 +48,7 @@ class Syslog(BaseModule):
 
     def check(self):
         if not is_ip(self.p['target']) and \
-                not validators.domain(self.p['target']):
+                not is_valid_domain(self.p['target']):
             self.m.fail_json(
                 f"Value of target '{self.p['target']}' is neither "
                 f"a valid IP-Address nor a valid domain-name!"

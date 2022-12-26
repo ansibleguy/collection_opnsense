@@ -28,12 +28,6 @@ The [httpx python module](https://www.python-httpx.org/) is used for API communi
 python3 -m pip install httpx
 ```
 
-The [validators python module](https://validators.readthedocs.io/) is used to validate user-provided data on the client-side.
-
-```bash
-python3 -m pip install validators
-```
-
 Then - install the collection itself:
 
 ```bash

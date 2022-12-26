@@ -1,5 +1,3 @@
-import validators
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
@@ -7,6 +5,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     validate_int_fields
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validate import \
+    is_valid_email
 
 
 class Alert(BaseModule):
@@ -46,7 +46,7 @@ class Alert(BaseModule):
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         if self.p['state'] == 'present':
-            if not validators.email(self.p['recipient']):
+            if not is_valid_email(self.p['recipient']):
                 self.m.fail_json(
                     f"The recipient value '{self.p['recipient']}' is not a "
                     f"valid email address!"

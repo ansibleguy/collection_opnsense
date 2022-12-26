@@ -1,6 +1,4 @@
-import validators
-
-from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validate import domain
 
 
 def validate_domain(module: AnsibleModule, domain: str):
@@ -10,5 +8,5 @@ def validate_domain(module: AnsibleModule, domain: str):
         # TLD-only will fail the domain validation
         test_domain = f'dummy.{domain}'
 
-    if not validators.domain(test_domain):
+    if not domain(test_domain):
         module.fail_json(f"Value '{domain}' is an invalid domain!")

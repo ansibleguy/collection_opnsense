@@ -19,7 +19,7 @@ class Proxy(BaseModule):
     API_CONT = 'settings'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = ['type', 'url', 'url', 'description']
+    FIELDS_CHANGE = ['type', 'url', 'description']
     FIELDS_ALL = [FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {

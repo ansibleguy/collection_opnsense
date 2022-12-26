@@ -1,5 +1,3 @@
-import validators
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
@@ -8,6 +6,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main im
     validate_int_fields, validate_str_fields, is_ip, validate_port, is_ip_or_network, \
     is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validate import \
+    is_valid_domain
 
 
 class Peer(BaseModule):
@@ -86,7 +86,7 @@ class Peer(BaseModule):
                 )
 
         if self.p['endpoint'] != '' and \
-                not is_ip(self.p['endpoint']) and not validators.domain(self.p['endpoint']):
+                not is_ip(self.p['endpoint']) and not is_valid_domain(self.p['endpoint']):
             self.m.fail_json(
                 f"Peer endpoint '{self.p['endpoint']}' is neither a valid IP-address "
                 f"nor a valid domain!"

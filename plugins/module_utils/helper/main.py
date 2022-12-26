@@ -2,9 +2,9 @@ from typing import Callable
 from ipaddress import ip_address, ip_network
 from re import match as regex_match
 
-import validators
-
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validate import \
+    is_valid_domain
 
 
 def diff_remove_empty(diff: dict) -> dict:
@@ -58,7 +58,7 @@ def is_ip_or_network(entry: str, strict: bool = False) -> bool:
 
 
 def valid_hostname(name: str) -> bool:
-    _valid_domain = validators.domain(name)
+    _valid_domain = is_valid_domain(name)
     # see: https://en.wikipedia.org/wiki/Hostname#Restrictions_on_valid_host_names
     expr_hostname = r'^[a-zA-Z0-9-\.]{1,253}$'
     _valid_hostname = regex_match(expr_hostname, name) is not None

@@ -2,7 +2,6 @@ import ssl
 from pathlib import Path
 from json import JSONDecodeError
 from datetime import datetime
-from validators import domain
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -10,6 +9,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main 
     DEBUG_CONFIG
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     ensure_list, is_ip
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validate import \
+    is_valid_domain
 
 
 def check_or_load_credentials(module: AnsibleModule):
@@ -64,7 +65,7 @@ def check_host(module: AnsibleModule) -> None:
             # TLD-only will fail the domain validation
             fw_dns = f'dummy.{fw_dns}'
 
-        if not domain(fw_dns):
+        if not is_valid_domain(fw_dns):
             module.fail_json(f"Host '{module.params['firewall']}' is neither a valid IP nor Domain-Name!")
 
 

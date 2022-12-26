@@ -1,12 +1,12 @@
 from re import match as regex_match
 from typing import Callable
 
-import validators
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
     BUILTIN_ALIASES, BUILTIN_INTERFACE_ALIASES_REG
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validate import \
+    is_valid_mac_address, is_valid_url
 
 
 def validate_values(cnf: dict, error_func: Callable) -> None:
@@ -32,11 +32,11 @@ def validate_values(cnf: dict, error_func: Callable) -> None:
 
         elif v_type == 'mac':
             # todo: support for partial mac addresses?
-            if not validators.mac_address(value):
+            if not is_valid_mac_address(value):
                 error_func(error)
 
         elif v_type in ['url', 'urltable']:
-            if not validators.url(value):
+            if not is_valid_url(value):
                 error_func(error)
 
         # unable to check because of alias-nesting support
@@ -55,7 +55,7 @@ def validate_values(cnf: dict, error_func: Callable) -> None:
         #         ip_address(value)
         #
         #     except ValueError:
-        #         if not validators.domain(value):
+        #         if not is_valid_domain(value):
         #             error_func(error)
 
 
