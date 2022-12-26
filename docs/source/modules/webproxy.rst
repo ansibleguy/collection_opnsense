@@ -17,7 +17,8 @@ Web Proxy
 `webproxy_icap <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_icap.yml>`_ |
 `webproxy_auth <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_auth.yml>`_ |
 `webproxy_remote_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_remote_acl.yml>`_ |
-`webproxy_pac_proxy <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_remote_acl.yml>`_
+`webproxy_pac_proxy <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_pac_proxy.yml>`_ |
+`webproxy_pac_match <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_pac_match.yml>`_
 
 **API Docs**: `Core - Proxy <https://docs.opnsense.org/development/api/core/proxy.html>`_
 
@@ -96,6 +97,20 @@ ansibleguy.opnsense.webproxy_pac_proxy
 
 This module manages the Proxy-Auto-Config Proxy entries that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - Proxy Auto-Config - Proxies (*DropDown*)' (*URL 'ui/proxy#subtab_pac_proxies'*)
 
+ansibleguy.opnsense.webproxy_pac_match
+--------------------------------------
+
+This module manages the Proxy-Auto-Config Match entries that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - Proxy Auto-Config - Matches (*DropDown*)' (*URL 'ui/proxy#subtab_pac_matches'*)
+
+You need to **provide arguments** for different **match-types**:
+
+* 'url_matches' needs 'url' to be provided
+* 'hostname_matches', 'plain_hostname', 'is_resolvable' and 'dns_domain_is' need 'hostname' to be provided
+* 'my_ip_in_net' and 'destination_in_net' need 'network' to be provided
+* 'date_range' needs 'month_from' and 'month_to' to be provided
+* 'time_range' needs 'hour_from' and 'hour_to' to be provided
+* 'weekday_range' needs 'weekday_from' and 'weekday_to' to be provided
+* 'dns_domain_levels' needs 'domain_level_from' and 'domain_level_to' to be provided
 
 
 Definition
@@ -299,6 +314,30 @@ ansibleguy.opnsense.webproxy_pac_proxy
     "url","string","false for state changes, else true","\-","\-","A proxy URL in the form proxy.example.com:3128"
     "type","string","false","proxy","\-","One of: 'proxy', 'direct', 'http', 'https', 'socks', 'socks4', 'socks5'. Usually you should use 'direct' for a direct connection or 'proxy' for a Proxy"
     "description","string","false","\-","desc","\-"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
+ansibleguy.opnsense.webproxy_pac_match
+--------------------------------------
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "name","string","true","\-","\-","Unique name for the match"
+    "description","string","false","\-","desc","\-"
+    "negate","boolean","false","false","\-","Negate this match. For example you can match if a host is not inside a network"
+    "type","string","false","url_matches","\-","One of: 'url_matches', 'hostname_matches', 'dns_domain_is', 'destination_in_net', 'my_ip_in_net', 'plain_hostname', 'is_resolvable', 'dns_domain_levels', 'weekday_range', 'date_range', 'time_range'. The type of the match. Depending on the match, you will need different arguments"
+    "hostname","string","false","\-","\-","A hostname pattern like *.opnsense.org"
+    "url","string","false","\-","\-","A URL pattern like forum.opnsense.org/index*"
+    "network","string","false","\-","\-","The network address to match in CIDR notation for example like 127.0.0.1/8 or ::1/128"
+    "domain_level_from","integer","false","0","domain_from","The minimum amount of dots in the domain name"
+    "domain_level_to","integer","false","0","domain_to","The maximum amount of dots in the domain name"
+    "hour_from","integer","false","0","time_from","Start hour for match-period"
+    "hour_to","integer","false","0","time_to","End hour for match-period"
+    "month_from","integer","false","0","date_from","Start month for match-period"
+    "month_to","integer","false","0","date_to","End hour month match-period"
+    "weekday_from","integer","false","0","day_from","Start weekday for match-period. 1 = monday, 7 = sunday"
+    "weekday_to","integer","false","0","day_to","End hour weekday match-period. 1 = monday, 7 = sunday"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 
@@ -769,5 +808,71 @@ ansibleguy.opnsense.webproxy_pac_proxy
 
         - name: Removing
           ansibleguy.opnsense.webproxy_pac_proxy:
+            file: 'test1'
+            state: 'absent'
+
+ansibleguy.opnsense.webproxy_pac_match
+--------------------------------------
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        ansibleguy.opnsense.webproxy_pac_match:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'webproxy_pac_match'
+          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.webproxy_pac_match:
+            name: 'example'
+            # type: 'url_matches'
+            # description: ''
+            # negate: false
+            # hostname: ''
+            # url: ''
+            # network: ''
+            # domain_level_from: 0
+            # domain_level_to: 0
+            # hour_from: 0
+            # hour_to: 0
+            # month_from: 0
+            # month_to: 0
+            # weekday_from: 0
+            # weekday_to: 0
+            # reload: true
+            # debug: false
+
+        - name: Adding hostname match
+          ansibleguy.opnsense.webproxy_pac_match:
+            hostname: 'test.ansibleguy.net'
+            type: 'hostname_matches'
+            description: 'test'
+
+        - name: Adding time match
+          ansibleguy.opnsense.webproxy_pac_match:
+            hostname: 'test.ansibleguy.net'
+            description: 'working hours'
+            type: 'time_range'
+            hour_from: 6
+            hour_to: 18
+
+        - name: Pulling settings
+          ansibleguy.opnsense.list:
+          #  target: 'webproxy_pac_match'
+          register: existing_entries
+
+        - name: Printing settings
+          ansible.builtin.debug:
+            var: existing_entries.data
+
+        - name: Removing
+          ansibleguy.opnsense.webproxy_pac_match:
             file: 'test1'
             state: 'absent'

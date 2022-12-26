@@ -131,6 +131,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_auth          | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id10)                                      | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_remote_acl    | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id11)                                      | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_proxy     | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id12)                                      | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_match     | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id13)                                      | unstable           |
 
 
 ### Roadmap

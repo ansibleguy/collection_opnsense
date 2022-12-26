@@ -1,0 +1,163 @@
+---
+
+- name: WebProxy PAC-Match
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.webproxy_pac_match:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'webproxy_pac_match'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Adding 1 - failing because of missing match arguments
+      ansibleguy.opnsense.webproxy_remote_acl:
+        name: 'ANSIBLE_TEST_1_1'
+        type: "{{ item.t }}"
+        domain_level_from: "{{ item.df | default(omit) }}"
+        domain_level_to: "{{ item.dt | default(omit) }}"
+        hour_from: "{{ item.hf | default(omit) }}"
+        hour_to: "{{ item.ht | default(omit) }}"
+        month_from: "{{ item.mf | default(omit) }}"
+        month_to: "{{ item.mt | default(omit) }}"
+        weekday_from: "{{ item.wf | default(omit) }}"
+        weekday_to: "{{ item.wt | default(omit) }}"
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+      loop:
+        - {'t': 'url_matches'}  # no url
+        - {'t': 'hostname_matches'}  # no hostname
+        - {'t': 'dns_domain_is'}  # no hostname
+        - {'t': 'plain_hostname'}  # no hostname
+        - {'t': 'is_resolvable'}  # no hostname
+        - {'t': 'destination_in_net'}  # no network
+        - {'t': 'my_ip_in_net'}  # no network
+        - {'t': 'dns_domain_levels'}  # no levels
+        - {'t': 'dns_domain_levels', 'dt': 3}  # no from level
+        - {'t': 'dns_domain_levels', 'df': 1}  # no to level
+        - {'t': 'weekday_range'}  # no weekdays
+        - {'t': 'weekday_range', 'wt': 3}  # no from weekday
+        - {'t': 'weekday_range', 'wf': 1}  # no to weekday
+        - { 't': 'date_range' }  # no month
+        - { 't': 'date_range', 'mt': 3 }  # no from month
+        - { 't': 'date_range', 'mf': 1 }  # no to month
+        - { 't': 'time_range' }  # no hours
+        - { 't': 'time_range', 'ht': 3 }  # no from hours
+        - { 't': 'time_range', 'hf': 1 }  # no to hours
+
+    - name: Adding 1
+      ansibleguy.opnsense.webproxy_pac_match:
+        name: 'ANSIBLE_TEST_1_1'
+        description: 'test'
+        negate: false
+        url: 'ansibleguy.net/*'
+        type: 'url_matches'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.webproxy_pac_match:
+        name: 'ANSIBLE_TEST_1_1'
+        hostname: 'test.ansibleguy.net'
+        description: 'test_new'
+        type: 'hostname_matches'
+        negate: true
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 - nothing changed
+      ansibleguy.opnsense.webproxy_pac_match:
+        name: 'ANSIBLE_TEST_1_1'
+        hostname: 'test.ansibleguy.net'
+        description: 'test_new'
+        type: 'hostname_matches'
+        negate: true
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.webproxy_pac_match:
+        name: 'ANSIBLE_TEST_1_2'
+        description: 'working hours'
+        type: 'time_range'
+        hour_from: 6
+        hour_to: 18
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        opn7.data | length != 2
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.webproxy_pac_match:
+        name: 'ANSIBLE_TEST_1_2'
+        state: 'absent'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        opn10.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.webproxy_pac_match:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Checking cleanup
+      ansibleguy.opnsense.list:
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.data | length != 0
+      when: not ansible_check_mode
+
+    - name: Removing non-existent
+      ansibleguy.opnsense.webproxy_pac_match:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn11
+      failed_when: >
+        opn11.failed or
+        opn11.changed
