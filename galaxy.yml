@@ -2,20 +2,23 @@
 
 namespace: 'ansibleguy'
 name: 'opnsense'
-version: 1.0.20
+version: 1.1.0
 readme: 'README.md'
 authors:
   - 'AnsibleGuy <guy@ansibleguy.net>'
-description: "Ansible Collection to manage OPNSense firewalls using its API's"
+description: "Ansible Collection to manage OPNSense firewalls using their API"
 license_file: 'LICENSE.txt'
 tags:
   - 'firewall'
   - 'api'
   - 'opnsense'
   - 'iac'
+  - 'network'
+  - 'security'
+  - 'filter'
 dependencies: {}
 repository: 'https://github.com/ansibleguy/collection_opnsense'
-documentation: 'https://opnsense.ansibleguy.net/'
+documentation: 'https://opnsense.ansibleguy.net'
 homepage: 'https://ansibleguy.net'
 issues: 'https://github.com/ansibleguy/collection_opnsense/issues'
 build_ignore: []

@@ -27,9 +27,12 @@ Collection
 
 .. code-block:: bash
 
+    # stable version:
+    ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git,1.1.0
+
+    # latest version:
     ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
 
-    # or for easier development
-
+    # install to specific director for easier development
     cd $PLAYBOOK_DIR
     ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git -p ./collections

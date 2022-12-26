@@ -31,10 +31,13 @@ python3 -m pip install httpx
 Then - install the collection itself:
 
 ```bash
+# stable/tested version:
+ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git,1.1.0
+
+# latest version:
 ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
 
-# or for easier development
-
+# install to specific director for easier development
 cd $PLAYBOOK_DIR
 ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git -p ./collections
 ```
@@ -126,7 +129,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_remote_acl    | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id12)                                      | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_proxy     | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id14)                                      | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_match     | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id15)                                      | unstable           |
-| **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_rule      | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id16)                                      | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_rule      | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id18)                                      | unstable           |
 
 
 ### Roadmap
