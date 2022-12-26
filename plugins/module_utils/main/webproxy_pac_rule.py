@@ -63,22 +63,23 @@ class Rule(BaseModule):
         return raw[self.API_KEY]
 
     def _find_links(self):
-        links = {
-            'match': {
+        links = [
+            {
                 'count': 0,
                 'existing': self.existing_matches,
                 'field_rule': 'matches',
                 'field_target': 'name',
             },
-            'proxy': {
+            {
+
                 'count': 0,
                 'existing': self.existing_proxies,
                 'field_rule': 'proxies',
                 'field_target': 'name',
             },
-        }
+        ]
 
-        for key, v in links.items():
+        for v in links:
             provided = not is_unset(self.p[v['field_rule']])
             matching = []
 

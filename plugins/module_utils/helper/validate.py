@@ -26,46 +26,46 @@ MATCH_EMAIL_DOMAIN = regex_compile(
     r'(\.(25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}\]$',
     REGEX_IGNORECASE
 )
-IP_MIDDLE_OCTET = u"(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5]))"
-IP_LAST_OCTET = u"(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))"
+IP_MIDDLE_OCTET = r"(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5]))"
+IP_LAST_OCTET = r"(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))"
 MATCH_URL_RAW = regex_compile(
-    u"^"
+    r"^"
     # protocol identifier
-    u"(?:(?:https?|ftp)://)"
+    r"(?:(?:https?|ftp)://)"
     # user:pass authentication
-    u"(?:\S+(?::\S*)?@)?"
-    u"(?:"
-    u"(?P<private_ip>"
+    r"(?:\S+(?::\S*)?@)?"
+    r"(?:"
+    r"(?P<private_ip>"
     # IP address exclusion
     # private & local networks
-    u"(?:(?:10|127)" + IP_MIDDLE_OCTET + u"{2}" + IP_LAST_OCTET + u")|"
-    u"(?:(?:169\.254|192\.168)" + IP_MIDDLE_OCTET + IP_LAST_OCTET + u")|"
-    u"(?:172\.(?:1[6-9]|2\d|3[0-1])" + IP_MIDDLE_OCTET + IP_LAST_OCTET + u"))"
-    u"|"
+    r"(?:(?:10|127)" + IP_MIDDLE_OCTET + r"{2}" + IP_LAST_OCTET + r")|"
+    r"(?:(?:169\.254|192\.168)" + IP_MIDDLE_OCTET + IP_LAST_OCTET + r")|"
+    r"(?:172\.(?:1[6-9]|2\d|3[0-1])" + IP_MIDDLE_OCTET + IP_LAST_OCTET + r"))"
+    r"|"
     # IP address dotted notation octets
     # excludes loopback network 0.0.0.0
     # excludes reserved space >= 224.0.0.0
     # excludes network & broadcast addresses
     # (first & last IP address of each class)
-    u"(?P<public_ip>"
-    u"(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])"
-    u"" + IP_MIDDLE_OCTET + u"{2}"
-    u"" + IP_LAST_OCTET + u")"
-    u"|"
+    r"(?P<public_ip>"
+    r"(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])"
+    r"" + IP_MIDDLE_OCTET + r"{2}"
+    r"" + IP_LAST_OCTET + r")"
+    r"|"
     # host name
-    u"(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)"
+    r"(?:(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)"
     # domain name
-    u"(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*"
+    r"(?:\.(?:[a-z\u00a1-\uffff0-9]-?)*[a-z\u00a1-\uffff0-9]+)*"
     # TLD identifier
-    u"(?:\.(?:[a-z\u00a1-\uffff]{2,}))"
-    u")"
+    r"(?:\.(?:[a-z\u00a1-\uffff]{2,}))"
+    r")"
     # port number
-    u"(?::\d{2,5})?"
+    r"(?::\d{2,5})?"
     # resource path
-    u"(?:/\S*)?"
+    r"(?:/\S*)?"
     # query string
-    u"(?:\?\S*)?"
-    u"$",
+    r"(?:\?\S*)?"
+    r"$",
     REGEX_UNICODE | REGEX_IGNORECASE
 )
 MATCH_URL = regex_compile(MATCH_URL_RAW)

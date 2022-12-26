@@ -329,4 +329,3 @@ def is_unset(value: (str, None, list, dict)) -> bool:
         value = value.strip()
 
     return value in ['', None]
-

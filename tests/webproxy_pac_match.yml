@@ -52,12 +52,12 @@
         - {'t': 'weekday_range'}  # no weekdays
         - {'t': 'weekday_range', 'wt': 3}  # no from weekday
         - {'t': 'weekday_range', 'wf': 1}  # no to weekday
-        - { 't': 'date_range' }  # no month
-        - { 't': 'date_range', 'mt': 3 }  # no from month
-        - { 't': 'date_range', 'mf': 1 }  # no to month
-        - { 't': 'time_range' }  # no hours
-        - { 't': 'time_range', 'ht': 3 }  # no from hours
-        - { 't': 'time_range', 'hf': 1 }  # no to hours
+        - {'t': 'date_range'}  # no month
+        - {'t': 'date_range', 'mt': 3}  # no from month
+        - {'t': 'date_range', 'mf': 1}  # no to month
+        - {'t': 'time_range'}  # no hours
+        - {'t': 'time_range', 'ht': 3}  # no from hours
+        - {'t': 'time_range', 'hf': 1}  # no to hours
 
     - name: Adding 1
       ansibleguy.opnsense.webproxy_pac_match:
