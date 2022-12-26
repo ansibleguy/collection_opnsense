@@ -3,6 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import is_unset
 
 
 class Test(BaseModule):
@@ -32,12 +33,12 @@ class Test(BaseModule):
 
     def check(self):
         if self.p['state'] == 'present':
-            if self.p['condition'] is None:
+            if is_unset(self.p['condition']):
                 self.m.fail_json(
                     "You need to provide a 'condition' to create a test!"
                 )
 
-            if self.p['action'] == 'execute' and self.p['path'] == '':
+            if self.p['action'] == 'execute' and is_unset(self.p['path']):
                 self.m.fail_json(
                     "You need to provide the path to a executable to "
                     "create a test of type 'execute'!"

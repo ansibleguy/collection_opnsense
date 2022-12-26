@@ -6,7 +6,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_ip, validate_port
+    is_ip, validate_port, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -53,7 +53,7 @@ class Syslog(BaseModule):
                 f"a valid IP-Address nor a valid domain-name!"
             )
 
-        if self.p['transport'].startswith('tls') and self.p['certificate'] == '':
+        if self.p['transport'].startswith('tls') and is_unset(self.p['certificate']):
             self.m.fail_json(
                 "You need to provide a certificate to use encrypted transport!"
             )

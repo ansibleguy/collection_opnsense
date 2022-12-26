@@ -1,5 +1,6 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.alias import \
     check_purge_configured, builtin_alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.purge import \
@@ -37,12 +38,12 @@ def process(m: AnsibleModule, p: dict, r: dict):
         return _alias
 
     # checking if all aliases should be purged
-    if not p['force_all'] and len(p['aliases']) == 0 and \
-            len(p['filters']) == 0:
+    if not p['force_all'] and is_unset(p['aliases']) and \
+            is_unset(p['filters']):
         m.fail_json("You need to either provide 'aliases' or 'filters'!")
 
-    if p['force_all'] and len(p['aliases']) == 0 and \
-            len(p['filters']) == 0:
+    if p['force_all'] and is_unset(p['aliases']) and \
+            is_unset(p['filters']):
         m.warn('Forced to purge ALL ALIASES!')
 
         for alias in existing_aliases:

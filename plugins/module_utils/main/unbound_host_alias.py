@@ -2,6 +2,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
@@ -41,7 +42,7 @@ class Alias(BaseModule):
 
     def check(self):
         if self.p['state'] == 'present':
-            if self.p['target'] is None:
+            if is_unset(self.p['target']):
                 self.m.fail_json(
                     "You need to provide a 'target' if you want to create a host-alias!"
                 )

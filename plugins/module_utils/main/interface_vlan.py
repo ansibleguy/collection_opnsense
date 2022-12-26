@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields
+    validate_int_fields, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -45,10 +45,10 @@ class Vlan(BaseModule):
 
     def check(self):
         if self.p['state'] == 'present':
-            if self.p['interface'] is None:
+            if is_unset(self.p['interface']):
                 self.m.fail_json("You need to provide an 'interface' to create a vlan!")
 
-            if self.p['vlan'] is None:
+            if is_unset(self.p['vlan']):
                 self.m.fail_json("You need to provide a 'vlan' to create a vlan-interface!")
 
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)

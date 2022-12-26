@@ -5,7 +5,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_multiple_matching
+    get_multiple_matching, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -47,7 +47,7 @@ class Record(BaseModule):
         self.exists_rr = False
 
     def check(self):
-        if self.p['state'] == 'present' and self.p['value'] is None:
+        if self.p['state'] == 'present' and is_unset(self.p['value']):
             self._error(
                 'You need to supply a value to create the record '
                 f"'{self.p['name']}.{self.p['domain']}'"

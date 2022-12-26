@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields
+    validate_int_fields, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.rule import \
     validate_values
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
@@ -50,12 +50,12 @@ class SNat(BaseModule):
 
     def check(self):
         if self.p['state'] == 'present':
-            if self.p['interface'] is None:
+            if is_unset(self.p['interface']):
                 self.m.fail_json(
                     "You need to provide an 'interface' to create a source-nat rule!"
                 )
 
-            if self.p['target'] is None:
+            if is_unset(self.p['target']):
                 self.m.fail_json(
                     "You need to provide an 'target' to create a source-nat rule!"
                 )

@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_ip, valid_hostname, to_digit, simplify_translate
+    is_ip, valid_hostname, to_digit, simplify_translate, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
@@ -46,7 +46,7 @@ class Host(BaseModule):
 
     def check(self):
         if self.p['state'] == 'present':
-            if self.p['value'] is None:
+            if is_unset(self.p['value']):
                 self.m.fail_json(
                     "You need to provide a 'value' to create a host-override!"
                 )

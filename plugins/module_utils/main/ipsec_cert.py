@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_selected
+    get_selected, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -38,7 +38,7 @@ class KeyPair(BaseModule):
 
     def check(self):
         if self.p['state'] == 'present':
-            if self.p['public_key'] is None or self.p['private_key'] is None:
+            if is_unset(self.p['public_key']) or is_unset(self.p['private_key']):
                 self.m.fail_json(
                     "You need to supply both 'public_key' and "
                     "'private_key' to create an IPSec certificate!"

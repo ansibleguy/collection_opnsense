@@ -5,7 +5,8 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, validate_str_fields, is_ip, validate_port, is_ip_or_network
+    validate_int_fields, validate_str_fields, is_ip, validate_port, is_ip_or_network, \
+    is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -66,12 +67,12 @@ class Peer(BaseModule):
         )
 
         if self.p['state'] == 'present':
-            if self.p['public_key'] is None:
+            if is_unset(self.p['public_key']):
                 self.m.fail_json(
                     "You need to provide a 'public_key' if you want to create a peer!"
                 )
 
-            if len(self.p['allowed_ips']) == 0:
+            if is_unset(self.p['allowed_ips']):
                 self.m.fail_json(
                     "You need to provide at least one 'allowed_ips' entry "
                     "of the peer to create!"

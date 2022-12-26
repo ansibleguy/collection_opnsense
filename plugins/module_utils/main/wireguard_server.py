@@ -3,7 +3,8 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, validate_str_fields, is_ip, validate_port, is_ip_or_network
+    validate_int_fields, validate_str_fields, is_ip, validate_port, is_ip_or_network, \
+    is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_peer import Peer
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
@@ -67,7 +68,7 @@ class Server(BaseModule):
         )
 
         if self.p['state'] == 'present':
-            if len(self.p['allowed_ips']) == 0:
+            if is_unset(self.p['allowed_ips']):
                 self.m.fail_json(
                     "You need to provide at least one 'allowed_ips' entry "
                     "to create a server!"
@@ -92,7 +93,7 @@ class Server(BaseModule):
         self.b.find(match_fields=[self.FIELD_ID])
         if self.exists:
             self.call_cnf['params'] = [self.server['uuid']]
-            if self.p['public_key'] is None or self.p['private_key'] is None:
+            if is_unset(self.p['public_key']) or is_unset(self.p['private_key']):
                 self.p['public_key'] = self.server['public_key']
                 self.p['private_key'] = self.server['private_key']
 

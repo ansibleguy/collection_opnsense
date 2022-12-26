@@ -1,5 +1,6 @@
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.purge import \
     purge, check_purge_filter
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.rule import \
@@ -33,13 +34,13 @@ def process(m: AnsibleModule, p: dict, r: dict):
         return _rule
 
     # checking if all rules should be purged
-    if not p['force_all'] and len(p['rules']) == 0 and \
-            len(p['filters']) == 0:
+    if not p['force_all'] and is_unset(p['rules']) and \
+            is_unset(p['filters']):
         m.fail_json("You need to either provide 'rules' or 'filters'!")
 
     if len(existing_rules) > 0:
-        if p['force_all'] and len(p['rules']) == 0 and \
-                len(p['filters']) == 0:
+        if p['force_all'] and is_unset(p['rules']) and \
+                is_unset(p['filters']):
             m.warn('Forced to purge ALL RULES!')
 
             for existing_rule in existing_rules:

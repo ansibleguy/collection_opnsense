@@ -3,6 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import is_unset
 
 
 class Proxy(BaseModule):
@@ -35,7 +36,7 @@ class Proxy(BaseModule):
 
     def check(self):
         if self.p['state'] == 'present':
-            if self.p['url'] == '':
+            if is_unset(self.p['url']):
                 self.m.fail_json('You need to provide an URL to create a PAC-proxy!')
 
         self.b.find(match_fields=[self.FIELD_ID])

@@ -3,6 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import is_unset
 
 
 class Acl(BaseModule):
@@ -44,10 +45,10 @@ class Acl(BaseModule):
 
     def check(self):
         if self.p['state'] == 'present':
-            if self.p['url'] == '':
+            if is_unset(self.p['url']):
                 self.m.fail_json('You need to provide an URL to create a remote ACL!')
 
-            if self.p['description'] == '':
+            if is_unset(self.p['description']):
                 self.m.fail_json('You need to provide a description to create a remote ACL!')
 
         creds = [self.p['username'] != '', self.p['password'] != '']

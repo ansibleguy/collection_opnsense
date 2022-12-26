@@ -7,7 +7,7 @@ from typing import Callable
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     single_get, single_post
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_simple_existing, to_digit, get_matching, simplify_translate
+    get_simple_existing, to_digit, get_matching, simplify_translate, is_unset
 
 
 class Base:
@@ -367,7 +367,7 @@ class Base:
         if ignore_fields is None:
             ignore_fields = []
 
-        if len(self.e) == 0:
+        if is_unset(self.e):
             self.e = getattr(self.i, self.i.EXIST_ATTR)
 
         if hasattr(self.i, self.ATTR_TRANSLATE):
@@ -428,7 +428,7 @@ class Base:
         return payload
 
     def _set_existing(self):
-        if len(self.e) == 0:
+        if is_unset(self.e):
             _existing = getattr(self.i, self.i.EXIST_ATTR)
 
             if _existing is not None and len(_existing) > 0:

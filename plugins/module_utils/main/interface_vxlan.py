@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, is_ip
+    validate_int_fields, is_ip, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -46,7 +46,7 @@ class Vxlan(BaseModule):
 
     def check(self):
         if self.p['state'] == 'present':
-            if self.p['local'] is None:
+            if is_unset(self.p['local']):
                 self.m.fail_json("You need to provide a 'local' ip to create a vxlan!")
 
             for field in self.FIELDS_IP:

@@ -319,3 +319,14 @@ def simplify_translate(
             simple[k] = not simple[k]
 
     return simple
+
+
+def is_unset(value: (str, None, list, dict)) -> bool:
+    if isinstance(value, (list, dict)):
+        return len(value) == 0
+
+    if isinstance(value, str):
+        value = value.strip()
+
+    return value in ['', None]
+

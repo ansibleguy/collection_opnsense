@@ -5,7 +5,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields
+    validate_int_fields, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -59,7 +59,7 @@ class TMPL(BaseModule):
 
         # basic validation of conditional parameters
         if not self.exists and self.p['state'] == 'present':
-            if self.p['value'] is None or len(self.p['value']) == 0:
+            if is_unset(self.p['value']):
                 self.m.fail_json('You need to provide values to create stuff!')
 
     def _error(self, msg: str):

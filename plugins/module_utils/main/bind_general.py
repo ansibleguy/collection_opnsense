@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    simplify_translate, validate_int_fields, is_ip
+    simplify_translate, validate_int_fields, is_ip, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import GeneralModule
 
 
@@ -86,7 +86,7 @@ class General(GeneralModule):
                             f"It seems you provided an invalid IP address as '{field}': '{ip}'"
                         )
 
-                if len(self.p[field]) == 0:
+                if is_unset(self.p[field]):
                     self.m.fail_json(
                         f"You need to supply at least one value as '{field}'! "
                         'Leave it empty to only use localhost.'

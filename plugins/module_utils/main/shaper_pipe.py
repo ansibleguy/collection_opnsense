@@ -54,7 +54,7 @@ class Pipe(BaseModule):
         self.pipe = {}
 
     def check(self):
-        if self.p['state'] == 'present' and self.p['bandwidth'] is None:
+        if self.p['state'] == 'present' and is_unset(self.p['bandwidth']):
             self.m.fail_json('You need to provide bandwidth to create a shaper pipe!')
 
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)

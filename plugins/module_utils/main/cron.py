@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true
+    is_true, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
@@ -36,7 +36,7 @@ class CronJob(BaseModule):
 
     def check(self):
         # basic validation of conditional parameters
-        if self.p['state'] == 'present' and self.p['command'] is None:
+        if self.p['state'] == 'present' and is_unset(self.p['command']):
             self.m.fail_json("You need to provide a 'command' if you want to create a cron-job!")
 
         self.b.find(match_fields=[self.FIELD_ID])

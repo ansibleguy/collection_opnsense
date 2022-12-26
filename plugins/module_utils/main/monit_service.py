@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_simple_existing, validate_int_fields, is_ip
+    get_simple_existing, validate_int_fields, is_ip, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -50,16 +50,16 @@ class Service(BaseModule):
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         if self.p['state'] == 'present':
-            if self.p['type'] is None:
+            if is_unset(self.p['type']):
                 self.m.fail_json("You need to provide a 'type' to create a service!")
 
-            elif self.p['type'] == 'network' and self.p['interface'] == '' and self.p['address'] == '':
+            elif self.p['type'] == 'network' and is_unset(self.p['interface']) and is_unset(self.p['address']):
                 self.m.fail_json(
                     "You need to provide either an 'interface' or 'address' "
                     "to create a network service!"
                 )
 
-            elif self.p['type'] == 'host' and self.p['address'] == '':
+            elif self.p['type'] == 'host' and is_unset(self.p['address']):
                 self.m.fail_json(
                     "You need to provide an 'address' to create "
                     "a remote-host service!"
