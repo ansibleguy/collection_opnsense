@@ -22,7 +22,7 @@ class Acl(BaseModule):
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'file', 'url', 'username', 'password', 'categories', 'verify_ssl',
+        'url', 'username', 'password', 'categories', 'verify_ssl',
         'description',
     ]
     FIELDS_ALL = FIELDS_CHANGE

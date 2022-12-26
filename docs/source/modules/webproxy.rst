@@ -16,7 +16,8 @@ Web Proxy
 `webproxy_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_acl.yml>`_ |
 `webproxy_icap <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_icap.yml>`_ |
 `webproxy_auth <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_auth.yml>`_ |
-`webproxy_remote_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_remote_acl.yml>`_
+`webproxy_remote_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_remote_acl.yml>`_ |
+`webproxy_pac_proxy <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_remote_acl.yml>`_
 
 **API Docs**: `Core - Proxy <https://docs.opnsense.org/development/api/core/proxy.html>`_
 
@@ -86,6 +87,15 @@ ansibleguy.opnsense.webproxy_remote_acl
 This module manages the Remote ACL entries that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - Remote Access Control Lists
 
 The configured lists are matched by its unique file-name.
+
+Proxy Auto-Config
+=================
+
+ansibleguy.opnsense.webproxy_pac_proxy
+--------------------------------------
+
+This module manages the Proxy-Auto-Config Proxy entries that can be found in the WEB-UI menu: 'Services - Web Proxy - Administration - Proxy Auto-Config - Proxies (*DropDown*)' (*URL 'ui/proxy#subtab_pac_proxies'*)
+
 
 
 Definition
@@ -273,6 +283,22 @@ ansibleguy.opnsense.webproxy_remote_acl
     "password","string","false","\-","pwd","Optional password for authentication"
     "categories","list","false","\-","cat, filter","Select categories to use, leave empty for all. Categories are visible in the WEB-UI after initial download"
     "verify_ssl","boolean","false","true","verify","If certificate validation should be done - relevant if self-signed certificates are used on the target server!"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
+Proxy Auto-Config
+=================
+
+ansibleguy.opnsense.webproxy_pac_proxy
+--------------------------------------
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "name","string","true","\-","\-","Unique name for the proxy"
+    "url","string","false for state changes, else true","\-","\-","A proxy URL in the form proxy.example.com:3128"
+    "type","string","false","proxy","\-","One of: 'proxy', 'direct', 'http', 'https', 'socks', 'socks4', 'socks5'. Usually you should use 'direct' for a direct connection or 'proxy' for a Proxy"
+    "description","string","false","\-","desc","\-"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 
@@ -693,5 +719,55 @@ ansibleguy.opnsense.webproxy_remote_acl
 
         - name: Removing
           ansibleguy.opnsense.webproxy_remote_acl:
+            file: 'test1'
+            state: 'absent'
+
+Proxy Auto-Config
+=================
+
+ansibleguy.opnsense.webproxy_pac_proxy
+--------------------------------------
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        ansibleguy.opnsense.webproxy_pac_proxy:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'webproxy_pac_proxy'
+          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.webproxy_pac_proxy:
+            name: 'example'
+            url: 'example.ansibleguy.net:3128'
+            # type: 'proxy'
+            # description: ''
+            # reload: true
+            # debug: false
+
+        - name: Adding
+          ansibleguy.opnsense.webproxy_pac_proxy:
+            name: 'test1'
+            url: 'test.lan:3128'
+            description: 'test'
+
+        - name: Pulling settings
+          ansibleguy.opnsense.list:
+          #  target: 'webproxy_pac_proxy'
+          register: existing_entries
+
+        - name: Printing settings
+          ansible.builtin.debug:
+            var: existing_entries.data
+
+        - name: Removing
+          ansibleguy.opnsense.webproxy_pac_proxy:
             file: 'test1'
             state: 'absent'

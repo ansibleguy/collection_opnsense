@@ -130,13 +130,13 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_icap          | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id9)                                       | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_auth          | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id10)                                      | unstable           |
 | **Web Proxy**       | ansibleguy.opnsense.webproxy_remote_acl    | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id11)                                      | unstable           |
+| **Web Proxy**       | ansibleguy.opnsense.webproxy_pac_proxy     | [Docs](https://opnsense.ansibleguy.net/modules/webproxy.html#id12)                                      | unstable           |
 
 
 ### Roadmap
 
 **Core API**:
 
-- [Proxy](https://docs.opnsense.org/development/api/core/proxy.html)
 - [IDS](https://docs.opnsense.org/development/api/core/ids.html)
 - [Diagnostics](https://docs.opnsense.org/development/api/core/diagnostics.html)
 - [Interface - Loopback](https://docs.opnsense.org/development/api/core/interfaces.html)

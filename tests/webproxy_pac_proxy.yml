@@ -1,0 +1,126 @@
+---
+
+- name: WebProxy PAC-Proxy
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.webproxy_pac_proxy:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'webproxy_pac_proxy'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Adding 1 - failing because of missing URL
+      ansibleguy.opnsense.webproxy_pac_proxy:
+        name: 'ANSIBLE_TEST_1_1'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding 1
+      ansibleguy.opnsense.webproxy_pac_proxy:
+        name: 'ANSIBLE_TEST_1_1'
+        url: 'test.lan:3128'
+        description: 'test'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.webproxy_pac_proxy:
+        name: 'ANSIBLE_TEST_1_1'
+        url: 'test.lan:4228'
+        description: 'test_new'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 - nothing changed
+      ansibleguy.opnsense.webproxy_pac_proxy:
+        name: 'ANSIBLE_TEST_1_1'
+        url: 'test.lan:4228'
+        description: 'test_new'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.webproxy_pac_proxy:
+        name: 'ANSIBLE_TEST_1_2'
+        url: 'test.lan:4228'
+        description: 'test'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        opn7.data | length != 2
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.webproxy_pac_proxy:
+        name: 'ANSIBLE_TEST_1_2'
+        state: 'absent'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        opn10.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.webproxy_pac_proxy:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Checking cleanup
+      ansibleguy.opnsense.list:
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.data | length != 0
+      when: not ansible_check_mode
+
+    - name: Removing non-existent
+      ansibleguy.opnsense.webproxy_pac_proxy:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn11
+      failed_when: >
+        opn11.failed or
+        opn11.changed

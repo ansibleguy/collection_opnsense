@@ -28,6 +28,8 @@ class Base:
     ATTR_RELOAD = 'API_CONT_REL'
     ATTR_HEADERS = 'call_headers'
     ATTR_TYPING = 'FIELDS_TYPING'
+    ATTR_FIELD_ID = 'FIELD_ID'
+    PARAM_MATCH_FIELDS = 'match_fields'
 
     def __init__(self, instance):
         self.i = instance  # module-specific object
@@ -151,8 +153,12 @@ class Base:
         # checking if changed
         for field in self.i.FIELDS_CHANGE:
             if field in self.i.p:
-                if 'match_fields' in self.i.p:
-                    if field in self.i.p['match_fields']:
+                if self.PARAM_MATCH_FIELDS in self.i.p:
+                    if field in self.i.p[self.PARAM_MATCH_FIELDS]:
+                        continue
+
+                if hasattr(self.i, self.ATTR_FIELD_ID):
+                    if field == getattr(self.i, self.ATTR_FIELD_ID):
                         continue
 
                 if str(self.e[field]) != str(self.i.p[field]):
@@ -189,31 +195,34 @@ class Base:
                 return response
 
         elif enable_switch:
-            if getattr(self.i, self.i.EXIST_ATTR)['enabled'] != self.i.p['enabled']:
-                BOOL_INVERT_FIELDS = []
-                enable = self.i.p['enabled']
-                invert = False
+            existing = getattr(self.i, self.i.EXIST_ATTR)
 
-                if hasattr(self.i, self.ATTR_BOOL_INVERT):
-                    BOOL_INVERT_FIELDS = getattr(self.i, self.ATTR_BOOL_INVERT)
+            if hasattr(existing, 'enabled'):
+                if existing['enabled'] != self.i.p['enabled']:
+                    BOOL_INVERT_FIELDS = []
+                    enable = self.i.p['enabled']
+                    invert = False
 
-                if 'enabled' in BOOL_INVERT_FIELDS:
-                    invert = True
-                    enable = not enable
+                    if hasattr(self.i, self.ATTR_BOOL_INVERT):
+                        BOOL_INVERT_FIELDS = getattr(self.i, self.ATTR_BOOL_INVERT)
 
-                if enable:
-                    if hasattr(self.i, 'enable'):
-                        self.i.enable()
+                    if 'enabled' in BOOL_INVERT_FIELDS:
+                        invert = True
+                        enable = not enable
+
+                    if enable:
+                        if hasattr(self.i, 'enable'):
+                            self.i.enable()
+
+                        else:
+                            self.enable(invert=invert)
 
                     else:
-                        self.enable(invert=invert)
+                        if hasattr(self.i, 'disable'):
+                            self.i.disable()
 
-                else:
-                    if hasattr(self.i, 'disable'):
-                        self.i.disable()
-
-                    else:
-                        self.disable(invert=invert)
+                        else:
+                            self.disable(invert=invert)
 
     def delete(self) -> dict:
         self.i.r['changed'] = True
