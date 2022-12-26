@@ -577,8 +577,8 @@
         api_credential_file: "{{ run.c }}"
         ssl_verify: false
       loop:
-        - 'ANSIBLE_TEST_1_1'
-        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLETEST1'
+        - 'ANSIBLETEST2'
 
     - name: Cleanup WebProxy PAC-Proxy
       ansibleguy.opnsense.webproxy_pac_proxy:

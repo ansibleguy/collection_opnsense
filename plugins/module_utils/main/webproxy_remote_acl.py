@@ -4,6 +4,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import is_unset
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validate import \
+    is_valid_url
 
 
 class Acl(BaseModule):
@@ -26,7 +28,8 @@ class Acl(BaseModule):
         'url', 'username', 'password', 'categories', 'verify_ssl',
         'description',
     ]
-    FIELDS_ALL = FIELDS_CHANGE
+    FIELDS_ALL = [FIELD_ID]
+    FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'file': 'filename',
         'categories': 'filter',
@@ -36,6 +39,9 @@ class Acl(BaseModule):
     FIELDS_TYPING = {
         'list': ['categories'],
         'bool': ['enabled', 'verify_ssl'],
+    }
+    STR_VALIDATIONS = {
+        'file': r'^[a-zA-Z0-9]{1,245}\.?[a-zA-z0-9]{1,10}$'
     }
     EXIST_ATTR = 'acl'
 
@@ -47,6 +53,9 @@ class Acl(BaseModule):
         if self.p['state'] == 'present':
             if is_unset(self.p['url']):
                 self.m.fail_json('You need to provide an URL to create a remote ACL!')
+
+            if not is_valid_url(self.p['url']):
+                self.m.fail_json(f"The provided URL seems to be invalid: '{self.p['url']}'")
 
             if is_unset(self.p['description']):
                 self.m.fail_json('You need to provide a description to create a remote ACL!')

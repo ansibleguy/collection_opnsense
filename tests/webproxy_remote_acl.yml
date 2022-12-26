@@ -26,14 +26,14 @@
 
     - name: Adding 1 - failing because of missing URL
       ansibleguy.opnsense.webproxy_remote_acl:
-        file: 'ANSIBLE_TEST_1_1'
+        file: 'ANSIBLETEST1'
         description: 'test'
       register: opn_fail1
       failed_when: not opn_fail1.failed
 
     - name: Adding 1 - failing because of incomplete credentials
       ansibleguy.opnsense.webproxy_remote_acl:
-        file: 'ANSIBLE_TEST_1_1'
+        file: 'ANSIBLETEST1'
         url: 'https://test.lan/rac1'
         username: 'random'
         description: 'test'
@@ -42,15 +42,24 @@
 
     - name: Adding 1 - failing because of missing description
       ansibleguy.opnsense.webproxy_remote_acl:
-        file: 'ANSIBLE_TEST_1_1'
+        file: 'ANSIBLETEST1'
         url: 'https://test.lan/rac1'
         username: 'random'
       register: opn_fail3
       failed_when: not opn_fail3.failed
 
+    - name: Adding 1 - failing because of invalid file-name
+      ansibleguy.opnsense.webproxy_remote_acl:
+        file: 'ANSIBLE_TEST_1'
+        url: 'https://test.lan/rac1'
+        username: 'random'
+        description: 'test'
+      register: opn_fail4
+      failed_when: not opn_fail4.failed
+
     - name: Adding 1
       ansibleguy.opnsense.webproxy_remote_acl:
-        file: 'ANSIBLE_TEST_1_1'
+        file: 'ANSIBLETEST1'
         url: 'https://test.lan/rac1'
         username: 'random'
         password: 'random'
@@ -63,7 +72,7 @@
 
     - name: Changing 1
       ansibleguy.opnsense.webproxy_remote_acl:
-        file: 'ANSIBLE_TEST_1_1'
+        file: 'ANSIBLETEST1'
         url: 'https://test.lan/rac2'
         username: 'random'
         password: 'random2'
@@ -77,7 +86,7 @@
 
     - name: Changing 1 - nothing changed
       ansibleguy.opnsense.webproxy_remote_acl:
-        file: 'ANSIBLE_TEST_1_1'
+        file: 'ANSIBLETEST1'
         url: 'https://test.lan/rac2'
         username: 'random'
         password: 'random2'
@@ -91,7 +100,7 @@
 
     - name: Disabling 1
       ansibleguy.opnsense.webproxy_remote_acl:
-        file: 'ANSIBLE_TEST_1_1'
+        file: 'ANSIBLETEST1'
         url: 'https://test.lan/rac2'
         username: 'random'
         password: 'random2'
@@ -106,7 +115,7 @@
 
     - name: Disabling 1 - nothing changed
       ansibleguy.opnsense.webproxy_remote_acl:
-        file: 'ANSIBLE_TEST_1_1'
+        file: 'ANSIBLETEST1'
         url: 'https://test.lan/rac2'
         username: 'random'
         password: 'random2'
@@ -121,7 +130,7 @@
 
     - name: Adding 2
       ansibleguy.opnsense.webproxy_remote_acl:
-        file: 'ANSIBLE_TEST_1_2'
+        file: 'ANSIBLETEST2'
         url: 'https://test.lan/rac2'
         description: 'test'
       register: opn6
@@ -140,7 +149,7 @@
 
     - name: Removing 2
       ansibleguy.opnsense.webproxy_remote_acl:
-        file: 'ANSIBLE_TEST_1_2'
+        file: 'ANSIBLETEST2'
         state: 'absent'
       register: opn8
       failed_when: >
@@ -161,8 +170,8 @@
         file: "{{ item }}"
         state: 'absent'
       loop:
-        - 'ANSIBLE_TEST_1_1'
-        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLETEST1'
+        - 'ANSIBLETEST2'
       when: not ansible_check_mode
 
     - name: Checking cleanup
