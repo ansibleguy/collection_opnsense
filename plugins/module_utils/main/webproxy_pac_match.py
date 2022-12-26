@@ -4,8 +4,6 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import is_unset
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validate import \
-    is_valid_url
 
 
 class Match(BaseModule):
@@ -58,9 +56,6 @@ class Match(BaseModule):
             if self.p['type'] == 'url_matches':
                 if is_unset(self.p['url']):
                     self.m.fail_json('You need to provide an URL to match!')
-
-                if not is_valid_url(self.p['url']):
-                    self.m.fail_json(f"The provided URL seems to be invalid: '{self.p['url']}'")
 
             if self.p['type'] in [
                 'hostname_matches', 'plain_hostname', 'is_resolvable', 'dns_domain_is',

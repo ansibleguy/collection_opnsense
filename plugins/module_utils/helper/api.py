@@ -144,7 +144,8 @@ def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
             module.fail_json(
                 msg=f"API call failed | Needed plugin not installed! | Response: {response.__dict__}"
             )
-        elif f"{response.__dict__}".find('Cannot delete alias. Currently in use') != -1:
+
+        elif f"{response.__dict__}".find('Currently in use') != -1:
             json['in_use'] = True
 
         else:

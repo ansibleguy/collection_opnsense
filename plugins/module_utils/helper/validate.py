@@ -104,8 +104,10 @@ def is_valid_email(value) -> bool:
 
 
 def is_valid_url(value: str) -> bool:
+    # see: https://validators.readthedocs.io/en/latest/_modules/validators/url.html
     return _is_matching(compiled_regex=MATCH_URL, value=value)
 
 
 def is_valid_mac_address(value: str) -> bool:
+    # see: https://validators.readthedocs.io/en/latest/_modules/validators/mac_address.html
     return _is_matching(compiled_regex=MATCH_MAC_ADDRESS, value=value)

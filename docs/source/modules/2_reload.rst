@@ -26,7 +26,7 @@ Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "target","string","true","\-","tgt, t","What part of the running config should be reloaded. One of: 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper', 'monit', 'wireguard', 'interface_vlan', 'interface_vxlan', 'frr'"
+    "target","string","true","\-","tgt, t","What part of the running config should be reloaded. One of: 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper', 'monit', 'wireguard', 'interface_vlan', 'interface_vxlan', 'frr', 'webproxy'"
 
 .. include:: ../_include/param_basic.rst
 
