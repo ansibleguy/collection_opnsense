@@ -23,7 +23,7 @@ except MODULE_EXCEPTIONS:
 
 PROFILE = False  # create log to profile time consumption
 
-DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/frr_bgp.html#ansibleguy-opnsense-frr-bgp-route-map'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/frr_bgp.html#ansibleguy-opnsense-frr-bgp-route-map'
 EXAMPLES = 'https://opnsense.ansibleguy.net/modules/frr_bgp.html#id4'
 
 

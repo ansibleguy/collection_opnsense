@@ -20,8 +20,8 @@ except MODULE_EXCEPTIONS:
 
 PROFILE = False  # create log to profile time consumption
 
-DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/package.html'
-EXAMPLES = 'https://opnsense.ansibleguy.net/modules/package.html'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/package.html'
+EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/package.html'
 
 
 def run_module():

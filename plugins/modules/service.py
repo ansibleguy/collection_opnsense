@@ -20,8 +20,8 @@ except MODULE_EXCEPTIONS:
     module_dependency_error()
 
 
-DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/service.html'
-EXAMPLES = 'https://opnsense.ansibleguy.net/modules/service.html'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/service.html'
+EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/service.html'
 
 # c = api-module, m = custom action-mapping, a = limited actions
 SERVICES = {

@@ -18,8 +18,8 @@ try:
 except MODULE_EXCEPTIONS:
     module_dependency_error()
 
-DOCUMENTATION = 'https://opnsense.ansibleguy.net/modules/savepoint.html'
-EXAMPLES = 'https://opnsense.ansibleguy.net/modules/savepoint.html'
+DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/savepoint.html'
+EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/savepoint.html'
 
 
 def run_module():

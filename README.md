@@ -15,7 +15,7 @@ Feel free to contribute to this project using [pull-requests](https://github.com
 * add ansible-based [tests](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests) for some error-case(s) you have encountered
 * extend or correct the [documentation](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs)
 * contribute code fixes or optimizations
-* implement additional API endpoints => see [development guide](https://opnsense.ansibleguy.net/usage/4_develop.html)
+* implement additional API endpoints => see [development guide](https://opnsense.ansibleguy.net/en/latest/usage/4_develop.html)
 * test unstable modules and report bugs/errors
 
 ----
@@ -61,17 +61,17 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 
 | Function            | Module                                     | Usage                                                                                                   | State                 |
 |:--------------------|:-------------------------------------------|:--------------------------------------------------------------------------------------------------------|:----------------------|
-| **Base**            | ansibleguy.opnsense.list                   | [Docs](https://opnsense.ansibleguy.net/modules/2_list.html)                                             | stable                |
-| **Base**            | ansibleguy.opnsense.reload                 | [Docs](https://opnsense.ansibleguy.net/modules/2_reload.html)                                           | stable                |
-| **Services**        | ansibleguy.opnsense.service                | [Docs](https://opnsense.ansibleguy.net/modules/service.html)                                            | stable                |
-| **Alias**           | ansibleguy.opnsense.alias                  | [Docs](https://opnsense.ansibleguy.net/modules/alias.html)                                              | stable                | 
-| **Alias**           | ansibleguy.opnsense.alias_multi            | [Docs](https://opnsense.ansibleguy.net/modules/alias_multi.html)                                        | stable                |
-| **Alias**           | ansibleguy.opnsense.alias_purge            | [Docs](https://opnsense.ansibleguy.net/modules/alias_multi.html#ansibleguy-opnsense-alias-purge)        | unstable              |
-| **Rules**           | ansibleguy.opnsense.rule                   | [Docs](https://opnsense.ansibleguy.net/modules/rule.html)                                               | unstable              |
-| **Rules**           | ansibleguy.opnsense.rule_multi             | [Docs](https://opnsense.ansibleguy.net/modules/rule_multi.html)                                         | unstable              |
-| **Rules**           | ansibleguy.opnsense.rule_purge             | [Docs](https://opnsense.ansibleguy.net/modules/rule_multi.html#ansibleguy-opnsense-rule-purge)          | unstable              |
-| **Savepoints**      | ansibleguy.opnsense.savepoint              | [Docs](https://opnsense.ansibleguy.net/modules/savepoint.html)                                          | unstable              |
-| **Packages**        | ansibleguy.opnsense.package                | [Docs](https://opnsense.ansibleguy.net/modules/package.html)                                            | stable                |
+| **Base**            | ansibleguy.opnsense.list                   | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/2_list.html)                                             | stable                |
+| **Base**            | ansibleguy.opnsense.reload                 | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/2_reload.html)                                           | stable                |
+| **Services**        | ansibleguy.opnsense.service                | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/service.html)                                            | stable                |
+| **Alias**           | ansibleguy.opnsense.alias                  | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/alias.html)                                              | stable                | 
+| **Alias**           | ansibleguy.opnsense.alias_multi            | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/alias_multi.html)                                        | stable                |
+| **Alias**           | ansibleguy.opnsense.alias_purge            | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/alias_multi.html#ansibleguy-opnsense-alias-purge)        | unstable              |
+| **Rules**           | ansibleguy.opnsense.rule                   | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/rule.html)                                               | unstable              |
+| **Rules**           | ansibleguy.opnsense.rule_multi             | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/rule_multi.html)                                         | unstable              |
+| **Rules**           | ansibleguy.opnsense.rule_purge             | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/rule_multi.html#ansibleguy-opnsense-rule-purge)          | unstable              |
+| **Savepoints**      | ansibleguy.opnsense.savepoint              | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/savepoint.html)                                          | unstable              |
+| **Packages**        | ansibleguy.opnsense.package                | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/package.html)                                            | stable                |
 | **System**          | ansibleguy.opnsense.system                 | [Docs](https://opnsense.ansibleguy.net/modules/system.html)                                             | unstable              |
 | **Cron-Jobs**       | ansibleguy.opnsense.cron                   | [Docs](https://opnsense.ansibleguy.net/modules/cron.html)                                               | unstable              |
 | **Routes**          | ansibleguy.opnsense.route                  | [Docs](https://opnsense.ansibleguy.net/modules/route.html)                                              | unstable              |
