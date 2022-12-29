@@ -3,6 +3,7 @@
 [![Functional Test Status](https://badges.ansibleguy.net/opnsense.collection.test.svg)](https://github.com/ansibleguy/collection_opnsense/blob/stable/scripts/test.sh)
 [![Lint Test Status](https://badges.ansibleguy.net/opnsense.collection.lint.svg)](https://github.com/ansibleguy/collection_opnsense/blob/stable/scripts/lint.sh)
 [![Docs](https://readthedocs.org/projects/opnsense_ansible/badge/?version=latest&style=flat)](https://opnsense.ansibleguy.net)
+[![Ansible Galaxy](https://img.shields.io/ansible/collection/2148)](https://galaxy.ansible.com/ansibleguy/opnsense)
 
 ----
 
@@ -32,7 +33,7 @@ Then - install the collection itself:
 
 ```bash
 # stable/tested version:
-ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git,1.1.0
+ansible-galaxy collection install ansibleguy.opnsense
 
 # latest version:
 ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git

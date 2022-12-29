@@ -146,7 +146,7 @@ confidence=HIGH,
 # --enable=similarities". If you want to run only the classes checker, but have
 # no Warning level messages displayed, use "--disable=all --enable=classes
 # --disable=W".
-disable=E0611, E0401, W0611,  # ansible modules will not be found
+disable=E0611, E0401,  # ansible modules will not be found
         C0114, C0115, C0116,  # no inline docs
         C0103,  # var-naming..
         W0511,  # todo comments
