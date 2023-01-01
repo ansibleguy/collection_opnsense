@@ -242,8 +242,8 @@ ansibleguy.opnsense.webproxy_acl
     "allow","list","false","\-","allow_subnets, subnets","IPs and Subnets you want to allow access to the proxy server"
     "exclude","list","false","\-","unrestricted, ignore","IPs and Subnets you want to bypass the proxy server"
     "banned","list","false","\-","blocked, block, ban","IPs and Subnets you want to deny access to the  proxy server"
-    "exclude_domains","list","false","\-","safe_list, whitelist","You may use a regular expression, use a comma or press Enter for new item. Examples: 'mydomain.com' matches on '*.mydomain.com'; '^https?:\\/\\/([a-zA-Z]+)\\.mydomain\\.' matches on 'http(s)://textONLY.mydomain.*'; '\\.gif$' matches on '\\*.gif' but not on '\\*.gif\\test'; '\\[0-9]+\\.gif$' matches on '\\123.gif' but not on '\\test.gif'"
-    "block_domains","list","false","\-","block, block_list, blacklist","You may use a regular expression, use a comma or press Enter for new item. Examples: 'mydomain.com' matches on '*.mydomain.com'; '^https?:\\/\\/([a-zA-Z]+)\\.mydomain\\.' matches on 'http(s)://textONLY.mydomain.*'; '\\.gif$' matches on '\\*.gif' but not on '\\*.gif\\test'; '\\[0-9]+\\.gif$' matches on '\\123.gif' but not on '\\test.gif'"
+    "exclude_domains","list","false","\-","safe_list, whitelist","You may use a regular expression, use a comma or press Enter for new item. Examples: 'mydomain.com' matches on '\*.mydomain.com'; '^https?:\\/\\/([a-zA-Z]+)\\.mydomain\\.' matches on 'http(s)://textONLY.mydomain.\*'; '\\.gif$' matches on '\\*.gif' but not on '\\*.gif\\test'; '\\[0-9]+\\.gif$' matches on '\\123.gif' but not on '\\test.gif'"
+    "block_domains","list","false","\-","block, block_list, blacklist","You may use a regular expression, use a comma or press Enter for new item. Examples: 'mydomain.com' matches on '\*.mydomain.com'; '^https?:\\/\\/([a-zA-Z]+)\\.mydomain\\.' matches on 'http(s)://textONLY.mydomain.\*'; '\\.gif$' matches on '\\*.gif' but not on '\\*.gif\\test'; '\\[0-9]+\\.gif$' matches on '\\123.gif' but not on '\\test.gif'"
     "block_user_agents","list","false","\-","block_ua, block_list_ua","Block user-agents. You may use a regular expression, use a comma or press Enter for new item. Examples: '^(.)+Macintosh(.)+Firefox/37\\.0' matches on 'Macintosh version of Firefox revision 37.0'; '^Mozilla' matches on 'all Mozilla based browsers'"
     "block_mime_types","list","false","\-","block_mime, block_list_mime","Block specific MIME type reply. You may use a regular expression, use a comma or press Enter for new item. Examples: 'video/flv' matches on 'Flash Video'; 'application/x-javascript' matches on 'javascripts'"
     "exclude_google","list","false","\-","safe_list_google","The domain that will be allowed to use Google GSuite. All accounts that are not in this domain will be blocked to use it"
@@ -269,7 +269,7 @@ ansibleguy.opnsense.webproxy_icap
     "header_username","string","false","X-Username","header_user, user_header","The header which should be used to send the username to the ICAP server"
     "preview","boolean","false","true","\-","If you use previews, only a part of the data is sent to the ICAP server. Setting this option can improve the performance"
     "preview_size","integer","false","1024","\-","Size of the preview which is sent to the ICAP server"
-    "exclude","list","false","\-","\-","Exclusion list destination domains.You may use a regular expression, use a comma or press Enter for new item. Examples: 'mydomain.com' matches on '*.mydomain.com'; 'https://([a-zA-Z]+)\\.mydomain\\.' matches on 'http(s)://textONLY.mydomain.*'; '\\.gif$' matches on '\\*.gif' but not on '\\*.gif\\test'; '\\[0-9]+\\.gif$' matches on '\\123.gif' but not on '\\test.gif'"
+    "exclude","list","false","\-","\-","Exclusion list destination domains.You may use a regular expression, use a comma or press Enter for new item. Examples: 'mydomain.com' matches on '\*.mydomain.com'; 'https://([a-zA-Z]+)\\.mydomain\\.' matches on 'http(s)://textONLY.mydomain.\*'; '\\.gif$' matches on '\\*.gif' but not on '\\*.gif\\test'; '\\[0-9]+\\.gif$' matches on '\\123.gif' but not on '\\test.gif'"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 ansibleguy.opnsense.webproxy_auth
@@ -333,8 +333,8 @@ ansibleguy.opnsense.webproxy_pac_match
     "description","string","false","\-","desc","\-"
     "negate","boolean","false","false","\-","Negate this match. For example you can match if a host is not inside a network"
     "type","string","false","url_matches","\-","One of: 'url_matches', 'hostname_matches', 'dns_domain_is', 'destination_in_net', 'my_ip_in_net', 'plain_hostname', 'is_resolvable', 'dns_domain_levels', 'weekday_range', 'date_range', 'time_range'. The type of the match. Depending on the match, you will need different arguments"
-    "hostname","string","false","\-","\-","A hostname pattern like *.opnsense.org"
-    "url","string","false","\-","\-","A URL pattern like forum.opnsense.org/index*"
+    "hostname","string","false","\-","\-","A hostname pattern like \*.opnsense.org"
+    "url","string","false","\-","\-","A URL pattern like forum.opnsense.org/index\*"
     "network","string","false","\-","\-","The network address to match in CIDR notation for example like 127.0.0.1/8 or ::1/128"
     "domain_level_from","integer","false","0","domain_from","The minimum amount of dots in the domain name"
     "domain_level_to","integer","false","0","domain_to","The maximum amount of dots in the domain name"

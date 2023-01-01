@@ -13,7 +13,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias imp
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
 
 
-def process(m: AnsibleModule, p: dict, r: dict, ):
+def process(m: AnsibleModule, p: dict, r: dict, ) -> None:
     session = Session(module=m)
     meta_alias = Alias(module=m, session=session, result={})
     existing_aliases = meta_alias.get_existing()

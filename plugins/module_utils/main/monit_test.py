@@ -31,7 +31,7 @@ class Test(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.test = {}
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if is_unset(self.p['condition']):
                 self.m.fail_json(
@@ -51,5 +51,5 @@ class Test(BaseModule):
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    def update(self):
+    def update(self) -> None:
         self.b.update(enable_switch=False)

@@ -34,7 +34,7 @@ class Domain(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.domain = {}
 
-    def check(self):
+    def check(self) -> None:
         validate_domain(module=self.m, domain=self.p['domain'])
         if not is_ip(self.p['server']):
             self.m.fail_json(f"Server-value '{self.p['server']}' is not a valid IP-address!")

@@ -39,7 +39,7 @@ class Route(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.route = {}
 
-    def check(self):
+    def check(self) -> None:
         try:
             ip_network(self.p['network'])
 

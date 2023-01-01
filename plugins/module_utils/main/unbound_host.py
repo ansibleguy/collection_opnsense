@@ -44,7 +44,7 @@ class Host(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.host = {}
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if is_unset(self.p['value']):
                 self.m.fail_json(

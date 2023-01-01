@@ -46,7 +46,7 @@ class Service(BaseModule):
         self.service = {}
         self.existing_tests = None
 
-    def check(self):
+    def check(self) -> None:
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         if self.p['state'] == 'present':

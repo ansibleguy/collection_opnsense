@@ -64,7 +64,7 @@ class Domain(BaseModule):
         self.existing_records = None
         self.acls_needed = False
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
@@ -106,7 +106,7 @@ class Domain(BaseModule):
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    def _find_links(self):
+    def _find_links(self) -> None:
         fields = ['transfer_acl', 'query_acl']
 
         for field in fields:
@@ -123,12 +123,12 @@ class Domain(BaseModule):
                         f"Provided {field} '{self.p[field]}' was not found!"
                     )
 
-    def _search_acls(self):
+    def _search_acls(self) -> None:
         self.existing_acls = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search'], 'controller': 'acl'}
         })['acl']['acls']['acl']
 
-    def _search_records(self):
+    def _search_records(self) -> None:
         # to check if domain is still in use
         self.existing_records = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search'], 'controller': 'record'}

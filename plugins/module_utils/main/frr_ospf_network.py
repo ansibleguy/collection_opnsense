@@ -48,7 +48,7 @@ class Network(BaseModule):
         self.existing_prefixes = None
         self.existing_communities = None
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if self.p['area'] in ['', None]:
                 self.m.fail_json(
@@ -79,7 +79,7 @@ class Network(BaseModule):
         self.existing_prefixes = raw['prefixlists']['prefixlist']
         return raw[self.API_KEY_2][self.API_KEY]
 
-    def _find_links(self):
+    def _find_links(self) -> None:
         links = {
             'prefix-list': {
                 'in': 'prefix_list_in',

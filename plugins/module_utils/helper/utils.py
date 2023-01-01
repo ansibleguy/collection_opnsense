@@ -9,7 +9,10 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main 
     DEBUG_CONFIG
 
 
-def profiler(check, log_file: str = None, kwargs: dict = None, sort: str = 'tottime', show_top_n: int = 20):
+def profiler(
+        check, log_file: str = None, kwargs: dict = None,
+        sort: str = 'tottime', show_top_n: int = 20
+) -> (list, dict, bool, None):
     # note: https://stackoverflow.com/questions/10326936/sort-cprofile-output-by-percall-when-profiling-a-python-script
     # sort options: ncalls, tottime, cumtime
     _ = Profile()

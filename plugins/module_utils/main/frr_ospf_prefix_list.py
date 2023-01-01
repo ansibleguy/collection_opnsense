@@ -40,7 +40,7 @@ class Prefix(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.prefix = {}
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if self.p['seq'] in ['', None] or self.p['action'] in ['', None] or self.p['network'] in ['', None]:
                 self.m.fail_json(

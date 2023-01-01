@@ -40,7 +40,7 @@ class AsPath(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.as_path = {}
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if self.p['number'] in ['', None] or self.p['as_pattern'] in ['', None] \
                     or self.p['action'] in ['', None]:

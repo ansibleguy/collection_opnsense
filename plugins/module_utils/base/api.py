@@ -5,7 +5,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.api import \
     check_host, ssl_verification, check_response, get_params_path, debug_api, \
-    check_or_load_credentials, raise_pretty_exception, timeout_override
+    check_or_load_credentials, api_pretty_exception, timeout_override
 
 DEFAULT_TIMEOUT = 20.0
 HTTPX_EXCEPTIONS = (
@@ -22,7 +22,7 @@ class Session:
         socket.setdefaulttimeout(timeout)
         self.s = self.start()
 
-    def start(self):
+    def start(self) -> httpx.Client:
         check_host(module=self.m)
         check_or_load_credentials(module=self.m)
         return httpx.Client(
@@ -50,7 +50,7 @@ class Session:
             )
 
         except HTTPX_EXCEPTIONS as error:
-            raise_pretty_exception(
+            raise api_pretty_exception(
                 method='GET', error=error,
                 url=f'{self.s.base_url}{call_url}',
             )
@@ -88,14 +88,14 @@ class Session:
             )
 
         except HTTPX_EXCEPTIONS as error:
-            raise_pretty_exception(
+            raise api_pretty_exception(
                 method='POST', error=error,
                 url=f'{self.s.base_url}{call_url}',
             )
 
         return response
 
-    def close(self):
+    def close(self) -> None:
         self.s.close()
 
 
@@ -129,7 +129,7 @@ def single_get(module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOU
         )
 
     except HTTPX_EXCEPTIONS as error:
-        raise_pretty_exception(method='GET', url=call_url, error=error)
+        raise api_pretty_exception(method='GET', url=call_url, error=error)
 
     return response
 
@@ -178,6 +178,6 @@ def single_post(
         )
 
     except HTTPX_EXCEPTIONS as error:
-        raise_pretty_exception(method='POST', url=call_url, error=error)
+        raise api_pretty_exception(method='POST', url=call_url, error=error)
 
     return response

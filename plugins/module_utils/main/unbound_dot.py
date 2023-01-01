@@ -40,7 +40,7 @@ class DnsOverTls(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.dot = {}
 
-    def check(self):
+    def check(self) -> None:
         validate_domain(module=self.m, domain=self.p['domain'])
         validate_port(module=self.m, port=self.p['port'])
 

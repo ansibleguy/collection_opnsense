@@ -61,7 +61,7 @@ class Rule(BaseModule):
         self.existing_queues = None
         self.existing_pipes = None
 
-    def check(self):
+    def check(self) -> None:
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
         validate_port(module=self.m, port=self.p['source_port'])
         validate_port(module=self.m, port=self.p['destination_port'])
@@ -100,7 +100,7 @@ class Rule(BaseModule):
         self.existing_queues = raw['queues']['queue']
         return raw[self.API_KEY_2][self.API_KEY]
 
-    def _find_pipe(self):
+    def _find_pipe(self) -> None:
         if self.p['target_pipe'] not in ['', None] and len(self.existing_pipes) > 0:
             for uuid, pipe in self.existing_pipes.items():
                 if pipe['description'] == self.p['target_pipe']:
@@ -108,7 +108,7 @@ class Rule(BaseModule):
                     self.target_found = True
                     break
 
-    def _find_queue(self):
+    def _find_queue(self) -> None:
         if self.p['target_queue'] not in ['', None] and len(self.existing_queues) > 0:
             for uuid, queue in self.existing_queues.items():
                 if queue['description'] == self.p['target_queue']:

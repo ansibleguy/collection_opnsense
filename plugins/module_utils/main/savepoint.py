@@ -32,11 +32,11 @@ class SavePoint:
 
             self.m.fail_json(f"Unable to create savepoint - a revision ('{self.revision}') exists!")
 
-    def _check_revision(self, action: str):
+    def _check_revision(self, action: str) -> None:
         if self.revision is None:
             self.m.fail_json(f"Unable to run action '{action}' - a target revision needs to be provided!")
 
-    def apply(self):
+    def apply(self) -> None:
         if not self.m.check_mode:
             self._check_revision(action='apply')
             single_post(
@@ -48,7 +48,7 @@ class SavePoint:
                 }
             )
 
-    def cancel_rollback(self):
+    def cancel_rollback(self) -> None:
         if not self.m.check_mode:
             self._check_revision(action='cancel_rollback')
             single_post(
@@ -60,7 +60,7 @@ class SavePoint:
                 }
             )
 
-    def revert(self):
+    def revert(self) -> None:
         if not self.m.check_mode:
             self._check_revision(action='revert')
             single_post(

@@ -13,45 +13,58 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validat
     is_valid_domain
 
 
-def check_or_load_credentials(module: AnsibleModule):
-    if module.params['api_key'] is None and module.params['api_credential_file'] is not None:
-        cred_file_info = Path(module.params['api_credential_file'])
+def _load_credential_file(module: AnsibleModule) -> None:
+    cred_file_info = Path(module.params['api_credential_file'])
 
-        if cred_file_info.is_file():
-            cred_file_mode = oct(cred_file_info.stat().st_mode)[-3:]
+    if cred_file_info.is_file():
+        cred_file_mode = oct(cred_file_info.stat().st_mode)[-3:]
 
-            if int(cred_file_mode[2]) != 0:
-                module.warn(
-                    f"Provided 'api_credential_file' at path "
-                    f"'{module.params['api_credential_file']}' is world-readable "
-                    f"(mode {cred_file_mode})!"
+        if int(cred_file_mode[2]) != 0:
+            module.warn(
+                f"Provided 'api_credential_file' at path "
+                f"'{module.params['api_credential_file']}' is world-readable "
+                f"(mode {cred_file_mode})!"
+            )
+
+        with open(module.params['api_credential_file'], 'r', encoding='utf-8') as file:
+            config = {}
+            vaulted = False
+
+            for line in file.readlines():
+                try:
+                    key, value = line.split('=', 1)
+                    config[key] = value.strip()
+
+                except ValueError:
+                    if line.startswith('$ANSIBLE_VAULT'):
+                        vaulted = True
+                        break
+
+            if vaulted:
+                module.fail_json(
+                    f"Credential file '{module.params['api_credential_file']}' "
+                    'is ansible-vault encrypted! This is not yet supported.'
                 )
 
-            with open(module.params['api_credential_file'], 'r', encoding='utf-8') as file:
-                config = {}
+            if 'key' not in config or 'secret' not in config:
+                module.fail_json(
+                    f"Credential file '{module.params['api_credential_file']}' "
+                    'could not be parsed!'
+                )
 
-                for line in file.readlines():
-                    try:
-                        key, value = line.split('=', 1)
-                        config[key] = value.strip()
+            module.params['api_key'] = config['key']
+            module.params['api_secret'] = config['secret']
 
-                    except ValueError:
-                        pass
+    else:
+        module.fail_json(
+            f"Provided 'api_credential_file' at path "
+            f"'{module.params['api_credential_file']}' does not exist!"
+        )
 
-                if 'key' not in config or 'secret' not in config:
-                    raise ValueError(
-                        f"Credential file '{module.params['api_credential_file']}' "
-                        f"could not be parsed!"
-                    )
 
-                module.params['api_key'] = config['key']
-                module.params['api_secret'] = config['secret']
-
-        else:
-            module.fail_json(
-                f"Provided 'api_credential_file' at path "
-                f"'{module.params['api_credential_file']}' does not exist!"
-            )
+def check_or_load_credentials(module: AnsibleModule) -> None:
+    if module.params['api_credential_file'] is not None:
+        _load_credential_file(module)
 
     elif module.params['api_key'] is None and module.params['api_secret'] is None:
         module.fail_json("Neither 'api_key' & 'api_secret' nor 'api_credential_file' were provided!")
@@ -98,7 +111,7 @@ def get_params_path(cnf: dict) -> str:
 def debug_api(
         module: AnsibleModule, method: str = None, url: str = None,
         data: dict = None, headers: dict = None, response: dict = None,
-):
+) -> None:
     if 'debug' in module.params and module.params['debug']:
         if response is not None:
             msg = f"RESPONSE: '{response.__dict__}'"
@@ -158,14 +171,14 @@ def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
     return json
 
 
-def raise_pretty_exception(method: str, url: str, error):
+def api_pretty_exception(method: str, url: str, error) -> ConnectionError:
     call = f'{method} => {url}'
     msg = f"Unable to connect '{call}'!"
 
     if str(error).find('timed out') != -1:
         msg = f"Got timeout calling '{call}'!"
 
-    raise ConnectionError(msg)
+    return ConnectionError(msg)
 
 
 def timeout_override(module: AnsibleModule, timeout: float) -> float:

@@ -30,7 +30,7 @@ class Package:
             'controller': self.API_CONT,
         }
 
-    def check(self):
+    def check(self) -> None:
         if self.package_stati is None:
             self.package_stati = self.search_call()
 
@@ -56,7 +56,7 @@ class Package:
         self.check_lock()
         self.call_cnf['params'] = [self.n]
 
-    def check_lock(self):
+    def check_lock(self) -> None:
         if self.p['action'] in ['reinstall', 'remove', 'install'] and \
                 self.r['diff']['before']['locked']:
             self.m.fail_json(
@@ -94,7 +94,7 @@ class Package:
     def search_call(self) -> dict:
         return self.s.get(cnf={'command': 'info', **self.call_cnf})['package']
 
-    def change_state(self):
+    def change_state(self) -> None:
         run = False
 
         if self.p['action'] == 'lock':
@@ -118,14 +118,14 @@ class Package:
         if run:
             self.execute()
 
-    def execute(self):
+    def execute(self) -> None:
         if not self.m.check_mode:
             self.s.post(cnf={
                 'command': self.p['action'],
                 **self.call_cnf
             })
 
-    def install(self):
+    def install(self) -> None:
         self.r['changed'] = True
         self.r['diff']['after']['installed'] = True
         self.execute()

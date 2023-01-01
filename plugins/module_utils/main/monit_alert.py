@@ -42,7 +42,7 @@ class Alert(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.alert = {}
 
-    def check(self):
+    def check(self) -> None:
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         if self.p['state'] == 'present':

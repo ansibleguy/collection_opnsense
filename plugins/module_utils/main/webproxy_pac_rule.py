@@ -37,7 +37,7 @@ class Rule(BaseModule):
         self.existing_matches = {}
         self.existing_proxies = {}
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present' and \
                 (is_unset(self.p['proxies']) or is_unset(self.p['matches'])):
             self.m.fail_json(
@@ -62,7 +62,7 @@ class Rule(BaseModule):
         self.existing_proxies = raw['proxy']
         return raw[self.API_KEY]
 
-    def _find_links(self):
+    def _find_links(self) -> None:
         links = [
             {
                 'count': 0,

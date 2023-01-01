@@ -53,7 +53,7 @@ class Pipe(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.pipe = {}
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present' and is_unset(self.p['bandwidth']):
             self.m.fail_json('You need to provide bandwidth to create a shaper pipe!')
 

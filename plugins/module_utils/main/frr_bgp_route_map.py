@@ -58,7 +58,7 @@ class RouteMap(BaseModule):
         self.existing_prefixes = None
         self.existing_communities = None
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if self.p['id'] in ['', None] or self.p['action'] in ['', None]:
                 self.m.fail_json(
@@ -91,7 +91,7 @@ class RouteMap(BaseModule):
 
         return raw[self.API_KEY_2][self.API_KEY]
 
-    def _find_links(self):
+    def _find_links(self) -> None:
         links = {
             'as_path_list': self.existing_paths,
             'community_list': self.existing_communities,

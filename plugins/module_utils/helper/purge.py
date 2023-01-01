@@ -1,7 +1,10 @@
 from ansible.module_utils.basic import AnsibleModule
 
 
-def purge(module: AnsibleModule, result: dict, item_to_purge: dict, diff_param: str, obj_func):
+def purge(
+        module: AnsibleModule, result: dict,
+        item_to_purge: dict, diff_param: str, obj_func
+) -> None:
     result['changed'] = True
 
     if module.params['action'] == 'delete':

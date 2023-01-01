@@ -58,7 +58,7 @@ class Server(BaseModule):
         self.server = {}
         self.existing_peers = None
 
-    def check(self):
+    def check(self) -> None:
         validate_port(module=self.m, port=self.p['port'])
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
         validate_str_fields(

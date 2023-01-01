@@ -89,16 +89,47 @@ If you are running the modules over hosts in your inventory - you would do it li
 Vault
 =====
 
-You may want to use '**ansible-vault**' to **encrypt** your 'api_credential_file' or 'api_secret'
+You may want to use '**ansible-vault**' to **encrypt** your 'api_secret'.
+
+Vault-Encryption of the 'api_credential_file' is not yet supported.
+
 
 .. code-block:: bash
 
-    ansible-vault encrypt /path/to/credential/file
-    # or
-    ansible-vault encrypt_string 'api_secret'
+    ansible-vault encrypt_string 'YOUR_API_SECRET'
 
-    # run playbook:
+Then add it as variable to your inventory/config:
+
+.. code-block:: yaml
+
+    firewall:
+      key: 'test'
+      secret: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        38303736393135366562396233353930366631396531613062366365363234363063626365656263
+        6637646636323437333437353336316332663133316435650a366439336665383763376432653736
+        32313332363032646436626230646461376532666366663265373663316331316664336134366338
+        6531363362613039330a316436386533393636623837653163333564383232313363666361643730
+        3132
+
+And refer to it in the module calls or module-defaults:
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        ansibleguy.opnsense.route:
+          firewall: '...'
+          api_key: "{{ firewall.key }}"
+          api_secret: "{{ firewall.secret }}"
+
+To decrypt those secrets at runtime, you need to supply the 'ask-vault-pass' argument:
+
+.. code-block:: bash
+
     ansible-playbook -D opnsense.yml --ask-vault-pass
+
 
 Running
 =======

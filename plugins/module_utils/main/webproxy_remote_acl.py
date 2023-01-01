@@ -49,7 +49,7 @@ class Acl(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.acl = {}
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if is_unset(self.p['url']):
                 self.m.fail_json('You need to provide an URL to create a remote ACL!')

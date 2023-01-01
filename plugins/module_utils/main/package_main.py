@@ -6,7 +6,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.package i
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
 
 
-def process(m: AnsibleModule, p: dict, r: dict):
+def process(m: AnsibleModule, p: dict, r: dict) -> None:
     s = Session(module=m)
 
     # pulling stati of all packages

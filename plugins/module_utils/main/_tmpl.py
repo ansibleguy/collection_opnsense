@@ -46,7 +46,7 @@ class TMPL(BaseModule):
         self.fail = False
         self.stuff = {}
 
-    def check(self):
+    def check(self) -> None:
         # custom argument validation
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
@@ -62,7 +62,7 @@ class TMPL(BaseModule):
             if is_unset(self.p['value']):
                 self.m.fail_json('You need to provide values to create stuff!')
 
-    def _error(self, msg: str):
+    def _error(self, msg: str) -> None:
         # for special handling of errors
         if self.fail:
             self.m.fail_json(msg)

@@ -34,7 +34,7 @@ class CronJob(BaseModule):
         self.cron = {}
         self.available_commands = []
 
-    def check(self):
+    def check(self) -> None:
         # basic validation of conditional parameters
         if self.p['state'] == 'present' and is_unset(self.p['command']):
             self.m.fail_json("You need to provide a 'command' if you want to create a cron-job!")

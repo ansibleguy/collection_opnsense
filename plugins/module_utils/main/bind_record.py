@@ -46,7 +46,7 @@ class Record(BaseModule):
         self.exists = False
         self.exists_rr = False
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present' and is_unset(self.p['value']):
             self._error(
                 'You need to supply a value to create the record '
@@ -103,7 +103,7 @@ class Record(BaseModule):
             **self.call_cnf, **{'command': self.CMDS['search'], 'controller': 'domain'}
         })['domain']['domains']['domain']
 
-    def _error(self, msg: str, verification: bool = True):
+    def _error(self, msg: str, verification: bool = True) -> None:
         if (verification and self.fail_verify) or (not verification and self.fail_proc):
             self.m.fail_json(msg)
 
@@ -111,14 +111,14 @@ class Record(BaseModule):
             self.m.warn(msg)
             raise ModuleSoftError
 
-    def _delete_rr(self):
+    def _delete_rr(self) -> None:
         self.r['diff']['after'] = {}
 
         for record in self.existing:
             self.call_cnf['params'] = [record['uuid']]
             self.delete()
 
-    def process(self):
+    def process(self) -> None:
         if self.exists_rr or self.p['round_robin']:
             # round-robin exists
             if not self.p['round_robin']:
@@ -149,7 +149,7 @@ class Record(BaseModule):
             # single record
             self.b.process()
 
-    def _diff_rr(self):
+    def _diff_rr(self) -> None:
         def _key(item: dict, idx: int) -> str:
             return f"{item['type']}:{item['name']}.{item['domain']}#{idx}"
 

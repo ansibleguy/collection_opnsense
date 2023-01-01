@@ -94,7 +94,7 @@ class Base:
             simplify_func=self._call_simple(),
         )
 
-    def find(self, match_fields: list):
+    def find(self, match_fields: list) -> None:
         if self.i.existing_entries is None:
             self.i.existing_entries = self._call_search()
 
@@ -197,7 +197,7 @@ class Base:
         elif enable_switch:
             self._update_enabled()
 
-    def _update_enabled(self):
+    def _update_enabled(self) -> None:
         existing = getattr(self.i, self.i.EXIST_ATTR)
 
         if 'enabled' in existing:
@@ -262,7 +262,7 @@ class Base:
                 'params': []
             })
 
-    def _get_request_data(self):
+    def _get_request_data(self) -> None:
         if hasattr(self.i, '_build_request'):
             return self.i._build_request()
 
@@ -430,7 +430,7 @@ class Base:
 
         return payload
 
-    def _set_existing(self):
+    def _set_existing(self) -> None:
         if is_unset(self.e):
             _existing = getattr(self.i, self.i.EXIST_ATTR)
 

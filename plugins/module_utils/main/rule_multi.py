@@ -11,7 +11,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
 
 
-def process(m: AnsibleModule, p: dict, r: dict):
+def process(m: AnsibleModule, p: dict, r: dict) -> None:
     s = Session(module=m)
     existing_rules = Rule(module=m, session=s, result={}).get_existing()
 

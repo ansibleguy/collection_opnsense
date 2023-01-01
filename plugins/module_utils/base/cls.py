@@ -35,19 +35,19 @@ class BaseModule:
     def get_existing(self) -> list:
         return self.b.get_existing()
 
-    def process(self):
+    def process(self) -> None:
         self.b.process()
 
-    def create(self):
+    def create(self) -> None:
         self.b.create()
 
-    def update(self):
+    def update(self) -> None:
         self.b.update()
 
-    def delete(self):
+    def delete(self) -> None:
         self.b.delete()
 
-    def reload(self):
+    def reload(self) -> None:
         self.b.reload()
 
 
@@ -77,7 +77,7 @@ class GeneralModule:
         }
         self.settings = {}
 
-    def check(self):
+    def check(self) -> None:
         if hasattr(self.b.i, 'INT_VALIDATIONS'):
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.b.i.INT_VALIDATIONS)
 
@@ -95,16 +95,16 @@ class GeneralModule:
     def get_existing(self) -> dict:
         return self._search_call()
 
-    def process(self):
+    def process(self) -> None:
         self.update()
 
-    def update(self):
+    def update(self) -> None:
         self.b.update(enable_switch=False)
 
-    def reload(self):
+    def reload(self) -> None:
         self.b.reload()
 
-    def _build_diff(self):
+    def _build_diff(self) -> None:
         self.r['diff']['before'] = self.b.build_diff(self.settings)
         self.r['diff']['after'] = self.b.build_diff({
             k: v for k, v in self.p.items() if k in self.settings

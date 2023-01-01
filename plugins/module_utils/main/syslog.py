@@ -46,7 +46,7 @@ class Syslog(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.dest = {}
 
-    def check(self):
+    def check(self) -> None:
         if not is_ip(self.p['target']) and \
                 not is_valid_domain(self.p['target']):
             self.m.fail_json(

@@ -36,7 +36,7 @@ class KeyPair(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.key = {}
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if is_unset(self.p['public_key']) or is_unset(self.p['private_key']):
                 self.m.fail_json(
@@ -87,5 +87,5 @@ class KeyPair(BaseModule):
 
         return simple
 
-    def update(self):
+    def update(self) -> None:
         self.b.update(enable_switch=False)

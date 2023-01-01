@@ -49,7 +49,7 @@ class Prefix(BaseModule):
         self.existing_prefixes = None
         self.existing_maps = None
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if self.p['network'] in ['', None] or self.p['seq'] in ['', None] or self.p['action'] in ['', None]:
                 self.m.fail_json(
@@ -71,20 +71,20 @@ class Prefix(BaseModule):
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    def process(self):
+    def process(self) -> None:
         self.b.process()
 
     def get_existing(self) -> list:
         return self.b.get_existing()
 
-    def create(self):
+    def create(self) -> None:
         self.b.create()
 
-    def update(self):
+    def update(self) -> None:
         self.b.update()
 
-    def delete(self):
+    def delete(self) -> None:
         self.b.delete()
 
-    def reload(self):
+    def reload(self) -> None:
         self.b.reload()

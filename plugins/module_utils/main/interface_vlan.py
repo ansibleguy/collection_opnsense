@@ -43,7 +43,7 @@ class Vlan(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.vlan = {}
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if is_unset(self.p['interface']):
                 self.m.fail_json("You need to provide an 'interface' to create a vlan!")
@@ -60,5 +60,5 @@ class Vlan(BaseModule):
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    def update(self):
+    def update(self) -> None:
         self.b.update(enable_switch=False)

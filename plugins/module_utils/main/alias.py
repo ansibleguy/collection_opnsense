@@ -51,7 +51,7 @@ class Alias(BaseModule):
         self.p = self.m.params if cnf is None else cnf  # to allow override by alias_multi
         self.existing_rules = None
 
-    def check(self):
+    def check(self) -> None:
         if len(self.p['name']) > self.MAX_ALIAS_LEN:
             self._error(
                 f"Alias name '{self.p['name']}' is invalid - "
@@ -94,7 +94,7 @@ class Alias(BaseModule):
 
         return simple
 
-    def update(self):
+    def update(self) -> None:
         # checking if alias changed
         if self.alias['type'] == self.p['type']:
             self.b.update()
@@ -107,7 +107,7 @@ class Alias(BaseModule):
                 verification=False,
             )
 
-    def delete(self):
+    def delete(self) -> None:
         self.r['changed'] = True
 
         if self.existing_rules is None:
@@ -128,7 +128,7 @@ class Alias(BaseModule):
         else:
             self.b.delete()
 
-    def _error(self, msg: str, verification: bool = True):
+    def _error(self, msg: str, verification: bool = True) -> None:
         if (verification and self.fail_verify) or (not verification and self.fail_proc):
             self.m.fail_json(msg)
 

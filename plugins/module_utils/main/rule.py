@@ -75,7 +75,7 @@ class Rule(BaseModule):
 
         return log_name
 
-    def check(self):
+    def check(self) -> None:
         validate_int_fields(
             module=self.m,
             data=self.p,
@@ -96,7 +96,7 @@ class Rule(BaseModule):
             )
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    def _error(self, msg: str, verification: bool = True):
+    def _error(self, msg: str, verification: bool = True) -> None:
         if (verification and self.fail_verify) or (not verification and self.fail_proc):
             self.m.fail_json(msg)
 

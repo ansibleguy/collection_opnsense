@@ -4,7 +4,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validat
     is_valid_domain
 
 
-def validate_domain(module: AnsibleModule, domain: str):
+def validate_domain(module: AnsibleModule, domain: str) -> None:
     test_domain = domain
 
     if domain.find('.') == -1:

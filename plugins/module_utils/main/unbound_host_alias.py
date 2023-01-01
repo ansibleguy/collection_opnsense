@@ -40,7 +40,7 @@ class Alias(BaseModule):
         self.existing_hosts = None
         self.target_found = False
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if is_unset(self.p['target']):
                 self.m.fail_json(
@@ -59,7 +59,7 @@ class Alias(BaseModule):
 
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    def _find_target(self):
+    def _find_target(self) -> None:
         if len(self.existing_hosts) > 0:
             for uuid, host in self.existing_hosts.items():
                 if f"{host['hostname']}.{host['domain']}" == self.p['target']:

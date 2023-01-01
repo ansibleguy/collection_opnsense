@@ -77,7 +77,7 @@ class Neighbor(BaseModule):
         self.existing_prefixes = None
         self.existing_maps = None
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if self.p['ip'] in ['', None] or self.p['as_number'] in ['', None]:
                 self.m.fail_json(
@@ -110,7 +110,7 @@ class Neighbor(BaseModule):
 
         return raw[self.API_KEY_2][self.API_KEY]
 
-    def _find_links(self):
+    def _find_links(self) -> None:
         links = {
             'prefix-list-in': {
                 'found': False,

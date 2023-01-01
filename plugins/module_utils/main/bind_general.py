@@ -71,7 +71,7 @@ class General(GeneralModule):
         self.existing_acls = None
         self.acls_needed = False
 
-    def check(self):
+    def check(self) -> None:
         # pylint: disable=W0201
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
@@ -125,7 +125,7 @@ class General(GeneralModule):
             bool_invert=self.FIELDS_BOOL_INVERT,
         )
 
-    def _find_links(self):
+    def _find_links(self) -> None:
         fields = ['recursion_acl', 'transfer_acl']
 
         for field in fields:

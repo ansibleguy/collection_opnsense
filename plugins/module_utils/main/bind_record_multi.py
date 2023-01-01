@@ -13,7 +13,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_reco
 # pylint: disable=R0914
 
 
-def process(m: AnsibleModule, p: dict, r: dict):
+def process(m: AnsibleModule, p: dict, r: dict) -> None:
     s = Session(module=m)
     meta_record = Record(module=m, session=s, result={})
     existing_records = meta_record.get_existing()

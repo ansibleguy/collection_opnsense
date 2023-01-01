@@ -54,7 +54,7 @@ class Interface(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.int = {}
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if self.p['area'] in ['', None]:
                 self.m.fail_json(

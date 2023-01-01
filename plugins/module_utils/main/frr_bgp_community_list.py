@@ -41,7 +41,7 @@ class Community(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.community_list = {}
 
-    def check(self):
+    def check(self) -> None:
         if self.p['state'] == 'present':
             if self.p['number'] in ['', None] or self.p['seq'] in ['', None] or self.p['action'] in ['', None]:
                 self.m.fail_json(

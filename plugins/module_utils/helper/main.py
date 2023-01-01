@@ -235,7 +235,10 @@ def get_simple_existing(
     return simple_entries
 
 
-def validate_str_fields(module: AnsibleModule, data: dict, field_regex: dict = None, field_minmax_length: dict = None):
+def validate_str_fields(
+        module: AnsibleModule, data: dict, field_regex: dict = None,
+        field_minmax_length: dict = None
+) -> None:
     if field_minmax_length is not None:
         for field, min_max_length in field_minmax_length.items():
             if min_max_length['min'] < len(data[field]) > min_max_length['max']:
@@ -260,7 +263,7 @@ def format_int(data: str) -> (int, str):
     return data
 
 
-def sort_param_lists(params: dict):
+def sort_param_lists(params: dict) -> None:
     for k in params:
         if isinstance(params[k], list):
             params[k].sort()

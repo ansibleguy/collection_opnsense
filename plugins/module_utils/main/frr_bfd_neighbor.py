@@ -34,7 +34,7 @@ class Neighbor(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.neighbor = {}
 
-    def check(self):
+    def check(self) -> None:
         if not is_ip_or_network(self.p[self.FIELD_ID]):
             self.m.fail_json(f"Value '{self.p[self.FIELD_ID]}' is not a valid IP address!")
 

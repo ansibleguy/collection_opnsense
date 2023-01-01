@@ -47,7 +47,7 @@ class Queue(BaseModule):
         self.pipe_found = False
         self.existing_pipes = None
 
-    def check(self):
+    def check(self) -> None:
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         # checking if item exists
@@ -81,7 +81,7 @@ class Queue(BaseModule):
         self.existing_pipes = raw['pipes']['pipe']
         return raw[self.API_KEY_2][self.API_KEY]
 
-    def _find_pipe(self):
+    def _find_pipe(self) -> None:
         if len(self.existing_pipes) > 0:
             for uuid, pipe in self.existing_pipes.items():
                 if pipe['description'] == self.p['pipe']:

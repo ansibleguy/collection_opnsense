@@ -45,7 +45,7 @@ class Parent(GeneralModule):
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         GeneralModule.__init__(self=self, m=module, r=result, s=session)
 
-    def check(self):
+    def check(self) -> None:
         # pylint: disable=W0201
         if self.p['enabled']:
             if is_unset(self.p['host']) or is_unset(self.p['port']):

@@ -37,7 +37,7 @@ class Acl(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.acl = {}
 
-    def check(self):
+    def check(self) -> None:
         validate_str_fields(
             module=self.m, data=self.p,
             field_regex=self.STR_VALIDATIONS,

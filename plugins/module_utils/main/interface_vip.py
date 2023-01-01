@@ -50,7 +50,7 @@ class Vip(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.vip = {}
 
-    def check(self):
+    def check(self) -> None:
         validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         self.b.find(match_fields=self.p['match_fields'])
@@ -60,5 +60,5 @@ class Vip(BaseModule):
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
-    def update(self):
+    def update(self) -> None:
         self.b.update(enable_switch=False)
