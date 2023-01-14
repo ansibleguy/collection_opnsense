@@ -266,8 +266,7 @@ class Base:
         if hasattr(self.i, '_build_request'):
             return self.i._build_request()
 
-        else:
-            return self.build_request()
+        return self.build_request()
 
     def _change_enabled_state(self, value: int) -> dict:
         return self._api_post(cnf={
@@ -460,28 +459,25 @@ class Base:
         if hasattr(self.i, 'simplify_existing'):
             return self.i.simplify_existing
 
-        elif hasattr(self.i, '_simplify_existing'):
+        if hasattr(self.i, '_simplify_existing'):
             return self.i._simplify_existing
 
-        else:
-            return self._simplify_existing
+        return self._simplify_existing
 
     def _call_search(self) -> (list, dict):
         if hasattr(self.i, '_search_call'):
             return self.i._search_call()
 
-        elif hasattr(self.i, 'search_call'):
+        if hasattr(self.i, 'search_call'):
             return self.i.search_call()
 
-        else:
-            return self.search()
+        return self.search()
 
     def _api_headers(self) -> dict:
         if hasattr(self.i, self.ATTR_HEADERS):
             return getattr(self.i, self.ATTR_HEADERS)
 
-        else:
-            return {}
+        return {}
 
     def _api_post(self, cnf: dict) -> (dict, list):
         if hasattr(self.i, 's'):
@@ -490,19 +486,17 @@ class Base:
                 headers=self._api_headers()
             )
 
-        else:
-            return single_post(
-                cnf=cnf,
-                module=self.i.m,
-                headers=self._api_headers()
-            )
+        return single_post(
+            cnf=cnf,
+            module=self.i.m,
+            headers=self._api_headers()
+        )
 
     def _api_get(self, cnf: dict) -> (dict, list):
         if hasattr(self.i, 's'):
             return self.i.s.get(cnf=cnf)
 
-        else:
-            return single_get(
-                cnf=cnf,
-                module=self.i.m
-            )
+        return single_get(
+            cnf=cnf,
+            module=self.i.m
+        )

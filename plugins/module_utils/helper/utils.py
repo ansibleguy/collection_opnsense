@@ -50,5 +50,4 @@ def profiler(
     if httpx_error is None:
         return check_response
 
-    else:
-        raise ConnectionError(httpx_error)
+    raise ConnectionError(httpx_error)

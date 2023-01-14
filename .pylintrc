@@ -152,7 +152,6 @@ disable=E0611, E0401,  # ansible modules will not be found
         W0511,  # todo comments
         R0801,  # similar lines because of ansible-module structure
         R1710,  # sometime we'll throw an error instead of returning data
-        R1705, R1724,  # elif/else after return if it has a reason
         C0415,  # list/reload modules
         R0903,  # classes with few public methods
         W0707,  # custom re-raising of exceptions

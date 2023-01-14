@@ -21,7 +21,7 @@ def ensure_list(data: (int, str, list, None)) -> list:
     if isinstance(data, list):
         return data
 
-    elif data is None:
+    if data is None:
         return []
 
     return [data]
