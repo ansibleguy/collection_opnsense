@@ -261,6 +261,15 @@
         api_credential_file: "{{ run.c }}"
         ssl_verify: false
 
+    - name: Cleanup VIPs
+      ansibleguy.opnsense.interface_vip:
+        interface: "{{ item.int }}"
+        address: "{{ item.ip }}"
+        state: 'absent'
+      loop:
+        - {int: 'lan', ip: '192.168.1.1'}
+        - {int: 'opt1', ip: '192.168.2.1'}
+
     - name: Cleanup vlan interfaces
       ansibleguy.opnsense.interface_vlan:
         description: "{{ item }}"

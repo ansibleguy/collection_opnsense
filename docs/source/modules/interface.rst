@@ -78,7 +78,7 @@ ansibleguy.opnsense.interface_vip
 
 .. warning::
 
-    This feature will be implemented in OPNSense version 23.1
+    This feature is only available in OPNSense version >= 23.1
 
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"

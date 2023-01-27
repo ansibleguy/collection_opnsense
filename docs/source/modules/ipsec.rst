@@ -18,9 +18,10 @@ IPSec
 Limitations
 ***********
 
-We are still `waiting for the API implementation <https://github.com/opnsense/core/pull/6187#issuecomment-1356263118>`_ to manage IPSec tunnels.
+.. warning::
 
-Therefor this projects 
+    The IPSec modules can only be used on OPNSense version >= 23.1
+
 
 Definition
 **********
