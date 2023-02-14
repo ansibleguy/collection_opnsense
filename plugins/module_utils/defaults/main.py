@@ -91,3 +91,5 @@ DEBUG_CONFIG = dict(
     path_log='/tmp/ansibleguy.opnsense',
     log_api_calls='api_calls.log',
 )
+
+CONNECTION_TEST_TIMEOUT = 1.5

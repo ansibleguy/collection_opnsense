@@ -1,5 +1,5 @@
-import socket
 import httpx
+from socket import setdefaulttimeout
 
 from ansible.module_utils.basic import AnsibleModule
 
@@ -19,7 +19,7 @@ class Session:
         self.m = module
         timeout = timeout_override(module=module, timeout=timeout)
         self.t = httpx.Timeout(timeout=timeout)
-        socket.setdefaulttimeout(timeout)
+        setdefaulttimeout(timeout)
         self.s = self.start()
 
     def start(self) -> httpx.Client:
@@ -102,7 +102,7 @@ class Session:
 def single_get(module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOUT) -> dict:
     check_host(module=module)
     timeout = timeout_override(module=module, timeout=timeout)
-    socket.setdefaulttimeout(timeout)
+    setdefaulttimeout(timeout)
 
     params_path = get_params_path(cnf=cnf)
     call_url = f"https://{module.params['firewall']}:{module.params['api_port']}/api/" \
@@ -140,7 +140,7 @@ def single_post(
     check_host(module=module)
 
     timeout = timeout_override(module=module, timeout=timeout)
-    socket.setdefaulttimeout(timeout)
+    setdefaulttimeout(timeout)
 
     if headers is None:
         headers = {}

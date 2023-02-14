@@ -3,9 +3,12 @@ from time import time, sleep
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import CONNECTION_TEST_TIMEOUT
+
 
 def opn_reachable(module: AnsibleModule) -> bool:
     with socket(AF_INET, SOCK_STREAM) as s:
+        s.settimeout(CONNECTION_TEST_TIMEOUT)
         return s.connect_ex((
             module.params['firewall'],
             module.params['api_port']
