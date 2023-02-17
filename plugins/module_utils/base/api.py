@@ -1,5 +1,6 @@
-import httpx
 from socket import setdefaulttimeout
+
+import httpx
 
 from ansible.module_utils.basic import AnsibleModule
 
