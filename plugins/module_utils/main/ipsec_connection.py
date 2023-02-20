@@ -11,7 +11,7 @@ class Connection(BaseModule):
     FIELD_ID = 'description'
     CMDS = {
         'add': 'addConnection',
-        'del': 'addConnection',
+        'del': 'delConnection',
         'set': 'setConnection',
         'search': 'get',
         'toggle': 'toggleConnection',
