@@ -8,7 +8,7 @@ Route
 
 **STATE**: unstable
 
-**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/route.yml>`_
+**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/route.yml>`_
 
 **API Docs**: `Core - Routes <https://docs.opnsense.org/development/api/core/routes.html>`_
 

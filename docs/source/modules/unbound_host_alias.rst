@@ -8,7 +8,7 @@ DNS - Unbound - Host Alias
 
 **STATE**: stable
 
-**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/unbound_host_alias.yml>`_
+**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/unbound_host_alias.yml>`_
 
 **API Docs**: `Core - Unbound <https://docs.opnsense.org/development/api/core/unbound.html>`_
 

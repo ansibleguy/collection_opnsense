@@ -2,12 +2,12 @@
 
 **STATE**: unstable
 
-**TESTS**: [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_general.yml) | 
-[frr_bgp_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_neighbor.yml) | 
-[frr_bgp_prefix_list](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_prefix_list.yml) | 
-[frr_bgp_route_map](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_route_map.yml) | 
-[frr_bgp_community_list](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_community_list.yml) | 
-[frr_bgp_as_path](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_bgp_as_path.yml)
+**TESTS**: [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_bgp_general.yml) | 
+[frr_bgp_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_bgp_neighbor.yml) | 
+[frr_bgp_prefix_list](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_bgp_prefix_list.yml) | 
+[frr_bgp_route_map](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_bgp_route_map.yml) | 
+[frr_bgp_community_list](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_bgp_community_list.yml) | 
+[frr_bgp_as_path](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_bgp_as_path.yml)
 
 **API Docs**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
 
@@ -21,7 +21,7 @@ Thanks to [@telmich](https://github.com/telmich) for sponsoring the development 
 
 ## More FRR modules
 
-* [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr.md)
+* [Docs](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_frr.md)
 
 ## Prerequisites
 
@@ -30,12 +30,12 @@ You need to install the FRR plugin:
 os-frr
 ```
 
-You can also install it using the [package module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md).
+You can also install it using the [package module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_package.md).
 
 
 ## Definition
 
-For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
+For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_basic.md#definition)
 
 ### ansibleguy.opnsense.frr_bgp_general
 
@@ -46,7 +46,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | graceful  | boolean | false    | -                     | -         | BGP graceful restart functionality as defined in RFC-4724 defines the mechanisms that allows BGP speaker to continue to forward data packets along known routes while the routing protocol information is being restored.                                      |                                                                                                                                                  |
 | networks  | list    | false    | -                     | nets         | Select the network to advertise, you have to set a Null route via System -> Routes                                                                                                                                                                             |                                                                                                                                                  |
 | redistribute  | list    | false    | -                     | -         | Select other routing sources, which should be redistributed to the other nodes. Choose from: 'ospf', 'connected', 'kernel', 'rip', 'static'                                                                                                                    |                                                                                                                                                  |
-| reload       | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+| reload       | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_reload.md). |
 | enabled          | boolean | false    | true                 | -       | En- or disable the service                                                                                                                                                                                                                                     |
 
 ### ansibleguy.opnsense.frr_bgp_neighbor
@@ -78,7 +78,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | prefix_list_out                    | string  | false                              | -             | prefix_out, pre_out                    | Prefix-List for outbound direction                                                                                                                                                                                                                                                                                                                                    |
 | route_map_in                    | string  | false                              | -             | map_in, rm_in                          | Route-Map for inbound direction                                                                                                                                                                                                                                                                                                                                       |
 | route_map_out                    | string  | false                              | -             | map_out, rm_out                        | Route-Map for outbound direction                                                                                                                                                                                                                                                                                                                                      |
-| reload       | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+| reload       | boolean | false    | true                 | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_reload.md). |
 
 ### ansibleguy.opnsense.frr_bgp_prefix_list
 
@@ -90,7 +90,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | action  | string  | false for state changes, else true   | -             | -                    | Set permit for match or deny to negate the rule. One of: 'permit', 'deny'                                                                                                                                                                                        |                                                                                                                                                  |
 | description  | string  | false                                | -             | -                    | Optional description                                                                                                                                                                                                                                             |                                                                                                                                                  |
 | version  | string  | false                                | IPv4          | ipv                  | IP-version to use. One of: IPv4, IPv6                                                                                                                                                                                                                            |                                                                                                                                                  |
-| reload       | boolean | false                                | true          | -                    | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+| reload       | boolean | false                                | true          | -                    | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_reload.md). |
 
 ### ansibleguy.opnsense.frr_bgp_route_map
 
@@ -104,7 +104,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | prefix_list  | dict    | false    | -             | pre, prefix | Dictionary of prefixes to link. Per example: "{prefix_name: [seq1, seq2]}" or "{'pre1': [5, 6]}" will link prefixes with the name 'pre1' and sequence 5-6                                                                                                                                                                                                                                  |                                                                                                                                                  |
 | community_list  | list    | false    | -             | community   | List of community-list entries to link                                                                                                                                                                                                                                                                                                       |                                                                                                                                                  |
 | set  | string  | false    | -             | -           | Free text field for your set, please be careful! You can set e.g. "local-preference 300" or "community 1:1" (http://www.nongnu.org/quagga/docs/docs-multi/Route-Map-Set-Command.html#Route-Map-Set-Command)                                                                                                                                  |                                                                                                                                                  |
-| reload       | boolean | false    | true          | -           | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md).                                                                             |
+| reload       | boolean | false    | true          | -           | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_reload.md).                                                                             |
 
 ### ansibleguy.opnsense.frr_bgp_community_list
 
@@ -115,7 +115,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | seq            | integer | false for state changes, else true    | -             | sequence | The ACL sequence number (10-99)                                                                                                                                                                                                                                |                                                                                                                                                  |
 | action         | string  | false for state changes, else true    | -             | -        | Set permit for match or deny to negate the rule. One of: 'permit', 'deny'                                                                                                                                                                                          |                                                                                                                                                  |
 | community         | string  | false for state changes, else true    | -             | comm     | The community you want to match. You can also regex and it is not validated so please be careful                                                                                                                                                                                          |                                                                                                                                                  |
-| reload         | boolean | false    | true          | -        | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+| reload         | boolean | false    | true          | -        | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_reload.md). |
 
 ### ansibleguy.opnsense.frr_bgp_as_path
 
@@ -125,7 +125,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | number         | integer | false for state changes, else true    | -             | nr      | The ACL rule number (10-99); keep in mind that there are no sequence numbers with AS-Path lists. When you want to add a new line between you have to completely remove the ACL                                                                                 |                                                                                                                                                  |
 | action         | string  | false for state changes, else true    | -             | -       | Set permit for match or deny to negate the rule. One of: 'permit', 'deny'                                                                                                                                                                                          |                                                                                                                                                  |
 | as_pattern         | string  | false for state changes, else true    | -             | as      | The AS pattern you want to match, regexp allowed (e.g. .$ or _1$). It's not validated so please be careful!  |
-| reload         | boolean | false    | true          | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+| reload         | boolean | false    | true          | -       | If the running config should be reloaded on change - this will take some time. You might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_reload.md). |
 
 
 ## Examples

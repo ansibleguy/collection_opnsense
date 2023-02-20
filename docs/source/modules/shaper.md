@@ -2,9 +2,9 @@
 
 **STATE**: unstable
 
-**TESTS**: [shaper_pipe](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/shaper_pipe.yml) | 
-[shaper_queue](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/shaper_queue.yml) | 
-[shaper_rule](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/shaper_rule.yml)
+**TESTS**: [shaper_pipe](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/shaper_pipe.yml) | 
+[shaper_queue](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/shaper_queue.yml) | 
+[shaper_rule](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/shaper_rule.yml)
 
 **API Docs**: [Core - Traffic Shaper](https://docs.opnsense.org/development/api/core/trafficshaper.html)
 
@@ -22,7 +22,7 @@ Interfaces for 'shaper_rules' must be provided as used in the network config (_p
 
 ## Definition
 
-For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
+For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_basic.md#definition)
 
 ### ansibleguy.opnsense.shaper_pipe
 

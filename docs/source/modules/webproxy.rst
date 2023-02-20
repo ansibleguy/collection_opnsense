@@ -8,11 +8,11 @@ Web Proxy
 
 **STATE**: unstable
 
-**TESTS**: `webproxy_general <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_general.yml>`_ |
-`webproxy_cache <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_cache.yml>`_ |
-`webproxy_parent <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_parent.yml>`_ |
-`webproxy_traffic <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_traffic.yml>`_ |
-`webproxy_forward <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_forward.yml>`_ |
+**TESTS**: `webproxy_general <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/webproxy_general.yml>`_ |
+`webproxy_cache <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/webproxy_cache.yml>`_ |
+`webproxy_parent <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/webproxy_parent.yml>`_ |
+`webproxy_traffic <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/webproxy_traffic.yml>`_ |
+`webproxy_forward <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/webproxy_forward.yml>`_ |
 `webproxy_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_acl.yml>`_ |
 `webproxy_icap <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_icap.yml>`_ |
 `webproxy_auth <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_auth.yml>`_ |

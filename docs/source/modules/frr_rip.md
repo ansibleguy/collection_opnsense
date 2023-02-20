@@ -2,7 +2,7 @@
 
 **STATE**: unstable
 
-**TESTS**: [frr_rip](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/frr_rip.yml)
+**TESTS**: [frr_rip](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_rip.yml)
 
 **API Docs**: [Plugins - Quagga](https://docs.opnsense.org/development/api/plugins/quagga.html)
 
@@ -16,7 +16,7 @@ Thanks to [@telmich](https://github.com/telmich) for sponsoring the development 
 
 ## More FRR modules
 
-* [Docs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_frr.md)
+* [Docs](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_frr.md)
 
 ## Prerequisites
 
@@ -25,11 +25,11 @@ You need to install the FRR plugin:
 os-frr
 ```
 
-You can also install it using the [package module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md).
+You can also install it using the [package module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_package.md).
 
 ## Definition
 
-For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
+For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_basic.md#definition)
 
 ### ansibleguy.opnsense.frr_rip
 

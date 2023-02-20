@@ -8,7 +8,7 @@ Service
 
 **STATE**: unstable
 
-**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/service.yml>`_
+**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/service.yml>`_
 
 Info
 ****

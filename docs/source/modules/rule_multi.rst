@@ -8,8 +8,8 @@ Rule - Mass Management
 
 **STATE**: unstable
 
-**TESTS**: `rule_multi <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule_multi.yml>`_ |
-`rule_purge <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/rule_multi.yml>`_
+**TESTS**: `rule_multi <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/rule_multi.yml>`_ |
+`rule_purge <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/rule_multi.yml>`_
 
 **API Docs**: `Core - Firewall <https://docs.opnsense.org/development/api/core/firewall.html>`_
 

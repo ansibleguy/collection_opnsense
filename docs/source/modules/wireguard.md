@@ -2,10 +2,10 @@
 
 **STATE**: unstable
 
-**TESTS**: [wireguard_server](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_server.yml) | 
-[wireguard_peer](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_peer.yml) | 
-[wireguard_general](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_general.yml) | 
-[wireguard_show](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/wireguard_show.yml) 
+**TESTS**: [wireguard_server](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/wireguard_server.yml) | 
+[wireguard_peer](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/wireguard_peer.yml) | 
+[wireguard_general](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/wireguard_general.yml) | 
+[wireguard_show](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/wireguard_show.yml) 
 
 **API Docs**: [Plugin - Wireguard](https://docs.opnsense.org/development/api/plugins/wireguard.html)
 
@@ -18,11 +18,11 @@ You need to install the WireGuard plugin:
 os-wireguard
 ```
 
-You can also install it using the [package module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_package.md).
+You can also install it using the [package module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_package.md).
 
 ## Definition
 
-For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
+For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_basic.md#definition)
 
 ### ansibleguy.opnsense.wireguard_server
 
@@ -38,7 +38,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | dns_servers    | list    | false    | -             | dns                                                                                                | List of DNS servers that will be used to resolve peer endpoint-names                                                                                                                                                                                                                           |
 | disable_routes | boolean | false    | false         | disableroutes                                                                                      | If automatically created routes should be disabled. Needs to be set if you want to use [policy-based routing](https://docs.opnsense.org/manual/firewall.html#policy-based-routing), [dynamic routing](https://docs.opnsense.org/manual/dynamic_routing.html) or 'manually' created static routes |
 | gateway        | string  | false    | -             | gw                                                                                                 | IP address to use as gateway. Can only be used if you enable the 'disable_routes' option.                                                                                                                                                                                                      |
-| reload         | boolean | false    | true          | -                                                                                                  | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md).         |
+| reload         | boolean | false    | true          | -                                                                                                  | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_reload.md).         |
 
 ### ansibleguy.opnsense.wireguard_peer
 
@@ -51,7 +51,7 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 | psk         | string  | false    | -             | -                                                                                                  | Optionally provide an PSK. The pre-shared key (PSK) is an optional security improvement as per the WireGuard protocol and should be a unique PSK per client for highest security.                                                                                                      |
 | port        | integer | false    | -             | -                                                                                                  | Optionally provide the port of the peer instance                                                                                                                                                                                                                                       |
 | keepalive   | integer | false    | -             | -                                                                                                  | Integer between 1 and 86400. Should be used if one of the connection-members is behind NAT                                                                                                                                                                                             |
-| reload      | boolean | false    | true          | -                                                                                                  | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_reload.md). |
+| reload      | boolean | false    | true          | -                                                                                                  | If the running config should be reloaded on change - this will take some time. For mass-managing items you might want to reload it 'manually' after all changes are done => using the [reload module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_reload.md). |
 
 ### ansibleguy.opnsense.wireguard_show
 

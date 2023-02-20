@@ -11,7 +11,7 @@ assignees: ''
 
 Please make sure to go through these steps before opening an issue:
 
-- [ ] Read the documentation to make sure the feature does not yet exist: [Docs](https://github.com/ansibleguy/collection_opnsense/tree/stable/docs)
+- [ ] Read the documentation to make sure the feature does not yet exist: [Docs](https://github.com/ansibleguy/collection_opnsense/tree/latest/docs)
 
 - [ ] Only API-Enabled configuration can be implemented!
 

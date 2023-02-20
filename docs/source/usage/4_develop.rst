@@ -26,7 +26,7 @@ Here is a nice online-tool to do so: `XML-to-YAML <https://codebeautify.org/xml-
 Module
 ******
 
-There are `module-templates <https://github.com/ansibleguy/collection_opnsense/blob/stable/plugins/modules/>`_ that can be copied - so you don't have to re-write the basic structure.
+There are `module-templates <https://github.com/ansibleguy/collection_opnsense/blob/latest/plugins/modules/>`_ that can be copied - so you don't have to re-write the basic structure.
 
 API
 ***

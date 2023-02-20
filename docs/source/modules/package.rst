@@ -8,7 +8,7 @@ Package
 
 **STATE**: stable
 
-**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/package.yml>`_
+**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/package.yml>`_
 
 **API Docs**: `Core - Firmware <https://docs.opnsense.org/development/api/core/firmware.html>`_
 

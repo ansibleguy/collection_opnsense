@@ -2,7 +2,7 @@
 
 **STATE**: unstable
 
-**TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/monit.yml)
+**TESTS**: [Playbook](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/monit.yml)
 
 **API Docs**: [Core - Monit](https://docs.opnsense.org/development/api/core/monit.html)
 
@@ -21,7 +21,7 @@ Interfaces for 'monit_services' must be provided as used in the network config (
 
 ## Definition
 
-For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/use_basic.md#definition)
+For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_basic.md#definition)
 
 ### ansibleguy.opnsense.monit_alert
 

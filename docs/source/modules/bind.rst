@@ -9,12 +9,12 @@ DNS - BIND
 
 **STATE**: unstable
 
-**TESTS**: `bind_general <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/bind_general.yml>`_ |
-`bind_blocklist <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/bind_blocklist.yml>`_ |
-`bind_acl <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/bind_acl.yml>`_ |
-`bind_domain <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/bind_domain.yml>`_ |
-`bind_record <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/bind_record.yml>`_ |
-`bind_record_multi <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/bind_record_multi.yml>`_
+**TESTS**: `bind_general <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/bind_general.yml>`_ |
+`bind_blocklist <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/bind_blocklist.yml>`_ |
+`bind_acl <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/bind_acl.yml>`_ |
+`bind_domain <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/bind_domain.yml>`_ |
+`bind_record <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/bind_record.yml>`_ |
+`bind_record_multi <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/bind_record_multi.yml>`_
 
 **API Docs**: `Plugins - Bind <https://docs.opnsense.org/development/api/plugins/bind.html>`_
 

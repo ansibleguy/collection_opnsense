@@ -8,7 +8,7 @@ Syslog
 
 **STATE**: stable
 
-**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/syslog.yml>`_
+**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/syslog.yml>`_
 
 **API Docs**: `Core - Syslog <https://docs.opnsense.org/development/api/core/syslog.html>`_
 

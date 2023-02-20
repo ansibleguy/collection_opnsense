@@ -11,7 +11,7 @@ assignees: ''
 
 Please make sure to go through these steps before opening an issue:
 
-- [ ] Read the documentation of the affected module: [Docs](https://github.com/ansibleguy/collection_opnsense/tree/stable/docs)
+- [ ] Read the documentation of the affected module: [Docs](https://github.com/ansibleguy/collection_opnsense/tree/latest/docs)
 
 - [ ] Read the troubleshooting info: [Info](https://github.com/ansibleguy/collection_opnsense#errors)
 
@@ -50,13 +50,13 @@ A clear and concise description of what you expected to happen.
 
 ### Debug output
 
-Set the [debug option](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/develop.md#debugging) and copy its output.
+Set the [debug option](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/develop.md#debugging) and copy its output.
 
 ```text
 placeholder
 ```
 
-If the issue is related to time-consumption, you may also add the content of the [profiling logs](https://github.com/ansibleguy/collection_opnsense/blob/stable/docs/develop.md#debugging).
+If the issue is related to time-consumption, you may also add the content of the [profiling logs](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/develop.md#debugging).
 
 ```text
 placeholder

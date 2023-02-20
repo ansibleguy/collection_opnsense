@@ -9,9 +9,9 @@ Interface
 
 **STATE**: unstable
 
-**TESTS**: `vlan <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/interface_vlan.yml>`_ |
-`vxlan <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/interface_vxlan.yml>`_ |
-`vip <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/interface_vip.yml>`_
+**TESTS**: `vlan <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/interface_vlan.yml>`_ |
+`vxlan <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/interface_vxlan.yml>`_ |
+`vip <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/interface_vip.yml>`_
 
 **API Docs**: `Core - Interfaces <https://docs.opnsense.org/development/api/core/interfaces.html>`_
 

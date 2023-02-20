@@ -8,7 +8,7 @@ Cron Jobs
 
 **STATE**: unstable
 
-**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/cron.yml>`_
+**TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/cron.yml>`_
 
 **API Docs**: `Core - Cron <https://docs.opnsense.org/development/api/core/cron.html>`_
 

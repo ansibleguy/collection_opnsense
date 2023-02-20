@@ -8,7 +8,7 @@ IPSec
 
 **STATE**: unstable
 
-**TESTS**: `ipsec_cert <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_cert.yml>`_
+**TESTS**: `ipsec_cert <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ipsec_cert.yml>`_
 
 **API Docs**: `Core - IPSec <https://docs.opnsense.org/development/api/core/ipsec.html>`_
 
