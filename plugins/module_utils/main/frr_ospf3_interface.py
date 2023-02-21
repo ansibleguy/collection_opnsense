@@ -63,9 +63,4 @@ class Interface(BaseModule):
 
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
-        self.b.find(match_fields=self.p['match_fields'])
-        if self.exists:
-            self.call_cnf['params'] = [self.int['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()

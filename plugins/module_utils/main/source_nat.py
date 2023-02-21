@@ -60,10 +60,11 @@ class SNat(BaseModule):
                     "You need to provide an 'target' to create a source-nat rule!"
                 )
 
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
-        self._build_log_name()
+            validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
+        self._build_log_name()
         self.b.find(match_fields=self.p['match_fields'])
+
         if self.exists:
             self.call_cnf['params'] = [self.rule['uuid']]
 

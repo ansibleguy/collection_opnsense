@@ -66,11 +66,7 @@ class Connection(BaseModule):
         self.tunnel = {}
 
     def check(self) -> None:
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
-
-        self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.tunnel['uuid']]
-
         if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+            validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
+
+        self._base_check()

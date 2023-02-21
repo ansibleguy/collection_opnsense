@@ -47,9 +47,9 @@ class Service(BaseModule):
         self.existing_tests = None
 
     def check(self) -> None:
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
-
         if self.p['state'] == 'present':
+            validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
+
             if is_unset(self.p['type']):
                 self.m.fail_json("You need to provide a 'type' to create a service!")
 

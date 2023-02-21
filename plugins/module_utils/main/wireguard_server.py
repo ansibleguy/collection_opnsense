@@ -59,15 +59,15 @@ class Server(BaseModule):
         self.existing_peers = None
 
     def check(self) -> None:
-        validate_port(module=self.m, port=self.p['port'])
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
-        validate_str_fields(
-            module=self.m, data=self.p,
-            field_regex=self.STR_VALIDATIONS,
-            field_minmax_length=self.STR_LEN_VALIDATIONS
-        )
-
         if self.p['state'] == 'present':
+            validate_port(module=self.m, port=self.p['port'])
+            validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
+            validate_str_fields(
+                module=self.m, data=self.p,
+                field_regex=self.STR_VALIDATIONS,
+                field_minmax_length=self.STR_LEN_VALIDATIONS
+            )
+
             if is_unset(self.p['allowed_ips']):
                 self.m.fail_json(
                     "You need to provide at least one 'allowed_ips' entry "

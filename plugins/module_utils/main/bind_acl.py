@@ -53,9 +53,4 @@ class Acl(BaseModule):
                         f"It seems you provided an invalid network: '{net}'"
                     )
 
-        self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.acl['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()

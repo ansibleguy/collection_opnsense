@@ -72,13 +72,8 @@ class RouteMap(BaseModule):
             )
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
-        self.b.find(match_fields=[self.FIELD_ID])
+        self._base_check()
         self._find_links()
-        if self.exists:
-            self.call_cnf['params'] = [self.route_map['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _search_call(self) -> dict:
         raw = self.s.get(cnf={

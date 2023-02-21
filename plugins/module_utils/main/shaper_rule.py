@@ -8,6 +8,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 
 
 class Rule(BaseModule):
+    FIELD_ID = 'description'
     CMDS = {
         'add': 'addrule',
         'del': 'delrule',
@@ -27,7 +28,7 @@ class Rule(BaseModule):
         'source_invert', 'source_net', 'source_port', 'destination_invert',
         'destination_net', 'destination_port', 'dscp', 'direction',
     ]  # 'sequence' => not working
-    FIELDS_ALL = ['enabled', 'description']
+    FIELDS_ALL = ['enabled', FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'max_packet_length': 'iplen',
@@ -74,7 +75,7 @@ class Rule(BaseModule):
                     "create a shaper rule!"
                 )
 
-        self.b.find(match_fields=['description'])
+        self.b.find(match_fields=[self.FIELD_ID])
         if self.exists:
             self.call_cnf['params'] = [self.rule['uuid']]
 

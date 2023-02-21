@@ -82,9 +82,4 @@ class Match(BaseModule):
                         'to match!'
                     )
 
-        self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.proxy['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()

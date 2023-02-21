@@ -46,10 +46,7 @@ class Route(BaseModule):
         except ValueError:
             self.m.fail_json(f"Value '{self.p['network']}' is not a valid network!")
 
-        self.b.find(match_fields=self.p['match_fields'])
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()
 
     def _search_call(self) -> list:
         return self.s.get(cnf={

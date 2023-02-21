@@ -8,6 +8,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 
 
 class Pipe(BaseModule):
+    FIELD_ID = 'description'
     CMDS = {
         'add': 'addPipe',
         'del': 'delPipe',
@@ -26,7 +27,7 @@ class Pipe(BaseModule):
         'pie_enable', 'fqcodel_quantum', 'fqcodel_limit', 'fqcodel_flows',
         'delay',
     ]
-    FIELDS_ALL = ['enabled', 'description']
+    FIELDS_ALL = ['enabled', FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'bandwidth_metric': 'bandwidthMetric',
@@ -54,14 +55,10 @@ class Pipe(BaseModule):
         self.pipe = {}
 
     def check(self) -> None:
-        if self.p['state'] == 'present' and is_unset(self.p['bandwidth']):
-            self.m.fail_json('You need to provide bandwidth to create a shaper pipe!')
-
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
-
-        self.b.find(match_fields=['description'])
-        if self.exists:
-            self.call_cnf['params'] = [self.pipe['uuid']]
-
         if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+            validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
+
+            if is_unset(self.p['bandwidth']):
+                self.m.fail_json('You need to provide bandwidth to create a shaper pipe!')
+
+        self._base_check()

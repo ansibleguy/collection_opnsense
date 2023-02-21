@@ -39,9 +39,4 @@ class Proxy(BaseModule):
             if is_unset(self.p['url']):
                 self.m.fail_json('You need to provide an URL to create a PAC-proxy!')
 
-        self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.proxy['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()

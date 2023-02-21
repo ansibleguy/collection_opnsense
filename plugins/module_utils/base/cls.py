@@ -32,6 +32,22 @@ class BaseModule:
     def _search_call(self, fail_response: bool = False) -> list:
         return self.b.search(fail_response=fail_response)
 
+    def _base_check(self, match_fields: list = None):
+        if match_fields is None:
+            if 'match_fields' in self.p:
+                match_fields = self.p['match_fields']
+
+            elif hasattr(self, 'FIELD_ID'):
+                match_fields = [self.FIELD_ID]
+
+        if match_fields is not None:
+            self.b.find(match_fields=match_fields)
+            if self.exists:
+                self.call_cnf['params'] = [getattr(self, self.EXIST_ATTR)['uuid']]
+
+        if self.p['state'] == 'present':
+            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+
     def get_existing(self) -> list:
         return self.b.get_existing()
 

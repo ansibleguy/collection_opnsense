@@ -46,9 +46,10 @@ class TMPL(BaseModule):
         self.stuff = {}
 
     def check(self) -> None:
-        # custom argument validation
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
+        if self.p['state'] == 'present':
+            validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
+        # self._base_check()
         self.b.find(match_fields=[])  # todo: match_fields
         if self.exists:
             self.call_cnf['params'] = [self.stuff['uuid']]

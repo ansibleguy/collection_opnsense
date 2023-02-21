@@ -43,18 +43,13 @@ class Alert(BaseModule):
         self.alert = {}
 
     def check(self) -> None:
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
-
         if self.p['state'] == 'present':
+            validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
+
             if not is_valid_email(self.p['recipient']):
                 self.m.fail_json(
                     f"The recipient value '{self.p['recipient']}' is not a "
                     f"valid email address!"
                 )
 
-        self.b.find(match_fields=self.p['match_fields'])
-        if self.exists:
-            self.call_cnf['params'] = [self.alert['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()

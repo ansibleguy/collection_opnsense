@@ -64,12 +64,7 @@ class Prefix(BaseModule):
             )
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
-        self.b.find(match_fields=self.FIELDS_MATCH)
-        if self.exists:
-            self.call_cnf['params'] = [self.prefix_list['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check(match_fields=self.FIELDS_MATCH)
 
     def process(self) -> None:
         self.b.process()

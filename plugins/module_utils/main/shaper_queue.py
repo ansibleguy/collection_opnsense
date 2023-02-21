@@ -8,6 +8,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 
 
 class Queue(BaseModule):
+    FIELD_ID = 'description'
     CMDS = {
         'add': 'addQueue',
         'del': 'delQueue',
@@ -26,7 +27,7 @@ class Queue(BaseModule):
         'codel_enable', 'codel_ecn_enable', 'pie_enable',  'mask',
         'pipe', 'buckets', 'codel_target', 'codel_interval', 'weight',
     ]
-    FIELDS_ALL = ['enabled', 'description']
+    FIELDS_ALL = ['enabled', FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     INT_VALIDATIONS = {
         'weight': {'min': 1, 'max': 100},
@@ -48,10 +49,10 @@ class Queue(BaseModule):
         self.existing_pipes = None
 
     def check(self) -> None:
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
+        if self.p['state'] == 'present':
+            validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
-        # checking if item exists
-        self.b.find(match_fields=['description'])
+        self.b.find(match_fields=[self.FIELD_ID])
         if self.exists:
             self.call_cnf['params'] = [self.queue['uuid']]
 

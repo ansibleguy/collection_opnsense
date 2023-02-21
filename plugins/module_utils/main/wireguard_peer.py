@@ -58,15 +58,15 @@ class Peer(BaseModule):
         self.existing_peers = None
 
     def check(self) -> None:
-        validate_port(module=self.m, port=self.p['port'])
-        validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
-        validate_str_fields(
-            module=self.m, data=self.p,
-            field_regex=self.STR_VALIDATIONS,
-            field_minmax_length=self.STR_LEN_VALIDATIONS
-        )
-
         if self.p['state'] == 'present':
+            validate_port(module=self.m, port=self.p['port'])
+            validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
+            validate_str_fields(
+                module=self.m, data=self.p,
+                field_regex=self.STR_VALIDATIONS,
+                field_minmax_length=self.STR_LEN_VALIDATIONS
+            )
+
             if is_unset(self.p['public_key']):
                 self.m.fail_json(
                     "You need to provide a 'public_key' if you want to create a peer!"
@@ -92,9 +92,4 @@ class Peer(BaseModule):
                 f"nor a valid domain!"
             )
 
-        self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.peer['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()

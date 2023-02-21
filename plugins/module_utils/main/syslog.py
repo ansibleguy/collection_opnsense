@@ -78,12 +78,7 @@ class Syslog(BaseModule):
                         "Target does not match transport ip-protocol (IPv4)!"
                     )
 
-        validate_port(module=self.m, port=self.p['port'])
-
-        # checking if item exists
-        self.b.find(match_fields=self.p['match_fields'])
-        if self.exists:
-            self.call_cnf['params'] = [self.dest['uuid']]
-
         if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(self.p)
+            validate_port(module=self.m, port=self.p['port'])
+
+        self._base_check()

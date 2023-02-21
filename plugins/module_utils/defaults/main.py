@@ -3,7 +3,7 @@ OPN_MOD_ARGS = dict(
     api_port=dict(type=int, required=False, default=443),
     api_key=dict(type='str', required=False, no_log=True),
     api_secret=dict(type='str', required=False, no_log=True),
-    api_credential_file=dict(type='path', required=False, no_log=True),
+    api_credential_file=dict(type='path', required=False),
     ssl_verify=dict(type='bool', required=False, default=True),
     ssl_ca_file=dict(type='path', required=False),
     debug=dict(type='bool', required=False, default=False),

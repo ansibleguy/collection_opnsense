@@ -44,12 +44,7 @@ class Test(BaseModule):
                     "create a test of type 'execute'!"
                 )
 
-        self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.test['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()
 
     def update(self) -> None:
         self.b.update(enable_switch=False)

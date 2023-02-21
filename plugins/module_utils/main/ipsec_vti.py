@@ -58,9 +58,4 @@ class Child(BaseModule):
                     "'local_tunnel_address' and 'remote_tunnel_address' to create an IPSec VTI!"
                 )
 
-        self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.vti['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()

@@ -38,12 +38,7 @@ class Neighbor(BaseModule):
         if not is_ip_or_network(self.p[self.FIELD_ID]):
             self.m.fail_json(f"Value '{self.p[self.FIELD_ID]}' is not a valid IP address!")
 
-        self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.neighbor['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()
 
     def _search_call(self) -> list:
         return self.s.get(cnf={

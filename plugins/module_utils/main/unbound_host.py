@@ -63,10 +63,7 @@ class Host(BaseModule):
             if self.p['state'] == 'present' and not is_ip(self.p['value']):
                 self.m.fail_json(f"Value '{self.p['value']}' is not a valid IP-address!")
 
-        self.b.find(match_fields=self.p['match_fields'])
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()
 
     def _simplify_existing(self, host: dict) -> dict:
         simple = simplify_translate(

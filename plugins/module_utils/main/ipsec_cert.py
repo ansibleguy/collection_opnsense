@@ -59,13 +59,7 @@ class KeyPair(BaseModule):
             self.p['public_key'] = self.p['public_key'].strip()
             self.p['private_key'] = self.p['private_key'].strip()
 
-        # checking if item exists
-        self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.key['uuid']]
-
-        if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self._base_check()
 
     def _simplify_existing(self, key: dict) -> dict:
         # makes processing easier

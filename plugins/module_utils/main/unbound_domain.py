@@ -35,13 +35,10 @@ class Domain(BaseModule):
         self.domain = {}
 
     def check(self) -> None:
-        validate_domain(module=self.m, domain=self.p['domain'])
-        if not is_ip(self.p['server']):
-            self.m.fail_json(f"Server-value '{self.p['server']}' is not a valid IP-address!")
-
-        self.b.find(match_fields=self.p['match_fields'])
-        if self.exists:
-            self.call_cnf['params'] = [self.domain['uuid']]
-
         if self.p['state'] == 'present':
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+            validate_domain(module=self.m, domain=self.p['domain'])
+
+            if not is_ip(self.p['server']):
+                self.m.fail_json(f"Server-value '{self.p['server']}' is not a valid IP-address!")
+
+        self._base_check()

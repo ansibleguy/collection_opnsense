@@ -76,15 +76,17 @@ class Rule(BaseModule):
         return log_name
 
     def check(self) -> None:
-        validate_int_fields(
-            module=self.m,
-            data=self.p,
-            field_minmax=self.INT_VALIDATIONS,
-            error_func=self._error
-        )
-        self._build_log_name()
+        if self.p['state'] == 'present':
+            validate_int_fields(
+                module=self.m,
+                data=self.p,
+                field_minmax=self.INT_VALIDATIONS,
+                error_func=self._error
+            )
 
+        self._build_log_name()
         self.b.find(match_fields=self.p['match_fields'])
+
         if self.exists:
             self.call_cnf['params'] = [self.rule['uuid']]
 
