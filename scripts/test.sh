@@ -6,12 +6,16 @@ echo ''
 
 DEBUG=false
 
+export ANSIBLE_INVENTORY_UNPARSED_WARNING=False
+export ANSIBLE_LOCALHOST_WARNING=False
+
 if [ -z "$1" ] || [ -z "$2" ]
 then
   echo 'Arguments:'
   echo '  1: firewall'
   echo '  2: api key file'
-  echo '  3: path to virtual environment (optional)'
+  echo "  3: path to local collection - set to '0' to clone from github"
+  echo '  4: path to virtual environment (optional)'
   echo ''
   exit 1
 else
@@ -19,9 +23,11 @@ else
   export TEST_API_KEY="$2"
 fi
 
-if [ -n "$3" ]
+LOCAL_COLLECTION="$3"
+
+if [ -n "$4" ]
 then
-  source "$3/bin/activate"
+  source "$4/bin/activate"
 fi
 
 if [[ "$DEBUG" == true ]]
@@ -32,8 +38,20 @@ else
 fi
 
 cd "$(dirname "$0")/.."
-rm -rf "~/.ansible/collections/ansible_collections/ansibleguy/opnsense"
-ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
+rm -rf "$HOME/.ansible/collections/ansible_collections/ansibleguy/opnsense"
+
+if [[ "$LOCAL_COLLECTION" == '0' ]]
+then
+  ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
+else
+  if [ -d "$LOCAL_COLLECTION" ]
+  then
+    ln -s "$LOCAL_COLLECTION" "$HOME/.ansible/collections/ansible_collections/ansibleguy/opnsense"
+  else
+    echo "Provided collection path does not exist: '$LOCAL_COLLECTION'"
+    exit 1
+  fi
+fi
 
 function run_test() {
   module="$1"

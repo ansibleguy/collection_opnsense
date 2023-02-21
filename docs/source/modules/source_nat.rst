@@ -145,7 +145,6 @@ Examples
             # enabled: true
             # debug: false
             # state: 'present'
-            # reload: true
 
         - name: Adding rule
           ansibleguy.opnsense.source_nat:

@@ -68,7 +68,6 @@ def run_module():
             ]
         ),
         **shared_rule_args,
-        **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,
     )
