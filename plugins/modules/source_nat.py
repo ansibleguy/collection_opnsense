@@ -16,7 +16,7 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.rule import \
         RULE_MOD_ARGS
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
-        OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
+        OPN_MOD_ARGS, STATE_MOD_ARG
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.source_nat import SNat
 
 except MODULE_EXCEPTIONS:
