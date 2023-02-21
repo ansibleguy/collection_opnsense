@@ -4,7 +4,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.base import Base
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields
+    validate_int_fields, validate_str_fields
 
 
 class BaseModule:
@@ -78,6 +78,18 @@ class GeneralModule:
         self.settings = {}
 
     def check(self) -> None:
+        if hasattr(self.b.i, 'STR_VALIDATIONS'):
+            if hasattr(self.b.i, 'STR_LEN_VALIDATIONS'):
+                validate_str_fields(
+                    module=self.m,
+                    data=self.p,
+                    field_regex=self.b.i.STR_VALIDATIONS,
+                    field_minmax_length=self.b.i.STR_LEN_VALIDATIONS
+                )
+
+            else:
+                validate_str_fields(module=self.m, data=self.p, field_regex=self.b.i.STR_VALIDATIONS)
+
         if hasattr(self.b.i, 'INT_VALIDATIONS'):
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.b.i.INT_VALIDATIONS)
 
