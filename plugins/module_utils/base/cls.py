@@ -106,6 +106,9 @@ class GeneralModule:
             else:
                 validate_str_fields(module=self.m, data=self.p, field_regex=self.b.i.STR_VALIDATIONS)
 
+        elif hasattr(self.b.i, 'STR_LEN_VALIDATIONS'):
+            validate_str_fields(module=self.m, data=self.p, field_minmax_length=self.b.i.STR_LEN_VALIDATIONS)
+
         if hasattr(self.b.i, 'INT_VALIDATIONS'):
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.b.i.INT_VALIDATIONS)
 

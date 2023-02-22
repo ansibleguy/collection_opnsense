@@ -28,8 +28,8 @@ class General(GeneralModule):
         'int': ['ttl_h', 'processes'],
         'select': ['method', 'group'],
     }
-    STR_VALIDATIONS = {
-        'prompt': r'^([\t\n\v\f\r 0-9a-zA-Z.,_\x{00A0}-\x{FFFF}]){0,255}$'
+    STR_LEN_VALIDATIONS = {
+        'prompt': {'min': 0, 'max': 255}
     }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
