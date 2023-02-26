@@ -29,29 +29,46 @@ EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
 def run_module():
     module_args = dict(
         description=dict(
-            type='str', required=True, aliases=['name'],
+            type='str', required=True, aliases=['name', 'desc'],
             description='Unique name to identify the entry'
         ),
         connection=dict(
             type='str', required=False, aliases=['tunnel', 'conn', 'tun'],
             description='Connection to link this child to'
         ),
+        mode=dict(
+            type='str', required=False, default='tunnel',
+            choices=['tunnel', 'transport', 'pass', 'drop'],
+            description='IPsec Mode to establish CHILD_SA with. tunnel negotiates the CHILD_SA in IPsec Tunnel '
+                        'Mode whereas transport uses IPsec Transport Mode. pass and drop are used to install '
+                        'shunt policies which explicitly bypass the defined traffic from IPsec processing or '
+                        'drop it, respectively',
+        ),
         request_id=dict(
             type='str', default='', required=False, aliases=['req_id', 'reqid'],
-            description='',
+            description='This might be helpful in some scenarios, like route based tunnels (VTI), but works only if '
+                        'each CHILD_SA configuration is instantiated not more than once. The default uses dynamic '
+                        'reqids, allocated incrementally',
         ),
         eap_proposals=dict(
             type='list', elements='str', required=False, default=['default'],
-            description='',
+            aliases=['eap_props', 'eap'],
         ),
         sha256_96=dict(
             type='bool', required=False, default=False, aliases=['sha256'],
-            description='',
+            description='HMAC-SHA-256 is used with 128-bit truncation with IPsec. For compatibility with '
+                        'implementations that incorrectly use 96-bit truncation this option may be enabled to '
+                        'configure the shorter truncation length in the kernel. This is not negotiated, so this '
+                        'only works with peers that use the incorrect truncation length (or have this option enabled)',
         ),
         start_action=dict(
             type='str', required=False, aliases=['start'], default='start',
             choices=['none', 'trap_start', 'route', 'start', 'trap'],
-            description='',
+            description='Action to perform after loading the configuration. The default of none loads the connection '
+                        'only, which then can be manually initiated or used as a responder configuration. The value '
+                        'trap installs a trap policy which triggers the tunnel as soon as matching traffic has been '
+                        'detected. The value start initiates the connection actively. To immediately initiate a '
+                        'connection for which trap policies have been installed, user Trap+start',
         ),
         close_action=dict(
             type='str', required=False, aliases=['close'], default='none',
@@ -63,22 +80,22 @@ def run_module():
             choices=['clear', 'trap', 'start'],
             description='',
         ),
-        mode=dict(
-            type='str', required=False, default='tunnel',
-            choices=['tunnel', 'transport', 'pass', 'drop'],
-            description='',
-        ),
         policies=dict(
-            type='bool', required=False, default=True,
-            description='',
+            type='bool', required=False, default=True, aliases=['pols'],
+            description='Whether to install IPsec policies or not. Disabling this can be useful in some scenarios '
+                        'e.g. VTI where policies are not managed by the IKE daemon',
         ),
         local_ts=dict(
-            type='list', elements='str', required=True, default=[], aliases=['local'],
-            description='',
+            type='list', elements='str', required=True, default=[],
+            aliases=['local_traffic_selectors', 'local_cidr', 'local'],
+            description='List of local traffic selectors to include in CHILD_SA. Each selector is a CIDR '
+                        'subnet definition',
         ),
         remote_ts=dict(
-            type='list', elements='str', required=True, default=[],  aliases=['remote'],
-            description='',
+            type='list', elements='str', required=True, default=[],
+            aliases=['remote_traffic_selectors', 'remote_cidr', 'remote'],
+            description='List of remote traffic selectors to include in CHILD_SA. Each selector is a CIDR '
+                        'subnet definition',
         ),
         rekey_seconds=dict(
             type='int', default=3600, required=False, aliases=['rekey_time', 'rekey'],

@@ -27,14 +27,17 @@ EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
 
 
 def run_module():
+    # todo: add description to parameters => VTI not found in WebUI (?!)
     module_args = dict(
         description=dict(
-            type='str', required=True, aliases=['name'],
+            type='str', required=True, aliases=['name', 'desc'],
             description='Unique name to identify the entry'
         ),
         request_id=dict(
             type='int', default=0, required=False, aliases=['req_id', 'reqid'],
-            description='',
+            description='This might be helpful in some scenarios, like route based tunnels (VTI), but works only if '
+                        'each CHILD_SA configuration is instantiated not more than once. The default uses dynamic '
+                        'reqids, allocated incrementally',
         ),
         local_address=dict(
             type='str', required=False, aliases=['local_addr', 'local'],

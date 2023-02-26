@@ -28,7 +28,10 @@ EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
 
 def run_module():
     module_args = dict(
-        name=dict(type='str', required=True, description='Unique pool name'),
+        name=dict(
+            type='str', required=True,
+            description='Unique pool/network name'
+        ),
         network=dict(
             type='str', required=False, aliases=['net', 'cidr'],
             description='Pool network in CIDR format',

@@ -28,9 +28,12 @@ EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
 
 def run_module():
     module_args = dict(
-        description=dict(type='str', required=True, aliases=['name', 'desc']),
+        description=dict(
+            type='str', required=True, aliases=['name', 'desc'],
+            description='Unique connection/tunnel name',
+        ),
         local_addresses=dict(
-            type='list', elements='str', required=False, aliases=['local_addr', 'local'],
+            type='list', elements='str', required=False, aliases=['local_addr', 'local'], default=[],
             description='Local address[es] to use for IKE communication. Accepts single IPv4/IPv6 addresses, '
                         'DNS names, CIDR subnets or IP address ranges. As an initiator, the first non-range/non-subnet '
                         'is used to initiate the connection from. As a responder the local destination address must '
@@ -39,7 +42,7 @@ def run_module():
                         'the lookup is delayed for that time. When left empty %any is choosen as default',
         ),
         remote_addresses=dict(
-            type='list', elements='str', required=False, aliases=['remote_addr', 'remote'],
+            type='list', elements='str', required=False, aliases=['remote_addr', 'remote'], default=[],
             description='Remote address[es] to use for IKE communication. Accepts single IPv4/IPv6 addresses, '
                         'DNS names, CIDR subnets or IP address ranges. As an initiator, the first non-range/non-subnet '
                         'is used to initiate the connection to. As a responder, the initiator source address must '
@@ -55,7 +58,7 @@ def run_module():
                         'Note that the order in which they are queried primarily depends on the plugin order',
         ),
         proposals=dict(
-            type='list', elements='str', required=False, default=['default'],
+            type='list', elements='str', required=False, default=['default'], aliases=['props'],
             description='A proposal is a set of algorithms. For non-AEAD algorithms this includes IKE an encryption '
                         'algorithm, an integrity algorithm, a pseudo random function (PRF) and a Diffie-Hellman key '
                         'exchange group. For AEAD algorithms, instead of encryption and integrity algorithms a '
@@ -74,21 +77,21 @@ def run_module():
                         'a uniqueness policy can be enforced',
         ),
         aggressive=dict(
-            type='bool', required=False, default=False,
+            type='bool', required=False, default=False, aliases=['aggr'],
             description='Enables IKEv1 Aggressive Mode instead of IKEv1 Main Mode with Identity Protection. '
                         'Aggressive Mode is considered less secure because the ID and HASH payloads are exchanged '
                         'unprotected. This allows a passive attacker to snoop peer identities and even worse, '
                         'start dictionary attacks on the Preshared Key',
         ),
         version=dict(
-            type='str', required=False, default='ike',
+            type='str', required=False, default='ike', aliases=['vers', 'v'],
             choices=['ike', 'ikev1', 'ikev2'],
             description='IKE major version to use for connection. 1 uses IKEv1 aka ISAKMP, 2 uses IKEv2. A connection '
                         'using IKEv1+IKEv2 accepts both IKEv1 and IKEv2 as a responder and initiates the connection '
                         'actively with IKEv2',
         ),
         mobike=dict(
-            type='bool', required=False, default=True,
+            type='bool', required=False, default=True, aliases=['mob'],
             description='Enables MOBIKE on IKEv2 connections. MOBIKE is enabled by default on IKEv2 connections and '
                         'allows mobility of clients and multi-homing on servers by migrating active IPsec tunnels. '
                         'Usually keeping MOBIKE enabled is unproblematic, as it is not used if the peer does not '
