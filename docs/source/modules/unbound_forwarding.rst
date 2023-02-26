@@ -22,7 +22,7 @@ Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "domain","string","true","\-","dom, d","Domain to forward queries of"
+    "domain","string","false","\-","dom, d","Domain to forward queries of"
     "target","string","true","\-","server, srv, tgt","DNS target server"
     "port","string","false","53","p","DNS port of the target server"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
