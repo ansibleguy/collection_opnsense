@@ -44,7 +44,9 @@ class Forward(BaseModule):
         #   https://github.com/opnsense/core/commit/6832fd75a0b41e376e80f287f8ad3cfe599ea3d1
 
     def check(self) -> None:
-        validate_domain(module=self.m, domain=self.p['domain'])
+        if self.p['domain']:
+          validate_domain(module=self.m, domain=self.p['domain'])
+
         validate_port(module=self.m, port=self.p['port'])
 
         self.b.find(match_fields=['domain', 'target'])
