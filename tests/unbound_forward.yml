@@ -56,6 +56,15 @@
         opn5.failed or
         not opn5.changed
 
+    - name: Adding 3
+      ansibleguy.opnsense.unbound_forward:
+        target: '1.1.1.3'
+        reload: false  # speed
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        not opn10.changed
+
     - name: Disabling 2
       ansibleguy.opnsense.unbound_forward:
         domain: 'fwd.opnsense.test.ansibleguy.net'
