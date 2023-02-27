@@ -45,7 +45,7 @@ class Forward(BaseModule):
 
     def check(self) -> None:
         if not is_unset(self.p['domain']):
-          validate_domain(module=self.m, domain=self.p['domain'])
+            validate_domain(module=self.m, domain=self.p['domain'])
 
         validate_port(module=self.m, port=self.p['port'])
 

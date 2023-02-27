@@ -4,7 +4,7 @@
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.stuff:
+    ansibleguy.opnsense._tmpl_obj:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
@@ -14,7 +14,7 @@
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
-      target: 'stuff'
+      target: '_tmpl_obj'
 
   tasks:
     - name: Listing
@@ -25,7 +25,7 @@
         opn_pre1.data | length != 0
 
     - name: Removing - does not exist
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
 
         state: 'absent'
       register: opn_pre2
@@ -34,20 +34,20 @@
         opn_pre2.changed
 
     - name: Adding 1 - failing because of invalid value
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
         field1: 'INVALID-IP'
       register: opn_fail1
       failed_when: not opn_fail1.failed
 
     - name: Adding 1 - failing because of invalid domain
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
         field1: '!INVALID-DOMAIN!'
         field2: 'INVALID-IP'
       register: opn_fail2
       failed_when: not opn_fail2.failed
 
     - name: Adding 1
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
 
       register: opn1
       failed_when: >
@@ -55,7 +55,7 @@
         not opn1.changed
 
     - name: Changing 1
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
 
       register: opn9
       failed_when: >
@@ -63,7 +63,7 @@
         not opn9.changed
 
     - name: Disabling 1
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
 
         enabled: false
       register: opn2
@@ -73,7 +73,7 @@
       when: not ansible_check_mode
 
     - name: Disabling 1 - nothing changed
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
 
         enabled: false
       register: opn3
@@ -83,7 +83,7 @@
       when: not ansible_check_mode
 
     - name: Enabling 1
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
 
       register: opn4
       failed_when: >
@@ -92,7 +92,7 @@
       when: not ansible_check_mode
 
     - name: Adding 2
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
 
       register: opn5
       failed_when: >
@@ -100,7 +100,7 @@
         not opn5.changed
 
     - name: Adding 2 - nothing changed
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
 
       register: opn6
       failed_when: >
@@ -109,7 +109,7 @@
       when: not ansible_check_mode
 
     - name: Removing 2
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
 
         state: 'absent'
       register: opn7
@@ -127,7 +127,7 @@
       when: not ansible_check_mode
 
     - name: Cleanup
-      ansibleguy.opnsense.stuff:
+      ansibleguy.opnsense._tmpl_obj:
 
         state: 'absent'
       loop:

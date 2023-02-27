@@ -155,6 +155,7 @@ disable=E0611, E0401,  # ansible modules will not be found
         C0415,  # list/reload modules
         R0903,  # classes with few public methods
         W0707,  # custom re-raising of exceptions
+        R1735,  # dict=() formatting
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option

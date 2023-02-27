@@ -11,3 +11,4 @@ skip_list:
   - '204'  # line length => checked by yamllint
   - 'galaxy[no-changelog]'  # requires inline documentation of modules
   - 'meta-unsupported-ansible'  # support for older installations from apt and so on
+  - 'meta-runtime[unsupported-version]'
