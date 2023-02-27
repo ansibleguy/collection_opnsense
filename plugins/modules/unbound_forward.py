@@ -28,7 +28,11 @@ EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/unbound_forwarding
 
 def run_module():
     module_args = dict(
-        domain=dict(type='str', required=False, default='', aliases=['dom', 'd']),
+        domain=dict(
+            type='str', required=False, default='', aliases=['dom', 'd'],
+            description='Domain of the host. All queries for this domain will be forwarded to the nameserver '
+                        'specified. Leave empty to catch all queries and forward them to the nameserver'
+        ),
         target=dict(
             type='str', required=True, aliases=['tgt', 'server', 'srv'],
             description='Server to forward the dns queries to'
@@ -37,7 +41,7 @@ def run_module():
             type='int', required=False, default=53, aliases=['p'],
             description='DNS port of the target server'
         ),
-        type=dict(type='str', required=False, choises=['forward'], default='forward'),
+        type=dict(type='str', required=False, choices=['forward'], default='forward'),
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,

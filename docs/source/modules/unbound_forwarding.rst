@@ -22,8 +22,8 @@ Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "domain","string","false","\-","dom, d","Domain to forward queries of"
-    "target","string","true","\-","server, srv, tgt","DNS target server"
+    "domain","string","false","\-","dom, d","Domain of the host. All queries for this domain will be forwarded to the nameserver specified. Leave empty to catch all queries and forward them to the nameserver"
+    "target","string","true","\-","server, srv, tgt","Server to forward the dns queries to"
     "port","string","false","53","p","DNS port of the target server"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
