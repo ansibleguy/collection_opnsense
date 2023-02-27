@@ -1,10 +1,16 @@
 #!/bin/bash
 
-set -e
+set -eo pipefail
+
+# todo: some plugins will be needed as prerequisites - should be installed automatically
+#   os-firewall, os-wireguard, os-frr, os-bind
+# todo: also: a opt1 interface is needed for some tests
 
 echo ''
 
 DEBUG=false
+TMP_DIR="/tmp/.opnsense_test_$(date +%s)"
+TMP_COL_DIR="$TMP_DIR/collections"
 
 export ANSIBLE_INVENTORY_UNPARSED_WARNING=False
 export ANSIBLE_LOCALHOST_WARNING=False
@@ -37,47 +43,15 @@ else
   VERBOSITY=''
 fi
 
-cd "$(dirname "$0")/.."
-rm -rf "$HOME/.ansible/collections/ansible_collections/ansibleguy/opnsense"
+source "$(dirname "$0")/test_prep.sh"  # shared between single/multi test
 
-if [[ "$LOCAL_COLLECTION" == '0' ]]
-then
-  ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
-else
-  if [ -d "$LOCAL_COLLECTION" ]
-  then
-    ln -s "$LOCAL_COLLECTION" "$HOME/.ansible/collections/ansible_collections/ansibleguy/opnsense"
-  else
-    echo "Provided collection path does not exist: '$LOCAL_COLLECTION'"
-    exit 1
-  fi
-fi
-
-function run_test() {
-  module="$1"
-  check_mode="$2"
-
-  echo ''
-  echo '##############################'
-  echo "RUNNING TESTS of module: '$module'"
-  echo ''
-
-  ansible-playbook "tests/$module.yml" --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
-  if [[ "$check_mode" == '1' ]]
-  then
-    ansible-playbook "tests/$module.yml" --check --extra-vars="ansible_python_interpreter=$(which python)" $VERBOSITY
-  fi
-}
+cd "$TMP_COL_DIR/ansible_collections/ansibleguy/opnsense"
 
 echo ''
 echo '##############################'
 echo 'STARTING TESTS!'
 echo '##############################'
 echo ''
-
-# todo: some plugins will be needed as prerequisites - should be installed automatically
-#   os-firewall, os-wireguard, os-frr, os-bind
-# todo: also: a opt1 interface is needed for some tests
 
 run_test 'reload' 0
 run_test 'service' 1
