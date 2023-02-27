@@ -56,14 +56,14 @@
         opn5.failed or
         not opn5.changed
 
-    - name: Adding 3
+    - name: Adding 3 - catch-all
       ansibleguy.opnsense.unbound_forward:
         target: '1.1.1.3'
         reload: false  # speed
-      register: opn10
+      register: opn11
       failed_when: >
-        opn10.failed or
-        not opn10.changed
+        opn11.failed or
+        not opn11.changed
 
     - name: Disabling 2
       ansibleguy.opnsense.unbound_forward:
@@ -116,7 +116,7 @@
       register: opn3
       failed_when: >
         'data' not in opn3 or
-        opn3.data | length != 1
+        opn3.data | length != 2
       when: not ansible_check_mode
 
     - name: Cleanup
@@ -127,6 +127,7 @@
       loop:
         - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
         - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
+        - {d: '', t: '1.1.1.3'}
       when: not ansible_check_mode
 
     - name: Listing
