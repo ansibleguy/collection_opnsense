@@ -5,7 +5,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_port, is_true
+    validate_port, is_true, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -44,7 +44,7 @@ class Forward(BaseModule):
         #   https://github.com/opnsense/core/commit/6832fd75a0b41e376e80f287f8ad3cfe599ea3d1
 
     def check(self) -> None:
-        if self.p['domain']:
+        if not is_unset(self.p['domain']):
           validate_domain(module=self.m, domain=self.p['domain'])
 
         validate_port(module=self.m, port=self.p['port'])
