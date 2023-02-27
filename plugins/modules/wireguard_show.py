@@ -26,7 +26,7 @@ def run_module():
     module_args = dict(
         target=dict(
             type='str', required=False, default='handshake',
-            choises=['handshake', 'config'],
+            choices=['handshake', 'config'],
             description='What information to query'
         ),
         **OPN_MOD_ARGS,

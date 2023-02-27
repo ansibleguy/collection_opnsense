@@ -124,7 +124,7 @@ def run_module():
             type='list', required=False, elements='str',
             description='Fields that are used to match configured neighbors with the running config - '
                         "if any of those fields are changed, the module will think it's a new entry",
-            choises=[
+            choices=[
                 'ip', 'as_number', 'weight', 'local_ip', 'source_int',
                 'ipv6_link_local_int', 'disable_connected_check', 'description',
                 'prefix_list_in', 'prefix_list_out', 'route_map_in', 'route_map_out',

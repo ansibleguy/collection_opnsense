@@ -34,7 +34,7 @@ def run_module():
         ),
         bandwidth_metric=dict(
             type='str', required=False, default='Mbit', aliases=['bw_metric'],
-            choises=['bit', 'Kbit', 'Mbit', 'Gbit'],
+            choices=['bit', 'Kbit', 'Mbit', 'Gbit'],
         ),
         queue=dict(type='str', required=False, default=''),
         mask=dict(
@@ -43,7 +43,7 @@ def run_module():
         buckets=dict(type='str', required=False, default=''),
         scheduler=dict(
             type='str', required=False, default='',
-            choises=['', 'fifo', 'rr', 'qfq', 'fq_codel', 'fq_pie']
+            choices=['', 'fifo', 'rr', 'qfq', 'fq_codel', 'fq_pie']
         ),
         pie_enable=dict(type='bool', required=False, default=False, aliases=['pie']),
         codel_enable=dict(type='bool', required=False, default=False, aliases=['codel']),

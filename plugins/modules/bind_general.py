@@ -111,7 +111,7 @@ def run_module():
         ),
         dnssec_validation=dict(
             type='str', required=False, default='no',
-            aliases=['dnssec'], choises=['no', 'auto'],
+            aliases=['dnssec'], choices=['no', 'auto'],
             description='Set to "Auto" to use the static trust anchor configuration by the system'
         ),
         hide_hostname=dict(

@@ -36,7 +36,7 @@ def run_module():
         ),
         mode=dict(
             type='str', required=False, aliases=['m'], default='ipalias',
-            choises=['ipalias', 'carp', 'proxyarp', 'other'],
+            choices=['ipalias', 'carp', 'proxyarp', 'other'],
         ),
         cidr=dict(
             type='int', required=False, default=32, aliases=['subnet_bits', 'subnet'],
@@ -74,7 +74,7 @@ def run_module():
             type='list', required=False, elements='str',
             description='Fields that are used to match configured VIP with the running config - '
                         "if any of those fields are changed, the module will think it's a new entry",
-            choises=['address', 'interface', 'cidr', 'description'],
+            choices=['address', 'interface', 'cidr', 'description'],
             default=['address', 'interface'],
         ),
         **RELOAD_MOD_ARG,

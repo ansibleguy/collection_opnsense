@@ -39,7 +39,7 @@ def run_module():
         ),
         events=dict(
             type='list', elements='str', required=False, default=[],
-            choises=[
+            choices=[
                 'action', 'checksum', 'bytein', 'byteout', 'connection', 'content',
                 'data', 'exec', 'fsflags', 'gid', 'icmp', 'instance', 'invalid',
                 'link', 'nonexist', 'packetin', 'packetout', 'permission', 'pid',
@@ -89,7 +89,7 @@ def run_module():
             type='list', required=False, elements='str',
             description='Fields that are used to match configured alerts with the running config - '
                         "if any of those fields are changed, the module will think it's a new entry",
-            choises=['recipient', 'not_on', 'events', 'reminder', 'description'],
+            choices=['recipient', 'not_on', 'events', 'reminder', 'description'],
             default=['recipient'],
         ),
         **RELOAD_MOD_ARG,

@@ -26,7 +26,7 @@ def run_module():
     module_args = dict(
         target=dict(
             type='str', required=True, aliases=['tgt', 't'],
-            choises=[
+            choices=[
                 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper',
                 'monit', 'wireguard', 'interface_vlan', 'interface_vxlan', 'frr',
                 'webproxy', 'interface_vip', 'bind',

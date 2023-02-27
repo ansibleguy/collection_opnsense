@@ -41,7 +41,7 @@ def run_module():
             type='list', required=False, elements='str',
             description='Fields that are used to match configured routes with the running config - '
                         "if any of those fields are changed, the module will think it's a new route",
-            choises=['network', 'gateway', 'description'],
+            choices=['network', 'gateway', 'description'],
             default=['network', 'gateway'],
         ),
         **RELOAD_MOD_ARG,

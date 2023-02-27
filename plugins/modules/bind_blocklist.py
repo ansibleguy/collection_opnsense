@@ -57,7 +57,7 @@ BL_MAPPING = {
 def run_module():
     module_args = dict(
         block=dict(
-            type='list', elements='str', required=False, choises=list(BL_MAPPING.keys()),
+            type='list', elements='str', required=False, choices=list(BL_MAPPING.keys()),
             aliases=['lists'], default=[],
             description="Blocklist's you want to enable"
         ),

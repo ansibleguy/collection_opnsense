@@ -78,7 +78,7 @@ def run_module():
         dscp=dict(
             type='list', required=False, elements='str', default=[],
             description='One or multiple DSCP values',
-            choises=[
+            choices=[
                 'be', 'ef', 'af11', 'af12', 'af13', 'af21', 'af22', 'af23', 'af31', 'af32', 'af33',
                 'af41', 'af42', 'af43', 'cs1', 'cs2', 'cs3', 'cs4', 'cs5', 'cs6', 'cs7',
             ]

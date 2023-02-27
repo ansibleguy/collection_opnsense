@@ -61,7 +61,7 @@ def run_module():
             type='list', required=True, elements='str',
             description='Fields that are used to match configured rules with the running config - '
                         "if any of those fields are changed, the module will think it's a new rule",
-            choises=[
+            choices=[
                 'sequence', 'interface', 'target', 'target_port', 'ip_protocol', 'protocol',
                 'source_invert', 'source_net', 'source_port', 'destination_invert', 'destination_net',
                 'destination_port', 'description', 'uuid',

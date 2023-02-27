@@ -26,7 +26,7 @@ def run_module():
     module_args = dict(
         action=dict(
             type='str', required=False, default='create',
-            choises=['create', 'revert', 'apply', 'cancel_rollback'],
+            choices=['create', 'revert', 'apply', 'cancel_rollback'],
         ),
         revision=dict(
             type='str', required=False,
@@ -34,9 +34,9 @@ def run_module():
         ),
         controller=dict(
             type='str', required=False, default='filter', description='Target API controller',
-            choises=['source_nat', 'filter']
+            choices=['source_nat', 'filter']
         ),
-        api_module=dict(type='str', required=False, default='firewall', choises=['firewall']),
+        api_module=dict(type='str', required=False, default='firewall', choices=['firewall']),
         **OPN_MOD_ARGS
     )
 

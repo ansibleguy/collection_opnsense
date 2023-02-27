@@ -32,7 +32,7 @@ def run_module():
         name=dict(type='str', required=True, description='Unique service name'),
         type=dict(
             type='str', required=False,
-            choises=[
+            choices=[
                 'process', 'file', 'fifo', 'filesystem', 'directory', 'host', 'system',
                 'custom', 'network',
             ]

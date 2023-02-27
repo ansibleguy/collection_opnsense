@@ -36,7 +36,7 @@ def run_module():
         port=dict(type='int', required=False, default=514, aliases=['p']),
         transport=dict(
             type='str', required=False, default='udp4', aliases=['trans', 't'],
-            choises=['udp4', 'tcp4', 'udp6', 'tcp6', 'tls4', 'tls6'],
+            choices=['udp4', 'tcp4', 'udp6', 'tcp6', 'tls4', 'tls6'],
         ),
         level=dict(
             type='list', required=False, aliases=['lv', 'lvl'], elements='str',
@@ -62,7 +62,7 @@ def run_module():
             type='list', required=False, elements='str',
             description='Fields that are used to match configured syslog-destinations with the running config - '
                         "if any of those fields are changed, the module will think it's a new entry",
-            choises=[
+            choices=[
                 'target', 'transport', 'facility', 'program', 'level',
                 'port', 'description',
             ],

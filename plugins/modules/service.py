@@ -69,12 +69,12 @@ def run_module():
     module_args = dict(
         name=dict(
             type='str', required=True, aliases=['service', 'svc', 'target', 'n'],
-            choises=service_choices,
+            choices=service_choices,
             description='What service to interact with'
         ),
         action=dict(
             type='str', required=True, aliases=['do', 'a'],
-            choises=['reload', 'restart', 'start', 'status', 'stop'],
+            choices=['reload', 'restart', 'start', 'status', 'stop'],
         ),
         **OPN_MOD_ARGS,
     )

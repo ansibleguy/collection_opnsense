@@ -29,7 +29,7 @@ EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/frr_ospf.html'
 def run_module():
     module_args = dict(
         interface=dict(type='str', required=True, aliases=['name', 'int']),
-        auth_type=dict(type='str', required=False, default='', choises=['', 'message-digest']),
+        auth_type=dict(type='str', required=False, default='', choices=['', 'message-digest']),
         auth_key=dict(type='str', required=False, default='', no_log=True),
         auth_key_id=dict(type='int', required=False, default=1),
         area=dict(
@@ -50,13 +50,13 @@ def run_module():
         priority=dict(type='str', required=False, default='', aliases=['prio']),
         network_type=dict(
             type='str', required=False, default='', aliases=['nw_type'],
-            choises=['broadcast', 'non-broadcast', 'point-to-multipoint', 'point-to-point'],
+            choices=['broadcast', 'non-broadcast', 'point-to-multipoint', 'point-to-point'],
         ),
         match_fields=dict(
             type='list', required=False, elements='str',
             description='Fields that are used to match configured interface with the running config - '
                         "if any of those fields are changed, the module will think it's a new entry",
-            choises=['interface', 'area', 'passive', 'carp_depend_on', 'network_type'],
+            choices=['interface', 'area', 'passive', 'carp_depend_on', 'network_type'],
             default=['interface', 'area'],
         ),
         **RELOAD_MOD_ARG,

@@ -16,7 +16,7 @@ BUILTIN_INTERFACE_ALIASES_REG = '^__.*?_network$'  # auto-added interface aliase
 
 PURGE_MOD_ARGS = dict(
     action=dict(
-        type='str', required=False, default='delete', choises=['disable', 'delete'],
+        type='str', required=False, default='delete', choices=['disable', 'delete'],
         description='What to do with the matched items'
     ),
     filters=dict(

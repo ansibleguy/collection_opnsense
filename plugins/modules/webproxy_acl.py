@@ -86,7 +86,7 @@ def run_module():
         ),
         youtube_filter=dict(
             type='str', required=False, default='', aliases=['youtube'],
-            choises=['strict', 'moderate'], description='Youtube filter level'
+            choices=['strict', 'moderate'], description='Youtube filter level'
         ),
         ports_tcp=dict(
             type='list', elements='str', required=False, aliases=['p_tcp'],

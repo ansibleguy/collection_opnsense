@@ -35,7 +35,7 @@ def run_module():
             type='list', required=False, elements='str',
             description='Fields that are used to match configured records with the running config - '
                         "if any of those fields are changed, the module will think it's a new entry",
-            choises=['domain', 'name', 'type', 'value'],
+            choices=['domain', 'name', 'type', 'value'],
             default=['domain', 'name', 'type'],
         ),
         **FAIL_MOD_ARG_MULTI,

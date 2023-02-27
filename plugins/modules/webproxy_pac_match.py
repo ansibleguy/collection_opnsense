@@ -63,7 +63,7 @@ def run_module():
         ),
         type=dict(
             type='str', required=False, default='url_matches',
-            choises=[
+            choices=[
                 'url_matches', 'hostname_matches', 'dns_domain_is', 'destination_in_net',
                 'my_ip_in_net', 'plain_hostname', 'is_resolvable', 'dns_domain_levels',
                 'weekday_range', 'date_range', 'time_range',
@@ -102,22 +102,22 @@ def run_module():
         ),
         month_from=dict(
             type='int', required=False, default=1, aliases=['date_from'],
-            choises=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            choices=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
             description='Start month for match-period',
         ),
         month_to=dict(
             type='int', required=False, default=1, aliases=['date_to'],
-            choises=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+            choices=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
             description='End month for match-period',
         ),
         weekday_from=dict(
             type='int', required=False, default=1, aliases=['day_from'],
-            choises=[1, 2, 3, 4, 5, 6, 7],
+            choices=[1, 2, 3, 4, 5, 6, 7],
             description='Start weekday for match-period. 1 = monday, 7 = sunday',
         ),
         weekday_to=dict(
             type='int', required=False, default=1, aliases=['day_to'],
-            choises=[1, 2, 3, 4, 5, 6, 7],
+            choices=[1, 2, 3, 4, 5, 6, 7],
             description='End weekday for match-period. 1 = monday, 7 = sunday',
         ),
         **RELOAD_MOD_ARG,

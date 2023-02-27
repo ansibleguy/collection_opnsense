@@ -50,7 +50,7 @@ def run_module():
             type='list', required=False, elements='str',
             description='Fields that are used to match configured network with the running config - '
                         "if any of those fields are changed, the module will think it's a new entry",
-            choises=['ip', 'mask', 'area', 'area_range'],
+            choices=['ip', 'mask', 'area', 'area_range'],
             default=['ip', 'mask'],
         ),
         **STATE_MOD_ARG,

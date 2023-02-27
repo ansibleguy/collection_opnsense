@@ -48,13 +48,13 @@ def run_module():
         priority=dict(type='str', required=False, default='', aliases=['prio']),
         network_type=dict(
             type='str', required=False, default='', aliases=['nw_type'],
-            choises=['broadcast', 'point-to-point'],
+            choices=['broadcast', 'point-to-point'],
         ),
         match_fields=dict(
             type='list', required=False, elements='str',
             description='Fields that are used to match configured interface with the running config - '
                         "if any of those fields are changed, the module will think it's a new entry",
-            choises=['interface', 'area', 'passive', 'carp_depend_on', 'network_type'],
+            choices=['interface', 'area', 'passive', 'carp_depend_on', 'network_type'],
             default=['interface', 'area'],
         ),
         **RELOAD_MOD_ARG,

@@ -32,7 +32,7 @@ def run_module():
     module_args = dict(
         name=dict(type='str', required=True, aliases=['domain_name', 'domain']),
         mode=dict(
-            type='str', required=False, default='master', choises=['master', 'slave']
+            type='str', required=False, default='master', choices=['master', 'slave']
         ),
         master=dict(
             type='list', elements='str', required=False, aliases=['master_ip'], default=[],
@@ -40,7 +40,7 @@ def run_module():
         ),
         transfer_key_algo=dict(
             type='str', required=False, default='',
-            choises=[
+            choices=[
                 'hmac-sha512', 'hmac-sha384', 'hmac-sha256', 'hmac-sha224',
                 'hmac-sha1', 'hmac-md5', '',
             ]

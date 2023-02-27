@@ -36,7 +36,7 @@ def run_module():
             type='list', required=False, elements='str',
             description='Fields that are used to match configured override-alias with the running config - '
                         "if any of those fields are changed, the module will think it's a new entry",
-            choises=['hostname', 'domain', 'alias',  'description'],
+            choices=['hostname', 'domain', 'alias',  'description'],
             default=['alias', 'domain'],
         ),
         **RELOAD_MOD_ARG,

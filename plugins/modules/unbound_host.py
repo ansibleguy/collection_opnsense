@@ -32,7 +32,7 @@ def run_module():
         domain=dict(type='str', required=True, aliases=['dom', 'd']),
         record_type=dict(
             type='str', required=False, aliases=['type', 'rr', 'rt'],
-            choises=['A', 'AAAA', 'MX'], default='A',
+            choices=['A', 'AAAA', 'MX'], default='A',
         ),
         value=dict(type='str', required=False, aliases=['server', 'srv', 'mx']),
         prio=dict(
@@ -44,7 +44,7 @@ def run_module():
             type='list', required=False, elements='str',
             description='Fields that are used to match configured host-overrides with the running config - '
                         "if any of those fields are changed, the module will think it's a new entry",
-            choises=[
+            choices=[
                 'hostname', 'domain', 'record_type', 'value',
                 'prio', 'description'
             ],

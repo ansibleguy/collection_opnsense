@@ -49,7 +49,7 @@ RULE_MATCH_FIELDS_ARG = dict(
         type='list', required=True, elements='str',
         description='Fields that are used to match configured rules with the running config - '
                     "if any of those fields are changed, the module will think it's a new rule",
-        choises=[
+        choices=[
             'sequence', 'action', 'interface', 'direction', 'ip_protocol', 'protocol',
             'source_invert', 'source_net', 'source_port', 'destination_invert', 'destination_net',
             'destination_port', 'gateway', 'description', 'uuid',
@@ -126,7 +126,7 @@ RULE_MOD_ARGS = dict(
 
 RULE_MOD_ARG_KEY_FIELD = dict(
     key_field=dict(
-        type='str', required=True, choises=['sequence', 'description', 'uuid'], aliases=['key'],
+        type='str', required=True, choices=['sequence', 'description', 'uuid'], aliases=['key'],
         description='What field is used as key of the provided dictionary'
     )
 )

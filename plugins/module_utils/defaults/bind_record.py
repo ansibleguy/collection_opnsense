@@ -17,7 +17,7 @@ RECORD_MATCH_FIELDS_ARG = dict(
         type='list', required=False, elements='str',
         description='Fields that are used to match configured records with the running config - '
                     "if any of those fields are changed, the module will think it's a new entry",
-        choises=['domain', 'name', 'type', 'value'],
+        choices=['domain', 'name', 'type', 'value'],
         default=['domain', 'name', 'type'],
     ),
 )
@@ -27,7 +27,7 @@ RECORD_MOD_ARGS = dict(
     name=dict(type='str', required=True, aliases=RECORD_MOD_ARG_ALIASES['name']),
     type=dict(
         type='str', required=False, default=RECORD_DEFAULTS['type'],
-        choises=[
+        choices=[
             'A', 'AAAA', 'CAA', 'CNAME', 'DNSKEY', 'DS', 'MX', 'NS', 'PTR',
             'RRSIG', 'SRV', 'TLSA', 'TXT',
         ]

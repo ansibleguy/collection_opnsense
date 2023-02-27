@@ -26,7 +26,7 @@ def run_module():
     module_args = dict(
         target=dict(
             type='str', required=True, aliases=['tgt', 't'],
-            choises=[
+            choices=[
                 'alias', 'rule', 'route', 'cron', 'syslog', 'package',
                 'unbound_host', 'unbound_domain', 'unbound_dot', 'unbound_forward',
                 'unbound_host_alias', 'ipsec_cert', 'shaper_pipe', 'shaper_queue',

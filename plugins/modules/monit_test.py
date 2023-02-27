@@ -31,7 +31,7 @@ def run_module():
         name=dict(type='str', required=True, description='Unique test name'),
         type=dict(
             type='str', required=False, default='Custom',
-            choises=[
+            choices=[
                 'Existence', 'SystemResource', 'ProcessResource', 'ProcessDiskIO',
                 'FileChecksum', 'Timestamp', 'FileSize', 'FileContent', 'FilesystemMountFlags',
                 'SpaceUsage', 'InodeUsage', 'DiskIO', 'Permisssion', 'UID', 'GID', 'PID', 'PPID',
@@ -48,7 +48,7 @@ def run_module():
         ),
         action=dict(
             type='str', required=False, default='alert',
-            choises=['alert', 'restart', 'start', 'stop', 'exec', 'unmonitor']
+            choices=['alert', 'restart', 'start', 'stop', 'exec', 'unmonitor']
         ),
         path=dict(
             type='path', required=False, default='',

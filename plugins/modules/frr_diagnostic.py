@@ -26,7 +26,7 @@ def run_module():
     module_args = dict(
         target=dict(
             type='str', required=True,
-            choises=[
+            choices=[
                 'bgpneighbors', 'bgproute', 'bgproute4', 'bgproute6', 'bgpsummary',
                 'generalroute', 'generalroute4', 'generalroute6', 'generalrunningconfig',
                 'ospfdatabase', 'ospfinterface', 'ospfneighbor', 'ospfoverview', 'ospfroute',

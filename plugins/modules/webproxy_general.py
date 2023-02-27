@@ -35,7 +35,7 @@ def run_module():
     module_args = dict(
         errors=dict(
             type='str', required=False, default='opnsense', aliases=['error_pages'],
-            choises=['opnsense', 'custom', 'squid'],
+            choices=['opnsense', 'custom', 'squid'],
             description='The proxy error pages can be altered, default layout uses '
                         'OPNsense content, when Squid is selected the content for the '
                         'selected language will be used (standard squid layout), Custom '

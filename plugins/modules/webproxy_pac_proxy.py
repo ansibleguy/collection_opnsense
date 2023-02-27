@@ -33,7 +33,7 @@ def run_module():
         description=dict(type='str', required=False, default='', aliases=['desc']),
         type=dict(
             type='str', required=False, default='proxy',
-            choises=['proxy', 'direct', 'http', 'https', 'socks', 'socks4', 'socks5'],
+            choices=['proxy', 'direct', 'http', 'https', 'socks', 'socks4', 'socks5'],
             description="Usually you should use 'direct' for a direct connection or "
                         "'proxy' for a Proxy",
         ),

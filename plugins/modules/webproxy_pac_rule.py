@@ -42,7 +42,7 @@ def run_module():
         ),
         join_type=dict(
             type='str', required=False, default='and',
-            aliases=['join'], choises=['and', 'or'],
+            aliases=['join'], choices=['and', 'or'],
             description="A separator to join the matches. 'or' means any match "
                         'can be true which can be used to configure the same '
                         "proxy for multiple networks while 'and' means all matches "
@@ -51,7 +51,7 @@ def run_module():
         ),
         match_type=dict(
             type='str', required=False, default='if',
-            aliases=['operator'], choises=['if', 'unless'],
+            aliases=['operator'], choices=['if', 'unless'],
             description="Choose 'if' in case any case you want to ensure a match to "
                         "evaluate as is, else choose 'unless' if you want the negated "
                         'version. Unless is used if you want to use the proxy for every '
