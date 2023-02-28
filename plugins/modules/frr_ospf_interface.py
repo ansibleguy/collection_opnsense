@@ -50,7 +50,7 @@ def run_module():
         priority=dict(type='str', required=False, default='', aliases=['prio']),
         network_type=dict(
             type='str', required=False, default='', aliases=['nw_type'],
-            choices=['broadcast', 'non-broadcast', 'point-to-multipoint', 'point-to-point'],
+            choices=['', 'broadcast', 'non-broadcast', 'point-to-multipoint', 'point-to-point'],
         ),
         match_fields=dict(
             type='list', required=False, elements='str',

@@ -10,9 +10,9 @@
       ssl_verify: false
 
   tasks:
-    - name: Removing filter savepoint - does not exist
+    - name: Canceling filter savepoint rollback - does not exist
       ansibleguy.opnsense.savepoint:
-        action: 'remove'
+        action: 'cancel_rollback'
         controller: 'filter'
         revision: 'non-existent'
 
@@ -40,9 +40,9 @@
         revision: "{{ opn1.revision }}"
       when: not ansible_check_mode
 
-    - name: Removing filter savepoint
+    - name: Canceling filter savepoint rollback
       ansibleguy.opnsense.savepoint:
-        action: 'remove'
+        action: 'cancel'
         controller: 'filter'
         revision: "{{ opn1.revision }}"
       when: not ansible_check_mode
@@ -90,9 +90,9 @@
         revision: "{{ opn4.revision }}"
       when: not ansible_check_mode
 
-    - name: Removing source-nat savepoint
+    - name: Canceling source-nat savepoint rollback
       ansibleguy.opnsense.savepoint:
-        action: 'remove'
+        action: 'cancel_rollback'
         controller: 'source_nat'
         revision: "{{ opn4.revision }}"
       when: not ansible_check_mode

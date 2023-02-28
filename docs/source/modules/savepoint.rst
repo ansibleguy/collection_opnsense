@@ -36,7 +36,7 @@ Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "name","string","false","'create'","Action to execute. One of: 'create', 'revert', 'apply', 'cancel_rollback'"
+    "name","string","false","'create'","Action to execute. One of: 'create', 'revert', 'apply', 'cancel_rollback', 'cancel'"
     "revision","string","false, true if action is one of 'apply', 'revert' or 'cancel_rollback'","\-","Savepoint revision to apply, revert or cancel_rollback"
     "controller","string","false","'filter'","Controller to manage the savepoint of. One of: 'source_nat', 'filter'"
     "api_module","string","false","'firewall'","Module to manage the savepoint of. Currently only supports 'firewall'"

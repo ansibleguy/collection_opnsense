@@ -26,7 +26,7 @@ def run_module():
     module_args = dict(
         action=dict(
             type='str', required=False, default='create',
-            choices=['create', 'revert', 'apply', 'cancel_rollback'],
+            choices=['create', 'revert', 'apply', 'cancel_rollback', 'cancel'],
         ),
         revision=dict(
             type='str', required=False,
