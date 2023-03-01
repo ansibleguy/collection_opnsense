@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright: (C) 2022, AnsibleGuy <guy@ansibleguy.net>
+# Copyright: (C) 2023, AnsibleGuy <guy@ansibleguy.net>
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
 # module to reload running config
@@ -48,7 +48,9 @@ def run_module():
     target = None
 
     try:
-        # todo: refactor to use config-dict and dynamic imports
+        # NOTE: dynamic imports not working as Ansible will not copy those modules to the temporary directory
+        #   the module is executed in!
+        #   see: ansible.executor.module_common.ModuleDepFinder (analyzing imports to know what dependencies to copy)
 
         if module.params['target'] == 'alias':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import Alias

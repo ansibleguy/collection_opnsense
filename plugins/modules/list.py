@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-# Copyright: (C) 2022, AnsibleGuy <guy@ansibleguy.net>
+# Copyright: (C) 2023, AnsibleGuy <guy@ansibleguy.net>
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
-# module to reload running config
+# module to query running config
 # pylint: disable=R0912,R0915,R0914
 
 from ansible.module_utils.basic import AnsibleModule
@@ -31,7 +31,7 @@ def run_module():
                 'unbound_host', 'unbound_domain', 'unbound_dot', 'unbound_forward',
                 'unbound_host_alias', 'ipsec_cert', 'shaper_pipe', 'shaper_queue',
                 'shaper_rule', 'monit_service', 'monit_test', 'monit_alert',
-                'wireguard_server', 'wireguard_peer', 'interface_vlan',
+                'wireguard_server', 'wireguard_peer', 'interface_vlan', 'frr_bgp_route_map',
                 'interface_vxlan', 'source_nat', 'frr_bfd_neighbor', 'frr_bgp_general',
                 'frr_bgp_neighbor', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
                 'frr_bgp_as_path', 'frr_ospf_general', 'frr_ospf3_general',
@@ -60,7 +60,9 @@ def run_module():
     target = None
 
     try:
-        # todo: refactor to use config-dict and dynamic imports
+        # NOTE: dynamic imports not working as Ansible will not copy those modules to the temporary directory
+        #   the module is executed in!
+        #   see: ansible.executor.module_common.ModuleDepFinder (analyzing imports to know what dependencies to copy)
 
         if module.params['target'] == 'alias':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import Alias
@@ -226,11 +228,6 @@ def run_module():
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_network \
                 import Network
             target = Network(module=module, result=result)
-
-        elif module.params['target'] == 'frr_rip':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_rip \
-                import Rip
-            target = Rip(module=module, result=result)
 
         elif module.params['target'] == 'frr_rip':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_rip \
