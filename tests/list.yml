@@ -1,0 +1,82 @@
+---
+
+- name: Testing List
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Querying config - basic modules
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: ['alias', 'rule', 'route', 'syslog', 'package', 'cron', 'source_nat']
+
+    - name: Querying config - Unbound
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: ['unbound_host', 'unbound_domain', 'unbound_forward', 'unbound_host_alias', 'unbound_dot']
+
+    - name: Querying config - Traffic shaper
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: ['shaper_pipe', 'shaper_queue', 'shaper_rule']
+
+    - name: Querying config - Monit
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: ['monit_service', 'monit_test', 'monit_alert']
+
+    - name: Querying config - BIND
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: ['bind_domain', 'bind_acl', 'bind_general', 'bind_blocklist', 'bind_record']
+
+    - name: Querying config - Interfaces
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: ['interface_vxlan', 'interface_vlan', 'interface_vip']
+
+    - name: Querying config - WireGuard
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: ['wireguard_server', 'wireguard_peer']
+
+    - name: Querying config - FRR
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: [
+        'frr_ospf_general', 'frr_ospf3_general', 'frr_bfd_neighbor', 'frr_bgp_general', 'frr_bgp_neighbor',
+        'frr_ospf3_interface', 'frr_ospf_interface', 'frr_ospf_network', 'frr_rip', 'frr_bgp_prefix_list',
+        'frr_bgp_community_list', 'frr_bgp_as_path', 'frr_bgp_route_map', 'frr_ospf_prefix_list', 'frr_ospf_route_map',
+      ]
+
+    - name: Querying config - WebProxy
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: [
+        'webproxy_general', 'webproxy_cache', 'webproxy_parent', 'webproxy_traffic', 'webproxy_remote_acl',
+        'webproxy_pac_proxy', 'webproxy_pac_match', 'webproxy_pac_rule', 'webproxy_forward', 'webproxy_acl',
+        'webproxy_icap', 'webproxy_auth',
+      ]
+
+    - name: Querying config - IPSec
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: [
+        'ipsec_cert', 'ipsec_connection', 'ipsec_child', 'ipsec_pool',
+        'ipsec_auth_local', 'ipsec_auth_remote', 'ipsec_vti',
+      ]

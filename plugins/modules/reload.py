@@ -29,7 +29,7 @@ def run_module():
             choices=[
                 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper',
                 'monit', 'wireguard', 'interface_vlan', 'interface_vxlan', 'frr',
-                'webproxy', 'interface_vip', 'bind',
+                'webproxy', 'interface_vip', 'bind', 'ipsec_legacy',
             ],
             description='What part of the running config should be reloaded'
         ),
@@ -45,90 +45,97 @@ def run_module():
         supports_check_mode=True,
     )
 
-    target = None
+    target = module.params['target']
+    Target_Obj = None
 
     try:
         # NOTE: dynamic imports not working as Ansible will not copy those modules to the temporary directory
         #   the module is executed in!
         #   see: ansible.executor.module_common.ModuleDepFinder (analyzing imports to know what dependencies to copy)
 
-        if module.params['target'] == 'alias':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import Alias
-            target = Alias(module=module, result=result)
+        if target == 'alias':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import \
+                Alias as Target_Obj
 
-        elif module.params['target'] == 'rule':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
-            target = Rule(module=module, result=result)
+        elif target == 'rule':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import \
+                Rule as Target_Obj
 
-        elif module.params['target'] == 'route':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.route import Route
-            target = Route(module=module, result=result)
+        elif target == 'route':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.route import \
+                Route as Target_Obj
 
-        elif module.params['target'] == 'cron':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.cron import CronJob
-            target = CronJob(module=module, result=result)
+        elif target == 'cron':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.cron import \
+                CronJob as Target_Obj
 
-        elif module.params['target'] == 'unbound':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host import Host
-            target = Host(module=module, result=result)
+        elif target == 'unbound':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host import \
+                Host as Target_Obj
 
-        elif module.params['target'] == 'syslog':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.syslog import Syslog
-            target = Syslog(module=module, result=result)
+        elif target == 'syslog':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.syslog import \
+                Syslog as Target_Obj
 
-        elif module.params['target'] == 'ipsec':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_cert import KeyPair
-            target = KeyPair(module=module, result=result)
+        elif target == 'ipsec':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_connection import \
+                Connection as Target_Obj
 
-        elif module.params['target'] == 'shaper':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_pipe import Pipe
-            target = Pipe(module=module, result=result)
+        elif target == 'ipsec_legacy':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_cert import \
+                KeyPair as Target_Obj
 
-        elif module.params['target'] == 'monit':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_service import Service
-            target = Service(module=module, result=result)
+        elif target == 'shaper':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_pipe import \
+                Pipe as Target_Obj
 
-        elif module.params['target'] == 'wireguard':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_server import Server
-            target = Server(module=module, result=result)
+        elif target == 'monit':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_service import \
+                Service as Target_Obj
 
-        elif module.params['target'] == 'interface_vlan':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vlan import Vlan
-            target = Vlan(module=module, result=result)
+        elif target == 'wireguard':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_server import \
+                Server as Target_Obj
 
-        elif module.params['target'] == 'interface_vxlan':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vxlan import Vxlan
-            target = Vxlan(module=module, result=result)
+        elif target == 'interface_vlan':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vlan import \
+                Vlan as Target_Obj
 
-        elif module.params['target'] == 'interface_vip':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vip import Vip
-            target = Vip(module=module, result=result)
+        elif target == 'interface_vxlan':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vxlan import \
+                Vxlan as Target_Obj
 
-        elif module.params['target'] == 'frr':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_general import General
-            target = General(module=module, result=result)
+        elif target == 'interface_vip':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vip import \
+                Vip as Target_Obj
 
-        elif module.params['target'] == 'webproxy':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_general import General
-            target = General(module=module, result=result)
+        elif target == 'frr':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_general import \
+                General as Target_Obj
 
-        elif module.params['target'] == 'bind':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_domain import Domain
-            target = Domain(module=module, result=result)
+        elif target == 'webproxy':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_general import \
+                General as Target_Obj
+
+        elif target == 'bind':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_domain import \
+                Domain as Target_Obj
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()
 
-    if target is not None:
+    if Target_Obj is not None:
+        target_inst = Target_Obj(module=module, result=result)
+
         result['changed'] = True
         if not module.check_mode:
-            target.reload()
+            target_inst.reload()
 
-        if hasattr(target, 's'):
-            target.s.close()
+        if hasattr(target_inst, 's'):
+            target_inst.s.close()
 
     else:
-        module.fail_json(f"Got unsupported target: '{module.params['target']}'")
+        module.fail_json(f"Got unsupported target: '{target}'")
 
     module.exit_json(**result)
 

@@ -21,28 +21,26 @@ except MODULE_EXCEPTIONS:
 DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/list.html'
 EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/list.html'
 
+TARGETS = [
+    'alias', 'rule', 'route', 'syslog', 'package', 'unbound_host', 'unbound_domain', 'frr_ospf_general',
+    'frr_ospf3_general', 'unbound_forward', 'shaper_pipe', 'shaper_queue', 'shaper_rule', 'monit_service',
+    'monit_test', 'monit_alert', 'wireguard_server', 'bind_domain', 'wireguard_peer', 'interface_vlan',
+    'unbound_host_alias', 'interface_vxlan', 'frr_bfd_neighbor', 'frr_bgp_general', 'frr_bgp_neighbor',
+    'frr_ospf3_interface', 'frr_ospf_interface', 'bind_acl', 'frr_ospf_network', 'frr_rip', 'bind_general',
+    'bind_blocklist', 'bind_record', 'interface_vip', 'webproxy_general', 'webproxy_cache', 'webproxy_parent',
+    'webproxy_traffic', 'webproxy_remote_acl', 'webproxy_pac_proxy', 'webproxy_pac_match', 'webproxy_pac_rule',
+    'cron', 'unbound_dot', 'ipsec_cert', 'source_nat', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
+    'frr_bgp_as_path', 'frr_bgp_route_map', 'frr_ospf_prefix_list', 'frr_ospf_route_map', 'webproxy_forward',
+    'webproxy_acl', 'webproxy_icap', 'webproxy_auth', 'ipsec_connection', 'ipsec_pool',
+    'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote',
+]
+
 
 def run_module():
     module_args = dict(
         target=dict(
             type='str', required=True, aliases=['tgt', 't'],
-            choices=[
-                'alias', 'rule', 'route', 'cron', 'syslog', 'package',
-                'unbound_host', 'unbound_domain', 'unbound_dot', 'unbound_forward',
-                'unbound_host_alias', 'ipsec_cert', 'shaper_pipe', 'shaper_queue',
-                'shaper_rule', 'monit_service', 'monit_test', 'monit_alert',
-                'wireguard_server', 'wireguard_peer', 'interface_vlan', 'frr_bgp_route_map',
-                'interface_vxlan', 'source_nat', 'frr_bfd_neighbor', 'frr_bgp_general',
-                'frr_bgp_neighbor', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
-                'frr_bgp_as_path', 'frr_ospf_general', 'frr_ospf3_general',
-                'frr_ospf3_interface', 'frr_ospf_prefix_list', 'frr_ospf_interface',
-                'frr_ospf_route_map', 'frr_ospf_network', 'frr_rip', 'bind_general',
-                'bind_blocklist', 'bind_acl', 'bind_domain', 'bind_record',
-                'interface_vip', 'webproxy_general', 'webproxy_cache', 'webproxy_parent',
-                'webproxy_traffic', 'webproxy_forward', 'webproxy_acl', 'webproxy_icap',
-                'webproxy_auth', 'webproxy_remote_acl', 'webproxy_pac_proxy',
-                'webproxy_pac_match', 'webproxy_pac_rule',
-            ],
+            choices=TARGETS,
             description='What part of the running config should be listed'
         ),
         **OPN_MOD_ARGS,
@@ -57,286 +55,291 @@ def run_module():
         supports_check_mode=True,
     )
 
-    target = None
+    target = module.params['target']
+    Target_Obj, target_inst = None, None
 
     try:
         # NOTE: dynamic imports not working as Ansible will not copy those modules to the temporary directory
         #   the module is executed in!
         #   see: ansible.executor.module_common.ModuleDepFinder (analyzing imports to know what dependencies to copy)
 
-        if module.params['target'] == 'alias':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import Alias
-            target = Alias(module=module, result=result)
+        if target == 'alias':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import \
+                Alias as Target_Obj
 
-        elif module.params['target'] == 'rule':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
-            target = Rule(module=module, result=result)
+        elif target == 'rule':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import \
+                Rule as Target_Obj
 
-        elif module.params['target'] == 'route':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.route import Route
-            target = Route(module=module, result=result)
+        elif target == 'route':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.route import \
+                Route as Target_Obj
 
-        elif module.params['target'] == 'cron':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.cron import CronJob
-            target = CronJob(module=module, result=result)
+        elif target == 'cron':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.cron import \
+                CronJob as Target_Obj
 
-        elif module.params['target'] == 'unbound_host':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host import Host
-            target = Host(module=module, result=result)
+        elif target == 'unbound_host':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host import \
+                Host as Target_Obj
 
-        elif module.params['target'] == 'unbound_host_alias':
+        elif target == 'unbound_host_alias':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host_alias \
-                import Alias
-            target = Alias(module=module, result=result)
+                import Alias as Target_Obj
 
-        elif module.params['target'] == 'unbound_domain':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_domain import Domain
-            target = Domain(module=module, result=result)
+        elif target == 'unbound_domain':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_domain import  \
+                Domain as Target_Obj
 
-        elif module.params['target'] == 'unbound_dot':
+        elif target == 'unbound_dot':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_dot \
-                import DnsOverTls
-            target = DnsOverTls(module=module, result=result)
+                import DnsOverTls as Target_Obj
 
-        elif module.params['target'] == 'unbound_forward':
+        elif target == 'unbound_forward':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_forward \
-                import Forward
-            target = Forward(module=module, result=result)
+                import Forward as Target_Obj
 
-        elif module.params['target'] == 'syslog':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.syslog import Syslog
-            target = Syslog(module=module, result=result)
+        elif target == 'syslog':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.syslog import \
+                Syslog as Target_Obj
 
-        elif module.params['target'] == 'package':
+        elif target == 'package':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.package import Package
-            target = Package(module=module, name='dummy')
+            target_inst = Package(module=module, name='dummy')
 
-        elif module.params['target'] == 'ipsec_cert':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_cert import KeyPair
-            target = KeyPair(module=module, result=result)
+        elif target == 'ipsec_cert':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_cert import \
+                KeyPair as Target_Obj
 
-        elif module.params['target'] == 'shaper_pipe':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_pipe import Pipe
-            target = Pipe(module=module, result=result)
+        elif target == 'shaper_pipe':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_pipe import \
+                Pipe as Target_Obj
 
-        elif module.params['target'] == 'shaper_queue':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_queue import Queue
-            target = Queue(module=module, result=result)
+        elif target == 'shaper_queue':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_queue import \
+                Queue as Target_Obj
 
-        elif module.params['target'] == 'shaper_rule':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_rule import Rule
-            target = Rule(module=module, result=result)
+        elif target == 'shaper_rule':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_rule import \
+                Rule as Target_Obj
 
-        elif module.params['target'] == 'monit_service':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_service import Service
-            target = Service(module=module, result=result)
+        elif target == 'monit_service':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_service import \
+                Service as Target_Obj
 
-        elif module.params['target'] == 'monit_test':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_test import Test
-            target = Test(module=module, result=result)
+        elif target == 'monit_test':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_test import \
+                Test as Target_Obj
 
-        elif module.params['target'] == 'monit_alert':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_alert import Alert
-            target = Alert(module=module, result=result)
+        elif target == 'monit_alert':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_alert import \
+                Alert as Target_Obj
 
-        elif module.params['target'] == 'wireguard_server':
+        elif target == 'wireguard_server':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_server \
-                import Server
-            target = Server(module=module, result=result)
+                import Server as Target_Obj
 
-        elif module.params['target'] == 'wireguard_peer':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_peer import Peer
-            target = Peer(module=module, result=result)
+        elif target == 'wireguard_peer':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.wireguard_peer import \
+                Peer as Target_Obj
 
-        elif module.params['target'] == 'interface_vlan':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vlan import Vlan
-            target = Vlan(module=module, result=result)
+        elif target == 'interface_vlan':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vlan import \
+                Vlan as Target_Obj
 
-        elif module.params['target'] == 'interface_vxlan':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vxlan import Vxlan
-            target = Vxlan(module=module, result=result)
+        elif target == 'interface_vxlan':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vxlan import \
+                Vxlan as Target_Obj
 
-        elif module.params['target'] == 'source_nat':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.source_nat import SNat
-            target = SNat(module=module, result=result)
+        elif target == 'source_nat':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.source_nat import \
+                SNat as Target_Obj
 
-        elif module.params['target'] == 'frr_bfd_neighbor':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bfd_neighbor import Neighbor
-            target = Neighbor(module=module, result=result)
+        elif target == 'frr_bfd_neighbor':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bfd_neighbor import \
+                Neighbor as Target_Obj
 
-        elif module.params['target'] == 'frr_bgp_general':
+        elif target == 'frr_bgp_general':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_general \
-                import General
-            target = General(module=module, result=result)
+                import General as Target_Obj
 
-        elif module.params['target'] == 'frr_bgp_neighbor':
+        elif target == 'frr_bgp_neighbor':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_neighbor \
-                import Neighbor
-            target = Neighbor(module=module, result=result)
+                import Neighbor as Target_Obj
 
-        elif module.params['target'] == 'frr_bgp_prefix_list':
+        elif target == 'frr_bgp_prefix_list':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_prefix_list \
-                import Prefix
-            target = Prefix(module=module, result=result)
+                import Prefix as Target_Obj
 
-        elif module.params['target'] == 'frr_bgp_route_map':
+        elif target == 'frr_bgp_route_map':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_route_map \
-                import RouteMap
-            target = RouteMap(module=module, result=result)
+                import RouteMap as Target_Obj
 
-        elif module.params['target'] == 'frr_bgp_community_list':
+        elif target == 'frr_bgp_community_list':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_community_list \
-                import Community
-            target = Community(module=module, result=result)
+                import Community as Target_Obj
 
-        elif module.params['target'] == 'frr_bgp_as_path':
+        elif target == 'frr_bgp_as_path':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_as_path \
-                import AsPath
-            target = AsPath(module=module, result=result)
+                import AsPath as Target_Obj
 
-        elif module.params['target'] == 'frr_ospf_general':
+        elif target == 'frr_ospf_general':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_general \
-                import General
-            target = General(module=module, result=result)
+                import General as Target_Obj
 
-        elif module.params['target'] == 'frr_ospf3_general':
+        elif target == 'frr_ospf3_general':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf3_general \
-                import General
-            target = General(module=module, result=result)
+                import General as Target_Obj
 
-        elif module.params['target'] == 'frr_ospf3_interface':
+        elif target == 'frr_ospf3_interface':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf3_interface \
-                import Interface
-            target = Interface(module=module, result=result)
+                import Interface as Target_Obj
 
-        elif module.params['target'] == 'frr_ospf_prefix_list':
+        elif target == 'frr_ospf_prefix_list':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_prefix_list \
-                import Prefix
-            target = Prefix(module=module, result=result)
+                import Prefix as Target_Obj
 
-        elif module.params['target'] == 'frr_ospf_interface':
+        elif target == 'frr_ospf_interface':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_interface \
-                import Interface
-            target = Interface(module=module, result=result)
+                import Interface as Target_Obj
 
-        elif module.params['target'] == 'frr_ospf_route_map':
+        elif target == 'frr_ospf_route_map':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_route_map \
-                import RouteMap
-            target = RouteMap(module=module, result=result)
+                import RouteMap as Target_Obj
 
-        elif module.params['target'] == 'frr_ospf_network':
+        elif target == 'frr_ospf_network':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_ospf_network \
-                import Network
-            target = Network(module=module, result=result)
+                import Network as Target_Obj
 
-        elif module.params['target'] == 'frr_rip':
+        elif target == 'frr_rip':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_rip \
-                import Rip
-            target = Rip(module=module, result=result)
+                import Rip as Target_Obj
 
-        elif module.params['target'] == 'bind_general':
+        elif target == 'bind_general':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_general \
-                import General
-            target = General(module=module, result=result)
+                import General as Target_Obj
 
-        elif module.params['target'] == 'bind_blocklist':
+        elif target == 'bind_blocklist':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_blocklist \
-                import Blocklist
-            target = Blocklist(module=module, result=result)
+                import Blocklist as Target_Obj
 
-        elif module.params['target'] == 'bind_acl':
+        elif target == 'bind_acl':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_acl \
-                import Acl
-            target = Acl(module=module, result=result)
+                import Acl as Target_Obj
 
-        elif module.params['target'] == 'bind_domain':
+        elif target == 'bind_domain':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_domain \
-                import Domain
-            target = Domain(module=module, result=result)
+                import Domain as Target_Obj
 
-        elif module.params['target'] == 'bind_record':
+        elif target == 'bind_record':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_record \
-                import Record
-            target = Record(module=module, result=result)
+                import Record as Target_Obj
 
-        elif module.params['target'] == 'interface_vip':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vip import Vip
-            target = Vip(module=module, result=result)
+        elif target == 'interface_vip':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vip import \
+                Vip as Target_Obj
 
-        elif module.params['target'] == 'webproxy_general':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_general import General
-            target = General(module=module, result=result)
+        elif target == 'webproxy_general':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_general import \
+                General as Target_Obj
 
-        elif module.params['target'] == 'webproxy_cache':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_cache import Cache
-            target = Cache(module=module, result=result)
+        elif target == 'webproxy_cache':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_cache import \
+                Cache as Target_Obj
 
-        elif module.params['target'] == 'webproxy_traffic':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_traffic import Traffic
-            target = Traffic(module=module, result=result)
+        elif target == 'webproxy_traffic':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_traffic import \
+                Traffic as Target_Obj
 
-        elif module.params['target'] == 'webproxy_parent':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_parent import Parent
-            target = Parent(module=module, result=result)
+        elif target == 'webproxy_parent':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_parent import \
+                Parent as Target_Obj
 
-        elif module.params['target'] == 'webproxy_forward':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_forward import General
-            target = General(module=module, result=result)
+        elif target == 'webproxy_forward':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_forward import \
+                General as Target_Obj
 
-        elif module.params['target'] == 'webproxy_acl':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_acl import General
-            target = General(module=module, result=result)
+        elif target == 'webproxy_acl':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_acl import \
+                General as Target_Obj
 
-        elif module.params['target'] == 'webproxy_icap':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_icap import General
-            target = General(module=module, result=result)
+        elif target == 'webproxy_icap':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_icap import \
+                General as Target_Obj
 
-        elif module.params['target'] == 'webproxy_auth':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_auth import General
-            target = General(module=module, result=result)
+        elif target == 'webproxy_auth':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_auth import \
+                General as Target_Obj
 
-        elif module.params['target'] == 'webproxy_remote_acl':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_remote_acl import Acl
-            target = Acl(module=module, result=result)
+        elif target == 'webproxy_remote_acl':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_remote_acl import \
+                Acl as Target_Obj
 
-        elif module.params['target'] == 'webproxy_pac_proxy':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_pac_proxy import Proxy
-            target = Proxy(module=module, result=result)
+        elif target == 'webproxy_pac_proxy':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_pac_proxy import \
+                Proxy as Target_Obj
 
-        elif module.params['target'] == 'webproxy_pac_match':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_pac_match import Match
-            target = Match(module=module, result=result)
+        elif target == 'webproxy_pac_match':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_pac_match import \
+                Match as Target_Obj
 
-        elif module.params['target'] == 'webproxy_pac_rule':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_pac_rule import Rule
-            target = Rule(module=module, result=result)
+        elif target == 'webproxy_pac_rule':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_pac_rule import \
+                Rule as Target_Obj
 
-    except MODULE_EXCEPTIONS:
+        elif target == 'ipsec_connection':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_connection import \
+                Connection as Target_Obj
+
+        elif target == 'ipsec_pool':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_pool import \
+                Pool as Target_Obj
+
+        elif target == 'ipsec_child':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_child import \
+                Child as Target_Obj
+
+        elif target == 'ipsec_vti':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_vti import \
+                Vti as Target_Obj
+
+        elif target == 'ipsec_auth_local':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_auth_local import \
+                Auth as Target_Obj
+
+        elif target == 'ipsec_auth_remote':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_auth_remote import \
+                Auth as Target_Obj
+
+    except AttributeError:
         module_dependency_error()
 
     result['data'] = None
 
-    if target is not None:
-        if hasattr(target, 'get_existing'):
+    if Target_Obj is not None or target_inst is not None:
+        if target_inst is None:
+            target_inst = Target_Obj(module=module, result=result)
+
+        if hasattr(target_inst, 'get_existing'):
             # has additional filtering
-            target_func = getattr(target, 'get_existing')
+            target_func = getattr(target_inst, 'get_existing')
 
-        elif hasattr(target, 'search_call'):
-            target_func = getattr(target, 'search_call')
+        elif hasattr(target_inst, 'search_call'):
+            target_func = getattr(target_inst, 'search_call')
 
-        elif hasattr(target, '_search_call'):
-            target_func = getattr(target, '_search_call')
+        elif hasattr(target_inst, '_search_call'):
+            target_func = getattr(target_inst, '_search_call')
 
         else:
-            target_func = getattr(target.b, 'get_existing')
+            target_func = getattr(target_inst.b, 'get_existing')
 
         result['data'] = target_func()
 
-        if hasattr(target, 's'):
-            target.s.close()
+        if hasattr(target_inst, 's'):
+            target_inst.s.close()
 
     else:
-        module.fail_json(f"Got unsupported target: '{module.params['target']}'")
+        module.fail_json(f"Got unsupported target: '{target}'")
 
     module.exit_json(**result)
 

@@ -21,6 +21,7 @@
         - 'unbound'
         - 'syslog'
         - 'ipsec'
+        - 'ipsec_legacy'
         - 'shaper'
         - 'monit'
         - 'wireguard'
