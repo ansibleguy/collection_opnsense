@@ -1,6 +1,7 @@
 import ssl
 from pathlib import Path
 from json import JSONDecodeError
+from json import dumps as json_dumps
 from datetime import datetime
 
 from ansible.module_utils.basic import AnsibleModule
@@ -123,7 +124,7 @@ def debug_api(
                 msg += f" | HEADERS: '{headers}'"
 
             if data is not None:
-                msg += f" | DATA: '{data}'"
+                msg += f" | DATA: '{json_dumps(data)}'"
 
             log_path = Path(DEBUG_CONFIG['path_log'])
             if not log_path.exists():

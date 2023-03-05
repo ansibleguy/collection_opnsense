@@ -28,6 +28,29 @@ Module
 
 There are `module-templates <https://github.com/ansibleguy/collection_opnsense/blob/latest/plugins/modules/>`_ that can be copied - so you don't have to re-write the basic structure.
 
+Adding new module
+*****************
+
+Testing
+=======
+
+Copy the test-template '_tmpl.yml' and rename all calls to the new module.
+
+Run the tests like this:
+
+.. code-block:: bash
+
+    # set these variables:
+    COL='name-of-new-collection'
+    COL_PATH="$(pwd)/../collections/ansible_collections/ansibleguy/opnsense"  # path to your local collection
+    TEST_FIREWALL='192.168.0.1'  # ip of your test-firewall
+    TEST_API_KEY="$(pwd)/opn.txt"  # api credentials-file for your test-firewall
+    export ANSIBLE_DIFF_ALWAYS=yes  # enable diff-mode for debugging
+
+    bash "${COL_PATH}/scripts/test_single.sh" "$TEST_FIREWALL" "$TEST_API_KEY" "$COL_PATH" "$COL" 1
+
+
+
 API
 ***
 

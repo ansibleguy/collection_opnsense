@@ -16,9 +16,10 @@ class Pool(BaseModule):
         'search': 'get',
         'toggle': 'toggle',
     }
-    API_KEY_PATH = 'ipsec.Pools.Pool'
+    API_KEY_PATH = 'swanctl.Pools.Pool'
+    API_KEY_PATH_REQ = 'pool'
     API_MOD = 'ipsec'
-    API_CONT = 'pools'
+    API_CONT = 'connections'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = ['network']

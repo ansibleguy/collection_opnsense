@@ -25,6 +25,7 @@ class Base:
     ATTR_BOOL_INVERT = 'FIELDS_BOOL_INVERT'
     ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
     ATTR_DIFF_EXCL = 'FIELDS_DIFF_EXCLUDE'
+    ATTR_VALUE_MAP = 'FIELDS_VALUE_MAPPING'
     ATTR_RELOAD = 'API_CONT_REL'
     ATTR_HEADERS = 'call_headers'
     ATTR_TYPING = 'FIELDS_TYPING'
@@ -262,7 +263,7 @@ class Base:
                 'params': []
             })
 
-    def _get_request_data(self) -> None:
+    def _get_request_data(self) -> dict:
         if hasattr(self.i, '_build_request'):
             return self.i._build_request()
 
@@ -437,7 +438,7 @@ class Base:
                 self.e = _existing
 
     def _simplify_existing(self, existing: dict) -> dict:
-        translate, typing, bool_invert = {}, {}, []
+        translate, typing, bool_invert, value_map = {}, {}, [], {}
 
         if hasattr(self.i, self.ATTR_TRANSLATE):
             translate = getattr(self.i, self.ATTR_TRANSLATE)
@@ -448,11 +449,15 @@ class Base:
         if hasattr(self.i, self.ATTR_BOOL_INVERT):
             bool_invert = getattr(self.i, self.ATTR_BOOL_INVERT)
 
+        if hasattr(self.i, self.ATTR_VALUE_MAP):
+            value_map = getattr(self.i, self.ATTR_VALUE_MAP)
+
         return simplify_translate(
             existing=existing,
             typing=typing,
             translate=translate,
             bool_invert=bool_invert,
+            value_map=value_map,
         )
 
     def _call_simple(self) -> Callable:

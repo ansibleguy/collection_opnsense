@@ -1,0 +1,207 @@
+---
+
+- name: Testing IPSec tunnels/connections
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    ansibleguy.opnsense.ipsec_connection:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      target: 'ipsec_connection'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1 - failing because of invalid proposal (server-side)
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_1'
+        proposals: 'INVALID-IP'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+      when: not ansible_check_mode
+
+    - name: Adding 1
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_1'
+        version: 'ikev2'
+        unique: 'replace'
+        proposals: ['aes256gcm16-ecp521', 'aes256-sha512-x25519']
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Adding 1 - nothing changed
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_1'
+        version: 'ikev2'
+        unique: 'replace'
+        proposals: ['aes256gcm16-ecp521', 'aes256-sha512-x25519']
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        opn2.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_1'
+        unique: 'replace'
+        proposals: 'aes256gcm16-ecp521'
+        reauth_seconds: 3600
+        keying_tries: 5
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_1'
+        unique: 'replace'
+        proposals: 'aes256gcm16-ecp521'
+        reauth_seconds: 3600
+        keying_tries: 5
+        enabled: false
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_1'
+        unique: 'replace'
+        proposals: 'aes256gcm16-ecp521'
+        reauth_seconds: 3600
+        keying_tries: 5
+        enabled: false
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_1'
+        unique: 'replace'
+        proposals: 'aes256gcm16-ecp521'
+        reauth_seconds: 3600
+        keying_tries: 5
+        enabled: false
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        opn5.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_1'
+        unique: 'replace'
+        proposals: 'aes256gcm16-ecp521'
+        reauth_seconds: 3600
+        keying_tries: 5
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_2'
+        unique: 'never'
+        version: 'ikev1'
+        proposals: ['aes128-sha512-ecp224', 'aes128-sha512-ecp384']
+        reauth_seconds: 7200
+        dpd_timeout_seconds: 7200
+        dpd_delay_seconds: 7200
+        over_seconds: 7200
+        rekey_seconds: 7200
+        keying_tries: 30
+        encapsulation: true
+        mobike: false
+        aggressive: true
+        local_addresses: ['192.168.1.1']
+        remote_addresses: ['192.168.2.1', '192.168.3.1']
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_2'
+        unique: 'never'
+        version: 'ikev1'
+        proposals: ['aes128-sha512-ecp224', 'aes128-sha512-ecp384']
+        reauth_seconds: 7200
+        dpd_timeout_seconds: 7200
+        dpd_delay_seconds: 7200
+        over_seconds: 7200
+        rekey_seconds: 7200
+        keying_tries: 30
+        encapsulation: true
+        mobike: false
+        aggressive: true
+        local_addresses: ['192.168.1.1']
+        remote_addresses: ['192.168.2.1', '192.168.3.1']
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        opn8.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_1_2'
+        state: 'absent'
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn10
+      failed_when: >
+        'data' not in opn10 or
+        opn10.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.ipsec_connection:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode

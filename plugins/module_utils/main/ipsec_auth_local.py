@@ -8,13 +8,14 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_aut
 
 class Auth(BaseAuth):
     CMDS = {
-        'add': 'addLocal',
-        'del': 'delLocal',
-        'set': 'setLocal',
+        'add': 'add_local',
+        'del': 'del_local',
+        'set': 'set_local',
         'search': 'get',
-        'toggle': 'toggleLocal',
+        'toggle': 'toggle_local',
     }
-    API_KEY_PATH = 'ipsec.locals.local'
+    API_KEY_PATH = 'swanctl.locals.local'
+    API_KEY_PATH_REQ = API_KEY_PATH
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseAuth.__init__(self=self, m=module, r=result, s=session)

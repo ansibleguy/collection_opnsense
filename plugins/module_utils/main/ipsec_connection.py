@@ -10,13 +10,14 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 class Connection(BaseModule):
     FIELD_ID = 'description'
     CMDS = {
-        'add': 'addConnection',
-        'del': 'delConnection',
-        'set': 'setConnection',
+        'add': 'add_connection',
+        'del': 'del_connection',
+        'set': 'set_connection',
         'search': 'get',
-        'toggle': 'toggleConnection',
+        'toggle': 'toggle_connection',
     }
-    API_KEY_PATH = 'ipsec.Connections.Connection'
+    API_KEY_PATH = 'swanctl.Connections.Connection'
+    API_KEY_PATH_REQ = 'connection'
     API_MOD = 'ipsec'
     API_CONT = 'connections'
     API_CONT_REL = 'service'
@@ -45,11 +46,19 @@ class Connection(BaseModule):
     FIELDS_TYPING = {
         'bool': ['enabled', 'aggressive', 'mobike', 'encapsulation', 'send_certificate_request'],
         'list': ['local_addresses', 'remote_addresses', 'pools', 'proposals'],
-        'select': ['send_certificate', 'version', 'unique'],
+        'select': ['send_certificate', 'unique'],
+        'select_opt_list': ['version'],  # don't know why this is a list instead of a dict
         'int': [
             'keying_tries', 'dpd_timeout_seconds', 'dpd_delay_seconds', 'over_seconds',
             'rekey_seconds', 'reauth_seconds',
         ],
+    }
+    FIELDS_VALUE_MAPPING = {
+        'version': {
+            'IKEv1+IKEv2': 0,
+            'IKEv1': 1,
+            'IKEv2': 2,
+        }
     }
     INT_VALIDATIONS = {
         'keying_tries': {'min': 0, 'max': 1000},

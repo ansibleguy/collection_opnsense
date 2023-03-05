@@ -7,7 +7,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main im
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
-class Child(BaseModule):
+class Vti(BaseModule):
     FIELD_ID = 'description'
     CMDS = {
         'add': 'add',
@@ -16,9 +16,10 @@ class Child(BaseModule):
         'search': 'get',
         'toggle': 'toggle',
     }
-    API_KEY_PATH = 'ipsec.VTIs.VTI'
+    API_KEY_PATH = 'swanctl.VTIs.VTI'
+    API_KEY_PATH_REQ = 'vti'
     API_MOD = 'ipsec'
-    API_CONT = 'vti'
+    API_CONT = 'connections'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [

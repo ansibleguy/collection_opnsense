@@ -25,6 +25,12 @@ PROFILE = False  # create log to profile time consumption
 DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
 EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
 
+VERSION_MAPPING = {
+    'ikev1+2': 0,
+    'ikev1': 1,
+    'ikev2': 2,
+}
+
 
 def run_module():
     module_args = dict(
@@ -84,8 +90,8 @@ def run_module():
                         'start dictionary attacks on the Preshared Key',
         ),
         version=dict(
-            type='str', required=False, default='ike', aliases=['vers', 'v'],
-            choices=['ike', 'ikev1', 'ikev2'],
+            type='str', required=False, default='ikev1+2', aliases=['vers', 'v'],
+            choices=list(VERSION_MAPPING.keys()),
             description='IKE major version to use for connection. 1 uses IKEv1 aka ISAKMP, 2 uses IKEv2. A connection '
                         'using IKEv1+IKEv2 accepts both IKEv1 and IKEv2 as a responder and initiates the connection '
                         'actively with IKEv2',
@@ -108,7 +114,7 @@ def run_module():
                         'ESP packets',
         ),
         reauth_seconds=dict(
-            type='int', required=False, aliases=['reauth', 'reauth_sec', 'reauth_time'],
+            type='str', required=False, aliases=['reauth', 'reauth_sec', 'reauth_time'], default='',
             description='Time to schedule IKE reauthentication. IKE reauthentication recreates the IKE/ISAKMP SA '
                         'from scratch and re-evaluates the credentials. In asymmetric configurations (with EAP or '
                         'configuration payloads) it might not be possible to actively reauthenticate as responder. '
@@ -118,7 +124,7 @@ def run_module():
                         'with IKEv2 by default',
         ),
         rekey_seconds=dict(
-            type='int', required=False, aliases=['rekey', 'rekey_sec', 'rekey_time'],
+            type='str', required=False, aliases=['rekey', 'rekey_sec', 'rekey_time'], default='',
             description='IKE rekeying refreshes key material using a Diffie-Hellman key exchange, but does not '
                         're-check associated credentials. It is supported with IKEv2 only. IKEv1 performs a '
                         'reauthentication procedure instead. With the default value, IKE rekeying is scheduled '
@@ -127,7 +133,7 @@ def run_module():
                         'enforce rekeying and reauthentication',
         ),
         over_seconds=dict(
-            type='int', required=False, aliases=['over', 'over_sec', 'over_time'],
+            type='str', required=False, aliases=['over', 'over_sec', 'over_time'], default='',
             description='Hard IKE_SA lifetime if rekey/reauth does not complete, as time. To avoid having an IKE or '
                         'ISAKMP connection kept alive if IKE reauthentication or rekeying fails perpetually, a '
                         'maximum hard lifetime may be specified. If the IKE_SA fails to rekey or reauthenticate '
@@ -137,13 +143,13 @@ def run_module():
                         '[0.1 * max(rekey_time, reauth_time)]',
         ),
         dpd_delay_seconds=dict(
-            type='int', required=False, aliases=['dpd_delay', 'dpd_delay_sec', 'dpd_delay_time'],
+            type='str', required=False, aliases=['dpd_delay', 'dpd_delay_sec', 'dpd_delay_time'], default='',
             description='Interval to check the liveness of a peer actively using IKEv2 INFORMATIONAL exchanges or '
                         'IKEv1 R_U_THERE messages. Active DPD checking is only enforced if no IKE or ESP/AH packet '
                         'has been received for the configured DPD delay. Defaults to 0s',
         ),
         dpd_timeout_seconds=dict(
-            type='int', required=False, aliases=['dpd_timeout', 'dpd_timeout_sec'],
+            type='str', required=False, aliases=['dpd_timeout', 'dpd_timeout_sec'], default='',
             description='Charon by default uses the normal retransmission mechanism and timeouts to check the '
                         'liveness of a peer, as all messages are used for liveness checking. For compatibility '
                         'reasons, with IKEv1 a custom interval may be specified. This option has no effect on '
@@ -167,7 +173,7 @@ def run_module():
                         'authentication is used',
         ),
         keying_tries=dict(
-            type='int', required=False, aliases=['keyingtries'],
+            type='str', required=False, aliases=['keyingtries'], default='',
             description='Number of retransmission sequences to perform during initial connect. Instead of giving '
                         'up initiation after the first retransmission sequence with the default value of 1, '
                         'additional sequences may be started according to the configured value. A value of 0 '
@@ -191,6 +197,7 @@ def run_module():
         supports_check_mode=True,
     )
 
+    module.params['version'] = VERSION_MAPPING[module.params['version']]
     conn = Connection(module=module, result=result)
 
     def process():

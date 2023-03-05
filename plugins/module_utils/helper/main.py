@@ -186,6 +186,22 @@ def get_selected(data: dict) -> (str, None):
     return data
 
 
+def get_selected_opt_list(data: (dict, list)) -> (str, None):
+    if isinstance(data, dict):
+        return get_selected(data)
+
+    if isinstance(data, list):
+        for key_value in data:
+            if 'value' in key_value:
+                if is_true(key_value['selected']):
+                    return key_value['value']
+
+        return ''  # none selected
+
+    # if function is re-applied
+    return data
+
+
 def get_selected_list(data: dict, remove_empty: bool = False) -> list:
     if isinstance(data, list):
         # if function is re-applied
@@ -271,7 +287,7 @@ def sort_param_lists(params: dict) -> None:
 
 def simplify_translate(
         existing: dict, translate: dict = None, typing: dict = None,
-        bool_invert: list = None, ignore: list = None
+        bool_invert: list = None, ignore: list = None, value_map: dict = None,
 ) -> dict:
     # pylint: disable=R0912
     simple = {}
@@ -287,6 +303,9 @@ def simplify_translate(
 
     if ignore is None:
         ignore = []
+
+    if value_map is None:
+        value_map = {}
 
     # translate api-fields to ansible-fields
     for k, v in translate.items():
@@ -313,6 +332,12 @@ def simplify_translate(
 
             elif t == 'select':
                 simple[f] = get_selected(simple[f])
+
+            elif t == 'select_opt_list':
+                simple[f] = get_selected_opt_list(simple[f])
+
+    for f, vmap in value_map.items():
+        simple[f] = vmap[simple[f]]
 
     for k, v in simple.items():
         if isinstance(v, str) and v.isnumeric():

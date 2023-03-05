@@ -39,8 +39,8 @@ class BaseAuth(BaseModule):
     }
     EXIST_ATTR = 'auth'
 
-    def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        BaseModule.__init__(self=self, m=module, r=result, s=session)
+    def __init__(self, m: AnsibleModule, r: dict, s: Session = None):
+        BaseModule.__init__(self=self, m=m, r=r, s=s)
         self.auth = {}
 
     def check(self) -> None:

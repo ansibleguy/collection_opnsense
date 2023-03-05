@@ -28,6 +28,7 @@ SERVICES = {
     # core api
     'captive_portal': {'c': 'captiveportal', 'a': ['reload']},
     'cron': {'a': ['reload']},
+    'ipsec_legacy': {'c': 'legacy_subsystem', 'a': ['reload'], 'm': {'reload': 'applyConfig'}},
     'ipsec': {}, 'monit': {}, 'syslog': {},
     'shaper': {'c': 'trafficshaper', 'm': {'restart': 'flushreload', 'status': 'statistics'}},
     #   note: these would support more actions:

@@ -53,6 +53,7 @@ echo 'STARTING TESTS!'
 echo '##############################'
 echo ''
 
+run_test 'list' 0
 run_test 'reload' 0
 run_test 'service' 1
 run_test 'alias' 1
@@ -120,6 +121,7 @@ run_test 'webproxy_remote_acl' 1
 run_test 'webproxy_pac_proxy' 1
 run_test 'webproxy_pac_match' 1
 run_test 'webproxy_pac_rule' 1
+run_test 'ipsec_connection' 1
 run_test 'system' 1
 run_test 'package' 1
 
