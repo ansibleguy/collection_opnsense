@@ -10,11 +10,11 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 class Child(BaseModule):
     FIELD_ID = 'description'
     CMDS = {
-        'add': 'add_child',
-        'del': 'del_child',
-        'set': 'set_child',
+        'add': 'addChild',
+        'del': 'delChild',
+        'set': 'setChild',
         'search': 'get',
-        'toggle': 'toggle_child',
+        'toggle': 'toggleChild',
     }
     API_KEY_PATH = 'swanctl.children.child'
     API_MOD = 'ipsec'

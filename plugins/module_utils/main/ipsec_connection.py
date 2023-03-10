@@ -10,11 +10,11 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 class Connection(BaseModule):
     FIELD_ID = 'description'
     CMDS = {
-        'add': 'add_connection',
-        'del': 'del_connection',
-        'set': 'set_connection',
+        'add': 'addConnection',
+        'del': 'delConnection',
+        'set': 'setConnection',
         'search': 'get',
-        'toggle': 'toggle_connection',
+        'toggle': 'toggleConnection',
     }
     API_KEY_PATH = 'swanctl.Connections.Connection'
     API_KEY_PATH_REQ = 'connection'

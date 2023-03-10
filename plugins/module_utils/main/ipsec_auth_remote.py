@@ -8,11 +8,11 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_aut
 
 class Auth(BaseAuth):
     CMDS = {
-        'add': 'add_remote',
-        'del': 'del_remote',
-        'set': 'set_remote',
+        'add': 'addRemote',
+        'del': 'delRemote',
+        'set': 'setRemote',
         'search': 'get',
-        'toggle': 'toggle_remote',
+        'toggle': 'toggleRemote',
     }
     API_KEY_PATH = 'swanctl.remotes.remote'
     API_KEY_PATH_REQ = API_KEY_PATH

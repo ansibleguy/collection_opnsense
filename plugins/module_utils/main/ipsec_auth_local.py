@@ -8,11 +8,11 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_aut
 
 class Auth(BaseAuth):
     CMDS = {
-        'add': 'add_local',
-        'del': 'del_local',
-        'set': 'set_local',
+        'add': 'addLocal',
+        'del': 'delLocal',
+        'set': 'setLocal',
         'search': 'get',
-        'toggle': 'toggle_local',
+        'toggle': 'toggleLocal',
     }
     API_KEY_PATH = 'swanctl.locals.local'
     API_KEY_PATH_REQ = API_KEY_PATH
