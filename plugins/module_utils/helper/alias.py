@@ -59,19 +59,8 @@ def validate_values(cnf: dict, error_func: Callable) -> None:
         #             error_func(error)
 
 
-def alias_in_use_by_rule(rules: dict, alias: str) -> bool:
-    in_use = False
-
-    if len(rules) > 0:
-        for rule in rules.values():
-            if alias in (rule['source_net'], rule['destination_net']):
-                in_use = True
-                break
-
-    return in_use
-
-
 def check_purge_filter(module: AnsibleModule, existing_rule: dict) -> bool:
+    # used for 'alias_multi' and 'rule_multi'
     to_purge = True
 
     for filter_key, filter_value in module.params['filters'].items():

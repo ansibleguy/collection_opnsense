@@ -156,18 +156,22 @@ def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
         # sometimes an error 'hides' behind a 200-code
         if f"{response.__dict__}".find('Controller not found') != -1:
             module.fail_json(
-                msg=f"API call failed | Needed plugin not installed! | Response: {response.__dict__}"
+                f"API call failed | Needed plugin not installed! | "
+                f"Response: {response.__dict__}"
             )
 
-        elif f"{response.__dict__}".find('Currently in use') != -1:
+        elif f"{response.__dict__}".find(' in use') != -1:
             json['in_use'] = True
 
         else:
             if 'validations' in json:
-                module.fail_json(msg=f"API call failed | Error: {json['validations']} | Response: {response.__dict__}")
+                module.fail_json(
+                    f"API call failed | Error: {json['validations']} | "
+                    f"Response: {response.__dict__}"
+                )
 
             else:
-                module.fail_json(msg=f"API call failed | Response: {response.__dict__}")
+                module.fail_json(f"API call failed | Response: {response.__dict__}")
 
     return json
 

@@ -10,14 +10,12 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.multi import \
     validate_single, convert_aliases
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias import Alias
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
 
 
 def process(m: AnsibleModule, p: dict, r: dict, ) -> None:
     session = Session(module=m)
     meta_alias = Alias(module=m, session=session, result={})
     existing_aliases = meta_alias.get_existing()
-    existing_rules = Rule(module=m, session=session, result={}).get_existing()
 
     defaults = {}
     overrides = {
@@ -53,7 +51,7 @@ def process(m: AnsibleModule, p: dict, r: dict, ) -> None:
             m.warn(f"Validating alias: '{alias_config}'")
 
         if validate_single(
-                module=m, module_args=ALIAS_MOD_ARGS, log_mod='rule',
+                module=m, module_args=ALIAS_MOD_ARGS, log_mod='alias',
                 key=alias_name, cnf=real_cnf,
         ):
             valid_aliases.append(real_cnf)
@@ -68,7 +66,7 @@ def process(m: AnsibleModule, p: dict, r: dict, ) -> None:
             }
         )
 
-        p['debug'] = alias_config['debug']  # per rule switch
+        p['debug'] = alias_config['debug']  # per alias switch
 
         if p['debug'] or p['output_info']:
             m.warn(f"Processing alias: '{alias_config}'")
@@ -84,7 +82,6 @@ def process(m: AnsibleModule, p: dict, r: dict, ) -> None:
             )
             # save on requests
             alias.existing_entries = existing_aliases
-            alias.existing_rules = existing_rules
 
             alias.check()
             alias.process()

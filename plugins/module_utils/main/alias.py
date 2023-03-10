@@ -5,10 +5,9 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.alias import \
-    validate_values, filter_builtin_alias, alias_in_use_by_rule
+    validate_values, filter_builtin_alias
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     get_simple_existing, simplify_translate
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -49,7 +48,6 @@ class Alias(BaseModule):
         self.fail_proc = fail_proc
         self.alias = {}
         self.p = self.m.params if cnf is None else cnf  # to allow override by alias_multi
-        self.existing_rules = None
 
     def check(self) -> None:
         if len(self.p['name']) > self.MAX_ALIAS_LEN:
@@ -108,25 +106,13 @@ class Alias(BaseModule):
             )
 
     def delete(self) -> None:
-        self.r['changed'] = True
+        response = self.b.delete()
 
-        if self.existing_rules is None:
-            self.existing_rules = Rule(
-                module=self.m,
-                result={},
-                session=self.s,
-            ).get_existing()
-
-        if alias_in_use_by_rule(rules=self.existing_rules, alias=self.p[self.FIELD_ID]):
-            # this is to fix lacking server-side checks for the automation-rules
-            # see: https://forum.opnsense.org/index.php?topic=30077.msg145259#msg145259
+        if 'in_use' in response:
             self._error(
                 msg=f"Unable to delete alias '{self.p[self.FIELD_ID]}' as it is currently referenced!",
                 verification=False,
             )
-
-        else:
-            self.b.delete()
 
     def _error(self, msg: str, verification: bool = True) -> None:
         if (verification and self.fail_verify) or (not verification and self.fail_proc):
