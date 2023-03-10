@@ -130,16 +130,13 @@
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.rule:
+    group/ansibleguy.opnsense.all:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
-      match_fields: ['description']
 
-    ansibleguy.opnsense.alias:
-      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-      ssl_verify: false
+    ansibleguy.opnsense.rule:
+      match_fields: ['description']
 
   tasks:
     - name: Adding alias
@@ -193,16 +190,15 @@
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.list:
+    group/ansibleguy.opnsense.all:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+
+    ansibleguy.opnsense.list:
       target: 'rule'
 
     ansibleguy.opnsense.rule:
-      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-      ssl_verify: false
       match_fields: ['description']
 
   tasks:
@@ -271,16 +267,15 @@
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.list:
+    group/ansibleguy.opnsense.all:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+
+    ansibleguy.opnsense.list:
       target: 'rule'
 
     ansibleguy.opnsense.rule:
-      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-      ssl_verify: false
       match_fields: ['source_net', 'description']
 
   tasks:
@@ -375,21 +370,15 @@
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.alias:
+    group/ansibleguy.opnsense.all:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
     ansibleguy.opnsense.rule:
-      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-      ssl_verify: false
       match_fields: ['description']
 
     ansibleguy.opnsense.list:
-      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-      ssl_verify: false
       target: 'rule'
 
   tasks:

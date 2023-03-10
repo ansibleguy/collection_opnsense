@@ -227,13 +227,11 @@ ansibleguy.opnsense.bind_general
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.bind_general:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'bind_general'
 
       tasks:
@@ -301,13 +299,11 @@ ansibleguy.opnsense.bind_blocklist
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.bind_blocklist:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'bind_blocklist'
 
       tasks:
@@ -354,13 +350,11 @@ ansibleguy.opnsense.bind_acl
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.bind_acl:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'bind_acl'
 
       tasks:
@@ -410,13 +404,11 @@ ansibleguy.opnsense.bind_domain
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.bind_domain:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'bind_domain'
 
       tasks:
@@ -486,13 +478,11 @@ ansibleguy.opnsense.bind_record
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.bind_record:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'bind_record'
 
       tasks:
@@ -549,7 +539,7 @@ ansibleguy.opnsense.bind_record_multi
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.bind_record_multi:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 

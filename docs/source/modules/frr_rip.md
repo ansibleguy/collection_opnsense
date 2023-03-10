@@ -50,13 +50,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_rip:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_rip'
 
   tasks:

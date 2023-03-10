@@ -76,18 +76,12 @@ Examples
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.alias_multi:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
           target: 'alias'
-
-        ansibleguy.opnsense.alias_purge:
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Creation

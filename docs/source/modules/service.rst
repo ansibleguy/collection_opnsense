@@ -35,7 +35,7 @@ Examples
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.service:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 

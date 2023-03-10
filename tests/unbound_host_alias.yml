@@ -6,24 +6,20 @@
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.unbound_host:
+    group/ansibleguy.opnsense.all:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+
+    ansibleguy.opnsense.unbound_host:
       match_fields: ['description']
       timeout: 60
 
     ansibleguy.opnsense.unbound_host_alias:
-      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-      ssl_verify: false
       match_fields: ['description']
       timeout: 60
 
     ansibleguy.opnsense.list:
-      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-      ssl_verify: false
       target: 'unbound_host_alias'
 
   tasks:

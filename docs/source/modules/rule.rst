@@ -122,13 +122,11 @@ Basic
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.rule:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'rule'
 
       tasks:
@@ -173,9 +171,11 @@ With inventory config
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.rule:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.rule:
           match_fields: ['description']  # setting description as unique-id field
 
       # you may want to configure your rules inside the inventory
@@ -255,14 +255,14 @@ You can also use the :ref:`ansibleguy.opnsense.rule_purge <modules_rule_multi>` 
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.list:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
           target: 'rule'
 
         ansibleguy.opnsense.rule:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           match_fields: ['description']
 
       vars:

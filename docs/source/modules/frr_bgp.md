@@ -136,13 +136,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_bgp_general:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_bgp_general'
 
   tasks:
@@ -189,14 +187,14 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_bgp_neighbor:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.frr_bgp_neighbor:
       match_fields: ['ip']
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_bgp_neighbor'
 
   tasks:
@@ -278,13 +276,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_bgp_prefix_list:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_bgp_prefix_list'
 
   tasks:
@@ -334,13 +330,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_bgp_route_map:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_bgp_route_map'
 
   tasks:
@@ -393,13 +387,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_bgp_community_list:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_bgp_community_list'
 
   tasks:
@@ -451,13 +443,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_bgp_as_path:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_bgp_as_path'
 
   tasks:

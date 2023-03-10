@@ -38,7 +38,7 @@ Examples
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.reload:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
@@ -59,15 +59,7 @@ Practical
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.reload:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
-
-        ansibleguy.opnsense.route:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
-
-        ansibleguy.opnsense.unbound_host:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 

@@ -40,15 +40,14 @@ Examples
     - hosts: localhost
       gather_facts: no
       module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
         ansibleguy.opnsense.syslog:
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-          ssl_verify: false
           match_fields: ['description']
 
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'syslog'
 
       tasks:
@@ -92,15 +91,14 @@ In this example the description is used as unique identifier!
     - hosts: localhost
       gather_facts: no
       module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
         ansibleguy.opnsense.syslog:
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-          ssl_verify: false
           match_fields: ['description']
 
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'syslog'
 
       vars:

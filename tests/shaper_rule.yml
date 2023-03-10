@@ -4,25 +4,12 @@
   hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.shaper_queue:
-      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-      ssl_verify: false
-
-    ansibleguy.opnsense.shaper_pipe:
-      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-      ssl_verify: false
-
-    ansibleguy.opnsense.shaper_rule:
+    group/ansibleguy.opnsense.all:
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
 
     ansibleguy.opnsense.list:
-      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
-      ssl_verify: false
       target: 'shaper_rule'
 
   tasks:

@@ -73,13 +73,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.monit_alert:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'monit_alert'
 
   tasks:
@@ -145,13 +143,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.monit_test:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'monit_test'
 
   tasks:
@@ -216,13 +212,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.monit_service:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'monit_service'
 
   tasks:
@@ -297,11 +291,7 @@ Mail notification on IDS alert: see [documentation](https://docs.opnsense.org/ma
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.monit_service:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
-
-    ansibleguy.opnsense.monit_test:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 

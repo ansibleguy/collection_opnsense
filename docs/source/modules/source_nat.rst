@@ -112,14 +112,14 @@ Examples
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.source_nat:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.source_nat:
           match_fields: ['description']
 
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'source_nat'
 
       tasks:

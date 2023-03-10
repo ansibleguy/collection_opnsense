@@ -111,13 +111,11 @@ ansibleguy.opnsense.interface_vlan
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.interface_vlan:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
     
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'interface_vlan'
     
       tasks:
@@ -159,13 +157,11 @@ ansibleguy.opnsense.interface_vxlan
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.interface_vxlan:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
     
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'interface_vxlan'
     
       tasks:
@@ -208,13 +204,11 @@ ansibleguy.opnsense.interface_vip
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.interface_vip:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
     
         ansibleguy.opnsense.list:
-          firewall: 'opnsense.template.ansibleguy.net'
-          api_credential_file: '/home/guy/.secret/opn.key'
           target: 'interface_vip'
     
       tasks:

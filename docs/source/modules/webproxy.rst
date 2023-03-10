@@ -376,14 +376,12 @@ ansibleguy.opnsense.webproxy_general
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_general:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_general'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example
@@ -426,14 +424,12 @@ ansibleguy.opnsense.webproxy_cache
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_cache:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_cache'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example
@@ -468,14 +464,12 @@ ansibleguy.opnsense.webproxy_parent
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_parent:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_parent'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example
@@ -508,14 +502,12 @@ ansibleguy.opnsense.webproxy_traffic
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_traffic:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_traffic'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example
@@ -548,14 +540,12 @@ ansibleguy.opnsense.webproxy_forward
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_forward:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_forward'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example
@@ -588,14 +578,12 @@ ansibleguy.opnsense.webproxy_acl
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_acl:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_acl'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example
@@ -644,14 +632,12 @@ ansibleguy.opnsense.webproxy_icap
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_icap:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_icap'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example
@@ -687,14 +673,12 @@ ansibleguy.opnsense.webproxy_auth
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_auth:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_auth'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example
@@ -727,14 +711,12 @@ ansibleguy.opnsense.webproxy_remote_acl
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_remote_acl:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_remote_acl'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example
@@ -793,14 +775,12 @@ ansibleguy.opnsense.webproxy_pac_proxy
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_pac_proxy:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_pac_proxy'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example
@@ -840,14 +820,12 @@ ansibleguy.opnsense.webproxy_pac_match
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_pac_match:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_pac_match'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example
@@ -906,14 +884,12 @@ ansibleguy.opnsense.webproxy_pac_rule
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.webproxy_pac_rule:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'webproxy_pac_rule'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example

@@ -47,14 +47,12 @@ Examples
     - hosts: localhost
       gather_facts: no
       module_defaults:
-        ansibleguy.opnsense.cron:
+        group/ansibleguy.opnsense.all:
           firewall: 'opnsense.template.ansibleguy.net'
           api_credential_file: '/home/guy/.secret/opn.key'
 
         ansibleguy.opnsense.list:
           target: 'cron'
-          firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-          api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
 
       tasks:
         - name: Example

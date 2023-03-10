@@ -3,10 +3,11 @@
 - name: Cleaning up firewall config
   hosts: localhost
   gather_facts: no
-  vars:
-    run:
-      f: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
-      c: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
 
   tasks:
     - name: Cleanup Rules
@@ -14,25 +15,16 @@
         force_all: true
         match_fields: ['description']
         key_field: 'description'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup Aliases
       ansibleguy.opnsense.alias_purge:
         force_all: true
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup packages
       ansibleguy.opnsense.package:
         name: ['os-api-backup', 'os-dmidecode']
         action: "{{ item }}"
         timeout: 60
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       diff: false
       loop:
         - 'unlock'
@@ -42,9 +34,6 @@
       ansibleguy.opnsense.cron:
         description: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1'
         - 'ANSIBLE_TEST_2'
@@ -56,9 +45,6 @@
         gateway: 'LAN_GW'
         state: 'absent'
         match_fields: ['description']
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1'
         - 'ANSIBLE_TEST_2'
@@ -68,9 +54,6 @@
         domain: "{{ item.d }}"
         target: "{{ item.t }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
@@ -80,9 +63,6 @@
         domain: "{{ item.d }}"
         target: "{{ item.t }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
         - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
@@ -96,9 +76,6 @@
         state: 'absent'
         match_fields: ['description']
         timeout: 60
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -111,9 +88,6 @@
         state: 'absent'
         match_fields: ['description']
         timeout: 60
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -127,9 +101,6 @@
         state: 'absent'
         match_fields: ['description']
         timeout: 60
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -141,9 +112,6 @@
         target: '192.168.0.1'
         state: 'absent'
         match_fields: ['description']
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1'
         - 'ANSIBLE_TEST_2'
@@ -153,9 +121,6 @@
       ansibleguy.opnsense.ipsec_cert:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -164,9 +129,6 @@
       ansibleguy.opnsense.shaper_pipe:
         description: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -177,9 +139,6 @@
       ansibleguy.opnsense.shaper_queue:
         description: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -189,9 +148,6 @@
       ansibleguy.opnsense.shaper_rule:
         description: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -200,9 +156,6 @@
       ansibleguy.opnsense.monit_service:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -213,9 +166,6 @@
       ansibleguy.opnsense.monit_alert:
         recipient: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'alert@monit.opnsense.test.ansibleguy.net'
         - 'alert2@monit.opnsense.test.ansibleguy.net'
@@ -224,9 +174,6 @@
       ansibleguy.opnsense.monit_test:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -236,9 +183,6 @@
       ansibleguy.opnsense.wireguard_server:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -247,9 +191,6 @@
       ansibleguy.opnsense.wireguard_peer:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -258,9 +199,6 @@
     - name: Cleanup wireguard general
       ansibleguy.opnsense.wireguard_general:
         enabled: false
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup VIPs
       ansibleguy.opnsense.interface_vip:
@@ -275,9 +213,6 @@
       ansibleguy.opnsense.interface_vlan:
         description: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -286,9 +221,6 @@
       ansibleguy.opnsense.interface_vxlan:
         id: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 100
         - 101
@@ -298,9 +230,6 @@
         description: "{{ item }}"
         state: 'absent'
         match_fields: ['description']
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -308,17 +237,11 @@
     - name: Cleanup FRR BFD general settings
       ansibleguy.opnsense.frr_bfd_general:
         enabled: false
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup FRR BFD neighbors
       ansibleguy.opnsense.frr_bfd_neighbor:
         ip: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - '10.0.0.1'
         - '10.0.0.0/28'
@@ -327,18 +250,12 @@
       ansibleguy.opnsense.frr_bgp_general:
         as_number: 1337
         enabled: false
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup FRR BGP neighbors
       ansibleguy.opnsense.frr_bgp_neighbor:
         description: "{{ item }}"
         state: 'absent'
         match_fields: ['description']
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -349,9 +266,6 @@
       ansibleguy.opnsense.frr_bgp_route_map:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -364,9 +278,6 @@
         name: "{{ item.n }}"
         seq: "{{ item.s | default(omit) }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - {'n': 'ANSIBLE_TEST_1_1', 's': 55}
         - {'n': 'ANSIBLE_TEST_1_2', 's': 56}
@@ -380,9 +291,6 @@
       ansibleguy.opnsense.frr_bgp_community_list:
         description: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -392,9 +300,6 @@
       ansibleguy.opnsense.frr_bgp_as_path:
         description: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -403,25 +308,16 @@
     - name: Cleanup OSPF general settings
       ansibleguy.opnsense.frr_ospf_general:
         enabled: false
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup OSPFv3 general settings
       ansibleguy.opnsense.frr_ospf3_general:
         enabled: false
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup OSPFv3 interfaces
       ansibleguy.opnsense.frr_ospf3_interface:
         interface: "{{ item }}"
         state: 'absent'
         match_fields: ['interface']
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'opt1'
         - 'lan'
@@ -430,9 +326,6 @@
       ansibleguy.opnsense.frr_ospf_route_map:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -444,9 +337,6 @@
         mask: "{{ item.mask }}"
         state: 'absent'
         match_fields: ['ip', 'mask']
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - {'ip': '10.0.1.0', 'mask': 30}
         - {'ip': '10.0.2.0', 'mask': 24}
@@ -456,9 +346,6 @@
       ansibleguy.opnsense.frr_ospf_prefix_list:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -468,16 +355,10 @@
     - name: Cleanup BIND general settings
       ansibleguy.opnsense.bind_general:
         enabled: false
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup BIND blocklist settings
       ansibleguy.opnsense.bind_blocklist:
         enabled: false
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup BIND Records
       ansibleguy.opnsense.bind_record_multi:
@@ -493,18 +374,12 @@
             - name: 'test4'
               type: 'CNAME'
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       ignore_errors: true  # domain does not exist
 
     - name: Cleanup BIND Domains
       ansibleguy.opnsense.bind_domain:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'test1.ansibleguy'
         - 'test2.ansibleguy'
@@ -515,9 +390,6 @@
       ansibleguy.opnsense.bind_acl:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -530,62 +402,35 @@
     - name: Cleanup WebProxy General
       ansibleguy.opnsense.webproxy_general:
         enabled: false
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup WebProxy Cache
       ansibleguy.opnsense.webproxy_cache:
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup WebProxy Parent
       ansibleguy.opnsense.webproxy_parent:
         enabled: false
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup WebProxy Traffic
       ansibleguy.opnsense.webproxy_traffic:
         enabled: false
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup WebProxy Forward
       ansibleguy.opnsense.webproxy_forward:
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup WebProxy ACL
       ansibleguy.opnsense.webproxy_acl:
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup WebProxy ICAP
       ansibleguy.opnsense.webproxy_icap:
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
         enabled: false
 
     - name: Cleanup WebProxy Auth
       ansibleguy.opnsense.webproxy_auth:
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
 
     - name: Cleanup WebProxy Remote-ACLs
       ansibleguy.opnsense.webproxy_remote_acl:
         file: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLETEST1'
         - 'ANSIBLETEST2'
@@ -594,9 +439,6 @@
       ansibleguy.opnsense.webproxy_pac_rule:
         description: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -605,9 +447,6 @@
       ansibleguy.opnsense.webproxy_pac_proxy:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -617,9 +456,6 @@
       ansibleguy.opnsense.webproxy_pac_match:
         name: "{{ item }}"
         state: 'absent'
-        firewall: "{{ run.f }}"
-        api_credential_file: "{{ run.c }}"
-        ssl_verify: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'

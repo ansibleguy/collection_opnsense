@@ -155,13 +155,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_ospf_general:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_ospf_general'
 
   tasks:
@@ -213,13 +211,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_ospf_prefix_list:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_ospf_prefix_list'
 
   tasks:
@@ -267,13 +263,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_ospf_route_map:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_ospf_route_map'
 
   tasks:
@@ -322,14 +316,14 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_ospf_network:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.frr_ospf_network:
       match_fields: ['ip', 'mask']
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_ospf_route_map'
 
   tasks:
@@ -376,14 +370,14 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_ospf_interface:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.frr_ospf_interface:
       match_fields: ['interface']
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_ospf_interface'
 
   tasks:
@@ -462,13 +456,11 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_ospf3_general:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_ospf3_general'
 
   tasks:
@@ -506,14 +498,14 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.frr_ospf3_interface:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
+
+    ansibleguy.opnsense.frr_ospf3_interface:
       match_fields: ['interface']
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
       target: 'frr_ospf3_interface'
 
   tasks:

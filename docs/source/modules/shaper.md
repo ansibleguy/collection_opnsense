@@ -91,13 +91,12 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.shaper_pipe:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'shaper_pipe'
 
   tasks:
     - name: Example
@@ -153,17 +152,12 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.shaper_queue:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
-
-    ansibleguy.opnsense.shaper_pipe:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'shaper_queue'
 
   tasks:
     - name: Example
@@ -221,21 +215,12 @@ For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opns
 - hosts: localhost
   gather_facts: no
   module_defaults:
-    ansibleguy.opnsense.shaper_rule:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
-
-    ansibleguy.opnsense.shaper_queue:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
-
-    ansibleguy.opnsense.shaper_pipe:
+    group/ansibleguy.opnsense.all:
       firewall: 'opnsense.template.ansibleguy.net'
       api_credential_file: '/home/guy/.secret/opn.key'
 
     ansibleguy.opnsense.list:
-      firewall: 'opnsense.template.ansibleguy.net'
-      api_credential_file: '/home/guy/.secret/opn.key'
+      target: 'shaper_rule'
 
   tasks:
     - name: Example
