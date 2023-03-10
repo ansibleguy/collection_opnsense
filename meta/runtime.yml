@@ -1,50 +1,47 @@
 ---
-
 requires_ansible: ">=2.10"
 
 action_groups:
-  opnsense:
-    - ansibleguy.opnsense.list
-    - ansibleguy.opnsense.reload
-    - ansibleguy.opnsense.service
+  alias:
     - ansibleguy.opnsense.alias
     - ansibleguy.opnsense.alias_multi
     - ansibleguy.opnsense.alias_purge
+  rule:
     - ansibleguy.opnsense.rule
     - ansibleguy.opnsense.rule_multi
     - ansibleguy.opnsense.rule_purge
-    - ansibleguy.opnsense.savepoint
-    - ansibleguy.opnsense.package
-    - ansibleguy.opnsense.system
-    - ansibleguy.opnsense.cron
-    - ansibleguy.opnsense.route
+  unbound:
     - ansibleguy.opnsense.unbound_forward
     - ansibleguy.opnsense.unbound_dot
     - ansibleguy.opnsense.unbound_host
     - ansibleguy.opnsense.unbound_domain
     - ansibleguy.opnsense.unbound_host_alias
-    - ansibleguy.opnsense.syslog
-    - ansibleguy.opnsense.ipsec_connection
-    - ansibleguy.opnsense.ipsec_pool
+  ipsec:
     - ansibleguy.opnsense.ipsec_auth_local
     - ansibleguy.opnsense.ipsec_auth_remote
     - ansibleguy.opnsense.ipsec_child
     - ansibleguy.opnsense.ipsec_vti
     - ansibleguy.opnsense.ipsec_cert
+    - ansibleguy.opnsense.ipsec_connection
+    - ansibleguy.opnsense.ipsec_pool
+  shaper:
     - ansibleguy.opnsense.shaper_pipe
     - ansibleguy.opnsense.shaper_queue
     - ansibleguy.opnsense.shaper_rule
+  monit:
     - ansibleguy.opnsense.monit_service
     - ansibleguy.opnsense.monit_alert
     - ansibleguy.opnsense.monit_test
+  wireguard:
     - ansibleguy.opnsense.wireguard_server
     - ansibleguy.opnsense.wireguard_peer
     - ansibleguy.opnsense.wireguard_show
     - ansibleguy.opnsense.wireguard_general
+  interface:
     - ansibleguy.opnsense.interface_vlan
     - ansibleguy.opnsense.interface_vxlan
     - ansibleguy.opnsense.interface_vip
-    - ansibleguy.opnsense.source_nat
+  frr:
     - ansibleguy.opnsense.frr_diagnostic
     - ansibleguy.opnsense.frr_bfd_general
     - ansibleguy.opnsense.frr_bfd_neighbor
@@ -61,12 +58,14 @@ action_groups:
     - ansibleguy.opnsense.frr_ospf3_general
     - ansibleguy.opnsense.frr_ospf3_interface
     - ansibleguy.opnsense.frr_rip
+  bind:
     - ansibleguy.opnsense.bind_general
     - ansibleguy.opnsense.bind_blocklist
     - ansibleguy.opnsense.bind_acl
     - ansibleguy.opnsense.bind_domain
     - ansibleguy.opnsense.bind_record
     - ansibleguy.opnsense.bind_record_multi
+  webproxy:
     - ansibleguy.opnsense.webproxy_general
     - ansibleguy.opnsense.webproxy_cache
     - ansibleguy.opnsense.webproxy_parent
@@ -79,3 +78,33 @@ action_groups:
     - ansibleguy.opnsense.webproxy_pac_proxy
     - ansibleguy.opnsense.webproxy_pac_match
     - ansibleguy.opnsense.webproxy_pac_rule
+  route:
+    - ansibleguy.opnsense.route
+  nat:
+    - ansibleguy.opnsense.source_nat
+  system:
+    - ansibleguy.opnsense.list
+    - ansibleguy.opnsense.reload
+    - ansibleguy.opnsense.service
+    - ansibleguy.opnsense.savepoint
+    - ansibleguy.opnsense.package
+    - ansibleguy.opnsense.system
+    - ansibleguy.opnsense.cron
+    - ansibleguy.opnsense.syslog
+  all:
+    - metadata:
+        extend_group:
+          - ansibleguy.opnsense.alias
+          - ansibleguy.opnsense.rule
+          - ansibleguy.opnsense.unbound
+          - ansibleguy.opnsense.ipsec
+          - ansibleguy.opnsense.shaper
+          - ansibleguy.opnsense.monit
+          - ansibleguy.opnsense.wireguard
+          - ansibleguy.opnsense.interface
+          - ansibleguy.opnsense.frr
+          - ansibleguy.opnsense.bind
+          - ansibleguy.opnsense.webproxy
+          - ansibleguy.opnsense.route
+          - ansibleguy.opnsense.nat
+          - ansibleguy.opnsense.system
