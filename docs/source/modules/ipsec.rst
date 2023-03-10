@@ -31,6 +31,8 @@ Definition
 ansibleguy.opnsense.ipsec_connection
 ====================================
 
+Module alias: ansibleguy.opnsense.ipsec_tunnel
+
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
@@ -57,6 +59,8 @@ ansibleguy.opnsense.ipsec_connection
 
 ansibleguy.opnsense.ipsec_pool
 ==============================
+
+Module alias: ansibleguy.opnsense.ipsec_network
 
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"

@@ -86,8 +86,8 @@
         not opn4.changed
       when: not ansible_check_mode
 
-    - name: Disabling 1 - nothing changed
-      ansibleguy.opnsense.ipsec_connection:
+    - name: Disabling 1 - nothing changed (w/ module alias)
+      ansibleguy.opnsense.ipsec_tunnel:
         name: 'ANSIBLE_TEST_1_1'
         unique: 'replace'
         proposals: 'aes256gcm16-ecp521'

@@ -108,3 +108,10 @@ action_groups:
           - ansibleguy.opnsense.route
           - ansibleguy.opnsense.nat
           - ansibleguy.opnsense.system
+
+plugin_routing:
+  modules:
+    ipsec_tunnel:
+      redirect: ansibleguy.opnsense.ipsec_connection
+    ipsec_network:
+      redirect: ansibleguy.opnsense.ipsec_pool
