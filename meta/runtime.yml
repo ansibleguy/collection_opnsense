@@ -46,22 +46,23 @@ action_groups:
     - ansibleguy.opnsense.frr_bfd_general
     - ansibleguy.opnsense.frr_bfd_neighbor
     - ansibleguy.opnsense.frr_bgp_general
-    - ansibleguy.opnsense.frr_bgp_neighbor
     - ansibleguy.opnsense.frr_bgp_prefix_list
-    - ansibleguy.opnsense.frr_bgp_route_map
     - ansibleguy.opnsense.frr_bgp_community_list
     - ansibleguy.opnsense.frr_bgp_as_path
+    - ansibleguy.opnsense.frr_bgp_route_map
+    - ansibleguy.opnsense.frr_bgp_neighbor
     - ansibleguy.opnsense.frr_ospf_general
     - ansibleguy.opnsense.frr_ospf_prefix_list
     - ansibleguy.opnsense.frr_ospf_interface
+    - ansibleguy.opnsense.frr_ospf_route_map
     - ansibleguy.opnsense.frr_ospf_network
     - ansibleguy.opnsense.frr_ospf3_general
     - ansibleguy.opnsense.frr_ospf3_interface
     - ansibleguy.opnsense.frr_rip
   bind:
     - ansibleguy.opnsense.bind_general
-    - ansibleguy.opnsense.bind_blocklist
     - ansibleguy.opnsense.bind_acl
+    - ansibleguy.opnsense.bind_blocklist
     - ansibleguy.opnsense.bind_domain
     - ansibleguy.opnsense.bind_record
     - ansibleguy.opnsense.bind_record_multi
@@ -115,3 +116,5 @@ plugin_routing:
       redirect: ansibleguy.opnsense.ipsec_connection
     ipsec_network:
       redirect: ansibleguy.opnsense.ipsec_pool
+    snat:
+      redirect: ansibleguy.opnsense.source_nat

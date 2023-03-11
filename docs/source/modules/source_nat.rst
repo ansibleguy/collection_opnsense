@@ -65,6 +65,8 @@ Menu: 'Firewall - Automation - Source NAT'
 Definition
 **********
 
+Module alias: ansibleguy.opnsense.snat
+
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45

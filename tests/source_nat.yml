@@ -89,8 +89,8 @@
         not opn2.changed
       when: not ansible_check_mode
 
-    - name: Disabling 1 - nothing changed
-      ansibleguy.opnsense.source_nat:
+    - name: Disabling 1 - nothing changed (w/ module alias)
+      ansibleguy.opnsense.snat:
         description: 'ANSIBLE_TEST_1_1'
         interface: 'lan'
         destination: '192.168.0.1'
