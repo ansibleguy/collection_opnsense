@@ -1,0 +1,37 @@
+name: AutoLint
+
+on:
+  push:
+    branches: [latest]
+  pull_request:
+    branches: [latest]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        python-version: [3.10]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Switch to Current Branch
+        run: git checkout ${{ env.BRANCH }}
+
+      - name: Install python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements_lint.txt
+
+      - name: Run linting
+        run: |
+          bash script/lint.sh

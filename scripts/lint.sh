@@ -8,7 +8,7 @@ echo ''
 echo 'LINTING Python'
 echo ''
 
-pylint $(git ls-files '*.py')
+pylint --recursive=y .
 
 echo ''
 echo 'LINTING Yaml'
