@@ -31,6 +31,14 @@ jobs:
           pip install -r requirements_lint.txt
         shell: bash
 
-      - name: Run linting
-        run: script/lint.sh
+      - name: Running PyLint
+        run: pylint --recursive=y .
+        shell: bash
+
+      - name: Running YamlLint
+        run: yamllint .
+        shell: bash
+
+      - name: Running AnsibleLint
+        run: ansible-lint -c .ansible-lint.yml
         shell: bash
