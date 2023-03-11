@@ -28,9 +28,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r ${GITHUB_ACTION_PATH}/requirements_lint.txt
+          pip install -r requirements_lint.txt
         shell: bash
 
       - name: Run linting
-        run: ${GITHUB_ACTION_PATH}/script/lint.sh
+        run: script/lint.sh
         shell: bash
