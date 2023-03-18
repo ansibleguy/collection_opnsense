@@ -3,6 +3,8 @@ from ipaddress import ip_address, ip_network
 from re import match as regex_match
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
+    exit_bug
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validate import \
     is_valid_domain
 
@@ -233,6 +235,9 @@ def get_simple_existing(
     if isinstance(entries, dict):
         _entries = []
         for uuid, entry in entries.items():
+            if not isinstance(entry, dict):
+                exit_bug(f"The provided entry is not a dictionary => '{entry}'")
+
             entry['uuid'] = uuid
             _entries.append(entry)
 

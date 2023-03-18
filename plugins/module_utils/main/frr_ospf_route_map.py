@@ -16,9 +16,7 @@ class RouteMap(BaseModule):
         'search': 'get',
         'toggle': 'toggleRoutemap',
     }
-    API_KEY = 'routemap'
-    API_KEY_1 = 'ospf'
-    API_KEY_2 = 'routemaps'
+    API_KEY_PATH = 'ospf.routemaps.routemap'
     API_MOD = 'quagga'
     API_CONT = 'ospfsettings'
     API_CONT_REL = 'service'
@@ -39,13 +37,14 @@ class RouteMap(BaseModule):
         'id': {'min': 10, 'max': 99},
     }
     EXIST_ATTR = 'route_map'
+    SEARCH_ADDITIONAL = {
+        'existing_prefixes': 'ospf.prefixlists.prefixlist',
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.route_map = {}
-        self.existing_paths = None
         self.existing_prefixes = None
-        self.existing_communities = None
 
     def check(self) -> None:
         if self.p['state'] == 'present':
@@ -57,18 +56,12 @@ class RouteMap(BaseModule):
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         self._base_check()
-        self.b.find_multiple_links(
-            field='prefix_list',
-            existing=self.existing_prefixes,
-        )
 
-    def _search_call(self) -> dict:
-        raw = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })[self.API_KEY_1]
-
-        self.existing_prefixes = raw['prefixlists']['prefixlist']
-        return raw[self.API_KEY_2][self.API_KEY]
+        if self.p['state'] == 'present':
+            self.b.find_multiple_links(
+                field='prefix_list',
+                existing=self.existing_prefixes,
+            )
 
     def get_existing(self) -> list:
         existing = []

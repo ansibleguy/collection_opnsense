@@ -17,9 +17,7 @@ class DnsOverTls(BaseModule):
         'search': 'get',
         'toggle': 'toggleForward',
     }
-    API_KEY = 'dot'
-    API_KEY_1 = 'unbound'
-    API_KEY_2 = 'dots'
+    API_KEY_PATH = 'unbound.dots.dot'
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
@@ -59,9 +57,7 @@ class DnsOverTls(BaseModule):
 
     def _search_call(self) -> list:
         dots = []
-        raw = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })[self.API_KEY_1][self.API_KEY_2][self.API_KEY]
+        raw = self.b.search()
 
         if len(raw) > 0:
             for uuid, dot in raw.items():

@@ -16,9 +16,7 @@ class RouteMap(BaseModule):
         'search': 'get',
         'toggle': 'toggleRoutemap',
     }
-    API_KEY = 'routemap'
-    API_KEY_1 = 'bgp'
-    API_KEY_2 = 'routemaps'
+    API_KEY_PATH = 'bgp.routemaps.routemap'
     API_MOD = 'quagga'
     API_CONT = 'bgp'
     API_CONT_REL = 'service'
@@ -50,6 +48,11 @@ class RouteMap(BaseModule):
         'name': {'min': 1, 'max': 64}
     }
     EXIST_ATTR = 'route_map'
+    SEARCH_ADDITIONAL = {
+        'existing_paths': 'bgp.aspaths.aspath',
+        'existing_prefixes': 'bgp.prefixlists.prefixlist',
+        'existing_communities': 'bgp.communitylists.communitylist',
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
@@ -73,18 +76,9 @@ class RouteMap(BaseModule):
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         self._base_check()
-        self._find_links()
 
-    def _search_call(self) -> dict:
-        raw = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })[self.API_KEY_1]
-
-        self.existing_paths = raw['aspaths']['aspath']
-        self.existing_prefixes = raw['prefixlists']['prefixlist']
-        self.existing_communities = raw['communitylists']['communitylist']
-
-        return raw[self.API_KEY_2][self.API_KEY]
+        if self.p['state'] == 'present':
+            self._find_links()
 
     def _find_links(self) -> None:
         self.b.find_multiple_links(

@@ -12,7 +12,7 @@ class General(GeneralModule):
         'set': 'set',
         'search': 'get',
     }
-    API_KEY = 'general'
+    API_KEY_PATH = 'general'
     API_MOD = 'bind'
     API_CONT = 'general'
     API_CONT_REL = 'service'
@@ -126,7 +126,7 @@ class General(GeneralModule):
         return simplify_translate(
             existing=self.s.get(cnf={
                 **self.call_cnf, **{'command': self.CMDS['search']}
-            })[self.API_KEY],
+            })[self.API_KEY_PATH],
             translate=self.FIELDS_TRANSLATE,
             typing=self.FIELDS_TYPING,
             bool_invert=self.FIELDS_BOOL_INVERT,

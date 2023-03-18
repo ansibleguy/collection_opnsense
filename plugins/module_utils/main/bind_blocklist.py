@@ -10,7 +10,7 @@ class Blocklist(GeneralModule):
         'set': 'set',
         'search': 'get',
     }
-    API_KEY = 'dnsbl'
+    API_KEY_PATH = 'dnsbl'
     API_MOD = 'bind'
     API_CONT = 'dnsbl'
     API_CONT_REL = 'service'

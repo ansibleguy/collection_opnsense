@@ -40,10 +40,14 @@ class TMPL(BaseModule):
         'field1': {'min': 1, 'max': 100},
     }
     EXIST_ATTR = 'stuff'
+    SEARCH_ADDITIONAL = {
+        'existing_additionalstuff': 'category.sub_category.additional',
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.stuff = {}
+        self.existing_additionalstuff = None
 
     def check(self) -> None:
         if self.p['state'] == 'present':
@@ -51,10 +55,11 @@ class TMPL(BaseModule):
 
         # self._base_check()
         self.b.find(match_fields=[])  # todo: match_fields
-        if self.exists:
-            self.call_cnf['params'] = [self.stuff['uuid']]
 
         if self.p['state'] == 'present':
+            # find linked items
+            #   self.b.find_single_link()
+            #   self.b.find_multiple_links()
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
         # basic validation of conditional parameters

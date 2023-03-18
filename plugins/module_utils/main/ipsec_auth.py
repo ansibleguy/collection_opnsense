@@ -38,6 +38,9 @@ class BaseAuth(BaseModule):
         'round': {'min': 0, 'max': 10},
     }
     EXIST_ATTR = 'auth'
+    SEARCH_ADDITIONAL = {
+        'existing_conns': 'swanctl.Connections.Connection',
+    }
 
     def __init__(self, m: AnsibleModule, r: dict, s: Session = None):
         BaseModule.__init__(self=self, m=m, r=r, s=s)
@@ -71,17 +74,9 @@ class BaseAuth(BaseModule):
                 )
 
         self._base_check()
-        self.b.find_single_link(
-            field='connection',
-            existing=self.existing_conns,
-            existing_field_id='description',
-        )
-
-    def _search_call(self) -> dict:
-        raw = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })[self.API_KEY_1]
-
-        self.existing_conns = raw['Connections']['Connection']
-
-        return raw[self.API_KEY_2][self.API_KEY]
+        if self.p['state'] == 'present':
+            self.b.find_single_link(
+                field='connection',
+                existing=self.existing_conns,
+                existing_field_id='description',
+            )

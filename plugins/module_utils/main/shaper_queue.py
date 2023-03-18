@@ -16,9 +16,7 @@ class Queue(BaseModule):
         'search': 'get',
         'toggle': 'toggleQueue',
     }
-    API_KEY = 'queue'
-    API_KEY_1 = 'ts'
-    API_KEY_2 = 'queues'
+    API_KEY_PATH = 'ts.queues.queue'
     API_MOD = 'trafficshaper'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
@@ -41,11 +39,13 @@ class Queue(BaseModule):
     }
     EXIST_ATTR = 'queue'
     TIMEOUT = 20.0  # 'get' timeout
+    SEARCH_ADDITIONAL = {
+        'existing_pipes': 'ts.pipes.pipe',
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.queue = {}
-        self.pipe_found = False
         self.existing_pipes = None
 
     def check(self) -> None:
@@ -53,8 +53,6 @@ class Queue(BaseModule):
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.queue['uuid']]
 
         if self.p['state'] == 'present':
             if self.p['pipe'] in [None, '']:
@@ -67,28 +65,13 @@ class Queue(BaseModule):
                 else:
                     self.p['weight'] = self.queue['weight']
 
-        self._find_pipe()
-
         if self.p['state'] == 'present':
-            if not self.pipe_found:
-                self.m.fail_json(f"Provided pipe does not exist: '{self.p['pipe']}'")
-
+            self.b.find_single_link(
+                field='pipe',
+                existing=self.existing_pipes,
+                existing_field_id='description',
+            )
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    def _search_call(self) -> dict:
-        raw = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })[self.API_KEY_1]
-        self.existing_pipes = raw['pipes']['pipe']
-        return raw[self.API_KEY_2][self.API_KEY]
-
-    def _find_pipe(self) -> None:
-        if len(self.existing_pipes) > 0:
-            for uuid, pipe in self.existing_pipes.items():
-                if pipe['description'] == self.p['pipe']:
-                    self.p['pipe'] = uuid
-                    self.pipe_found = True
-                    break
 
     def get_existing(self) -> list:
         existing = []

@@ -10,7 +10,7 @@ class General(GeneralModule):
         'set': 'set',
         'search': 'get',
     }
-    API_KEY = 'ospf6'
+    API_KEY_PATH = 'ospf6'
     API_MOD = 'quagga'
     API_CONT = 'ospf6settings'
     API_CONT_REL = 'service'

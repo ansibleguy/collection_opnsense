@@ -12,8 +12,9 @@ class General(GeneralModule):
         'set': 'set',
         'search': 'get',
     }
-    API_KEY_1 = 'proxy'
     API_KEY = 'general'
+    API_KEY_PATH = f'proxy.{API_KEY}'
+    API_KEY_1 = 'proxy'
     API_MOD = 'proxy'
     API_CONT = 'settings'
     API_CONT_REL = 'service'

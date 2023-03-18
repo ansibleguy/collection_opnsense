@@ -8,47 +8,56 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
     single_get, single_post
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     get_simple_existing, to_digit, get_matching, simplify_translate, is_unset
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
+    exit_bug, exit_debug
 
 
 class Base:
     DIFF_FLOAT_ROUND = 1
     RESP_JOIN_CHAR = ','
     ATTR_JOIN_CHAR = 'JOIN_CHAR'
-    ATTR_AK = 'API_KEY'  # ak 0-3 used for edge-cases
-    ATTR_AK1 = 'API_KEY_1'
-    ATTR_AK2 = 'API_KEY_2'
-    ATTR_AK3 = 'API_KEY_3'
     ATTR_AK_PATH = 'API_KEY_PATH'
     ATTR_AK_PATH_REQ = 'API_KEY_PATH_REQ'  # if a custom path depth is needed
     ATTR_AK_PATH_GET = 'API_KEY_PATH_GET'  # if 'get' needs custom path
-    ATTR_REQ_NO_AK = 'REQUEST_NO_API_KEY'
+    ATTR_GET_ADD = 'SEARCH_ADDITIONAL'  # extract additional data from search-call
     ATTR_AK_PATH_SPLIT_CHAR = '.'
     ATTR_BOOL_INVERT = 'FIELDS_BOOL_INVERT'
     ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
     ATTR_DIFF_EXCL = 'FIELDS_DIFF_EXCLUDE'
     ATTR_VALUE_MAP = 'FIELDS_VALUE_MAPPING'
+    ATTR_FIELD_ALL = 'FIELDS_ALL'
+    ATTR_FIELD_CH = 'FIELDS_CHANGE'
     ATTR_REL_CONT = 'API_CONT_REL'
     ATTR_GET_CONT = 'API_CONT_GET'
     ATTR_GET_MOD = 'API_MOD_GET'
+    ATTR_API_MOD = 'API_MOD'
+    ATTR_API_CONT = 'API_CONT'
     ATTR_HEADERS = 'call_headers'
     ATTR_TYPING = 'FIELDS_TYPING'
     ATTR_FIELD_ID = 'FIELD_ID'
     PARAM_MATCH_FIELDS = 'match_fields'
 
+    REQUIRED_ATTRS = [
+        ATTR_AK_PATH,
+        ATTR_TYPING,
+        ATTR_API_MOD,
+        ATTR_API_CONT,
+        ATTR_FIELD_ALL,
+        ATTR_FIELD_CH,
+    ]
+
     def __init__(self, instance):
         self.i = instance  # module-specific object
         self.e = {}  # existing entry
 
-        if not hasattr(self.i, self.ATTR_AK) and not hasattr(self.i, self.ATTR_AK_PATH):
-            raise ValueError(
-                f"Module has neither '{self.ATTR_AK_PATH}' nor "
-                f"'{self.ATTR_AK}' attributes set!"
-            )
+        for attr in self.REQUIRED_ATTRS:
+            if not hasattr(self.i, attr):
+                exit_bug(f"Module has no '{attr}' attribute set!")
 
     def search(self, fail_response: bool = False) -> (dict, list):
         if fail_response:
             # find response keys in initial development
-            raise SystemExit(self.i.s.get(cnf={
+            exit_debug(self.i.s.get(cnf={
                 **self.i.call_cnf, **{'command': self.i.CMDS['search']}
             }))
 
@@ -61,54 +70,39 @@ class Base:
         if hasattr(self.i, self.ATTR_GET_MOD):
             mod_get = getattr(self.i, self.ATTR_GET_MOD)
 
-        return self._search_path_handling(
-            self.i.s.get(cnf={
-                **self.i.call_cnf,
-                **{
-                    'module': mod_get,
-                    'controller': cont_get,
-                    'command': self.i.CMDS['search'],
-                }
-            })
-        )
+        data = self.i.s.get(cnf={
+            **self.i.call_cnf,
+            **{
+                'module': mod_get,
+                'controller': cont_get,
+                'command': self.i.CMDS['search'],
+            }
+        })
 
-    def _search_path_handling(self, data: dict) -> dict:
+        if hasattr(self.i, self.ATTR_GET_ADD):
+            for attr, ak_path in getattr(self.i, self.ATTR_GET_ADD).items():
+                if hasattr(self.i, attr):
+                    setattr(
+                        self.i, attr,
+                        self._search_path_handling(data=data, ak_path=ak_path)
+                    )
+
+        return self._search_path_handling(data)
+
+    def _search_path_handling(self, data: dict, ak_path: str = None) -> dict:
         # resolving API_KEY_PATH's so data from nested dicts gets extracted as configured
-        # todo: refactor to be easier to understand
-        set_aks = {}
+        if ak_path is None:
+            if hasattr(self.i, self.ATTR_AK_PATH_GET):
+                ak_path = getattr(self.i, self.ATTR_AK_PATH_GET)
 
-        for _ak in [self.ATTR_AK, self.ATTR_AK1, self.ATTR_AK2, self.ATTR_AK3]:
-            if hasattr(self.i, _ak):
-                set_aks[_ak] = getattr(self.i, _ak)
-
-        ak_path = None
-        if hasattr(self.i, self.ATTR_AK_PATH_GET):
-            ak_path = getattr(self.i, self.ATTR_AK_PATH_GET)
-
-        elif hasattr(self.i, self.ATTR_AK_PATH):
-            ak_path = getattr(self.i, self.ATTR_AK_PATH)
+            elif hasattr(self.i, self.ATTR_AK_PATH):
+                ak_path = getattr(self.i, self.ATTR_AK_PATH)
 
         if ak_path is not None:
             for k in ak_path.split(self.ATTR_AK_PATH_SPLIT_CHAR):
                 data = data[k]
 
-            if self.ATTR_AK in set_aks and \
-                    isinstance(data, dict):  # if AK_PATH includes AK
-                if set_aks[self.ATTR_AK] in data:
-                    data = data[set_aks[self.ATTR_AK]]
-
-            return data
-
-        if self.ATTR_AK3 in set_aks:
-            return data[set_aks[self.ATTR_AK1]][set_aks[self.ATTR_AK2]][set_aks[self.ATTR_AK3]][set_aks[self.ATTR_AK]]
-
-        if self.ATTR_AK2 in set_aks:
-            return data[set_aks[self.ATTR_AK1]][set_aks[self.ATTR_AK2]][set_aks[self.ATTR_AK]]
-
-        if self.ATTR_AK1 in set_aks:
-            return data[set_aks[self.ATTR_AK1]][set_aks[self.ATTR_AK]]
-
-        return data[set_aks[self.ATTR_AK]]
+        return data
 
     def get_existing(self, diff_filter: bool = False) -> list:
         if diff_filter:
@@ -333,7 +327,7 @@ class Base:
 
     def build_diff(self, data: dict) -> dict:
         if not isinstance(data, dict):
-            raise ValueError('The diff-source object must be of type dict!')
+            exit_bug('The diff-source object must be of type dict!')
 
         EXCLUDE_FIELDS = []
 
@@ -440,40 +434,38 @@ class Base:
 
         payload = request
 
-        if not hasattr(self.i, self.ATTR_REQ_NO_AK):
-            if hasattr(self.i, self.ATTR_AK):
-                payload = {getattr(self.i, self.ATTR_AK): payload}
+        if hasattr(self.i, self.ATTR_AK_PATH_REQ):
+            ak_path = getattr(self.i, self.ATTR_AK_PATH_REQ).split(self.ATTR_AK_PATH_SPLIT_CHAR)
+            ak_path.reverse()
 
-            elif hasattr(self.i, self.ATTR_AK_PATH_REQ):
-                ak_path = getattr(self.i, self.ATTR_AK_PATH_REQ).split(self.ATTR_AK_PATH_SPLIT_CHAR)
-                ak_path.reverse()
+            for k in ak_path:
+                payload = {k: payload}
 
-                for k in ak_path:
-                    payload = {k: payload}
+        elif hasattr(self.i, self.ATTR_AK_PATH):
+            # request only needs the last key
+            ak_path = getattr(self.i, self.ATTR_AK_PATH)
+            attr_ak = ak_path
 
-            elif hasattr(self.i, self.ATTR_AK_PATH):
-                # request only needs the last key
-                ak_path = getattr(self.i, self.ATTR_AK_PATH)
-                attr_ak = ak_path
+            if ak_path.find('.') != -1:
+                attr_ak = ak_path.rsplit(self.ATTR_AK_PATH_SPLIT_CHAR, 1)[1]
 
-                if ak_path.find('.') != -1:
-                    attr_ak = ak_path.rsplit(self.ATTR_AK_PATH_SPLIT_CHAR, 1)[1]
-
-                payload = {attr_ak: payload}
+            payload = {attr_ak: payload}
 
         return payload
 
     def find_single_link(
-            self, field: str, existing: dict, existing_field_id: str = 'name',
+            self, field: str, existing: dict, set_field: str = None, existing_field_id: str = 'name',
             fail: bool = True
     ) -> bool:
         if self.i.p[field] != '':
             found = False
+            if set_field is None:
+                set_field = field
 
             if len(existing) > 0:
                 for uuid, item in existing.items():
                     if item[existing_field_id] == self.i.p[field]:
-                        self.i.p[field] = uuid
+                        self.i.p[set_field] = uuid
                         found = True
 
             if not found:
@@ -487,7 +479,7 @@ class Base:
         return True
 
     def find_multiple_links(
-            self, field: str, existing: dict, existing_field_id: str = 'name',
+            self, field: str, existing: dict, set_field: str = None, existing_field_id: str = 'name',
             fail: bool = True
     ) -> bool:
         provided = len(self.i.p[field]) > 0
@@ -496,7 +488,7 @@ class Base:
         if not provided:
             return True
 
-        if len(existing) > 0:
+        if existing is not None and len(existing) > 0:
             for uuid, item in existing.items():
                 if item[existing_field_id] in self.i.p[field]:
                     uuids.append(uuid)
@@ -512,7 +504,10 @@ class Base:
 
             return False
 
-        self.i.p[field] = uuids
+        if set_field is None:
+            set_field = field
+
+        self.i.p[set_field] = uuids
         return True
 
     def _set_existing(self) -> None:

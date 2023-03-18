@@ -16,7 +16,7 @@ class Alias(BaseModule):
         'search': 'get',
         'toggle': 'toggleHostAlias',
     }
-    API_KEY = 'alias'
+    API_KEY_PATH = 'unbound.aliases.alias'
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
@@ -32,6 +32,9 @@ class Alias(BaseModule):
     FIELDS_TYPING = {
         'bool': ['enabled'],
         'select': ['target'],
+    }
+    SEARCH_ADDITIONAL = {
+        'existing_hosts': 'unbound.hosts.host',
     }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
@@ -66,10 +69,3 @@ class Alias(BaseModule):
                     self.target_found = True
                     self.p['target'] = uuid
                     break
-
-    def _search_call(self) -> dict:
-        unbound = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })['unbound']
-        self.existing_hosts = unbound['hosts']['host']
-        return unbound['aliases'][self.API_KEY]

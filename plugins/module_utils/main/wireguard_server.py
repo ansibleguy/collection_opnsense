@@ -92,7 +92,6 @@ class Server(BaseModule):
 
         self.b.find(match_fields=[self.FIELD_ID])
         if self.exists:
-            self.call_cnf['params'] = [self.server['uuid']]
             if is_unset(self.p['public_key']) or is_unset(self.p['private_key']):
                 self.p['public_key'] = self.server['public_key']
                 self.p['private_key'] = self.server['private_key']

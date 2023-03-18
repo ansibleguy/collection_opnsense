@@ -16,7 +16,7 @@ class Service(BaseModule):
         'search': 'get',
         'toggle': 'toggleService',
     }
-    API_KEY = 'service'
+    API_KEY_PATH = 'monit.service'
     API_MOD = 'monit'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
@@ -40,6 +40,9 @@ class Service(BaseModule):
         'int': ['service_timeout'],
     }
     EXIST_ATTR = 'service'
+    SEARCH_ADDITIONAL = {
+        'existing_tests': 'monit.test',
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
@@ -71,47 +74,17 @@ class Service(BaseModule):
                 )
 
         self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.service['uuid']]
 
         if self.p['state'] == 'present':
-            self.p['tests'] = self._find_tests()
-            self.p['depends'] = self._find_dependencies()
+            self.b.find_multiple_links(
+                field='tests',
+                existing=self.existing_tests,
+            )
+            self.b.find_multiple_links(
+                field='depends',
+                existing=self.existing_entries,
+            )
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    def _find_tests(self) -> list:
-        tests = []
-        existing = {}
-
-        if len(self.p['tests']) > 0:
-            if len(self.existing_tests) > 0:
-                for uuid, test in self.existing_tests.items():
-                    existing[test['name']] = uuid
-
-            for test in self.p['tests']:
-                if test not in existing:
-                    self.m.fail_json(f"Test '{test}' does not exist!")
-
-                tests.append(existing[test])
-
-        return tests
-
-    def _find_dependencies(self) -> list:
-        services = []
-        existing = {}
-
-        if len(self.p['depends']) > 0:
-            if len(self.existing_entries) > 0:
-                for uuid, svc in self.existing_entries.items():
-                    existing[svc['name']] = uuid
-
-            for svc in self.p['depends']:
-                if svc not in existing:
-                    self.m.fail_json(f"Dependency '{svc}' does not exist!")
-
-                services.append(existing[svc])
-
-        return services
 
     def get_existing(self) -> list:
         # pylint: disable=W0212
@@ -133,10 +106,3 @@ class Service(BaseModule):
             svc['depends'] = _dep
 
         return existing
-
-    def _search_call(self) -> list:
-        raw = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })['monit']
-        self.existing_tests = raw['test']
-        return raw[self.API_KEY]

@@ -15,9 +15,7 @@ class Neighbor(BaseModule):
         'search': 'get',
         'toggle': 'toggleNeighbor',
     }
-    API_KEY = 'neighbor'
-    API_KEY_1 = 'bgp'
-    API_KEY_2 = 'neighbors'
+    API_KEY_PATH = 'bgp.neighbors.neighbor'
     API_MOD = 'quagga'
     API_CONT = 'bgp'
     API_CONT_REL = 'service'
@@ -70,6 +68,10 @@ class Neighbor(BaseModule):
         'connect_timer': {'min': 1, 'max': 65000},
     }
     EXIST_ATTR = 'neighbor'
+    SEARCH_ADDITIONAL = {
+        'existing_prefixes': 'bgp.prefixlists.prefixlist',
+        'existing_maps': 'bgp.routemaps.routemap',
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
@@ -94,16 +96,6 @@ class Neighbor(BaseModule):
 
         self._base_check()
         self._find_links()
-
-    def _search_call(self) -> dict:
-        raw = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })[self.API_KEY_1]
-
-        self.existing_prefixes = raw['prefixlists']['prefixlist']
-        self.existing_maps = raw['routemaps']['routemap']
-
-        return raw[self.API_KEY_2][self.API_KEY]
 
     def _find_links(self) -> None:
         links = {

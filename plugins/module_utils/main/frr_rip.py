@@ -10,7 +10,7 @@ class Rip(GeneralModule):
         'set': 'set',
         'search': 'get',
     }
-    API_KEY = 'rip'
+    API_KEY_PATH = 'rip'
     API_MOD = 'quagga'
     API_CONT = 'rip'
     API_CONT_REL = 'service'

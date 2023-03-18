@@ -65,9 +65,6 @@ class SNat(BaseModule):
         self._build_log_name()
         self.b.find(match_fields=self.p['match_fields'])
 
-        if self.exists:
-            self.call_cnf['params'] = [self.rule['uuid']]
-
         if self.p['state'] == 'present':
             validate_values(module=self.m, cnf=self.p, error_func=self.m.fail_json)
             self.r['diff']['after'] = self.b.build_diff(data=self.p)

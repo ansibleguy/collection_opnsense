@@ -87,9 +87,6 @@ class Rule(BaseModule):
         self._build_log_name()
         self.b.find(match_fields=self.p['match_fields'])
 
-        if self.exists:
-            self.call_cnf['params'] = [self.rule['uuid']]
-
         if self.p['state'] == 'present':
             validate_values(
                 error_func=self._error,

@@ -17,7 +17,7 @@ class Forward(BaseModule):
         'search': 'get',
         'toggle': 'toggleDot',
     }
-    API_KEY = 'dot'
+    API_KEY_PATH = 'unbound.dots.dot'
     API_MOD = 'unbound'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
@@ -56,9 +56,7 @@ class Forward(BaseModule):
 
     def _search_call(self) -> list:
         fwds = []
-        raw = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })['unbound']['dots'][self.API_KEY]
+        raw = self.b.search()
 
         if len(raw) > 0:
             for uuid, dot in raw.items():

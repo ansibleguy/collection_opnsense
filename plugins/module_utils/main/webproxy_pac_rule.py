@@ -14,9 +14,6 @@ class Rule(BaseModule):
         'del': 'delPACRule',
         'search': 'get',
     }
-    API_KEY_1 = 'proxy'
-    API_KEY_2 = 'pac'
-    API_KEY = 'rule'
     API_KEY_PATH = 'proxy.pac.rule'
     API_MOD = 'proxy'
     API_CONT = 'settings'
@@ -30,6 +27,10 @@ class Rule(BaseModule):
         'select': ['join_type', 'match_type'],
     }
     EXIST_ATTR = 'rule'
+    SEARCH_ADDITIONAL = {
+        'existing_matches': 'proxy.pac.match',
+        'existing_proxies': 'proxy.pac.proxy',
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
@@ -45,26 +46,15 @@ class Rule(BaseModule):
             )
 
         self.b.find(match_fields=[self.FIELD_ID])
-        self.b.find_multiple_links(
-            field='matches',
-            existing=self.existing_matches,
-        )
-        self.b.find_multiple_links(
-            field='proxies',
-            existing=self.existing_proxies,
-        )
-
-        if self.exists:
-            self.call_cnf['params'] = [self.rule['uuid']]
 
         if self.p['state'] == 'present':
+            self.b.find_multiple_links(
+                field='matches',
+                existing=self.existing_matches,
+            )
+            self.b.find_multiple_links(
+                field='proxies',
+                existing=self.existing_proxies,
+            )
+
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    def _search_call(self) -> list:
-        raw = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })[self.API_KEY_1][self.API_KEY_2]
-
-        self.existing_matches = raw['match']
-        self.existing_proxies = raw['proxy']
-        return raw[self.API_KEY]

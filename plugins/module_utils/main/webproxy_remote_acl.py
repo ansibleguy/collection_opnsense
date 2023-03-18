@@ -17,9 +17,7 @@ class Acl(BaseModule):
         'search': 'get',
         'toggle': 'toggleRemoteBlacklist',
     }
-    API_KEY = 'blacklist'
-    API_KEY_PATH = 'proxy.forward.acl.remoteACLs.blacklists'
-    REQUEST_NO_API_KEY = True
+    API_KEY_PATH = 'proxy.forward.acl.remoteACLs.blacklists.blacklist'
     API_MOD = 'proxy'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
@@ -69,6 +67,3 @@ class Acl(BaseModule):
             )
 
         self._base_check()
-
-    def _build_request(self) -> dict:
-        return {self.API_KEY: self.b.build_request()}

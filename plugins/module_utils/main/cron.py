@@ -39,8 +39,6 @@ class CronJob(BaseModule):
             self.m.fail_json("You need to provide a 'command' if you want to create a cron-job!")
 
         self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.cron['uuid']]
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)

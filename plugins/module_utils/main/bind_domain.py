@@ -85,9 +85,7 @@ class Domain(BaseModule):
         self.b.find(match_fields=[self.FIELD_ID])
 
         if self.exists:
-            self.call_cnf['params'] = [self.domain['uuid']]
-
-            if self.p['state'] != 'present':
+             if self.p['state'] != 'present':
                 # checking if domain has any record left before removing it; plugin seems to lack validation
                 self._search_records()
 
@@ -100,17 +98,17 @@ class Domain(BaseModule):
                                 f"{record['name']}.{self.domain['name']}'"
                             )
 
-        if self.acls_needed:
-            self.b.find_single_link(
-                field='query_acl',
-                existing=self.existing_acls,
-            )
-            self.b.find_single_link(
-                field='transfer_acl',
-                existing=self.existing_acls,
-            )
-
         if self.p['state'] == 'present':
+            if self.acls_needed:
+                self.b.find_single_link(
+                    field='query_acl',
+                    existing=self.existing_acls,
+                )
+                self.b.find_single_link(
+                    field='transfer_acl',
+                    existing=self.existing_acls,
+                )
+
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _search_acls(self) -> None:

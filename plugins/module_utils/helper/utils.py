@@ -7,6 +7,8 @@ from httpx import ConnectError, ConnectTimeout
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
     DEBUG_CONFIG
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
+    exit_env
 
 
 def profiler(
@@ -50,4 +52,4 @@ def profiler(
     if httpx_error is None:
         return check_response
 
-    raise ConnectionError(httpx_error)
+    exit_env(httpx_error)

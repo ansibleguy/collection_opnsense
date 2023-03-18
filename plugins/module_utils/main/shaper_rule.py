@@ -16,9 +16,7 @@ class Rule(BaseModule):
         'search': 'get',
         'toggle': 'togglerule',
     }
-    API_KEY = 'rule'
-    API_KEY_1 = 'ts'
-    API_KEY_2 = 'rules'
+    API_KEY_PATH = 'ts.rules.rule'
     API_MOD = 'trafficshaper'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
@@ -54,11 +52,14 @@ class Rule(BaseModule):
     }
     EXIST_ATTR = 'rule'
     TIMEOUT = 20.0  # 'get' timeout
+    SEARCH_ADDITIONAL = {
+        'existing_pipes': 'ts.pipes.pipe',
+        'existing_queues': 'ts.queues.queue',
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.rule = {}
-        self.target_found = False
         self.existing_queues = None
         self.existing_pipes = None
 
@@ -76,46 +77,26 @@ class Rule(BaseModule):
                 )
 
         self.b.find(match_fields=[self.FIELD_ID])
-        if self.exists:
-            self.call_cnf['params'] = [self.rule['uuid']]
-
-        self._find_pipe()
-        if not self.target_found:
-            self._find_queue()
 
         if self.p['state'] == 'present':
-            if not self.target_found:
-                target_type = 'queue' if self.p['target_pipe'] in [None, ''] else 'pipe'
-                self.m.fail_json(
-                    f"Provided {target_type} does not exist: "
-                    f"'{self.p[f'target_{target_type}']}'"
+            self.b.find_single_link(
+                field='target_pipe',
+                existing=self.existing_pipes,
+                existing_field_id='description',
+                fail=False,
+                set_field='target',
+            )
+
+            if not hasattr(self.p, 'target') or self.p['target'] is None:
+                self.b.find_single_link(
+                    field='target_queue',
+                    existing=self.existing_queues,
+                    existing_field_id='description',
+                    set_field='target',
+                    fail=True,
                 )
 
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    def _search_call(self) -> dict:
-        raw = self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })[self.API_KEY_1]
-        self.existing_pipes = raw['pipes']['pipe']
-        self.existing_queues = raw['queues']['queue']
-        return raw[self.API_KEY_2][self.API_KEY]
-
-    def _find_pipe(self) -> None:
-        if self.p['target_pipe'] not in ['', None] and len(self.existing_pipes) > 0:
-            for uuid, pipe in self.existing_pipes.items():
-                if pipe['description'] == self.p['target_pipe']:
-                    self.p['target'] = uuid
-                    self.target_found = True
-                    break
-
-    def _find_queue(self) -> None:
-        if self.p['target_queue'] not in ['', None] and len(self.existing_queues) > 0:
-            for uuid, queue in self.existing_queues.items():
-                if queue['description'] == self.p['target_queue']:
-                    self.p['target'] = uuid
-                    self.target_found = True
-                    break
 
     def get_existing(self) -> list:
         existing = []

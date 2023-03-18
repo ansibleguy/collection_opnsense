@@ -15,7 +15,6 @@ class Auth(BaseAuth):
         'toggle': 'toggleRemote',
     }
     API_KEY_PATH = 'swanctl.remotes.remote'
-    API_KEY_PATH_REQ = API_KEY_PATH
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseAuth.__init__(self=self, m=module, r=result, s=session)

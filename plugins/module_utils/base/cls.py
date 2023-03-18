@@ -140,15 +140,3 @@ class GeneralModule:
         self.r['diff']['after'] = self.b.build_diff({
             k: v for k, v in self.p.items() if k in self.settings
         })
-
-    def _build_request(self) -> dict:
-        if hasattr(self.b.i, self.b.ATTR_AK3):
-            return {self.b.i.API_KEY_1: {self.b.i.API_KEY_2: {self.b.i.API_KEY_3: self.b.build_request()}}}
-
-        if hasattr(self.b.i, self.b.ATTR_AK2):
-            return {self.b.i.API_KEY_1: {self.b.i.API_KEY_2: self.b.build_request()}}
-
-        if hasattr(self.b.i, self.b.ATTR_AK1):
-            return {self.b.i.API_KEY_1: self.b.build_request()}
-
-        return self.b.build_request()

@@ -69,13 +69,23 @@ class Connection(BaseModule):
         'reauth_seconds': {'min': 0, 'max': 500000},
     }
     EXIST_ATTR = 'tunnel'
+    SEARCH_ADDITIONAL = {
+        'existing_pools': 'swanctl.Pools.Pool',
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.tunnel = {}
+        self.existing_pools = None
 
     def check(self) -> None:
         if self.p['state'] == 'present':
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         self._base_check()
+
+        if self.p['state'] == 'present':
+            self.b.find_multiple_links(
+                field='pools',
+                existing=self.existing_pools,
+            )

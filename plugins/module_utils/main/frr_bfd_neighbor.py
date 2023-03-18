@@ -13,10 +13,10 @@ class Neighbor(BaseModule):
         'add': 'addNeighbor',
         'del': 'delNeighbor',
         'set': 'setNeighbor',
-        'search': 'searchNeighbor',
+        'search': 'get',
         'toggle': 'toggleNeighbor',
     }
-    API_KEY_PATH = 'neighbors.neighbor'
+    API_KEY_PATH = 'bfd.neighbors.neighbor'
     API_MOD = 'quagga'
     API_CONT = 'bfd'
     FIELDS_CHANGE = ['description']
@@ -39,8 +39,3 @@ class Neighbor(BaseModule):
             self.m.fail_json(f"Value '{self.p[self.FIELD_ID]}' is not a valid IP address!")
 
         self._base_check()
-
-    def _search_call(self) -> list:
-        return self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })['rows']

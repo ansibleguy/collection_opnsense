@@ -15,10 +15,10 @@ class Route(BaseModule):
         'add': 'addroute',
         'del': 'delroute',
         'set': 'setroute',
-        'search': 'searchroute',
+        'search': 'get',
         'toggle': 'toggleroute',
     }
-    API_KEY = 'route'
+    API_KEY_PATH = 'route.route'
     API_MOD = 'routes'
     API_CONT = 'routes'
     API_CMD_REL = 'reconfigure'
@@ -31,7 +31,8 @@ class Route(BaseModule):
         'enabled': 'disabled',
     }
     FIELDS_TYPING = {
-        'bool': ['enabled']
+        'bool': ['enabled'],
+        'select': ['gateway'],
     }
     EXIST_ATTR = 'route'
 
@@ -48,11 +49,6 @@ class Route(BaseModule):
 
         self._base_check()
 
-    def _search_call(self) -> list:
-        return self.s.get(cnf={
-            **self.call_cnf, **{'command': self.CMDS['search']}
-        })['rows']
-
     def _simplify_existing(self, route: dict) -> dict:
         # makes processing easier
         simple = simplify_translate(
@@ -61,5 +57,5 @@ class Route(BaseModule):
             translate=self.FIELDS_TRANSLATE,
             bool_invert=self.FIELDS_BOOL_INVERT,
         )
-        simple['gateway'] = route['gateway'].rsplit('-', 1)[0].strip()
+        simple['gateway'] = simple['gateway'].rsplit('-', 1)[0].strip()
         return simple

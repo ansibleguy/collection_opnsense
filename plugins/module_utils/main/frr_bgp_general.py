@@ -10,7 +10,7 @@ class General(GeneralModule):
         'set': 'set',
         'search': 'get',
     }
-    API_KEY = 'bgp'
+    API_KEY_PATH = 'bgp'
     API_MOD = 'quagga'
     API_CONT = 'bgp'
     API_CONT_REL = 'service'
