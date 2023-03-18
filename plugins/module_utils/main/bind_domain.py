@@ -85,7 +85,7 @@ class Domain(BaseModule):
         self.b.find(match_fields=[self.FIELD_ID])
 
         if self.exists:
-             if self.p['state'] != 'present':
+            if self.p['state'] != 'present':
                 # checking if domain has any record left before removing it; plugin seems to lack validation
                 self._search_records()
 
