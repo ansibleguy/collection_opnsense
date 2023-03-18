@@ -87,32 +87,16 @@ class RouteMap(BaseModule):
         return raw[self.API_KEY_2][self.API_KEY]
 
     def _find_links(self) -> None:
-        links = {
-            'as_path_list': self.existing_paths,
-            'community_list': self.existing_communities,
-        }
-
-        for key, existing in links.items():
-            provided = len(self.p[key]) > 0
-            uuids = []
-
-            if not provided:
-                continue
-
-            if len(existing) > 0:
-                for uuid, entry in existing.items():
-                    if entry['description'] in self.p[key]:
-                        uuids.append(uuid)
-
-                    if len(uuids) == len(self.p[key]):
-                        break
-
-            if len(uuids) != len(self.p[key]):
-                self.m.fail_json(
-                    f"At least one of the provided {key} entries was not found!"
-                )
-
-            self.p[key] = uuids
+        self.b.find_multiple_links(
+            field='as_path_list',
+            existing=self.existing_paths,
+            existing_field_id='description',
+        )
+        self.b.find_multiple_links(
+            field='community_list',
+            existing=self.existing_communities,
+            existing_field_id='description',
+        )
 
         key = 'prefix_list'
         if len(self.p[key]) > 0:

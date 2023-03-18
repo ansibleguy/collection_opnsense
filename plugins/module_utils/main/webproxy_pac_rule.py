@@ -45,7 +45,14 @@ class Rule(BaseModule):
             )
 
         self.b.find(match_fields=[self.FIELD_ID])
-        self._find_links()
+        self.b.find_multiple_links(
+            field='matches',
+            existing=self.existing_matches,
+        )
+        self.b.find_multiple_links(
+            field='proxies',
+            existing=self.existing_proxies,
+        )
 
         if self.exists:
             self.call_cnf['params'] = [self.rule['uuid']]
@@ -61,39 +68,3 @@ class Rule(BaseModule):
         self.existing_matches = raw['match']
         self.existing_proxies = raw['proxy']
         return raw[self.API_KEY]
-
-    def _find_links(self) -> None:
-        links = [
-            {
-                'count': 0,
-                'existing': self.existing_matches,
-                'field_rule': 'matches',
-                'field_target': 'name',
-            },
-            {
-
-                'count': 0,
-                'existing': self.existing_proxies,
-                'field_rule': 'proxies',
-                'field_target': 'name',
-            },
-        ]
-
-        for v in links:
-            provided = not is_unset(self.p[v['field_rule']])
-            matching = []
-
-            if not provided:
-                continue
-
-            if len(v['existing']) > 0:
-                for uuid, entry in v['existing'].items():
-
-                    if entry[v['field_target']] in self.p[v['field_rule']]:
-                        matching.append(uuid)
-                        v['count'] += 1
-
-            if len(self.p[v['field_rule']]) != v['count']:
-                self.m.fail_json(f"Not all provided {v['field_rule']} were found!")
-
-            self.p[v['field_rule']] = matching.copy()

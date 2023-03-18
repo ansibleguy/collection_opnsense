@@ -64,7 +64,14 @@ class Network(BaseModule):
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         self._base_check()
-        self._find_links()
+        self.b.find_single_link(
+            field='prefix_list_in',
+            existing=self.existing_prefixes,
+        )
+        self.b.find_single_link(
+            field='prefix_list_out',
+            existing=self.existing_prefixes,
+        )
 
     def _search_call(self) -> dict:
         raw = self.s.get(cnf={
@@ -73,47 +80,6 @@ class Network(BaseModule):
 
         self.existing_prefixes = raw['prefixlists']['prefixlist']
         return raw[self.API_KEY_2][self.API_KEY]
-
-    def _find_links(self) -> None:
-        links = {
-            'prefix-list': {
-                'in': 'prefix_list_in',
-                'out': 'prefix_list_out',
-                'in_found': False,
-                'out_found': False,
-                'existing': self.existing_prefixes,
-            }
-        }
-
-        for key, values in links.items():
-            in_provided = self.p[values['in']] not in ['', None]
-            out_provided = self.p[values['out']] not in ['', None]
-
-            if not in_provided and not out_provided:
-                continue
-
-            if len(values['existing']) > 0:
-                for uuid, prefix in values['existing'].items():
-                    if prefix['name'] == self.p[values['in']]:
-                        self.p[values['in']] = uuid
-                        values['in_found'] = True
-
-                    if prefix['name'] == self.p[values['out']]:
-                        self.p[values['out']] = uuid
-                        values['out_found'] = True
-
-                    if values['in_found'] and values['out_found']:
-                        break
-
-            if in_provided and not values['in_found']:
-                self.m.fail_json(
-                    f"Provided in-{key} '{self.p[values['in']]}' was not found!"
-                )
-
-            if out_provided and not values['out_found']:
-                self.m.fail_json(
-                    f"Provided out-{key} '{self.p[values['out']]}' was not found!"
-                )
 
     def get_existing(self) -> list:
         existing = []

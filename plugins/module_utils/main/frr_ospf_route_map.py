@@ -57,7 +57,10 @@ class RouteMap(BaseModule):
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
         self._base_check()
-        self._find_links()
+        self.b.find_multiple_links(
+            field='prefix_list',
+            existing=self.existing_prefixes,
+        )
 
     def _search_call(self) -> dict:
         raw = self.s.get(cnf={
@@ -66,36 +69,6 @@ class RouteMap(BaseModule):
 
         self.existing_prefixes = raw['prefixlists']['prefixlist']
         return raw[self.API_KEY_2][self.API_KEY]
-
-    def _find_links(self) -> None:
-        links = {
-            'prefix_list': {
-                'key': 'name',
-                'existing': self.existing_prefixes,
-            },
-        }
-
-        for key, values in links.items():
-            provided = len(self.p[key]) > 0
-            uuids = []
-
-            if not provided:
-                continue
-
-            if len(self.existing_prefixes) > 0:
-                for uuid, entry in values['existing'].items():
-                    if entry[values['key']] in self.p[key]:
-                        uuids.append(uuid)
-
-                    if len(uuids) == len(self.p[key]):
-                        break
-
-            if len(uuids) != len(self.p[key]):
-                self.m.fail_json(
-                    f"At least one of the provided {key} entries was not found!"
-                )
-
-            self.p[key] = uuids
 
     def get_existing(self) -> list:
         existing = []

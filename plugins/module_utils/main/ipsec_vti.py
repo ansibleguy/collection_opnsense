@@ -16,11 +16,12 @@ class Vti(BaseModule):
         'search': 'get',
         'toggle': 'toggle',
     }
-    API_KEY_PATH = 'swanctl.VTIs.VTI'
-    API_KEY_PATH_REQ = 'vti'
+    API_KEY_PATH = 'vti'
+    API_KEY_PATH_GET = 'swanctl.VTIs.VTI'
     API_MOD = 'ipsec'
     API_CONT = 'connections'
     API_CONT_REL = 'service'
+    API_CONT_GET = 'connections'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
         'connection', 'request_id', 'local_address', 'remote_address',

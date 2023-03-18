@@ -106,7 +106,14 @@ class General(GeneralModule):
         self.settings = self.get_existing()
 
         if self.acls_needed:
-            self._find_links()
+            self.b.find_single_link(
+                field='recursion_acl',
+                existing=self.existing_acls,
+            )
+            self.b.find_single_link(
+                field='transfer_acl',
+                existing=self.existing_acls,
+            )
 
         self._build_diff()
 
@@ -124,20 +131,3 @@ class General(GeneralModule):
             typing=self.FIELDS_TYPING,
             bool_invert=self.FIELDS_BOOL_INVERT,
         )
-
-    def _find_links(self) -> None:
-        fields = ['recursion_acl', 'transfer_acl']
-
-        for field in fields:
-            if self.p[field] != '':
-                found = False
-                if len(self.existing_acls) > 0:
-                    for uuid, acl in self.existing_acls.items():
-                        if acl['name'] == self.p[field]:
-                            self.p[field] = uuid
-                            found = True
-
-                if not found:
-                    self.m.fail_json(
-                        f"Provided {field} '{self.p[field]}' was not found!"
-                    )

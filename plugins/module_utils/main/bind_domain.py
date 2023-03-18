@@ -101,27 +101,17 @@ class Domain(BaseModule):
                             )
 
         if self.acls_needed:
-            self._find_links()
+            self.b.find_single_link(
+                field='query_acl',
+                existing=self.existing_acls,
+            )
+            self.b.find_single_link(
+                field='transfer_acl',
+                existing=self.existing_acls,
+            )
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    def _find_links(self) -> None:
-        fields = ['transfer_acl', 'query_acl']
-
-        for field in fields:
-            if self.p[field] != '':
-                found = False
-                if len(self.existing_acls) > 0:
-                    for uuid, acl in self.existing_acls.items():
-                        if acl['name'] == self.p[field]:
-                            self.p[field] = uuid
-                            found = True
-
-                if not found:
-                    self.m.fail_json(
-                        f"Provided {field} '{self.p[field]}' was not found!"
-                    )
 
     def _search_acls(self) -> None:
         self.existing_acls = self.s.get(cnf={

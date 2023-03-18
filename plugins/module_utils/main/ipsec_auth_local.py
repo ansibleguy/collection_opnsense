@@ -14,8 +14,9 @@ class Auth(BaseAuth):
         'search': 'get',
         'toggle': 'toggleLocal',
     }
-    API_KEY_PATH = 'swanctl.locals.local'
-    API_KEY_PATH_REQ = API_KEY_PATH
+    API_KEY_1 = 'swanctl'
+    API_KEY_2 = 'locals'
+    API_KEY = 'local'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseAuth.__init__(self=self, m=module, r=result, s=session)

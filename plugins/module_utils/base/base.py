@@ -20,13 +20,16 @@ class Base:
     ATTR_AK3 = 'API_KEY_3'
     ATTR_AK_PATH = 'API_KEY_PATH'
     ATTR_AK_PATH_REQ = 'API_KEY_PATH_REQ'  # if a custom path depth is needed
+    ATTR_AK_PATH_GET = 'API_KEY_PATH_GET'  # if 'get' needs custom path
     ATTR_REQ_NO_AK = 'REQUEST_NO_API_KEY'
     ATTR_AK_PATH_SPLIT_CHAR = '.'
     ATTR_BOOL_INVERT = 'FIELDS_BOOL_INVERT'
     ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
     ATTR_DIFF_EXCL = 'FIELDS_DIFF_EXCLUDE'
     ATTR_VALUE_MAP = 'FIELDS_VALUE_MAPPING'
-    ATTR_RELOAD = 'API_CONT_REL'
+    ATTR_REL_CONT = 'API_CONT_REL'
+    ATTR_GET_CONT = 'API_CONT_GET'
+    ATTR_GET_MOD = 'API_MOD_GET'
     ATTR_HEADERS = 'call_headers'
     ATTR_TYPING = 'FIELDS_TYPING'
     ATTR_FIELD_ID = 'FIELD_ID'
@@ -49,37 +52,63 @@ class Base:
                 **self.i.call_cnf, **{'command': self.i.CMDS['search']}
             }))
 
-        AK = {}
+        # workaround if 'get' needs to be performed using other api module/controller
+        cont_get, mod_get = self.i.API_CONT, self.i.API_MOD
+
+        if hasattr(self.i, self.ATTR_GET_CONT):
+            cont_get = getattr(self.i, self.ATTR_GET_CONT)
+
+        if hasattr(self.i, self.ATTR_GET_MOD):
+            mod_get = getattr(self.i, self.ATTR_GET_MOD)
+
+        return self._search_path_handling(
+            self.i.s.get(cnf={
+                **self.i.call_cnf,
+                **{
+                    'module': mod_get,
+                    'controller': cont_get,
+                    'command': self.i.CMDS['search'],
+                }
+            })
+        )
+
+    def _search_path_handling(self, data: dict) -> dict:
+        # resolving API_KEY_PATH's so data from nested dicts gets extracted as configured
+        # todo: refactor to be easier to understand
+        set_aks = {}
 
         for _ak in [self.ATTR_AK, self.ATTR_AK1, self.ATTR_AK2, self.ATTR_AK3]:
             if hasattr(self.i, _ak):
-                AK[_ak] = getattr(self.i, _ak)
+                set_aks[_ak] = getattr(self.i, _ak)
 
-        data = self.i.s.get(cnf={
-            **self.i.call_cnf, **{'command': self.i.CMDS['search']}
-        })
+        ak_path = None
+        if hasattr(self.i, self.ATTR_AK_PATH_GET):
+            ak_path = getattr(self.i, self.ATTR_AK_PATH_GET)
 
-        if hasattr(self.i, self.ATTR_AK_PATH):
-            for k in getattr(self.i, self.ATTR_AK_PATH).split(self.ATTR_AK_PATH_SPLIT_CHAR):
+        elif hasattr(self.i, self.ATTR_AK_PATH):
+            ak_path = getattr(self.i, self.ATTR_AK_PATH)
+
+        if ak_path is not None:
+            for k in ak_path.split(self.ATTR_AK_PATH_SPLIT_CHAR):
                 data = data[k]
 
-            if self.ATTR_AK in AK and \
+            if self.ATTR_AK in set_aks and \
                     isinstance(data, dict):  # if AK_PATH includes AK
-                if AK[self.ATTR_AK] in data:
-                    data = data[AK[self.ATTR_AK]]
+                if set_aks[self.ATTR_AK] in data:
+                    data = data[set_aks[self.ATTR_AK]]
 
             return data
 
-        if self.ATTR_AK3 in AK:
-            return data[AK[self.ATTR_AK1]][AK[self.ATTR_AK2]][AK[self.ATTR_AK3]][AK[self.ATTR_AK]]
+        if self.ATTR_AK3 in set_aks:
+            return data[set_aks[self.ATTR_AK1]][set_aks[self.ATTR_AK2]][set_aks[self.ATTR_AK3]][set_aks[self.ATTR_AK]]
 
-        if self.ATTR_AK2 in AK:
-            return data[AK[self.ATTR_AK1]][AK[self.ATTR_AK2]][AK[self.ATTR_AK]]
+        if self.ATTR_AK2 in set_aks:
+            return data[set_aks[self.ATTR_AK1]][set_aks[self.ATTR_AK2]][set_aks[self.ATTR_AK]]
 
-        if self.ATTR_AK1 in AK:
-            return data[AK[self.ATTR_AK1]][AK[self.ATTR_AK]]
+        if self.ATTR_AK1 in set_aks:
+            return data[set_aks[self.ATTR_AK1]][set_aks[self.ATTR_AK]]
 
-        return data[AK[self.ATTR_AK]]
+        return data[set_aks[self.ATTR_AK]]
 
     def get_existing(self, diff_filter: bool = False) -> list:
         if diff_filter:
@@ -249,11 +278,10 @@ class Base:
 
     def reload(self) -> dict:
         # reload the running config
-        if hasattr(self.i, self.ATTR_RELOAD):
-            cont_rel = getattr(self.i, self.ATTR_RELOAD)
+        cont_rel = self.i.API_CONT
 
-        else:
-            cont_rel = self.i.API_CONT
+        if hasattr(self.i, self.ATTR_REL_CONT):
+            cont_rel = getattr(self.i, self.ATTR_REL_CONT)
 
         if not self.i.m.check_mode:
             return self.i.s.post(cnf={
@@ -425,10 +453,67 @@ class Base:
 
             elif hasattr(self.i, self.ATTR_AK_PATH):
                 # request only needs the last key
-                attr_ak = getattr(self.i, self.ATTR_AK_PATH).rsplit(self.ATTR_AK_PATH_SPLIT_CHAR, 1)[1]
+                ak_path = getattr(self.i, self.ATTR_AK_PATH)
+                attr_ak = ak_path
+
+                if ak_path.find('.') != -1:
+                    attr_ak = ak_path.rsplit(self.ATTR_AK_PATH_SPLIT_CHAR, 1)[1]
+
                 payload = {attr_ak: payload}
 
         return payload
+
+    def find_single_link(
+            self, field: str, existing: dict, existing_field_id: str = 'name',
+            fail: bool = True
+    ) -> bool:
+        if self.i.p[field] != '':
+            found = False
+
+            if len(existing) > 0:
+                for uuid, item in existing.items():
+                    if item[existing_field_id] == self.i.p[field]:
+                        self.i.p[field] = uuid
+                        found = True
+
+            if not found:
+                if fail:
+                    self.i.m.fail_json(
+                        f"Provided {field} '{self.i.p[field]}' was not found!"
+                    )
+
+                return False
+
+        return True
+
+    def find_multiple_links(
+            self, field: str, existing: dict, existing_field_id: str = 'name',
+            fail: bool = True
+    ) -> bool:
+        provided = len(self.i.p[field]) > 0
+        uuids = []
+
+        if not provided:
+            return True
+
+        if len(existing) > 0:
+            for uuid, item in existing.items():
+                if item[existing_field_id] in self.i.p[field]:
+                    uuids.append(uuid)
+
+                if len(uuids) == len(self.i.p[field]):
+                    break
+
+        if len(uuids) != len(self.i.p[field]):
+            if fail:
+                self.i.m.fail_json(
+                    f"At least one of the provided {field} entries was not found!"
+                )
+
+            return False
+
+        self.i.p[field] = uuids
+        return True
 
     def _set_existing(self) -> None:
         if is_unset(self.e):
