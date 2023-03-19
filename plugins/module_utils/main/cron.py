@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, is_unset
+    is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
@@ -57,11 +57,12 @@ class CronJob(BaseModule):
 
     def _build_all_available_cmds(self, raw_cmds: dict):
         if len(self.available_commands) == 0:
-            for cmd, cmd_values in raw_cmds.items():
+            for cmd in raw_cmds.keys():
                 if cmd not in self.available_commands:
                     self.available_commands.append(cmd)
 
     def _simplify_existing(self, existing: dict) -> dict:
+        # pylint: disable=W0212
         simple = self.b._simplify_existing(existing)
         simple.pop('origin')
         self._build_all_available_cmds(existing['command'])
