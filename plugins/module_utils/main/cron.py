@@ -25,6 +25,11 @@ class CronJob(BaseModule):
         'minutes', 'hours', 'days', 'months',
         'weekdays', 'command', 'who', 'parameters'
     ]
+    FIELDS_TYPING = {
+        'bool': ['enabled'],
+        'select': ['command'],
+        'int': ['minutes', 'hours', 'days', 'months', 'weekdays'],
+    }
     FIELDS_ALL = ['description', 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     EXIST_ATTR = 'cron'
@@ -45,25 +50,19 @@ class CronJob(BaseModule):
 
             if self.p['command'] is not None and len(self.available_commands) > 0 and \
                     self.p['command'] not in self.available_commands:
-                self.m.fail_json(f"Got unsupported command! Available ones are: {', '.join(self.available_commands)}")
+                self.m.fail_json(
+                    'Got unsupported command! '
+                    f"Available ones are: {', '.join(self.available_commands)}"
+                )
 
-    def _simplify_existing(self, job: dict) -> dict:
-        simple = job
-        simple.pop('origin')
-        job['enabled'] = is_true(job['enabled'])
-
-        # to get full list of commands
-        init_cmds = False
+    def _build_all_available_cmds(self, raw_cmds: dict):
         if len(self.available_commands) == 0:
-            init_cmds = True
+            for cmd, cmd_values in raw_cmds.items():
+                if cmd not in self.available_commands:
+                    self.available_commands.append(cmd)
 
-        for cmd, cmd_values in job['command'].items():
-            if cmd not in self.available_commands:
-                self.available_commands.append(cmd)
-
-            if is_true(cmd_values['selected']):
-                job['command'] = cmd
-                if not init_cmds:
-                    break
-
+    def _simplify_existing(self, existing: dict) -> dict:
+        simple = self.b._simplify_existing(existing)
+        simple.pop('origin')
+        self._build_all_available_cmds(existing['command'])
         return simple

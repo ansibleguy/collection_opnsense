@@ -28,6 +28,7 @@ class KeyPair(BaseModule):
         'public_key': 'publicKey',
         'private_key': 'privateKey',
     }
+    FIELDS_TYPING = {}
     FIELDS_DIFF_EXCLUDE = ['private_key']
     EXIST_ATTR = 'key'
     TIMEOUT = 30.0  # ipsec reload
