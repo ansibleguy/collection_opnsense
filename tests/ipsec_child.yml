@@ -131,9 +131,9 @@
         remote_net: '192.168.21.0/28'
         request_id: 200
         sha256_96: true
-        start_action:  'route'
-        close_action:  'trap'
-        dpd_action:  'start'
+        start_action: 'route'
+        close_action: 'trap'
+        dpd_action: 'start'
         rekey_seconds: 1800
       register: opn7
       failed_when: >
@@ -149,9 +149,9 @@
         remote_net: '192.168.21.0/28'
         request_id: 200
         sha256_96: true
-        start_action:  'route'
-        close_action:  'trap'
-        dpd_action:  'start'
+        start_action: 'route'
+        close_action: 'trap'
+        dpd_action: 'start'
         rekey_seconds: 1800
       register: opn8
       failed_when: >
