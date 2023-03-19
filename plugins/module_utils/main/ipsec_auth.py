@@ -8,7 +8,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 
 
 class BaseAuth(BaseModule):
-    FIELD_ID = 'description'
+    FIELD_ID = 'name'
     API_MOD = 'ipsec'
     API_CONT = 'connections'
     API_CONT_REL = 'service'
@@ -20,6 +20,7 @@ class BaseAuth(BaseModule):
     FIELDS_ALL = ['enabled', FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
+        'name': 'description',
         'authentication': 'auth',
         'public_keys': 'pubkeys',
         'certificates': 'certs',

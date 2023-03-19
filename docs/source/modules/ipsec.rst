@@ -8,12 +8,16 @@ IPSec
 
 **STATE**: unstable
 
-**TESTS**: `ipsec_cert <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_cert.yml>`_
+**TESTS**: `ipsec_cert <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_cert.yml>`_ |
+`ipsec_connection <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_connection.yml>`_ |
+`ipsec_pool <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_pool.yml>`_ |
+`ipsec_vti <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_vti.yml>`_
 
 **API Docs**: `Core - IPSec <https://docs.opnsense.org/development/api/core/ipsec.html>`_
 
-**Service Docs**: `Routes <https://docs.opnsense.org/manual/vpnet.html#ipsec>`_
-
+**Service Docs**: `IPSec <https://docs.opnsense.org/manual/vpnet.html#ipsec>`_ |
+`IPSec Examples <https://docs.opnsense.org/manual/vpnet.html#new-23-1-vpn-ipsec-connections>`_ |
+`IPSec VTI <https://docs.opnsense.org/manual/how-tos/ipsec-s2s-conn-route.html>`_
 
 Limitations
 ***********
@@ -37,7 +41,7 @@ Module alias: ansibleguy.opnsense.ipsec_tunnel
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "description","string","true","\-","name, desc","Unique connection/tunnel name"
+    "name","string","true","\-","description, desc","Unique connection/tunnel name"
     "local_addresses","list","false","\-","local_addr, local","Local address[es] to use for IKE communication. Accepts single IPv4/IPv6 addresses, DNS names, CIDR subnets or IP address ranges. As an initiator, the first non-range/non-subnet is used to initiate the connection from. As a responder the local destination address must match at least to one of the specified addresses, subnets or ranges. If FQDNs are assigned, they are resolved every time a configuration lookup is done. If DNS resolution times out, the lookup is delayed for that time. When left empty %any is choosen as default"
     "remote_addresses","list","false","\-","remote_addr, remote","Remote address[es] to use for IKE communication. Accepts single IPv4/IPv6 addresses, DNS names, CIDR subnets or IP address ranges. As an initiator, the first non-range/non-subnet is used to initiate the connection to. As a responder the local destination address must match at least to one of the specified addresses, subnets or ranges. If FQDNs are assigned, they are resolved every time a configuration lookup is done. If DNS resolution times out, the lookup is delayed for that time. To initiate a connection, at least one specific address or DNS name must be specified"
     "pools","list","false","\-","networks","List of named IP pools to allocate virtual IP addresses and other configuration attributes from. Each name references a pool by name from either the pools section or an external pool. Note that the order in which they are queried primarily depends on the plugin order"
@@ -77,18 +81,18 @@ ansibleguy.opnsense.ipsec_child
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "description","string","true","\-","name, desc","Unique name to identify the entry"
+    "name","string","true","\-","description, desc","Unique name to identify the entry"
     "connection","string","false for state changes, else true","\-","tunnel, conn, tun","Connection to link this child to"
     "mode","string","false","tunnel","\-","One of: 'tunnel', 'transport', 'pass', 'drop'; IPsec Mode to establish CHILD_SA with. tunnel negotiates the CHILD_SA in IPsec Tunnel Mode whereas transport uses IPsec Transport Mode. pass and drop are used to install shunt policies which explicitly bypass the defined traffic from IPsec processing or drop it, respectively"
-    "local_ts","list","true","\-","local_traffic_selectors, local_cidr, local","List of local traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition"
-    "remote_ts","list","true","\-","remote_traffic_selectors, remote_cidr, remote","List of remote traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition"
+    "local_net","list","true","\-","local_traffic_selectors, local_cidr, local_ts, local","List of local traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition"
+    "remote_net","list","true","\-","remote_traffic_selectors, remote_cidr, remote_ts, remote","List of remote traffic selectors to include in CHILD_SA. Each selector is a CIDR subnet definition"
     "sha256_96","boolean","false","false","sha256","HMAC-SHA-256 is used with 128-bit truncation with IPsec. For compatibility with implementations that incorrectly use 96-bit truncation this option may be enabled to configure the shorter truncation length in the kernel. This is not negotiated, so this only works with peers that use the incorrect truncation length (or have this option enabled)"
     "start_action","string","false","start","start","One of: 'none', 'trap_start', 'route', 'start', 'trap'; Action to perform after loading the configuration. The default of none loads the connection only, which then can be manually initiated or used as a responder configuration. The value trap installs a trap policy which triggers the tunnel as soon as matching traffic has been detected. The value start initiates the connection actively. To immediately initiate a connection for which trap policies have been installed, user Trap+start"
     "close_action","string","false","none","close","One of: 'none', 'trap', 'start'; Action to perform after a CHILD_SA gets closed by the peer. The default of none does not take any action. trap installs a trap policy for the CHILD_SA (note that this is redundant if start_action includes trap). start tries to immediately re-create the CHILD_SA. close_action does not provide any guarantee that the CHILD_SA is kept alive. It acts on explicit close messages only but not on negotiation failures. Use trap policies to reliably re-create failed CHILD_SAs"
     "dpd_action","string","false","clear","dpd","One of: 'clear', 'trap', 'start'; Action to perform for this CHILD_SA on DPD timeout. The default clear closes the CHILD_SA and does not take further action. trap installs a trap policy, which will catch matching traffic and tries to re-negotiate the tunnel on-demand (note that this is redundant if start_action includes trap. restart immediately tries to re-negotiate the CHILD_SA under a fresh IKE_SA"
     "policies","boolean","false","true","pols","Whether to install IPsec policies or not. Disabling this can be useful in some scenarios e.g. VTI where policies are not managed by the IKE daemon"
     "request_id","integer","false","\-","req_id, reqid","This might be helpful in some scenarios, like route based tunnels (VTI), but works only if each CHILD_SA configuration is instantiated not more than once. The default uses dynamic reqids, allocated incrementally"
-    "eap_proposals","list","false","['default']","eap_props, eap","Choose 'default' or at least one of the options shown in the Web-UI"
+    "esp_proposals","list","false","['default']","esp_props, esp","Choose 'default' or at least one of the options shown in the Web-UI"
     "rekey_seconds","integer","false","3600","rekey_time, rekey","Time to schedule CHILD_SA rekeying. CHILD_SA rekeying refreshes key material, optionally using a Diffie-Hellman exchange if a group is specified in the proposal. To avoid rekey collisions initiated by both ends simultaneously, a value in the range of rand_time gets subtracted to form the effective soft lifetime. By default CHILD_SA rekeying is scheduled every hour, minus rand_time"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
@@ -99,7 +103,7 @@ ansibleguy.opnsense.ipsec_vti
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "description","string","true","\-","name, desc","Unique name to identify the entry"
+    "name","string","true","\-","description, desc","Unique name to identify the entry"
     "request_id","integer","false for state changes, else true","\-","req_id, reqid","This might be helpful in some scenarios, like route based tunnels (VTI), but works only if each CHILD_SA configuration is instantiated not more than once. The default uses dynamic reqids, allocated incrementally"
     "local_address","string","false","\-","local_addr, local","\-"
     "remote_address","string","false","\-","remote_addr, remote","\-"
@@ -114,7 +118,7 @@ ansibleguy.opnsense.ipsec_auth_local
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "description","string","true","\-","name, desc","Unique name to identify the entry"
+    "name","string","true","\-","description, desc","Unique name to identify the entry"
     "connection","string","false for state changes, else true","\-","tunnel, conn, tun","Connection to use this local authentication with"
     "round","integer","false","0","\-","Numeric identifier by which authentication rounds are sorted"
     "authentication","string","false","psk","auth","One of: 'psk', 'pubkey', 'eap_tls', 'eap_mschapv2', 'xauth_pam', 'eap_radius'; Authentication to perform for this round, when using Pre-Shared key make sure to define one under "VPN->IPsec->Pre-Shared Keys""

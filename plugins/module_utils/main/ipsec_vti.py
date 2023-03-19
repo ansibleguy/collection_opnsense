@@ -8,7 +8,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 
 
 class Vti(BaseModule):
-    FIELD_ID = 'description'
+    FIELD_ID = 'name'
     CMDS = {
         'add': 'add',
         'del': 'del',
@@ -19,17 +19,18 @@ class Vti(BaseModule):
     API_KEY_PATH = 'vti'
     API_KEY_PATH_GET = 'swanctl.VTIs.VTI'
     API_MOD = 'ipsec'
-    API_CONT = 'connections'
+    API_CONT = 'vti'
     API_CONT_REL = 'service'
     API_CONT_GET = 'connections'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'connection', 'request_id', 'local_address', 'remote_address',
+        'request_id', 'local_address', 'remote_address',
         'local_tunnel_address', 'remote_tunnel_address',
     ]
     FIELDS_ALL = ['enabled', FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
+        'name': 'description',
         'request_id': 'reqid',
         'local_address': 'local',
         'remote_address': 'remote',

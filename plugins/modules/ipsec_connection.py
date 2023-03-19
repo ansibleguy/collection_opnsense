@@ -34,8 +34,8 @@ VERSION_MAPPING = {
 
 def run_module():
     module_args = dict(
-        description=dict(
-            type='str', required=True, aliases=['name', 'desc'],
+        name=dict(
+            type='str', required=True, aliases=['description', 'desc'],
             description='Unique connection/tunnel name',
         ),
         local_addresses=dict(

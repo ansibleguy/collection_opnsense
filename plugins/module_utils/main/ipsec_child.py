@@ -8,7 +8,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 
 
 class Child(BaseModule):
-    FIELD_ID = 'description'
+    FIELD_ID = 'name'
     CMDS = {
         'add': 'addChild',
         'del': 'delChild',
@@ -22,19 +22,22 @@ class Child(BaseModule):
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'connection', 'request_id', 'eap_proposals', 'sha256_96', 'start_action',
-        'close_action', 'dpd_action', 'mode', 'policies', 'local_ts', 'remote_ts',
+        'connection', 'request_id', 'esp_proposals', 'sha256_96', 'start_action',
+        'close_action', 'dpd_action', 'mode', 'policies', 'local_net', 'remote_net',
         'rekey_seconds',
     ]
     FIELDS_ALL = ['enabled', FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
+        'name': 'description',
         'request_id': 'reqid',
         'rekey_seconds': 'rekey_time',
+        'local_net': 'local_ts',
+        'remote_net': 'remote_ts',
     }
     FIELDS_TYPING = {
         'bool': ['enabled', 'policies', 'sha256_96'],
-        'list': ['eap_proposals', 'local_ts', 'remote_ts'],
+        'list': ['esp_proposals', 'local_net', 'remote_net'],
         'select': ['mode', 'dpd_action', 'close_action', 'start_action', 'connection'],
         'int': ['rekey_seconds', 'request_id'],
     }
@@ -43,18 +46,29 @@ class Child(BaseModule):
         'rekey_seconds': {'min': 0, 'max': 500000},
     }
     EXIST_ATTR = 'child'
+    SEARCH_ADDITIONAL = {
+        'existing_conns': 'swanctl.Connections.Connection',
+    }
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.child = {}
+        self.existing_conns = None
 
     def check(self) -> None:
         if self.p['state'] == 'present':
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
-            if is_unset(self.p['connection']):
-                self.m.fail_json(
-                    "You need to provide a 'connection' to create an IPSec child!"
-                )
+            for field in ['connection', 'local_net', 'remote_net']:
+                if is_unset(self.p[field]):
+                    self.m.fail_json(
+                        f"You need to provide a '{field}' to create an IPSec child!"
+                    )
 
         self._base_check()
+        if self.p['state'] == 'present':
+            self.b.find_single_link(
+                field='connection',
+                existing=self.existing_conns,
+                existing_field_id='description',
+            )

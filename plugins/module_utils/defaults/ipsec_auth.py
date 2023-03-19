@@ -1,6 +1,6 @@
 IPSEC_AUTH_MOD_ARGS = dict(
-    description=dict(
-        type='str', required=True, aliases=['name', 'desc'],
+    name=dict(
+        type='str', required=True, aliases=['description', 'desc'],
         description='Unique name to identify the entry'
     ),
     connection=dict(

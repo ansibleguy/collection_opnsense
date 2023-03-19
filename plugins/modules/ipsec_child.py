@@ -28,8 +28,8 @@ EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
 
 def run_module():
     module_args = dict(
-        description=dict(
-            type='str', required=True, aliases=['name', 'desc'],
+        name=dict(
+            type='str', required=True, aliases=['description', 'desc'],
             description='Unique name to identify the entry'
         ),
         connection=dict(
@@ -50,9 +50,9 @@ def run_module():
                         'each CHILD_SA configuration is instantiated not more than once. The default uses dynamic '
                         'reqids, allocated incrementally',
         ),
-        eap_proposals=dict(
+        esp_proposals=dict(
             type='list', elements='str', required=False, default=['default'],
-            aliases=['eap_props', 'eap'],
+            aliases=['esp_props', 'esp'],
         ),
         sha256_96=dict(
             type='bool', required=False, default=False, aliases=['sha256'],
@@ -85,15 +85,15 @@ def run_module():
             description='Whether to install IPsec policies or not. Disabling this can be useful in some scenarios '
                         'e.g. VTI where policies are not managed by the IKE daemon',
         ),
-        local_ts=dict(
-            type='list', elements='str', required=True, default=[],
-            aliases=['local_traffic_selectors', 'local_cidr', 'local'],
+        local_net=dict(
+            type='list', elements='str', required=False, default=[],
+            aliases=['local_traffic_selectors', 'local_cidr', 'local_ts', 'local'],
             description='List of local traffic selectors to include in CHILD_SA. Each selector is a CIDR '
                         'subnet definition',
         ),
-        remote_ts=dict(
-            type='list', elements='str', required=True, default=[],
-            aliases=['remote_traffic_selectors', 'remote_cidr', 'remote'],
+        remote_net=dict(
+            type='list', elements='str', required=False, default=[],
+            aliases=['remote_traffic_selectors', 'remote_cidr', 'remote_ts', 'remote'],
             description='List of remote traffic selectors to include in CHILD_SA. Each selector is a CIDR '
                         'subnet definition',
         ),

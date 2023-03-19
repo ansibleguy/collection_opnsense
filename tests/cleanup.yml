@@ -461,6 +461,14 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
 
+    - name: Cleanup IPSec childs
+      ansibleguy.opnsense.ipsec_child:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+
     - name: Cleanup IPSec connections
       ansibleguy.opnsense.ipsec_connection:
         name: "{{ item }}"
@@ -469,6 +477,8 @@
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
+        - 'ANSIBLE_TEST_3_1'
+        - 'ANSIBLE_TEST_4_1'
 
     - name: Cleanup IPSec pools
       ansibleguy.opnsense.ipsec_pool:
@@ -479,3 +489,11 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
         - 'ANSIBLE_TEST_2_2'
+
+    - name: Cleanup IPSec VTIs
+      ansibleguy.opnsense.ipsec_vti:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'

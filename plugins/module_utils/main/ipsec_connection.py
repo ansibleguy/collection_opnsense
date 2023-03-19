@@ -8,7 +8,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 
 
 class Connection(BaseModule):
-    FIELD_ID = 'description'
+    FIELD_ID = 'name'
     CMDS = {
         'add': 'addConnection',
         'del': 'delConnection',
@@ -31,6 +31,7 @@ class Connection(BaseModule):
     FIELDS_ALL = ['enabled', FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
+        'name': 'description',
         'encapsulation': 'encap',
         'local_addresses': 'local_addrs',
         'remote_addresses': 'remote_addrs',

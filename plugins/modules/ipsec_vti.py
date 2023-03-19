@@ -29,8 +29,8 @@ EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
 def run_module():
     # todo: add description to parameters => VTI not found in WebUI (?!)
     module_args = dict(
-        description=dict(
-            type='str', required=True, aliases=['name', 'desc'],
+        name=dict(
+            type='str', required=True, aliases=['description', 'desc'],
             description='Unique name to identify the entry'
         ),
         request_id=dict(
