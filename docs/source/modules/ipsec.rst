@@ -121,9 +121,9 @@ ansibleguy.opnsense.ipsec_auth_local
     "name","string","true","\-","description, desc","Unique name to identify the entry"
     "connection","string","false for state changes, else true","\-","tunnel, conn, tun","Connection to use this local authentication with"
     "round","integer","false","0","\-","Numeric identifier by which authentication rounds are sorted"
-    "authentication","string","false","psk","auth","One of: 'psk', 'pubkey', 'eap_tls', 'eap_mschapv2', 'xauth_pam', 'eap_radius'; Authentication to perform for this round, when using Pre-Shared key make sure to define one under "VPN->IPsec->Pre-Shared Keys""
+    "authentication","string","false","psk","auth","One of: 'psk', 'pubkey', 'eap-tls', 'eap-mschapv2', 'xauth-pam', 'eap-radius'; Authentication to perform for this round, when using Pre-Shared key make sure to define one under "VPN->IPsec->Pre-Shared Keys""
     "id","string","false","\-","ike_id","IKE identity to use for authentication round. When using certificate authentication. The IKE identity must be contained in the certificate, either as the subject DN or as a subjectAltName (the identity will default to the certificate’s subject DN if not specified). Refer to https://docs.strongswan.org/docs/5.9/config/identityParsing.html for details on how identities are parsed and may be configured"
-    "eap_id","string","false","\-","\-","Must be defined if authentication is set to one of: ['eap_tls', 'eap_mschapv2', 'eap_radius']; Client EAP-Identity to use in EAP-Identity exchange and the EAP method"
+    "eap_id","string","false","\-","\-","Must be defined if authentication is set to one of: ['eap-tls', 'eap-mschapv2', 'eap-radius']; Client EAP-Identity to use in EAP-Identity exchange and the EAP method"
     "certificates","list","false","\-","certs","Certificate or public-key must be defined if authentication is set to 'pubkey'; List of certificate candidates to use for authentication"
     "public_keys","list","false","\-","pubkeys","Certificate or public-key must be defined if authentication is set to 'pubkey'; List of raw public key candidates to use for authentication"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst

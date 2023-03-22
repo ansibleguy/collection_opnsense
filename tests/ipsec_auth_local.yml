@@ -1,0 +1,263 @@
+---
+
+- name: Testing IPSec Local Authentication
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      target: 'ipsec_auth_local'
+
+  vars:
+    test1:
+      pub: |
+        -----BEGIN PUBLIC KEY-----
+        MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2OJtOwz6s6+v0UCcjiOA
+        eAQCaLZADjZ3kdc70/U6S1nzo6jWU6Aii/md+BLw0SLs4c5krNpo3zQ7dhZLpUIH
+        DZVvAMQnfi1kZmrInLdQYZ6/i+ilxHSGC+jm+7Uuz5rPotw4kICZ92PofE4+B3uJ
+        kS1PASbcJCbL2cidOyoatKLj38+9iQF54ZBVpOz2XNkuAG1lRPFmuQtc72MTyFzv
+        02PlGWuZt3twDL9Hn61HRGmA3Wy3xto0y/ZKzEHZH+wiGV8wCM4kuxONxtzc/ezQ
+        ox6rLPKBPQkbXqCE5Y9rp7xlpcrYuuWIneyKepLlw6vHnRv7+y4LIwk658HjsKzi
+        OQIDAQAB
+        -----END PUBLIC KEY-----
+      priv: |
+        -----BEGIN RSA PRIVATE KEY-----
+        MIIEowIBAAKCAQEA2OJtOwz6s6+v0UCcjiOAeAQCaLZADjZ3kdc70/U6S1nzo6jW
+        U6Aii/md+BLw0SLs4c5krNpo3zQ7dhZLpUIHDZVvAMQnfi1kZmrInLdQYZ6/i+il
+        xHSGC+jm+7Uuz5rPotw4kICZ92PofE4+B3uJkS1PASbcJCbL2cidOyoatKLj38+9
+        iQF54ZBVpOz2XNkuAG1lRPFmuQtc72MTyFzv02PlGWuZt3twDL9Hn61HRGmA3Wy3
+        xto0y/ZKzEHZH+wiGV8wCM4kuxONxtzc/ezQox6rLPKBPQkbXqCE5Y9rp7xlpcrY
+        uuWIneyKepLlw6vHnRv7+y4LIwk658HjsKziOQIDAQABAoIBAQDAvwH6P7+x3wnu
+        enBntc9fWZjWfFmTB/7dgp2t8js7ahantM29BgyNv2oPZK3V/ybsSqOYJoabDu1l
+        Nc1GcdaY0NwUnz7F2QtoJbBh7lwmVZG/giOH41KZ1QMqYUvXvqqW/wXaDiBHBug/
+        SL3Bop2Qgua6jFGKY1w5ERwCz5lqO9HLmaiaZtiiiejw0gKJI1/YKbmzpq+k5kxl
+        uamN/7FQTApQS2PN9FjqEaxcPuz8Yi+uEpjbVW75lkPmibVIHg7FXmXaz860Qw/8
+        X/RckjeVivqq4V1KjDDhbRMNhJAytLTgo4r4/MaRdsYAX1yU9dWKPcGl78JeePm8
+        4kT4AUzxAoGBAPgwwsQLlONfKKWfBaAKLGM88N9qicrC8ptzSZWn7FqjrjL+wiIG
+        X0s88l/mzMPLCXqFg3RHSgdvISAfXx27TttpljGc28RENiZOB5tLbPsh7IM1BTrg
+        Ov2qNsxWO5xqxOxX/+tW0rov2uWM96tLrv+YI3KT1C1ifdX5FW3U3tG9AoGBAN+1
+        fOgH/sqNqeE/gnvS25b3U9A/ZmdR13hOVss1v1r4Oa+tKmawYk/rdTuqW5nIoJ1V
+        EO/IwzXoOyVn+OYQaj3rn4E/ybRAy0AMRZhIrZbWIBX3MnP0xxGAHfFItWI+qeoy
+        mLz6VuAJauvOsAuL76wPYdd4q+MUC9/oJYFecFQtAoGAC5Sq4d7weZONH/1Fk+wl
+        mhPT4XjlKRLjoyFEA7msK6aLkFGW2WOWuroDTTpFv7UPoinsslZJPAORdiBAnfCJ
+        g29v1KzPDF9qb2sgq7xfP3CbypuEvPSNjByPJgW4DlplCeopRN/uQUXOXvuu6s1D
+        QyXkMYp4Ug3QdVWEDHXsV7kCgYBUk1/CtWsdlwtXzlP9jk1YuO7l92I2w5lLsYpc
+        z1gmA1yDz1sNcbfpcSJkSVbSQCiA8u0xSlyLH95kmPdfu2r/N/qYuc3/KNPuxfT1
+        ytxd/1woEcnwTuWH90DavNteZkSE91YJdDeuAcF7nyutYd1d1n7uIIATnLuUjkbH
+        rzWWjQKBgHilCTPkvf+awlSTZTxomfJogZI8pPGBuKfEzqKrmGKNhqbunFJvg5IW
+        R6TK1xBlSgiaplTf+yBFbUHmlQ1Yc4CW0HGUAzRS/qaDeba5tmwKiNs+ekFSbw/m
+        0Z0gyiFy6GY4g/BMNO7Kw/LqGOMVTl+cwUrpBdGQXMnhb9z/iKa8
+        -----END RSA PRIVATE KEY-----
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1 - failing because of missing connection
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        authentication: 'psk'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding 1 - failing because of missing cert/pubkey when using pubkey-auth
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        authentication: 'pubkey'
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+
+    - name: Adding 1 - failing because of missing eap-id when using eap-auth
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        authentication: 'eap_mschapv2'
+        eap_id: 'dummy'
+      register: opn_fail3
+      failed_when: not opn_fail3.failed
+
+    - name: Adding 1 - failing because of invalid round
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        authentication: 'psk'
+        round: 11
+      register: opn_fail4
+      failed_when: not opn_fail4.failed
+
+    - name: Adding 1 - failing because of non-existent connection
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        authentication: 'psk'
+        connection: 'ANSIBLE_TEST_4_1'
+      register: opn_fail5
+      failed_when: not opn_fail5.failed
+      when: not ansible_check_mode
+
+    - name: Adding dummy connection
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_4_1'
+      when: not ansible_check_mode
+
+    - name: Adding dummy cert
+      ansibleguy.opnsense.ipsec_cert:
+        name: 'ANSIBLE_TEST_2_1'
+        public_key: "{{ test1.pub }}"
+        private_key: "{{ test1.priv }}"
+      when: not ansible_check_mode
+
+    - name: Adding 1 (psk)
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        authentication: 'psk'
+        connection: 'ANSIBLE_TEST_4_1'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+      when: not ansible_check_mode
+
+    - name: Adding 1 - nothing changed
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        authentication: 'psk'
+        connection: 'ANSIBLE_TEST_4_1'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        opn2.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 (pubkey)
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        connection: 'ANSIBLE_TEST_4_1'
+        authentication: 'pubkey'
+        public_keys: 'ANSIBLE_TEST_2_1'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        connection: 'ANSIBLE_TEST_4_1'
+        authentication: 'pubkey'
+        public_keys: 'ANSIBLE_TEST_2_1'
+        enabled: false
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        connection: 'ANSIBLE_TEST_4_1'
+        authentication: 'pubkey'
+        public_keys: 'ANSIBLE_TEST_2_1'
+        enabled: false
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        opn5.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_1'
+        connection: 'ANSIBLE_TEST_4_1'
+        authentication: 'pubkey'
+        public_keys: 'ANSIBLE_TEST_2_1'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2 (eap)
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_2'
+        connection: 'ANSIBLE_TEST_4_1'
+        authentication: 'eap-tls'
+        eap_id: 'dummy'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_2'
+        connection: 'ANSIBLE_TEST_4_1'
+        authentication: 'eap-tls'
+        eap_id: 'dummy'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        opn8.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: 'ANSIBLE_TEST_1_2'
+        state: 'absent'
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn10
+      failed_when: >
+        'data' not in opn10 or
+        opn10.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup auth
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Cleanup connection
+      ansibleguy.opnsense.ipsec_connection:
+        name: 'ANSIBLE_TEST_4_1'
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Cleanup cert
+      ansibleguy.opnsense.ipsec_cert:
+        name: 'ANSIBLE_TEST_2_1'
+        state: 'absent'
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode

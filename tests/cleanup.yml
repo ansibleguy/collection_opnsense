@@ -124,6 +124,8 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_2_1'
+        - 'ANSIBLE_TEST_3_1'
 
     - name: Cleanup shaper pipes
       ansibleguy.opnsense.shaper_pipe:
@@ -479,6 +481,7 @@
         - 'ANSIBLE_TEST_2_1'
         - 'ANSIBLE_TEST_3_1'
         - 'ANSIBLE_TEST_4_1'
+        - 'ANSIBLE_TEST_5_1'
 
     - name: Cleanup IPSec pools
       ansibleguy.opnsense.ipsec_pool:
@@ -492,6 +495,22 @@
 
     - name: Cleanup IPSec VTIs
       ansibleguy.opnsense.ipsec_vti:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+
+    - name: Cleanup IPSec Local-Auth
+      ansibleguy.opnsense.ipsec_auth_local:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+
+    - name: Cleanup IPSec Remote-Auth
+      ansibleguy.opnsense.ipsec_auth_remote:
         name: "{{ item }}"
         state: 'absent'
       loop:

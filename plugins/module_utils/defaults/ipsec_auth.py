@@ -13,12 +13,12 @@ IPSEC_AUTH_MOD_ARGS = dict(
     ),
     authentication=dict(
         type='str', required=False, aliases=['auth'], default='psk',
-        choices=['psk', 'pubkey', 'eap_tls', 'eap_mschapv2', 'xauth_pam', 'eap_radius'],
+        choices=['psk', 'pubkey', 'eap-tls', 'eap-mschapv2', 'xauth-pam', 'eap-radius'],
         description='Authentication to perform for this round, when using Pre-Shared key make sure to define one '
                     'under "VPN->IPsec->Pre-Shared Keys"',
     ),
     id=dict(
-        type='str', required=False, aliases=['ike_id'],
+        type='str', required=False, aliases=['ike_id'], default='',
         description='IKE identity to use for authentication round. When using certificate authentication. The IKE '
                     'identity must be contained in the certificate, either as the subject DN or as a subjectAltName '
                     '(the identity will default to the certificate’s subject DN if not specified). '
@@ -26,7 +26,7 @@ IPSEC_AUTH_MOD_ARGS = dict(
                     'how identities are parsed and may be configured'
     ),
     eap_id=dict(
-        type='str', required=False,
+        type='str', required=False, default='',
         description='Client EAP-Identity to use in EAP-Identity exchange and the EAP method'
     ),
     certificates=dict(
