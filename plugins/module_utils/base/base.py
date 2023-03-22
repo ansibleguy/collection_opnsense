@@ -9,7 +9,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
     get_simple_existing, to_digit, get_matching, simplify_translate, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
-    exit_bug, exit_debug
+    exit_bug, exit_debug, ModuleSoftError
 
 
 class Base:
@@ -185,16 +185,22 @@ class Base:
                     if field == getattr(self.i, self.ATTR_FIELD_ID):
                         continue
 
-                if str(self.e[field]) != str(self.i.p[field]):
-                    self.i.r['changed'] = True
+                try:
+                    if str(self.e[field]) != str(self.i.p[field]):
+                        self.i.r['changed'] = True
 
-                    if self.i.p['debug']:
-                        self.i.m.warn(
-                            f"Field changed: '{field}' "
-                            f"'{self.e[field]}' != '{self.i.p[field]}'"
-                        )
+                        if self.i.p['debug']:
+                            self.i.m.warn(
+                                f"Field changed: '{field}' "
+                                f"'{self.e[field]}' != '{self.i.p[field]}'"
+                            )
 
-                    break
+                        break
+
+                except KeyError:
+                    exit_bug(
+                        f"The field '{field}' seems to be unset - check the modules config!"
+                    )
 
         # update if changed
         if self.i.r['changed']:
@@ -486,7 +492,7 @@ class Base:
 
     def find_multiple_links(
             self, field: str, existing: dict, set_field: str = None, existing_field_id: str = 'name',
-            fail: bool = True
+            fail: bool = True, fail_soft: bool = False
     ) -> bool:
         provided = len(self.i.p[field]) > 0
         uuids = []
@@ -505,10 +511,13 @@ class Base:
                     break
 
         if len(uuids) != len(self.i.p[field]):
+            msg = f"At least one of the provided {field} entries was not found!"
+
             if fail:
-                self.i.m.fail_json(
-                    f"At least one of the provided {field} entries was not found!"
-                )
+                self.i.m.fail_json(msg)
+
+            if fail_soft:
+                raise ModuleSoftError(msg)
 
             return False
 

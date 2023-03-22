@@ -38,9 +38,6 @@ class Prefix(BaseModule):
     STR_VALIDATIONS = {
         'name': r'^[a-zA-Z0-9._-]{1,64}$'
     }
-    STR_LEN_VALIDATIONS = {
-        'name': {'min': 1, 'max': 64}
-    }
     EXIST_ATTR = 'prefix_list'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
@@ -60,7 +57,6 @@ class Prefix(BaseModule):
             validate_str_fields(
                 module=self.m, data=self.p,
                 field_regex=self.STR_VALIDATIONS,
-                field_minmax_length=self.STR_LEN_VALIDATIONS
             )
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 

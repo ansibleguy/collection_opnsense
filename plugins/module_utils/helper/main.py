@@ -4,7 +4,7 @@ from re import match as regex_match
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
-    exit_bug
+    exit_bug, exit_cnf
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validate import \
     is_valid_domain
 
@@ -258,10 +258,16 @@ def get_simple_existing(
 
 def validate_str_fields(
         module: AnsibleModule, data: dict, field_regex: dict = None,
-        field_minmax_length: dict = None
+        field_minmax_length: dict = None, allow_empty: bool = False,
 ) -> None:
     if field_minmax_length is not None:
         for field, min_max_length in field_minmax_length.items():
+            if not unset_check_error(params=data, field=field, fail=not allow_empty):
+                continue
+
+            if 'min' not in min_max_length or 'max' not in min_max_length:
+                exit_bug("Values of 'STR_LEN_VALIDATIONS' must have a 'min' and 'max' attribute!")
+
             if min_max_length['min'] < len(data[field]) > min_max_length['max']:
                 module.fail_json(
                     f"Value of field '{field}' is not valid - "
@@ -270,6 +276,9 @@ def validate_str_fields(
 
     if field_regex is not None:
         for field, regex in field_regex.items():
+            if not unset_check_error(params=data, field=field, fail=not allow_empty):
+                continue
+
             if regex_match(regex, data[field]) is None:
                 module.fail_json(
                     f"Value of field '{field}' is not valid - "
@@ -362,3 +371,13 @@ def is_unset(value: (str, None, list, dict)) -> bool:
         value = value.strip()
 
     return value in ['', None]
+
+
+def unset_check_error(params: dict, field: str, fail: bool) -> bool:
+    if is_unset(params[field]):
+        if fail:
+            exit_cnf(f"Field '{field}' must be set!")
+
+        return False
+
+    return True

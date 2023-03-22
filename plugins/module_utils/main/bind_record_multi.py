@@ -10,7 +10,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main im
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_record import Record
 
-# pylint: disable=R0914
+# pylint: disable=R0912,R0914,R0915
 
 
 def process(m: AnsibleModule, p: dict, r: dict) -> None:

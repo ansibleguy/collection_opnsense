@@ -19,6 +19,10 @@ def exit_env(msg: str):
     raise AnsibleModuleError(f"ENVIRONMENTAL ERROR: {msg}")
 
 
+def exit_cnf(msg: str):
+    raise AnsibleModuleError(f"CONFIG ERROR: {msg}")
+
+
 def module_dependency_error() -> None:
     exit_env(
         'For this Ansible-module to work you must install its dependencies first: '

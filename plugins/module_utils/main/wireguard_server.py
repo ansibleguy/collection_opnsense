@@ -48,9 +48,6 @@ class Server(BaseModule):
     STR_VALIDATIONS = {
         'name': r'^([0-9a-zA-Z._\-]){1,64}$'
     }
-    STR_LEN_VALIDATIONS = {
-        'name': {'min': 1, 'max': 64}
-    }
     EXIST_ATTR = 'server'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
@@ -65,7 +62,6 @@ class Server(BaseModule):
             validate_str_fields(
                 module=self.m, data=self.p,
                 field_regex=self.STR_VALIDATIONS,
-                field_minmax_length=self.STR_LEN_VALIDATIONS
             )
 
             if is_unset(self.p['allowed_ips']):
