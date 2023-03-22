@@ -13,3 +13,4 @@ skip_list:
   - 'meta-unsupported-ansible'  # support for older installations from apt and so on
   - 'meta-runtime[unsupported-version]'
   - 'fqcn[canonical]'  # module aliases
+  - 'args[module]'
