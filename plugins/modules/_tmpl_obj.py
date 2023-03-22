@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright: (C) 2022, AnsibleGuy <guy@ansibleguy.net>
+# Copyright: (C) 2023, AnsibleGuy <guy@ansibleguy.net>
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
 # template to be copied to implement new modules

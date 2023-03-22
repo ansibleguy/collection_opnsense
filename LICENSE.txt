@@ -622,7 +622,7 @@ copy of the Program in return for a fee.
 
 
     Ansible Collection to manage OPNSense firewalls using its API.
-    Copyright (C) 2022 AnsibleGuy
+    Copyright (C) 2023 AnsibleGuy
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
