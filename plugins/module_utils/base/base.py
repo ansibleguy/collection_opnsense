@@ -7,7 +7,8 @@ from typing import Callable
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     single_get, single_post
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_simple_existing, to_digit, get_matching, simplify_translate, is_unset
+    get_simple_existing, to_digit, get_matching, simplify_translate, is_unset, \
+    sort_param_lists
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
     exit_bug, exit_debug, ModuleSoftError
 
@@ -173,6 +174,8 @@ class Base:
 
     def update(self, enable_switch: bool = True) -> dict:
         self._set_existing()
+        sort_param_lists(self.i.p)
+        sort_param_lists(self.e)
 
         # checking if changed
         for field in self.i.FIELDS_CHANGE:
