@@ -457,6 +457,8 @@ class Base:
             self, field: str, existing: dict, set_field: str = None, existing_field_id: str = 'name',
             fail: bool = True
     ) -> bool:
+        entry = None
+
         if self.i.p[field] != '':
             found = False
             if set_field is None:
@@ -466,6 +468,7 @@ class Base:
                 for uuid, item in existing.items():
                     if item[existing_field_id] == self.i.p[field]:
                         self.i.p[set_field] = uuid
+                        entry = item[existing_field_id]
                         found = True
 
             if not found:
@@ -476,6 +479,9 @@ class Base:
 
                 return False
 
+        if set_field in self.i.r['diff']['before']:
+            self.i.r['diff']['before'][set_field] = entry
+
         return True
 
     def find_multiple_links(
@@ -484,6 +490,7 @@ class Base:
     ) -> bool:
         provided = len(self.i.p[field]) > 0
         uuids = []
+        entries = []
 
         if not provided:
             return True
@@ -492,6 +499,7 @@ class Base:
             for uuid, item in existing.items():
                 if item[existing_field_id] in self.i.p[field]:
                     uuids.append(uuid)
+                    entries.append(item[existing_field_id])
 
                 if len(uuids) == len(self.i.p[field]):
                     break
@@ -508,6 +516,13 @@ class Base:
             set_field = field
 
         self.i.p[set_field] = uuids
+        if set_field in self.i.r['diff']['before']:
+            entries.sort()
+            self.i.r['diff']['before'][set_field] = entries
+
+            if set_field in self.i.r['diff']['after']:
+                self.i.r['diff']['after'][set_field].sort()
+
         return True
 
     def _set_existing(self) -> None:
