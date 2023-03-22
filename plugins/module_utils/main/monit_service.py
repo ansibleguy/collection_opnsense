@@ -85,24 +85,3 @@ class Service(BaseModule):
                 existing=self.existing_entries,
             )
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
-
-    def get_existing(self) -> list:
-        # pylint: disable=W0212
-        existing = get_simple_existing(
-            entries=self._search_call(),
-            simplify_func=self.b._simplify_existing
-        )
-
-        for svc in existing:
-            _tests = []
-            for test in svc['tests']:
-                _tests.append(self.existing_tests[test]['name'])
-
-            _dep = []
-            for dep in svc['depends']:
-                _dep.append(existing[dep]['name'])
-
-            svc['tests'] = _tests
-            svc['depends'] = _dep
-
-        return existing

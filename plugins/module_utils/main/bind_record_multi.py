@@ -18,6 +18,12 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
     meta_record = Record(module=m, session=s, result={})
     existing_records = meta_record.get_existing()
     existing_domains = meta_record.search_call_domains()
+    existing_domain_mapping = {}
+
+    if len(existing_domains) > 0:
+        for uuid, dom in existing_domains.items():
+            existing_domain_mapping[dom['domainname']] = uuid
+
     defaults = {}
     overrides = {
         'match_fields': p['match_fields'],
@@ -35,6 +41,17 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
     valid_records = {}
     for domain, records in p['records'].items():
         overrides['domain'] = domain
+
+        if domain not in existing_domain_mapping:
+            msg = f"The domain '{domain}' does not seem to exist! " \
+                  "Create one before managing its records."
+            if p['fail_processing']:
+                m.fail_json(msg)
+
+            else:
+                m.warn(msg)
+
+            continue
 
         for record in records:
             # build config and validate it the same way the module initialization would do
@@ -95,6 +112,7 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
             # save on requests
             record.existing_entries = existing_records
             record.existing_domains = existing_domains
+            record.existing_domain_mapping = existing_domain_mapping
 
             record.check()
             record.process()

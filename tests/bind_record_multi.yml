@@ -21,6 +21,28 @@
         'data' not in opn_pre1 or
         opn_pre1.data | length > 0
 
+    - name: Adding - failing because of non-existing domain
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'test4.ansibleguy':
+            - name: 'test1'
+              value: '192.168.1.1'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding - warning because of non-existing domain
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'test4.ansibleguy':
+            - name: 'test1'
+              value: '192.168.1.1'
+        fail_processing: false
+      register: opn_warn1
+      failed_when: >
+        opn_warn1.failed or
+        'warnings' not in opn_warn1 or
+        opn_warn1.warnings | length != 1
+
     - name: Adding dummy domain
       ansibleguy.opnsense.bind_domain:
         name: 'test4.ansibleguy'

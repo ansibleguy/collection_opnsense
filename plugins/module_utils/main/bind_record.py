@@ -43,6 +43,7 @@ class Record(BaseModule):
         self.record = {}
         self.existing_entries = None
         self.existing_domains = None
+        self.existing_domain_mapping = None
         self.exists = False
         self.exists_rr = False
 
@@ -61,42 +62,50 @@ class Record(BaseModule):
             self.existing_domains = self.search_call_domains()
 
         if len(self.existing_domains) == 0:
-            self._error('No existing domain found! Create one before managing its records.')
-
-        domain_found = False
-        for uuid, dom in self.existing_domains.items():
-            if dom['domainname'] == self.p['domain']:
-                self.p['domain'] = uuid
-                domain_found = True
-                break
-
-        if not domain_found:
-            self._error(
-                f"The provided domain '{self.p['domain']}' was not found! "
-                'You may have to create it before managing its records.'
-            )
-
-        # pylint: disable=W0212
-        self.existing = get_multiple_matching(
-            module=self.m, existing_items=self.existing_entries,
-            compare_item=self.p, match_fields=self.p['match_fields'],
-            simplify_func=self.b._simplify_existing,
-        )
-
-        self.exists_rr = len(self.existing) > 1
-        self.exists = len(self.existing) == 1
-
-        if self.exists_rr:
-            self.r['diff']['before'] = self.existing
+            if self.p['state'] == 'present':
+                self._error('No existing domain found! Create one before managing its records.')
 
         else:
-            if self.exists:
-                self.record = self.existing[0]
-                self.r['diff']['before'] = self.record
-                self.call_cnf['params'] = [self.record['uuid']]
+            domain_found = False
+            if self.existing_domain_mapping is None:
+                for uuid, dom in self.existing_domains.items():
+                    if dom['domainname'] == self.p['domain']:
+                        self.p['domain'] = uuid
+                        domain_found = True
+                        break
 
-            if self.p['state'] == 'present':
-                self.r['diff']['after'] = self.b.build_diff(data=self.p)
+            else:
+                if self.p['domain'] in self.existing_domain_mapping:
+                    self.p['domain'] = self.existing_domain_mapping[self.p['domain']]
+                    domain_found = True
+
+            if not domain_found:
+                self._error(
+                    f"The provided domain '{self.p['domain']}' was not found! "
+                    'You may have to create it before managing its records.'
+                )
+
+            # pylint: disable=W0212
+            self.existing = get_multiple_matching(
+                module=self.m, existing_items=self.existing_entries,
+                compare_item=self.p, match_fields=self.p['match_fields'],
+                simplify_func=self.b._simplify_existing,
+            )
+
+            self.exists_rr = len(self.existing) > 1
+            self.exists = len(self.existing) == 1
+
+            if self.exists_rr:
+                self.r['diff']['before'] = self.existing
+
+            else:
+                if self.exists:
+                    self.record = self.existing[0]
+                    self.r['diff']['before'] = self.record
+                    self.call_cnf['params'] = [self.record['uuid']]
+
+                if self.p['state'] == 'present':
+                    self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def search_call_domains(self) -> dict:
         return self.s.get(cnf={
