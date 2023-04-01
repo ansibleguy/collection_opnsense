@@ -66,6 +66,7 @@
         description: 'ANSIBLE_TEST_2'
         target: 'test.ansibleguy.net'
         transport: 'tcp6'
+        timeout: 60
       register: opn5
       failed_when: >
         opn5.failed or
