@@ -8,6 +8,7 @@
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
+      timeout: 60
 
   tasks:
     - name: Checking syslog status
