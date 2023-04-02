@@ -41,6 +41,12 @@ jobs:
         run: yamllint .
         shell: bash
 
+      - name: Preparing collection for AnsibleLint
+        run: |
+          mkdir -p /tmp/ansible_lint/collections/ansible_collections/ansibleguy
+          ln -s ${{ github.workspace }} /tmp/ansible_lint/collections/ansible_collections/ansibleguy/opnsense
+        shell: bash
+
       - name: Running AnsibleLint
-        run: ansible-lint -c .ansible-lint.yml
+        run: ANSIBLE_COLLECTIONS_PATH=/tmp/ansible_lint/collections ansible-lint -c .ansible-lint.yml
         shell: bash
