@@ -1,6 +1,6 @@
 # WireGuard
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: [wireguard_server](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/wireguard_server.yml) | 
 [wireguard_peer](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/wireguard_peer.yml) | 

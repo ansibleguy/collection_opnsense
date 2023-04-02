@@ -1,6 +1,6 @@
 # FRR OSPF
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: [frr_ospf_general](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_ospf_general.yml) |
 [frr_ospf_prefix_list](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_ospf_prefix_list.yml) |

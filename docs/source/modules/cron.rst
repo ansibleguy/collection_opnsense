@@ -6,7 +6,7 @@
 Cron Jobs
 =========
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/cron.yml>`_
 

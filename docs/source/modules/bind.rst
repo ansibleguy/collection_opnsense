@@ -7,7 +7,7 @@ DNS - BIND
 ==========
 
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: `bind_general <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/bind_general.yml>`_ |
 `bind_blocklist <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/bind_blocklist.yml>`_ |

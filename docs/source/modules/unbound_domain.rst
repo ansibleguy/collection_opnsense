@@ -7,7 +7,7 @@ DNS - Unbound - Domain Override
 ===============================
 
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/unbound_domain.yml>`_
 

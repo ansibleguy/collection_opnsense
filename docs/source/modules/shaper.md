@@ -1,6 +1,6 @@
 # Traffic Shaper
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: [shaper_pipe](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/shaper_pipe.yml) | 
 [shaper_queue](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/shaper_queue.yml) | 

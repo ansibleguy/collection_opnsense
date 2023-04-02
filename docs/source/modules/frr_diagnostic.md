@@ -1,6 +1,6 @@
 # FRR Diagnostic
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: [frr_diagnostic](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_diagnostic.yml)
 

@@ -1,6 +1,6 @@
 # FRR BGP
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: [frr_bgp_general](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_bgp_general.yml) | 
 [frr_bgp_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_bgp_neighbor.yml) | 

@@ -1,6 +1,6 @@
 # FRR BFD
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: [frr_bfd_general](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_bfd_general.yml) | [frr_bfd_neighbor](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/frr_bfd_neighbor.yml)
 
