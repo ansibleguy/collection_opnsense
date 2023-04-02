@@ -3,3 +3,4 @@ yamllint
 pylint
 ansible-core
 ansible-lint
+httpx
