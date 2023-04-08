@@ -49,8 +49,12 @@ else
   VERBOSITY=''
 fi
 
+set -u
+
 source "$(dirname "$0")/test_prep.sh"  # shared between single/multi test
 
 cd "$TMP_COL_DIR/ansible_collections/ansibleguy/opnsense"
 
 run_test "$TEST" "$CHECK_MODE"
+
+rm -rf "$TMP_DIR"

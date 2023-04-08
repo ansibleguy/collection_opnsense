@@ -43,6 +43,8 @@ else
   VERBOSITY=''
 fi
 
+set -u
+
 source "$(dirname "$0")/test_prep.sh"  # shared between single/multi test
 
 cd "$TMP_COL_DIR/ansible_collections/ansibleguy/opnsense"
@@ -135,3 +137,5 @@ echo '##############################'
 echo 'FINISHED TESTS!'
 echo '##############################'
 echo ''
+
+rm -rf "$TMP_DIR"
