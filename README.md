@@ -7,20 +7,6 @@
 
 ----
 
-## Contribute
-
-Feel free to contribute to this project using [pull-requests](https://github.com/ansibleguy/collection_opnsense/pulls), [issues](https://github.com/ansibleguy/collection_opnsense/issues) and [discussions](https://github.com/ansibleguy/collection_opnsense/discussions)!
-
-**What to contribute**:
-
-* add ansible-based [tests](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests) for some error-case(s) you have encountered
-* extend or correct the [documentation](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs)
-* contribute code fixes or optimizations
-* implement additional API endpoints => see [development guide](https://opnsense.ansibleguy.net/en/latest/usage/4_develop.html)
-* test unstable modules and report bugs/errors
-
-----
-
 ## Requirements
 
 The [httpx python module](https://www.python-httpx.org/) is used for API communications!
@@ -49,6 +35,21 @@ ansible-galaxy collection install git+https://github.com/ansibleguy/collection_o
 
 See: [Docs](https://opnsense.ansibleguy.net)
 
+
+----
+
+## Contribute
+
+Feel free to contribute to this project using [pull-requests](https://github.com/ansibleguy/collection_opnsense/pulls), [issues](https://github.com/ansibleguy/collection_opnsense/issues) and [discussions](https://github.com/ansibleguy/collection_opnsense/discussions)!
+
+**What to contribute**:
+
+* add ansible-based [tests](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests) for some error-case(s) you have encountered
+* extend or correct the [documentation](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs)
+* contribute code fixes or optimizations
+* implement additional API endpoints => see [development guide](https://opnsense.ansibleguy.net/en/latest/usage/4_develop.html)
+* test unstable modules and report bugs/errors
+
 ----
 
 ## Modules
@@ -56,6 +57,10 @@ See: [Docs](https://opnsense.ansibleguy.net)
 **Development States**:
 
 not implemented => development => [testing](https://github.com/ansibleguy/collection_opnsense/tree/latest/tests) => unstable (_practical testing_) => stable
+
+### Roadmap poll
+
+Choose what modules YOU would find useful: [Roadmap Poll](https://github.com/ansibleguy/collection_opnsense/discussions/14)
 
 ### Implemented
 
