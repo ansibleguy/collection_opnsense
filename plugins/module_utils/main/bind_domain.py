@@ -10,7 +10,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 class Domain(BaseModule):
     FIELD_ID = 'name'
     CMDS = {
-        'add': 'addMasterDomain',
+        'add': 'addPrimaryDomain',
         'del': 'delDomain',
         'set': 'setDomain',
         'search': 'get',
@@ -22,20 +22,21 @@ class Domain(BaseModule):
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'mode', 'master', 'transfer_key_algo', 'transfer_key_name', 'transfer_key',
+        'mode', 'primary', 'transfer_key_algo', 'transfer_key_name', 'transfer_key',
         'allow_notify', 'transfer_acl', 'query_acl', 'ttl', 'refresh', 'retry',
         'expire', 'negative', 'admin_mail', 'server',
+        # 'serial',
     ]
     FIELDS_ALL = ['enabled', FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'name': 'domainname',
         'mode': 'type',
-        'master': 'masterip',
+        'primary': 'primaryip',
         'transfer_key_algo': 'transferkeyalgo',
         'transfer_key_name': 'transferkeyname',
         'transfer_key': 'transferkey',
-        'allow_notify': 'allownotifyslave',
+        'allow_notify': 'allownotifysecondary',
         'transfer_acl': 'allowtransfer',
         'query_acl': 'allowquery',
         'admin_mail': 'mailadmin',
@@ -43,10 +44,8 @@ class Domain(BaseModule):
     }
     FIELDS_TYPING = {
         'bool': ['enabled'],
-        'list': ['master', 'allow_notify'],
-        'select': [
-            'mode', 'transfer_acl', 'query_acl', 'transfer_key_algo'
-        ],
+        'list': ['primary', 'allow_notify', 'transfer_acl', 'query_acl'],
+        'select': ['mode', 'transfer_key_algo'],
     }
     INT_VALIDATIONS = {
         'ttl': {'min': 60, 'max': 86400},
@@ -56,6 +55,7 @@ class Domain(BaseModule):
         'negative': {'min': 60, 'max': 86400},
     }
     EXIST_ATTR = 'domain'
+    # FIELDS_DIFF_EXCLUDE = ['serial']
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
@@ -68,15 +68,15 @@ class Domain(BaseModule):
         if self.p['state'] == 'present':
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
-            for field in ['allow_notify', 'master']:
+            for field in ['allow_notify', 'primary']:
                 for ip in self.p[field]:
                     if not is_ip(ip, ignore_empty=True):
                         self.m.fail_json(
                             f"It seems you provided an invalid IP address as '{field}': '{is_ip}'"
                         )
 
-            if self.p['mode'] != 'master':
-                self.CMDS['add'] = 'addSlaveDomain'
+            if self.p['mode'] != 'primary':
+                self.CMDS['add'] = 'addSecondaryDomain'
 
             if self.p['query_acl'] != '' or self.p['transfer_acl'] != '':
                 self.acls_needed = True
@@ -100,11 +100,11 @@ class Domain(BaseModule):
 
         if self.p['state'] == 'present':
             if self.acls_needed:
-                self.b.find_single_link(
+                self.b.find_multiple_links(
                     field='query_acl',
                     existing=self.existing_acls,
                 )
-                self.b.find_single_link(
+                self.b.find_multiple_links(
                     field='transfer_acl',
                     existing=self.existing_acls,
                 )

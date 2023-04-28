@@ -69,6 +69,12 @@
       register: opn_fail6
       failed_when: not opn_fail6.failed
 
+    - name: Configuring - failing because of non-existent query-acl
+      ansibleguy.opnsense.bind_general:
+        query_acl: 'DOES-NOT-EXIST'
+      register: opn_fail7
+      failed_when: not opn_fail7.failed
+
     - name: Configuring
       ansibleguy.opnsense.bind_general:
         listen_ipv4: ['127.0.0.1', '192.168.0.1']

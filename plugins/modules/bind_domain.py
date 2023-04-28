@@ -32,11 +32,11 @@ def run_module():
     module_args = dict(
         name=dict(type='str', required=True, aliases=['domain_name', 'domain']),
         mode=dict(
-            type='str', required=False, default='master', choices=['master', 'slave']
+            type='str', required=False, default='primary', choices=['primary', 'secondary']
         ),
-        master=dict(
-            type='list', elements='str', required=False, aliases=['master_ip'], default=[],
-            description='Set the IP address of master server when using slave mode'
+        primary=dict(
+            type='list', elements='str', required=False, aliases=['primary_ip', 'master', 'master_ip'], default=[],
+            description='Set the IP address of primary server when using secondary mode'
         ),
         transfer_key_algo=dict(
             type='str', required=False, default='',
@@ -49,15 +49,15 @@ def run_module():
         transfer_key=dict(type='str', required=False, default='', no_log=True),
         allow_notify=dict(
             type='list', elements='str', required=False, default=[],
-            aliases=['allow_notify_slave'],
+            aliases=['allow_notify_secondary', 'allow_notify_slave'],
             description='A list of allowed IP addresses to receive notifies from'
         ),
         transfer_acl=dict(
-            type='str', required=False, default='', aliases=['allow_transfer'],
+            type='list', elements='str', required=False, default=[], aliases=['allow_transfer'],
             description='An ACL where you allow which server can retrieve this zone'
         ),
         query_acl=dict(
-            type='str', required=False, default='', aliases=['allow_query'],
+            type='list', elements='str', required=False, default=[], aliases=['allow_query'],
             description='An ACL where you allow which client are allowed '
                         'to query this zone'
         ),
@@ -73,12 +73,12 @@ def run_module():
         retry=dict(
             type='int', required=False, default=3600,
             description='The time in seconds after which name servers should '
-                        'retry requests if the master does not respond'
+                        'retry requests if the primary does not respond'
         ),
         expire=dict(
             type='int', required=False, default=3542400,
             description='The time in seconds after which name servers should '
-                        'stop answering requests if the master does not respond'
+                        'stop answering requests if the primary does not respond'
         ),
         negative=dict(
             type='int', required=False, default=3600,
@@ -95,6 +95,7 @@ def run_module():
             description='Set the DNS server hosting this file. This should usually '
                         'be the FQDN of your firewall where the BIND plugin is installed'
         ),
+        # serial=dict(type='str', required=False, default=''),
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,
         **RELOAD_MOD_ARG,

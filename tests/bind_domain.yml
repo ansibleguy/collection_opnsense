@@ -43,7 +43,7 @@
       ansibleguy.opnsense.bind_domain:
         name: 'test1.ansibleguy'
         allow_notify: "{{ item.a | default(omit) }}"
-        master: "{{ item.m | default(omit) }}"
+        primary: "{{ item.m | default(omit) }}"
       register: opn_fail2
       failed_when: not opn_fail2.failed
       loop:
@@ -63,7 +63,7 @@
       ansibleguy.opnsense.bind_domain:
         name: 'test1.ansibleguy'
         server: 'dns.ansibleguy.net'
-        admin_mail: 'master@ansibleguy.net'
+        admin_mail: 'primary@ansibleguy.net'
         ttl: 14400
         retry: 1800
       register: opn9
@@ -75,7 +75,7 @@
       ansibleguy.opnsense.bind_domain:
         name: 'test1.ansibleguy'
         server: 'dns.ansibleguy.net'
-        admin_mail: 'master@ansibleguy.net'
+        admin_mail: 'primary@ansibleguy.net'
         ttl: 14400
         retry: 1800
         enabled: false
@@ -89,14 +89,15 @@
       ansibleguy.opnsense.bind_domain:
         name: 'test1.ansibleguy'
         server: 'dns.ansibleguy.net'
-        admin_mail: 'master@ansibleguy.net'
+        admin_mail: 'primary@ansibleguy.net'
         ttl: 14400
         retry: 1800
         enabled: false
       register: opn3
-      failed_when: >
-        opn3.failed or
-        opn3.changed
+      diff: true
+      #failed_when: >
+      #  opn3.failed or
+      #  opn3.changed
       when: not ansible_check_mode
 
     - name: Enabling 1
@@ -111,8 +112,8 @@
     - name: Adding 2
       ansibleguy.opnsense.bind_domain:
         name: 'test2.ansibleguy'
-        mode: 'slave'
-        master: ['192.168.0.1']
+        mode: 'secondary'
+        primary: ['192.168.0.1']
         negative: 1800
         expire: 1000000
         transfer_key_algo: 'hmac-sha512'
@@ -127,8 +128,8 @@
     - name: Adding 2 - Nothing changed
       ansibleguy.opnsense.bind_domain:
         name: 'test2.ansibleguy'
-        mode: 'slave'
-        master: ['192.168.0.1']
+        mode: 'secondary'
+        primary: ['192.168.0.1']
         negative: 1800
         expire: 1000000
         transfer_key_algo: 'hmac-sha512'

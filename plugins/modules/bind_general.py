@@ -99,15 +99,20 @@ def run_module():
             description='How much memory in percent the cache can use from the system'
         ),
         recursion_acl=dict(
-            type='str', required=False, default='',
+            type='list', elements='str', required=False, default=[],
             aliases=['recursion'],
             description='Define an ACL where you allow which clients can resolve via '
                         'this service. Usually use your local LAN'
         ),
         transfer_acl=dict(
-            type='str', required=False, default='',
+            type='list', elements='str', required=False, default=[],
             aliases=['allow_transfer', 'transfer'],
-            description='Define an ACL where you allow which server can retrieve zones'
+            description='Define the ACLs where you allow which server can retrieve zones'
+        ),
+        query_acl=dict(
+            type='list', elements='str', required=False, default=[],
+            aliases=['allow_query', 'query'],
+            description='Define the ACLs where you allow which client are allowed to query this server'
         ),
         dnssec_validation=dict(
             type='str', required=False, default='no',

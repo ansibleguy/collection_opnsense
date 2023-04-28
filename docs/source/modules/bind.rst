@@ -63,8 +63,9 @@ ansibleguy.opnsense.bind_general
     "filter_aaaa_v6","bool","false","false","\-","En- or disable to filter AAAA records on IPv6 Clients"
     "log_size","integer","false","5","max_log_size","Maximum log file size in MB"
     "cache_size","integer","false","50","max_cache_percentage, cache_percentage, max_cache_size","How much memory in percent the cache can use from the system"
-    "recursion_acl","string","false","\-","recursion","Name of an existing ACL - where you allow which clients can resolve via this service. Usually use your local LAN"
-    "transfer_acl","string","false","\-","allow_transfer, transfer","Name of an existing ACL - where you allow which server can retrieve zones"
+    "recursion_acl","list","false","\-","recursion","Name of an existing ACL - where you allow which clients can resolve via this service. Usually use your local LAN"
+    "transfer_acl","list","false","\-","allow_transfer, transfer","Name of an existing ACL - where you allow which server can retrieve zones"
+    "query_acl","list","false","\-","allow_query","Name of an existing ACL - where you allow which client are allowed to query this zone"
     "dnssec_validation","string","false","\-","dnssec","One of: 'auto', 'no'. Set to 'auto' to use the static trust anchor configuration by the system"
     "hide_hostname","bool","false","false","\-","If the system hostname should be hidden for DNS queries"
     "hide_version","bool","false","true","\-","If the local BIND version should be hidden in DNS queries"
@@ -109,18 +110,18 @@ ansibleguy.opnsense.bind_domain
     :widths: 15 10 10 10 10 45
 
     "name","string","true","\-","domain_name, domain","Domain name of the zone. Both forward and reverse zones may be specified, i.e. example.com or 0.168.192.in-addr.arpa."
-    "mode","string","false","'master'","\-","Zone operation mode. One of: 'master', 'slave'"
-    "master","list","false","\-","master_ip","Set the IP address of master server when using slave mode"
-    "transfer_key_algo","string","false","\-","\-","Set the authentication algorithm for the TSIG key used to transfer domain data from the master server. One of: 'hmac-sha512', 'hmac-sha384', 'hmac-sha256', 'hmac-sha224', 'hmac-sha1', 'hmac-md5'"
-    "transfer_key_name","string","false","\-","\-","The name of the TSIG key, which must match the value on the master server"
+    "mode","string","false","'primary'","\-","Zone operation mode. One of: 'primary', 'secondary'"
+    "primary","list","false","\-","primary_ip, master, master_ip","Set the IP address of primary server when using secondary mode"
+    "transfer_key_algo","string","false","\-","\-","Set the authentication algorithm for the TSIG key used to transfer domain data from the primary server. One of: 'hmac-sha512', 'hmac-sha384', 'hmac-sha256', 'hmac-sha224', 'hmac-sha1', 'hmac-md5'"
+    "transfer_key_name","string","false","\-","\-","The name of the TSIG key, which must match the value on the primary server"
     "transfer_key","string","false","\-","\-","The base64-encoded TSIG key"
-    "allow_notify","list","false","\-","allow_notify_slave","A list of allowed IP addresses to receive notifies from"
-    "transfer_acl","string","false","\-","allow_transfer","Name of an existing ACL - where you allow which server can retrieve zones"
-    "query_acl","string","false","\-","allow_query","Name of an existing ACL - where you allow which client are allowed to query this zone"
+    "allow_notify","list","false","\-","allow_notify_secondary, allow_notify_slave","A list of allowed IP addresses to receive notifies from"
+    "transfer_acl","list","false","\-","allow_transfer","Name of an existing ACL - where you allow which server can retrieve zones"
+    "query_acl","list","false","\-","allow_query","Name of an existing ACL - where you allow which client are allowed to query this zone"
     "ttl","integer","false","86400","\-","The general Time To Live for this zone. Between 60 and 86400"
     "refresh","integer","false","21600","\-","The time in seconds after which name servers should refresh the zone information. Between 60 and 86400"
-    "retry","integer","false","3600","\-","The time in seconds after which name servers should retry requests if the master does not respond. Between 60 and 86400"
-    "expire","integer","false","3542400","\-","The time in seconds after which name servers should stop answering requests if the master does not respond. Between 60 and 10000000"
+    "retry","integer","false","3600","\-","The time in seconds after which name servers should retry requests if the primary does not respond. Between 60 and 86400"
+    "expire","integer","false","3542400","\-","The time in seconds after which name servers should stop answering requests if the primary does not respond. Between 60 and 10000000"
     "negative","integer","false","3600","\-","The time in seconds after which an entry for a non-existent record should expire from cache. Between 60 and 86400"
     "admin_mail","string","false","'mail.opnsense.localdomain","\-","The mail address of zone admin. A @-sign will automatically be replaced with a dot in the zone data"
     "server","string","false","'opnsense.localdomain","dns_server","The DNS server hosting this file. This should usually be the FQDN of your firewall where the BIND plugin is installed"
@@ -253,8 +254,9 @@ ansibleguy.opnsense.bind_general
             # filter_aaaa_acl: []
             # log_size: 5
             # cache_size: 50
-            # recursion_acl: ''
-            # transfer_acl: ''
+            # recursion_acl: []
+            # transfer_acl: []
+            # query_acl: []
             # dnssec_validation: 'no'
             # hide_hostname: false
             # hide_version: true
@@ -416,13 +418,13 @@ ansibleguy.opnsense.bind_domain
           ansibleguy.opnsense.bind_domain:
             name: 'example.ansibleguy'
             # enabled: true
-            # mode: 'master'
+            # mode: 'primary'
             # transfer_key_algo: ''
             # transfer_key_name: ''
             # transfer_key: ''
             # allow_notify: []
-            # transfer_acl: ''
-            # query_acl: ''
+            # transfer_acl: []
+            # query_acl: []
             # ttl: 86400
             # refresh: 21600
             # retry: 3600

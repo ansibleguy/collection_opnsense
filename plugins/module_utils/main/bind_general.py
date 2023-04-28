@@ -42,6 +42,7 @@ class General(GeneralModule):
         'cache_size': 'maxcachesize',
         'recursion_acl': 'recursion',
         'transfer_acl': 'allowtransfer',
+        'query_acl': 'allowquery',
         'dnssec_validation': 'dnssecvalidation',
         'hide_hostname': 'hidehostname',
         'hide_version': 'hideversion',
@@ -56,8 +57,11 @@ class General(GeneralModule):
             'ipv6', 'response_policy_zones', 'filter_aaaa_v4', 'filter_aaaa_v6', 'hide_hostname',
             'hide_version', 'prefetch', 'ratelimit', 'enabled',
         ],
-        'list': ['ratelimit_except', 'filter_aaaa_acl', 'forwarders', 'listen_ipv6', 'listen_ipv4'],
-        'select': ['dnssec_validation', 'recursion_acl', 'transfer_acl'],
+        'list': [
+            'ratelimit_except', 'filter_aaaa_acl', 'forwarders', 'listen_ipv6', 'listen_ipv4',
+            'transfer_acl', 'query_acl', 'recursion_acl',
+        ],
+        'select': ['dnssec_validation'],
     }
     INT_VALIDATIONS = {
         'ratelimit_count': {'min': 1, 'max': 1000},
@@ -99,19 +103,23 @@ class General(GeneralModule):
                         f"It seems you provided an invalid IP address as '{field}': '{ip}'"
                     )
 
-        if self.p['recursion_acl'] != '' or self.p['transfer_acl'] != '':
+        if self.p['recursion_acl'] != '' or len(self.p['transfer_acl']) > 0 or len(self.p['query_acl']) > 0:
             # to save time on call if not needed
             self.acls_needed = True
 
         self.settings = self.get_existing()
 
         if self.acls_needed:
-            self.b.find_single_link(
+            self.b.find_multiple_links(
                 field='recursion_acl',
                 existing=self.existing_acls,
             )
-            self.b.find_single_link(
+            self.b.find_multiple_links(
                 field='transfer_acl',
+                existing=self.existing_acls,
+            )
+            self.b.find_multiple_links(
+                field='query_acl',
                 existing=self.existing_acls,
             )
 
