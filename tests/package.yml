@@ -15,6 +15,10 @@
     ansibleguy.opnsense.list:
       target: 'package'
 
+  vars:
+    test_app1: 'os-api-backup'
+    test_app2: 'os-dmidecode'
+
   tasks:
     - name: Listing
       ansibleguy.opnsense.list:
@@ -32,7 +36,7 @@
 
     - name: Removing - does not exist
       ansibleguy.opnsense.package:
-        name: 'os-api-backup'
+        name: "{{ test_app1 }}"
         action: 'remove'
       register: opn2
       failed_when: >
@@ -41,7 +45,7 @@
 
     - name: Installing
       ansibleguy.opnsense.package:
-        name: 'os-api-backup'
+        name: "{{ test_app1 }}"
         action: 'install'
       register: opn3
       failed_when: >
@@ -50,16 +54,25 @@
 
     - name: Installing multiple
       ansibleguy.opnsense.package:
-        name: ['os-api-backup', 'os-dmidecode']
+        name: ["{{ test_app1 }}", "{{ test_app2 }}"]
         action: 'install'
       register: opn9
       failed_when: >
         opn9.failed or
         not opn9.changed
 
+    - name: Checking if installed
+      ansibleguy.opnsense.list:
+      register: opn12
+      failed_when: >
+        opn12.failed or
+        test_app1 not in opn12 | json_query('data[*].name') or
+        test_app2 not in opn12 | json_query('data[*].name')
+      when: not ansible_check_mode
+
     - name: Locking
       ansibleguy.opnsense.package:
-        name: 'os-api-backup'
+        name: "{{ test_app1 }}"
         action: 'lock'
       register: opn4
       failed_when: >
@@ -69,7 +82,7 @@
 
     - name: Removing - locked
       ansibleguy.opnsense.package:
-        name: 'os-api-backup'
+        name: "{{ test_app1 }}"
         action: 'remove'
       register: opn5
       failed_when: not opn5.failed
@@ -77,7 +90,7 @@
 
     - name: Unlocking
       ansibleguy.opnsense.package:
-        name: 'os-api-backup'
+        name: "{{ test_app1 }}"
         action: 'unlock'
       register: opn6
       failed_when: >
@@ -87,7 +100,7 @@
 
     - name: Reinstall
       ansibleguy.opnsense.package:
-        name: 'os-api-backup'
+        name: "{{ test_app1 }}"
         action: 'reinstall'
       register: opn7
       failed_when: >
@@ -97,10 +110,19 @@
 
     - name: Removing multiple
       ansibleguy.opnsense.package:
-        name: ['os-api-backup', 'os-dmidecode']
+        name: ["{{ test_app1 }}", "{{ test_app2 }}"]
         action: 'remove'
       register: opn8
       failed_when: >
         opn8.failed or
         not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Checking if removed
+      ansibleguy.opnsense.list:
+      register: opn11
+      failed_when: >
+        opn11.failed or
+        test_app1 in opn11 | json_query('data[*].name') or
+        test_app2 in opn11 | json_query('data[*].name')
       when: not ansible_check_mode
