@@ -1,8 +1,8 @@
 ---
-name: Bug report
-about: Create a report to help us improve
-title: '[Module] - Issue Title'
-labels: bug
+name: Support
+about: You have general problems using the collection
+title: '[Support] - Issue Title'
+labels: support
 assignees: ''
 
 ---
