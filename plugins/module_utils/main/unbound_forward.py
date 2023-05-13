@@ -11,11 +11,11 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 
 class Forward(BaseModule):
     CMDS = {
-        'add': 'addDot',
-        'del': 'delDot',
-        'set': 'setDot',
+        'add': 'addForward',
+        'del': 'delForward',
+        'set': 'setForward',
         'search': 'get',
-        'toggle': 'toggleDot',
+        'toggle': 'toggleForward',
     }
     API_KEY_PATH = 'unbound.dots.dot'
     API_MOD = 'unbound'
@@ -37,11 +37,6 @@ class Forward(BaseModule):
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.fwd = {}
-        self.call_headers = {
-            'Referer': f"https://{self.p['firewall']}:{self.p['api_port']}/ui/unbound/forward",
-        }
-        # else the type will always be 'dns-over-tls':
-        #   https://github.com/opnsense/core/commit/6832fd75a0b41e376e80f287f8ad3cfe599ea3d1
 
     def check(self) -> None:
         if not is_unset(self.p['domain']):
