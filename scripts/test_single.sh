@@ -18,7 +18,7 @@ then
   echo '  2: api key file'
   echo "  3: path to local collection - set to '0' to clone from github"
   echo '  4: name of test to run'
-  echo '  5: if test mode should be ran (optional; 0/1; default=1)'
+  echo '  5: if check-mode should be ran (optional; 0/1; default=1)'
   echo '  6: path to virtual environment (optional)'
   echo ''
   exit 1
