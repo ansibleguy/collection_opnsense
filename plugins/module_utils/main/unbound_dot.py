@@ -11,11 +11,11 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 
 class DnsOverTls(BaseModule):
     CMDS = {
-        'add': 'addForward',
-        'del': 'delForward',
-        'set': 'setForward',
+        'add': 'addDot',
+        'del': 'delDot',
+        'set': 'setDot',
         'search': 'get',
-        'toggle': 'toggleForward',
+        'toggle': 'toggleDot',
     }
     API_KEY_PATH = 'unbound.dots.dot'
     API_MOD = 'unbound'
