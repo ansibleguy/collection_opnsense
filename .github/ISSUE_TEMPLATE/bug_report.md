@@ -25,13 +25,9 @@ Please make sure to go through these steps before opening an issue:
 
      (```ansible-galaxy collection list | grep opnsense```)
 
-  - [ ] Ansible version:
+  - [ ] Ansible & Python version:
 
-    (```python3 -m pip list | grep ansible``` or ```apt policy ansible```)
-
-  - [ ] Python version:
-
-    (```python3 --version```)
+    (```ansible --version```)
 
 * OPNSense
 
