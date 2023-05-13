@@ -1,5 +1,6 @@
 ---
-requires_ansible: ">=2.10"
+
+requires_ansible: ">=2.14"
 
 action_groups:
   alias:
