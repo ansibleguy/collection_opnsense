@@ -4,6 +4,9 @@ set -e
 
 echo ''
 
+TMP_DIR="/tmp/.opnsense_test_$(date +%s)"
+TMP_COL_DIR="$TMP_DIR/collections"
+
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]
 then
   echo 'Arguments:'
@@ -28,6 +31,8 @@ fi
 set -u
 
 source "$(dirname "$0")/test_prep.sh"  # shared
+
+cd "$TMP_COL_DIR/ansible_collections/ansibleguy/opnsense"
 
 echo ''
 echo 'RUNNING CLEANUP'
