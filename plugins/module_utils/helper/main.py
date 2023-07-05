@@ -59,22 +59,6 @@ def is_ip_or_network(entry: str, strict: bool = False) -> bool:
     return valid
 
 
-def is_port(port: str, ignore_empty: bool = False) -> bool:
-    if ignore_empty and port in ['', ' ']:
-        return True
-
-    valid_port = False
-
-    try:
-        if int(port) >= 1 and int(port) <= 65535:
-            valid_port = True
-
-    except (ValueError, TypeError):
-        pass
-
-    return valid_port
-
-
 def valid_hostname(name: str) -> bool:
     _valid_domain = is_valid_domain(name)
     # see: https://en.wikipedia.org/wiki/Hostname#Restrictions_on_valid_host_names
