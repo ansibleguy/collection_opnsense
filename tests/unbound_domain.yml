@@ -31,6 +31,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         server: '192.168.0.1'
         state: 'absent'
+        description: 'ANSIBLE_TEST_1_1'
       register: opn1
       failed_when: >
         opn1.failed or
@@ -40,6 +41,7 @@
       ansibleguy.opnsense.unbound_domain:
         domain: 'opnsense.test.ansibleguy.net'
         server: 'INVALID-IP'
+        description: 'ANSIBLE_TEST_1_1'
       register: opn11
       failed_when: not opn11.failed
 
@@ -47,22 +49,23 @@
       ansibleguy.opnsense.unbound_domain:
         domain: '!INVALID-DOMAIN!'
         server: 'INVALID-IP'
+        description: 'ANSIBLE_TEST_1_1'
       register: opn12
       failed_when: not opn12.failed
 
-    - name: Adding 1 - failing because of invalid value
+    - name: Adding 1 - failing because of invalid ip-port combinations
       ansibleguy.opnsense.unbound_domain:
         domain: 'opnsense.test.ansibleguy.net'
-        server: '192.168.0.1@INVALID-PORT'
+        server: "{{ item }}"
+        description: 'ANSIBLE_TEST_1_1'
       register: opn14
       failed_when: not opn14.failed
-
-    - name: Adding 1 - failing because of invalid value
-      ansibleguy.opnsense.unbound_domain:
-        domain: 'opnsense.test.ansibleguy.net'
-        server: '192.168.0.1@53530@'
-      register: opn15
-      failed_when: not opn15.failed
+      loop:
+        - 'INVALID-IP@INVALID-PORT'
+        - '192.168.0.1@INVALID-PORT'
+        - '192.168.0.1@53530@'
+        - '192.168.X.1@53530'
+        - '192.168.0.1@535300'
 
     - name: Adding 1
       ansibleguy.opnsense.unbound_domain:
@@ -142,10 +145,10 @@
         server: '192.168.1.1@1053'
         description: 'ANSIBLE_TEST_1_2'
         reload: false  # speed
-      register: opn16
+      register: opn15
       failed_when: >
-        opn16.failed or
-        not opn16.changed
+        opn15.failed or
+        not opn15.changed
       when: not ansible_check_mode
 
     - name: Adding 2 - nothing changed
@@ -154,10 +157,10 @@
         server: '192.168.1.1@1053'
         description: 'ANSIBLE_TEST_1_2'
         reload: false  # speed
-      register: opn17
+      register: opn16
       failed_when: >
-        opn17.failed or
-        opn17.changed
+        opn16.failed or
+        opn16.changed
       when: not ansible_check_mode
 
     - name: Removing 2
