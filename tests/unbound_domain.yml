@@ -136,6 +136,30 @@
         opn13.changed
       when: not ansible_check_mode
 
+    - name: Changing 2 - server with port
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: '192.168.1.1@1053'
+        description: 'ANSIBLE_TEST_1_2'
+        reload: false  # speed
+      register: opn16
+      failed_when: >
+        opn16.failed or
+        not opn16.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: '192.168.1.1@1053'
+        description: 'ANSIBLE_TEST_1_2'
+        reload: false  # speed
+      register: opn17
+      failed_when: >
+        opn17.failed or
+        opn17.changed
+      when: not ansible_check_mode
+
     - name: Removing 2
       ansibleguy.opnsense.unbound_domain:
         description: 'ANSIBLE_TEST_1_2'

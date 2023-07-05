@@ -29,7 +29,11 @@ EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/unbound_domain.htm
 def run_module():
     module_args = dict(
         domain=dict(type='str', required=True, aliases=['dom', 'd']),
-        server=dict(type='str', required=True, aliases=['value', 'srv']),
+        server=dict(
+            type='str', required=True, aliases=['value', 'srv'],
+            description='IP address of the authoritative DNS server for this domain. '
+                        "To use a non-default port for communication, append an '@' with the port number",
+        ),
         description=dict(type='str', required=False, default='', aliases=['desc']),
         match_fields=dict(
             type='list', required=False, elements='str',

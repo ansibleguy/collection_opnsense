@@ -25,7 +25,7 @@ Definition
     "match_fields","string","false","['hostname', 'domain', 'record_type', 'value', 'prio']","\-","Fields that are used to match configured host-overrides with the running config - if any of those fields are changed, the module will think it's a new entry. At least one of: 'hostname', 'domain', 'record_type', 'value', 'prio', 'description'"
     "hostname","string","true","\-","host, h","Hostname of the record"
     "domain","string","true","\-","dom, d","Domain of the record"
-    "record_type","string","true","'A'","type, rr, rt","Record type. One of: 'A', 'AAAA', 'MX'"
+    "record_type","string","false","'A'","type, rr, rt","Record type. One of: 'A', 'AAAA', 'MX'"
     "value","string","false for state changes, else true","\-","server, srv, mx","Value the record should hold"
     "prio","int","false","10","mxprio","Priority that is only used for MX record types"
     "description","string","false","\-","desc","Optional description for the host-override. Could be used as unique-identifier when set as only 'match_field'."

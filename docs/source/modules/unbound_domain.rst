@@ -24,7 +24,7 @@ Definition
 
     "match_fields","string","false","['domain', 'server']","\-","Fields that are used to match configured domain-overrides with the running config - if any of those fields are changed, the module will think it's a new entry. At least one of: 'domain', 'server', 'description'"
     "domain","string","true","\-","dom, d","Domain to override"
-    "server","string","true","\-","value, srv","Target server"
+    "server","string","true","\-","value, srv","IP address of the authoritative DNS server for this domain. To use a non-default port for communication, append an '@' with the port number"
     "description","string","false","\-","desc","Optional description for the domain-override. Could be used as unique-identifier when set as only 'match_field'."
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
