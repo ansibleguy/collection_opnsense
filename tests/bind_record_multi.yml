@@ -116,12 +116,28 @@
         opn3.changed
       when: not ansible_check_mode
 
+    - name: Adding 2
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'test4.ansibleguy':
+            - name: 'test5'
+              type: 'A'
+              value: '192.168.5.1'
+            - name: 'test5'
+              type: 'AAAA'
+              value: '::2'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
     - name: Listing
       ansibleguy.opnsense.list:
       register: opn8
       failed_when: >
         'data' not in opn8 or
-        opn8.data | length != 3
+        opn8.data | length != 6
       when: not ansible_check_mode
 
     - name: Cleanup
@@ -135,6 +151,12 @@
             - 'test3'
             - name: 'test4'
               type: 'CNAME'
+            - name: 'test5'
+              type: 'A'
+              value: '192.168.1.2'
+            - name: 'test5'
+              type: 'AAAA'
+              value: '::2'
         state: 'absent'
       when: not ansible_check_mode
 

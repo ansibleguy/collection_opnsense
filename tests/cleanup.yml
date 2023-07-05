@@ -370,11 +370,15 @@
             - name: 'test1'
               type: 'TXT'
             - 'test2'
-            - name: 'test2'
-              type: 'TXT'
             - 'test3'
             - name: 'test4'
               type: 'CNAME'
+            - name: 'test5'
+              type: 'A'
+              value: '192.168.1.2'
+            - name: 'test5'
+              type: 'AAAA'
+              value: '::2'
         state: 'absent'
       ignore_errors: true  # domain does not exist
 

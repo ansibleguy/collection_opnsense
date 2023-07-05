@@ -61,19 +61,22 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
 
             record = convert_aliases(cnf=record, aliases=RECORD_MOD_ARG_ALIASES)
 
-            try:
-                record_key = f"{record['name']}.{domain}"
-
-            except KeyError:
-                # placeholder => will fail verification anyway
-                record_key = f'NONE.{domain}'
-
             real_cnf = {
                 **RECORD_DEFAULTS,
                 **defaults,
                 **record,
                 **overrides,
             }
+
+            try:
+                record_keys = list(map(real_cnf.get, real_cnf['match_fields']))
+                if len(record_keys) == 0:
+                    raise KeyError
+                record_key = '|'.join(record_keys)
+
+            except KeyError:
+                # placeholder => will fail verification anyway
+                record_key = f'NONE.{domain}'
 
             if real_cnf['debug']:
                 m.warn(f"Validating record: '{record_key} => {real_cnf}'")
