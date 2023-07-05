@@ -50,6 +50,20 @@
       register: opn12
       failed_when: not opn12.failed
 
+    - name: Adding 1 - failing because of invalid value
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: '192.168.0.1@INVALID-PORT'
+      register: opn14
+      failed_when: not opn14.failed
+
+    - name: Adding 1 - failing because of invalid value
+      ansibleguy.opnsense.unbound_domain:
+        domain: 'opnsense.test.ansibleguy.net'
+        server: '192.168.0.1@53530@'
+      register: opn15
+      failed_when: not opn15.failed
+
     - name: Adding 1
       ansibleguy.opnsense.unbound_domain:
         domain: 'opnsense.test.ansibleguy.net'
