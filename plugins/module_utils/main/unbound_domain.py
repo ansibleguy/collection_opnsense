@@ -2,10 +2,8 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_ip
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
-    validate_domain
+    validate_domain, validate_server
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -37,8 +35,6 @@ class Domain(BaseModule):
     def check(self) -> None:
         if self.p['state'] == 'present':
             validate_domain(module=self.m, domain=self.p['domain'])
-
-            if not is_ip(self.p['server']):
-                self.m.fail_json(f"Server-value '{self.p['server']}' is not a valid IP-address!")
+            validate_server(module=self.m, server=self.p['server'])
 
         self._base_check()
