@@ -94,10 +94,9 @@
         retry: 1800
         enabled: false
       register: opn3
-      diff: true
-      #failed_when: >
-      #  opn3.failed or
-      #  opn3.changed
+      failed_when: >
+        opn3.failed or
+        opn3.changed
       when: not ansible_check_mode
 
     - name: Enabling 1

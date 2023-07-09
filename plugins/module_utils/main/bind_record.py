@@ -29,6 +29,7 @@ class Record(BaseModule):
         'bool': ['enabled'],
         'select': ['type', 'domain'],
     }
+    FIELDS_RR_MATCH = ['domain', 'name', 'type', 'value']
     EXIST_ATTR = 'record'
 
     def __init__(
@@ -157,8 +158,9 @@ class Record(BaseModule):
 
             else:
                 if self.p['state'] == 'present':
-                    self._diff_rr()
-                    self.create()
+                    if not self._exists_rr():
+                        self._diff_rr()
+                        self.create()
 
                 else:
                     self._delete_rr()
@@ -166,6 +168,18 @@ class Record(BaseModule):
         else:
             # single record
             self.b.process()
+
+    def _exists_rr(self) -> bool:
+        # check if exact same record already exists if using round-robin
+        for e in self.existing:
+            matching = []
+            for f in self.FIELDS_RR_MATCH:
+                matching.append(e[f] == self.p[f])
+
+            if all(matching):
+                return True
+
+        return False
 
     def _diff_rr(self) -> None:
         def _key(item: dict, idx: int) -> str:

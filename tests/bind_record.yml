@@ -139,7 +139,7 @@
     - name: Adding 3 (round robin)
       ansibleguy.opnsense.bind_record:
         domain: 'test4.ansibleguy'
-        name: 'test1'
+        name: 'test3'
         value: '192.168.4.1'
         round_robin: true
       register: opn11
@@ -148,32 +148,53 @@
         not opn11.changed
       when: not ansible_check_mode
 
-    - name: Adding 3 - Always changed
+    - name: Adding 3 - Nothing changed (round robin)
       ansibleguy.opnsense.bind_record:
         domain: 'test4.ansibleguy'
-        name: 'test1'
+        name: 'test3'
         value: '192.168.4.1'
         round_robin: true
       register: opn12
       failed_when: >
         opn12.failed or
-        not opn12.changed
+        opn12.changed
+      when: not ansible_check_mode
+
+    - name: Changing 3 (round robin)
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test3'
+        value: '192.168.4.2'
+        round_robin: true
+      register: opn13
+      failed_when: >
+        opn13.failed or
+        not opn13.changed
       when: not ansible_check_mode
 
     - name: Adding - failing because of unconfigured round-robin
       ansibleguy.opnsense.bind_record:
         domain: 'test4.ansibleguy'
-        name: 'test1'
+        name: 'test3'
         value: '192.168.2.1'
       register: opn_fail2
       failed_when: not opn_fail2.failed
       when: not ansible_check_mode
 
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn14
+      failed_when: >
+        'data' not in opn14 or
+        opn14.data | length != 4
+      when: not ansible_check_mode
+
     - name: Removing round robin
       ansibleguy.opnsense.bind_record:
         domain: 'test4.ansibleguy'
-        name: 'test1'
+        name: 'test3'
         state: 'absent'
+        round_robin: true
       register: opn13
       failed_when: >
         opn13.failed or
@@ -185,7 +206,7 @@
       register: opn8
       failed_when: >
         'data' not in opn8 or
-        opn8.data | length != 1
+        opn8.data | length != 2
       when: not ansible_check_mode
 
     - name: Fail to cleanup domain with active records (would leave orphaned config)
