@@ -64,6 +64,14 @@
             - name: 'test4'
               type: 'CNAME'
               value: 'test1.test3.ansibleguy'
+            - name: 'test5'
+              type: 'AAAA'
+              value: '2001:db8::1'
+              round_robin: true
+            - name: 'test5'
+              type: 'AAAA'
+              value: '2001:db8::2'
+              round_robin: true
       register: opn1
       failed_when: >
         opn1.failed or
@@ -87,6 +95,15 @@
             - name: 'test4'
               type: 'CNAME'
               value: 'test2.test3.ansibleguy'
+            # round-robin
+            - name: 'test5'
+              type: 'AAAA'
+              value: '2001:db8::1'
+              round_robin: true
+            - name: 'test5'
+              type: 'AAAA'
+              value: '2001:db8::2'
+              round_robin: true
       register: opn2
       failed_when: >
         opn2.failed or
@@ -110,6 +127,15 @@
             - name: 'test4'
               type: 'CNAME'
               value: 'test2.test3.ansibleguy'
+            # round-robin
+            - name: 'test5'
+              type: 'AAAA'
+              value: '2001:db8::1'
+              round_robin: true
+            - name: 'test5'
+              type: 'AAAA'
+              value: '2001:db8::2'
+              round_robin: true
       register: opn3
       failed_when: >
         opn3.failed or
@@ -121,7 +147,25 @@
       register: opn8
       failed_when: >
         'data' not in opn8 or
-        opn8.data | length != 3
+        opn8.data | length != 6
+      when: not ansible_check_mode
+
+    - name: Removing - round robin
+      ansibleguy.opnsense.bind_record_multi:
+        records:
+          'test4.ansibleguy':
+            - name: 'test5'
+              type: 'AAAA'
+              round_robin: true
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn9
+      failed_when: >
+        'data' not in opn9 or
+        opn9.data | length != 4
       when: not ansible_check_mode
 
     - name: Cleanup

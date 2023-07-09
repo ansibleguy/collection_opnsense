@@ -24,7 +24,7 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
         for uuid, dom in existing_domains.items():
             existing_domain_mapping[dom['domainname']] = uuid
 
-    defaults = {}
+    defaults = {'round_robin': False}
     overrides = {
         'match_fields': p['match_fields'],
         'debug': p['debug'],
@@ -53,7 +53,7 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
 
             continue
 
-        for record in records:
+        for idx, record in enumerate(records):
             # build config and validate it the same way the module initialization would do
             if isinstance(record, str):
                 # allowing only name to be supplied for state-changes
@@ -61,19 +61,20 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
 
             record = convert_aliases(cnf=record, aliases=RECORD_MOD_ARG_ALIASES)
 
-            try:
-                record_key = f"{record['name']}.{domain}"
-
-            except KeyError:
-                # placeholder => will fail verification anyway
-                record_key = f'NONE.{domain}'
-
             real_cnf = {
                 **RECORD_DEFAULTS,
                 **defaults,
                 **record,
                 **overrides,
             }
+
+            try:
+                appendix = f'#{idx}' if real_cnf['round_robin'] else ''
+                record_key = f"{real_cnf['type']}:{record['name']}.{domain}{appendix}"
+
+            except KeyError:
+                # placeholder => will fail verification anyway
+                record_key = f"{real_cnf['type']}:NONE.{domain}"
 
             if real_cnf['debug']:
                 m.warn(f"Validating record: '{record_key} => {real_cnf}'")
