@@ -5,7 +5,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_multiple_matching, is_unset
+    get_multiple_matching, is_unset, is_ip4, is_ip6, valid_hostname
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -48,11 +48,20 @@ class Record(BaseModule):
         self.exists_rr = False
 
     def check(self) -> None:
-        if self.p['state'] == 'present' and is_unset(self.p['value']):
-            self._error(
-                'You need to supply a value to create the record '
-                f"'{self.p['name']}.{self.p['domain']}'"
-            )
+        if self.p['state'] == 'present':
+            if is_unset(self.p['value']):
+                self._error(
+                    'You need to supply a value to create the record '
+                    f"'{self.p['name']}.{self.p['domain']}'"
+                )
+
+            else:
+                if self.p['type'] == 'A' and not is_ip4(self.p['value']):
+                    self.m.fail_json(f"Value '{self.p['value']}' is not a valid IPv4-address!")
+                elif self.p['type'] == 'AAAA' and not is_ip6(self.p['value']):
+                    self.m.fail_json(f"Value '{self.p['value']}' is not a valid IPv6-address!")
+                elif self.p['type'] == 'MX' and not valid_hostname(self.p['value']):
+                    self.m.fail_json(f"Value '{self.p['value']}' is not a valid hostname!")
 
         # custom matching as dns round-robin allows for multiple records to match..
         if self.existing_entries is None:

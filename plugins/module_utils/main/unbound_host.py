@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_ip, valid_hostname, to_digit, simplify_translate, is_unset
+    is_ip4, is_ip6, valid_hostname, to_digit, simplify_translate, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
@@ -60,8 +60,11 @@ class Host(BaseModule):
         else:
             self.p['prio'] = None
 
-            if self.p['state'] == 'present' and not is_ip(self.p['value']):
-                self.m.fail_json(f"Value '{self.p['value']}' is not a valid IP-address!")
+            if self.p['state'] == 'present':
+                if self.p['record_type'] == 'A' and not is_ip4(self.p['value']):
+                    self.m.fail_json(f"Value '{self.p['value']}' is not a valid IPv4-address!")
+                elif self.p['record_type'] == 'AAAA' and not is_ip6(self.p['value']):
+                    self.m.fail_json(f"Value '{self.p['value']}' is not a valid IPv6-address!")
 
         self._base_check()
 

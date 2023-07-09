@@ -1,5 +1,5 @@
 from typing import Callable
-from ipaddress import ip_address, ip_network
+from ipaddress import ip_address, ip_network, IPv4Address, IPv6Address, AddressValueError, NetmaskValueError
 from re import match as regex_match
 
 from ansible.module_utils.basic import AnsibleModule
@@ -33,16 +33,36 @@ def is_ip(host: str, ignore_empty: bool = False) -> bool:
     if ignore_empty and host in ['', ' ']:
         return True
 
-    valid_ip = False
-
     try:
         ip_address(host)
-        valid_ip = True
+        return True
 
     except ValueError:
-        pass
+        return False
 
-    return valid_ip
+
+def is_ip4(host: str, ignore_empty: bool = False) -> bool:
+    if ignore_empty and host in ['', ' ']:
+        return True
+
+    try:
+        IPv4Address(host)
+        return True
+
+    except (AddressValueError, NetmaskValueError):
+        return False
+
+
+def is_ip6(host: str, ignore_empty: bool = False) -> bool:
+    if ignore_empty and host in ['', ' ']:
+        return True
+
+    try:
+        IPv6Address(host)
+        return True
+
+    except (AddressValueError, NetmaskValueError):
+        return False
 
 
 def is_ip_or_network(entry: str, strict: bool = False) -> bool:

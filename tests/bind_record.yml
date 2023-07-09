@@ -38,6 +38,23 @@
         not opn10.changed
       when: not ansible_check_mode
 
+    - name: Adding - failing because of invalid values
+      ansibleguy.opnsense.bind_record:
+        domain: 'test4.ansibleguy'
+        name: 'test1'
+        value: "{{ item.v }}"
+        type: "{{ item.t }}"
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+      loop:
+        - {t: 'A', v: 'not-an-ip'}
+        - {t: 'A', v: "{'msg': '192.168.0.1', 'invalid': 'data'}"}
+        - {t: 'A', v: '2001:db8::1'}
+        - {t: 'AAAA', v: 'not-an-ip'}
+        - {t: 'AAAA', v: '192.168.0.1'}
+        - {t: 'MX', v: 'not-a-hostname'}
+        - {t: 'MX', v: '192.168.0.1'}
+
     - name: Adding 1
       ansibleguy.opnsense.bind_record:
         domain: 'test4.ansibleguy'
