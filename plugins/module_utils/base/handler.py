@@ -1,4 +1,9 @@
-from ansible.errors import AnsibleModuleError
+try:
+    from ansible.errors import AnsibleModuleError
+
+except ModuleNotFoundError:
+    class AnsibleModuleError(Exception):
+        pass
 
 MODULE_EXCEPTIONS = (ModuleNotFoundError, ImportError)
 
