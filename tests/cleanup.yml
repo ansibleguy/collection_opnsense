@@ -236,6 +236,15 @@
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
 
+    - name: Cleanup FRR general settings
+      ansibleguy.opnsense.frr_general:
+        enabled: false
+        profile: 'traditional'
+        carp: false
+        snmp_agentx: false
+        log: true
+        log_level: 'notifications'
+
     - name: Cleanup FRR BFD general settings
       ansibleguy.opnsense.frr_bfd_general:
         enabled: false

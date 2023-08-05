@@ -32,7 +32,7 @@ TARGETS = [
     'cron', 'unbound_dot', 'ipsec_cert', 'source_nat', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
     'frr_bgp_as_path', 'frr_bgp_route_map', 'frr_ospf_prefix_list', 'frr_ospf_route_map', 'webproxy_forward',
     'webproxy_acl', 'webproxy_icap', 'webproxy_auth', 'ipsec_connection', 'ipsec_pool',
-    'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote',
+    'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote', 'frr_general',
 ]
 
 
@@ -154,6 +154,10 @@ def run_module():
         elif target == 'source_nat':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.source_nat import \
                 SNat as Target_Obj
+
+        elif target == 'frr_general':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_general \
+                import General as Target_Obj
 
         elif target == 'frr_bfd_neighbor':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bfd_neighbor import \

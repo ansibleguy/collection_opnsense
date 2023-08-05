@@ -44,6 +44,7 @@ action_groups:
     - ansibleguy.opnsense.interface_vip
   frr:
     - ansibleguy.opnsense.frr_diagnostic
+    - ansibleguy.opnsense.frr_general
     - ansibleguy.opnsense.frr_bfd_general
     - ansibleguy.opnsense.frr_bfd_neighbor
     - ansibleguy.opnsense.frr_bgp_general

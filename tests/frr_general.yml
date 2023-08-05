@@ -1,0 +1,93 @@
+---
+
+- name: Testing FRR general settings
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      target: 'frr_general'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Configuring
+      ansibleguy.opnsense.frr_general:
+        enabled: true
+        profile: 'traditional'
+        log: true
+        log_level: 'notifications'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing
+      ansibleguy.opnsense.frr_general:
+        enabled: true
+        profile: 'datacenter'
+        log: true
+        log_level: 'emergencies'
+        snmp_agentx: true
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.frr_general:
+        profile: 'datacenter'
+        log: true
+        log_level: 'emergencies'
+        snmp_agentx: true
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.frr_general:
+        profile: 'datacenter'
+        log: true
+        log_level: 'emergencies'
+        snmp_agentx: true
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.frr_general:
+        profile: 'datacenter'
+        log: true
+        log_level: 'emergencies'
+        snmp_agentx: true
+        enabled: true
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.frr_general:
+        enabled: false
+        profile: 'traditional'
+        carp: false
+        snmp_agentx: false
+        log: true
+        log_level: 'notifications'
+      when: not ansible_check_mode
