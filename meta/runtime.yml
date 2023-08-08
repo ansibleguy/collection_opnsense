@@ -12,6 +12,7 @@ action_groups:
     - ansibleguy.opnsense.rule_multi
     - ansibleguy.opnsense.rule_purge
   unbound:
+    - ansibleguy.opnsense.unbound_general
     - ansibleguy.opnsense.unbound_forward
     - ansibleguy.opnsense.unbound_dot
     - ansibleguy.opnsense.unbound_host

@@ -32,7 +32,7 @@ TARGETS = [
     'cron', 'unbound_dot', 'ipsec_cert', 'source_nat', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
     'frr_bgp_as_path', 'frr_bgp_route_map', 'frr_ospf_prefix_list', 'frr_ospf_route_map', 'webproxy_forward',
     'webproxy_acl', 'webproxy_icap', 'webproxy_auth', 'ipsec_connection', 'ipsec_pool',
-    'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote', 'frr_general',
+    'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote', 'frr_general', 'unbound_general',
 ]
 
 
@@ -78,6 +78,10 @@ def run_module():
         elif target == 'cron':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.cron import \
                 CronJob as Target_Obj
+
+        elif target == 'unbound_general':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_general import \
+                General as Target_Obj
 
         elif target == 'unbound_host':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host import \

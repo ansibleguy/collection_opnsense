@@ -1,0 +1,181 @@
+---
+
+- name: Testing Unbound DNS general settings
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+      debug: true
+
+    ansibleguy.opnsense.list:
+      target: 'unbound_general'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Configuring - failing because of invalid port
+      ansibleguy.opnsense.unbound_general:
+        port: 0
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Configuring - failing because of non-existent interface
+      ansibleguy.opnsense.unbound_general:
+        interfaces:
+          - 'DOES-NOT-EXIST'
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+
+    - name: Configuring - failing because of invalid DNS64 prefix
+      ansibleguy.opnsense.unbound_general:
+        dns64_prefix: 'INVALID-PREFIX'
+      register: opn_fail3
+      failed_when: not opn_fail3.failed
+
+    - name: Configuring - failing because of invalid DHCP domain
+      ansibleguy.opnsense.unbound_general:
+        dhcp_domain: '!INVALID-DOMAIN!'
+      register: opn_fail4
+      failed_when: not opn_fail4.failed
+
+    - name: Configuring - failing because of invalid local zone type
+      ansibleguy.opnsense.unbound_general:
+        local_zone_type: 'INVALID-TYPE'
+      register: opn_fail5
+      failed_when: not opn_fail5.failed
+
+    - name: Configuring - failing because of non-existent outgoing interface
+      ansibleguy.opnsense.unbound_general:
+        outgoing_interfaces:
+          - 'DOES-NOT-EXIST'
+      register: opn_fail6
+      failed_when: not opn_fail6.failed
+
+    - name: Configuring
+      ansibleguy.opnsense.unbound_general:
+        port: 5353
+        interfaces:
+          - 'lan'
+        local_zone_type: 'always_nxdomain'
+        enabled: true
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing
+      ansibleguy.opnsense.unbound_general:
+        port: 53
+        interfaces:
+          - 'lan'
+        local_zone_type: 'transparent'
+        enabled: true
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.unbound_general:
+        port: 53
+        interfaces:
+          - 'lan'
+        local_zone_type: 'transparent'
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.unbound_general:
+        port: 53
+        interfaces:
+          - 'lan'
+        local_zone_type: 'transparent'
+        enabled: false
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        opn4.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.unbound_general:
+        port: 53
+        interfaces:
+          - 'lan'
+        local_zone_type: 'transparent'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+      when: not ansible_check_mode
+
+    - name: Changing more
+      ansibleguy.opnsense.unbound_general:
+        port: 53
+        interfaces:
+          - 'lan'
+        dnssec: true
+        dns64: true
+        dns64_prefix: '48:ff9b::/96'
+        aaaa_only_mode: true
+        register_dhcp_leases: true
+        dhcp_domain: 'example.org'
+        register_dhcp_static_mappings: true
+        register_ipv6_link_local: false
+        register_system_records: false
+        txt: true
+        flush_dns_cache: true
+        local_zone_type: 'transparent'
+        outgoing_interfaces:
+          - 'lan'
+        wpad: true
+        enabled: true
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Nothing changed
+      ansibleguy.opnsense.unbound_general:
+        port: 53
+        interfaces:
+          - 'lan'
+        dnssec: true
+        dns64: true
+        dns64_prefix: '48:ff9b::/96'
+        aaaa_only_mode: true
+        register_dhcp_leases: true
+        dhcp_domain: 'example.org'
+        register_dhcp_static_mappings: true
+        register_ipv6_link_local: false
+        register_system_records: false
+        txt: true
+        flush_dns_cache: true
+        local_zone_type: 'transparent'
+        outgoing_interfaces:
+          - 'lan'
+        wpad: true
+        enabled: true
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        opn7.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.unbound_general:
+        enabled: false
+      when: not ansible_check_mode
