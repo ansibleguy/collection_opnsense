@@ -8,7 +8,6 @@
       firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
       api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
       ssl_verify: false
-      debug: true
 
     ansibleguy.opnsense.list:
       target: 'unbound_general'
