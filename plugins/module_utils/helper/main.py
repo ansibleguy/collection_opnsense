@@ -1,5 +1,5 @@
 from typing import Callable
-from ipaddress import ip_address, ip_network, IPv4Address, IPv6Address, AddressValueError, NetmaskValueError
+from ipaddress import ip_address, ip_network, IPv4Address, IPv6Address, IPv6Network, AddressValueError, NetmaskValueError
 from re import match as regex_match
 
 from ansible.module_utils.basic import AnsibleModule
@@ -75,6 +75,16 @@ def is_ip_or_network(entry: str, strict: bool = False) -> bool:
 
         except ValueError:
             valid = False
+
+    return valid
+
+
+def is_ip6_network(entry: str, strict: bool = False) -> bool:
+    try:
+        valid = isinstance(ip_network(entry, strict=strict), IPv6Network)
+
+    except ValueError:
+        valid = False
 
     return valid
 

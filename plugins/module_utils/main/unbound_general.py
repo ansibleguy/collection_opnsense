@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule, boolean
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_port, validate_str_fields, is_unset, is_ip6, is_ip_or_network
+    validate_port, validate_str_fields, is_unset, is_ip6_network
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import GeneralModule
@@ -57,9 +57,6 @@ class General(GeneralModule):
         'select': ['local_zone_type'],
         'int': ['port'],
     }
-    STR_VALIDATIONS = {
-        'dns64_prefix': r'^(?:[0-9a-f]{1,4}:)+:/[0-9]{1,3}$',
-    }
     SEARCH_ADDITIONAL = {
         'existing_active_interfaces': 'unbound.general.active_interface',
         'existing_outgoing_interfaces': 'unbound.general.outgoing_interface',
@@ -78,23 +75,27 @@ class General(GeneralModule):
         if not is_unset(self.p['dhcp_domain']):
             validate_domain(module=self.m, domain=self.p['dhcp_domain'])
 
-        validate_str_fields(module=self.m, data=self.p, field_regex=self.STR_VALIDATIONS,)
+        if not is_ip6_network(self.p['dns64_prefix']):
+            self.m.fail_json(f"Value '{self.p['dns64_prefix']}' is an invalid IPv6 network!")
 
         self.settings = self._search_call()
 
         if not is_unset(self.p['interfaces']):
-            if not self._find_active_interfaces(self.existing_active_interfaces, self.p['interfaces']):
+            if len(self.existing_active_interfaces) == 0:
+                self.m.fail_json("No available interfaces found!")
+            if not self._find_interface(self.existing_active_interfaces, self.p['interfaces']):
                 self.m.fail_json(f"Interface '{self.invalid_interface}' was not found!")
         if not is_unset(self.p['outgoing_interfaces']):
-            if not self._find_active_interfaces(self.existing_outgoing_interfaces, self.p['outgoing_interfaces']):
+            if len(self.existing_outgoing_interfaces) == 0:
+                self.m.fail_json("No available outgoing interfaces found!")
+            if not self._find_interface(self.existing_outgoing_interfaces, self.p['outgoing_interfaces']):
                 self.m.fail_json(f"Outgoing interface '{self.invalid_interface}' was not found!")
 
         self._build_diff()
 
-    def _find_active_interfaces(self, existing_interfaces, interfaces) -> bool:
-        if len(existing_interfaces) > 0:
-            for interface in interfaces:
-                if interface not in existing_interfaces:
-                    self.invalid_interface = interface
-                    return False
+    def _find_interface(self, existing_interfaces, interfaces) -> bool:
+        for interface in interfaces:
+            if interface not in existing_interfaces:
+                self.invalid_interface = interface
+                return False
         return True
