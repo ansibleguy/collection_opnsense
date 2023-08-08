@@ -1,5 +1,6 @@
 from typing import Callable
-from ipaddress import ip_address, ip_network, IPv4Address, IPv6Address, IPv6Network, AddressValueError, NetmaskValueError
+from ipaddress import ip_address, ip_network, IPv4Address, IPv6Address, IPv6Network, AddressValueError, \
+    NetmaskValueError
 from re import match as regex_match
 
 from ansible.module_utils.basic import AnsibleModule

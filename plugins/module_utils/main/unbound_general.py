@@ -1,9 +1,9 @@
-from ansible.module_utils.basic import AnsibleModule, boolean
+from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_port, validate_str_fields, is_unset, is_ip6_network
+    validate_port, is_unset, is_ip6_network
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import GeneralModule
