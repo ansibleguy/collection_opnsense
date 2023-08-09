@@ -55,6 +55,12 @@ def run_module():
         fqcodel_flows=dict(type='str', required=False, default=''),
         delay=dict(type='str', required=False, default=''),
         description=dict(type='str', required=True, aliases=['desc']),
+        reset=dict(
+            type='bool', required=False, default=False, aliases=['flush'],
+            description='If the running config should be flushed and reloaded on change - '
+                        'will take some time. This might have impact on other services using '
+                        'the same technology underneath (such as Captive portal)'
+        ),
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,

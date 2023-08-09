@@ -77,6 +77,7 @@
         target_queue: 'ANSIBLE_TEST_2_1'
         protocol: 'tcp'
         destination_port: 80
+        sequence: 40
       register: opn4
       failed_when: >
         opn4.failed or
@@ -88,6 +89,7 @@
         target_queue: 'ANSIBLE_TEST_2_1'
         protocol: 'tcp'
         destination_port: 443
+        sequence: 50
       register: opn15
       failed_when: >
         opn15.failed or
@@ -101,6 +103,7 @@
         protocol: 'tcp'
         destination_port: 443
         enabled: false
+        sequence: 50
       register: opn6
       failed_when: >
         opn6.failed or
@@ -114,6 +117,7 @@
         protocol: 'tcp'
         destination_port: 443
         enabled: false
+        sequence: 50
       register: opn9
       failed_when: >
         opn9.failed or
@@ -126,18 +130,21 @@
         target_queue: 'ANSIBLE_TEST_2_1'
         protocol: 'tcp'
         destination_port: 443
+        sequence: 50
       register: opn7
       failed_when: >
         opn7.failed or
         not opn7.changed
       when: not ansible_check_mode
 
-    - name: Adding 2
+    - name: Adding 2 & flushing/resetting running config
       ansibleguy.opnsense.shaper_rule:
         description: 'ANSIBLE_TEST_1_2'
         target_pipe: 'ANSIBLE_TEST_3_1'
         destination_invert: true
         destination: '172.16.0.0/12'
+        sequence: 60
+        reset: true
       register: opn5
       failed_when: >
         opn5.failed or
@@ -149,10 +156,37 @@
         target_pipe: 'ANSIBLE_TEST_3_1'
         destination_invert: true
         destination: '172.16.0.0/12'
+        sequence: 60
       register: opn13
       failed_when: >
         opn13.failed or
         opn13.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2 - changing
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_2'
+        target_pipe: 'ANSIBLE_TEST_3_1'
+        destination_invert: true
+        destination: ['172.16.0.0/12', '192.168.0.0/29']
+        sequence: 60
+      register: opn17
+      failed_when: >
+        opn17.failed or
+        not opn17.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2 - nothing changing
+      ansibleguy.opnsense.shaper_rule:
+        description: 'ANSIBLE_TEST_1_2'
+        target_pipe: 'ANSIBLE_TEST_3_1'
+        destination_invert: true
+        destination: ['172.16.0.0/12', '192.168.0.0/29']
+        sequence: 60
+      register: opn18
+      failed_when: >
+        opn18.failed or
+        opn18.changed
       when: not ansible_check_mode
 
     - name: Removing 2

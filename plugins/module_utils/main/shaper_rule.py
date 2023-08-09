@@ -24,8 +24,8 @@ class Rule(BaseModule):
     FIELDS_CHANGE = [
         'target', 'interface', 'interface2', 'protocol', 'max_packet_length',
         'source_invert', 'source_net', 'source_port', 'destination_invert',
-        'destination_net', 'destination_port', 'dscp', 'direction',
-    ]  # 'sequence' => not working
+        'destination_net', 'destination_port', 'dscp', 'direction', 'sequence',
+    ]
     FIELDS_ALL = ['enabled', FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
@@ -40,10 +40,9 @@ class Rule(BaseModule):
     }
     FIELDS_TYPING = {
         'bool': ['enabled', 'source_invert', 'destination_invert'],
-        'list': ['dscp'],
+        'list': ['dscp', 'destination_net', 'source_net'],
         'select': [
-            'interface', 'interface2', 'protocol', 'destination_net', 'source_net',
-            'direction', 'target',
+            'interface', 'interface2', 'protocol', 'direction', 'target',
         ],
     }
     INT_VALIDATIONS = {
@@ -116,3 +115,9 @@ class Rule(BaseModule):
             existing.append(entry)
 
         return existing
+
+    def reload(self) -> None:
+        if self.p['reset']:
+            self.API_CMD_REL = 'flushreload'
+
+        self.b.reload()

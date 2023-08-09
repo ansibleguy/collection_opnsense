@@ -57,7 +57,7 @@ def run_module():
             aliases=RULE_MOD_ARG_ALIASES['source_invert'],
         ),
         source_net=dict(
-            type='str', required=False, default='any', aliases=RULE_MOD_ARG_ALIASES['source_net'],
+            type='list', elements='str', required=False, default='any', aliases=RULE_MOD_ARG_ALIASES['source_net'],
             description="Source ip or network, examples 10.0.0.0/24, 10.0.0.1"
         ),
         source_port=dict(
@@ -68,7 +68,7 @@ def run_module():
             aliases=RULE_MOD_ARG_ALIASES['destination_invert'],
         ),
         destination_net=dict(
-            type='str', required=False, default='any', aliases=RULE_MOD_ARG_ALIASES['destination_net'],
+            type='list', elements='str', required=False, default='any', aliases=RULE_MOD_ARG_ALIASES['destination_net'],
             description='Destination ip or network, examples 10.0.0.0/24, 10.0.0.1'
         ),
         destination_port=dict(
@@ -88,6 +88,12 @@ def run_module():
             choices=['', 'in', 'out'], description='Leave empty for both'
         ),
         description=dict(type='str', required=True, aliases=['desc']),
+        reset=dict(
+            type='bool', required=False, default=False, aliases=['flush'],
+            description='If the running config should be flushed and reloaded on change - '
+                        'will take some time. This might have impact on other services using '
+                        'the same technology underneath (such as Captive portal)'
+        ),
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,

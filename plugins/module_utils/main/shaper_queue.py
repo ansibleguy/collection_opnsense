@@ -81,3 +81,9 @@ class Queue(BaseModule):
             existing.append(entry)
 
         return existing
+
+    def reload(self) -> None:
+        if self.p['reset']:
+            self.API_CMD_REL = 'flushreload'
+
+        self.b.reload()

@@ -62,3 +62,9 @@ class Pipe(BaseModule):
                 self.m.fail_json('You need to provide bandwidth to create a shaper pipe!')
 
         self._base_check()
+
+    def reload(self) -> None:
+        if self.p['reset']:
+            self.API_CMD_REL = 'flushreload'
+
+        self.b.reload()

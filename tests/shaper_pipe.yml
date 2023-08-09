@@ -104,11 +104,12 @@
         not opn7.changed
       when: not ansible_check_mode
 
-    - name: Adding 2
+    - name: Adding 2 & flushing/resetting running config
       ansibleguy.opnsense.shaper_pipe:
         description: 'ANSIBLE_TEST_1_2'
         bandwidth: 750
         bandwidth_metric: 'Kbit'
+        reset: true
       register: opn5
       failed_when: >
         opn5.failed or
