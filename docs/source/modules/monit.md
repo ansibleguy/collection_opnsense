@@ -21,7 +21,7 @@ Interfaces for 'monit_services' must be provided as used in the network config (
 
 ## Definition
 
-For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_basic.md#definition)
+For basic parameters see: [Basics](https://opnsense.ansibleguy.net/en/latest/usage/2_basic.html)
 
 ### ansibleguy.opnsense.monit_alert
 

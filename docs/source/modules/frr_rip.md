@@ -21,11 +21,11 @@ You need to install the FRR plugin:
 os-frr
 ```
 
-You can also install it using the [package module](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_package.md).
+You can also install it using the [package module](https://opnsense.ansibleguy.net/en/latest/modules/package.html).
 
 ## Definition
 
-For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_basic.md#definition)
+For basic parameters see: [Basics](https://opnsense.ansibleguy.net/en/latest/usage/2_basic.html)
 
 ### ansibleguy.opnsense.frr_rip
 
