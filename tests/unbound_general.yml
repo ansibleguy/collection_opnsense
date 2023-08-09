@@ -65,6 +65,7 @@
           - 'lan'
         local_zone_type: 'always_nxdomain'
         enabled: true
+        reload: false  # speed
       register: opn1
       failed_when: >
         opn1.failed or
@@ -77,6 +78,7 @@
           - 'lan'
         local_zone_type: 'transparent'
         enabled: true
+        reload: false  # speed
       register: opn2
       failed_when: >
         opn2.failed or
@@ -89,6 +91,7 @@
           - 'lan'
         local_zone_type: 'transparent'
         enabled: false
+        reload: false  # speed
       register: opn3
       failed_when: >
         opn3.failed or
@@ -102,6 +105,7 @@
           - 'lan'
         local_zone_type: 'transparent'
         enabled: false
+        reload: false  # speed
       register: opn4
       failed_when: >
         opn4.failed or
@@ -114,6 +118,7 @@
         interfaces:
           - 'lan'
         local_zone_type: 'transparent'
+        reload: false  # speed
       register: opn5
       failed_when: >
         opn5.failed or
@@ -141,6 +146,7 @@
           - 'lan'
         wpad: true
         enabled: true
+        reload: false  # speed
       register: opn6
       failed_when: >
         opn6.failed or
@@ -168,6 +174,7 @@
           - 'lan'
         wpad: true
         enabled: true
+        reload: false  # speed
       register: opn7
       failed_when: >
         opn7.failed or

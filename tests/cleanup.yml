@@ -49,7 +49,10 @@
         - 'ANSIBLE_TEST_1'
         - 'ANSIBLE_TEST_2'
 
-    - name: Cleanup DNS-over-TLS
+    - name: Cleanup Unbound General
+      ansibleguy.opnsense.unbound_general:
+
+    - name: Cleanup Unbound DNS-over-TLS
       ansibleguy.opnsense.unbound_dot:
         domain: "{{ item.d }}"
         target: "{{ item.t }}"
@@ -58,7 +61,7 @@
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
 
-    - name: Cleanup DNS-Forwardings
+    - name: Cleanup Unbound DNS-Forwarding's
       ansibleguy.opnsense.unbound_forward:
         domain: "{{ item.d }}"
         target: "{{ item.t }}"
@@ -68,7 +71,7 @@
         - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
         - {d: '', t: '1.1.1.3'}
 
-    - name: Cleanup DNS host-override aliases
+    - name: Cleanup Unbound DNS host-override aliases
       ansibleguy.opnsense.unbound_host_alias:
         description: "{{ item }}"
         alias: 'dummy'
@@ -80,7 +83,7 @@
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
 
-    - name: Cleanup DNS host-overrides
+    - name: Cleanup Unbound DNS host-overrides
       ansibleguy.opnsense.unbound_host:
         description: "{{ item }}"
         hostname: 'dummy'
@@ -93,7 +96,7 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
 
-    - name: Cleanup DNS domain-overrides
+    - name: Cleanup Unbound DNS domain-overrides
       ansibleguy.opnsense.unbound_domain:
         description: "{{ item }}"
         domain: 'dummy.local'

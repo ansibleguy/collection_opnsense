@@ -25,7 +25,7 @@ class General(GeneralModule):
         'enabled', 'port', 'interfaces', 'dnssec', 'dns64', 'dns64_prefix',
         'aaaa_only_mode', 'register_dhcp_leases', 'dhcp_domain',
         'register_dhcp_static_mappings', 'register_ipv6_link_local',
-        'register_system_records', 'txt', 'flush_dns_cache', 'local_zone_type',
+        'register_system_records', 'txt_records', 'flush_dns_cache', 'local_zone_type',
         'outgoing_interfaces', 'wpad',
     ]
     FIELDS_ALL = FIELDS_CHANGE
@@ -38,7 +38,7 @@ class General(GeneralModule):
         'register_dhcp_static_mappings': 'regdhcpstatic',
         'register_ipv6_link_local': 'noreglladdr6',
         'register_system_records': 'noregrecords',
-        'txt': 'txtsupport',
+        'txt_records': 'txtsupport',
         'flush_dns_cache': 'cacheflush',
         'local_zone_type': 'local_zone_type',
         'outgoing_interfaces': 'outgoing_interface',
@@ -49,7 +49,7 @@ class General(GeneralModule):
         'bool': [
             'enabled', 'dnssec', 'dns64', 'aaaa_only_mode', 'register_dhcp_leases',
             'register_dhcp_static_mappings', 'register_ipv6_link_local',
-            'register_system_records', 'txt', 'flush_dns_cache', 'wpad',
+            'register_system_records', 'txt_records', 'flush_dns_cache', 'wpad',
         ],
         'list': [
             'interfaces', 'outgoing_interfaces',
@@ -66,12 +66,11 @@ class General(GeneralModule):
         GeneralModule.__init__(self=self, m=module, r=result, s=session)
         self.existing_active_interfaces = []
         self.existing_outgoing_interfaces = []
-        self.invalid_interface = None
 
     def check(self) -> None:
         # pylint: disable=W0201
-        if not is_unset(self.p['port']):
-            validate_port(module=self.m, port=self.p['port'])
+        validate_port(module=self.m, port=self.p['port'])
+
         if not is_unset(self.p['dhcp_domain']):
             validate_domain(module=self.m, domain=self.p['dhcp_domain'])
 
@@ -82,20 +81,25 @@ class General(GeneralModule):
 
         if not is_unset(self.p['interfaces']):
             if len(self.existing_active_interfaces) == 0:
-                self.m.fail_json("No available interfaces found!")
-            if not self._find_interface(self.existing_active_interfaces, self.p['interfaces']):
-                self.m.fail_json(f"Interface '{self.invalid_interface}' was not found!")
+                self.m.fail_json('No available interfaces found!')
+
+            self._validate_interfaces(
+                existing_interfaces=self.existing_active_interfaces,
+                referenced_interfaces=self.p['interfaces'],
+            )
+
         if not is_unset(self.p['outgoing_interfaces']):
             if len(self.existing_outgoing_interfaces) == 0:
-                self.m.fail_json("No available outgoing interfaces found!")
-            if not self._find_interface(self.existing_outgoing_interfaces, self.p['outgoing_interfaces']):
-                self.m.fail_json(f"Outgoing interface '{self.invalid_interface}' was not found!")
+                self.m.fail_json('No available outgoing interfaces found!')
+
+            self._validate_interfaces(
+                existing_interfaces=self.existing_outgoing_interfaces,
+                referenced_interfaces=self.p['outgoing_interfaces'],
+            )
 
         self._build_diff()
 
-    def _find_interface(self, existing_interfaces, interfaces) -> bool:
-        for interface in interfaces:
+    def _validate_interfaces(self, existing_interfaces: list, referenced_interfaces: list) -> None:
+        for interface in referenced_interfaces:
             if interface not in existing_interfaces:
-                self.invalid_interface = interface
-                return False
-        return True
+                self.m.fail_json(f"Referenced interface '{interface}' was not found!")

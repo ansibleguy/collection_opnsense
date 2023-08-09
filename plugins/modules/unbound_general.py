@@ -78,8 +78,8 @@ def run_module():
             description='Whether A/AAAA records for the configured listen interfaces '
                         'will be generated'
         ),
-        txt=dict(
-            type='bool', required=False, default=False,
+        txt_records=dict(
+            type='bool', required=False, default=False, aliases=['txt'],
             description='Whether descriptions associated with Host entries and DHCP Static '
                         'mappings will create a corresponding TXT record'
         ),
