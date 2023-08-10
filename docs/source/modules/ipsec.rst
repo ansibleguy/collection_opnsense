@@ -6,7 +6,7 @@
 IPSec
 =====
 
-**STATE**: unstable
+**STATE**: stable
 
 **TESTS**: `ipsec_cert <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_cert.yml>`_ |
 `ipsec_connection <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_connection.yml>`_ |
