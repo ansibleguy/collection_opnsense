@@ -92,3 +92,13 @@
         opn8.failed or
         'data' not in opn8 or
         opn8.data.status != 'running'
+
+    - name: Restarting traffic-shaper (flush & reload)
+      ansibleguy.opnsense.service:
+        name: 'shaper'
+        action: 'restart'
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+      when: not ansible_check_mode

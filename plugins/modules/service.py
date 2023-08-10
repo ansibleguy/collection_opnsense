@@ -30,7 +30,7 @@ SERVICES = {
     'cron': {'a': ['reload']},
     'ipsec_legacy': {'c': 'legacy_subsystem', 'a': ['reload'], 'm': {'reload': 'applyConfig'}},
     'ipsec': {}, 'monit': {}, 'syslog': {},
-    'shaper': {'c': 'trafficshaper', 'm': {'restart': 'flushreload', 'status': 'statistics'}},
+    'shaper': {'c': 'trafficshaper', 'a': ['reload', 'status', 'restart'], 'm': {'restart': 'flushreload', 'status': 'statistics'}},
     #   note: these would support more actions:
     'ids': {}, 'proxy': {}, 'unbound': {},
     # plugins

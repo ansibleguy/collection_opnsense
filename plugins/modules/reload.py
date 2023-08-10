@@ -88,6 +88,7 @@ def run_module():
         elif target == 'shaper':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_pipe import \
                 Pipe as Target_Obj
+            module.params['reset'] = False
 
         elif target == 'monit':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.monit_service import \
