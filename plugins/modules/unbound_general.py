@@ -88,9 +88,10 @@ def run_module():
             description='Whether the DNS cache will be flushed during each daemon reload'
         ),
         local_zone_type=dict(
-            type='str', required=False, default='transparent', choices=['transparent',
-            'always_nxdomain', 'always_refuse', 'always_transparent', 'deny', 'inform',
-            'inform_deny', 'nodefault', 'refuse', 'static', 'typetransparent'],
+            type='str', required=False, default='transparent', choices=[
+                'transparent', 'always_nxdomain', 'always_refuse', 'always_transparent', 'deny', 'inform',
+                'inform_deny', 'nodefault', 'refuse', 'static', 'typetransparent',
+            ],
             description='The local zone type used for the system domain'
         ),
         outgoing_interfaces=dict(

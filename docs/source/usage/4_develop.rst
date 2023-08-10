@@ -37,9 +37,11 @@ Adding new module
   '<COLLECTION>/plugins/modules/<MODULE>.py'
   You can copy the template from '<COLLECTION>/plugins/modules/_tmpl_obj.py'
 
+
 - For most modules you should create a sub-file to handle the actual logic so the main module-file is kept clean:
   '<COLLECTION>/plugins/module_utils/main/<MODULE>.py'
   You can copy the template from '<COLLECTION>/plugins/module_utils/main/_tmpl.py'
+
 
 - Add **ansible-based tests**:
 
@@ -70,15 +72,19 @@ Adding new module
 
     You can then import the documentation inside the main module file.
 
+
 - Add the module to '<COLLECTION>/meta/runtime.yml'
+
 
 - Add the module as option to the 'ansibleguy.opnsense.list' module:
 
   '<COLLECTION>/plugins/modules/list.py'
 
+
 - Add the module as option to the 'ansibleguy.opnsense.reload' module:
 
   '<COLLECTION>/plugins/modules/reload.py'
+
 
 - If you are implementing a new service:
 
