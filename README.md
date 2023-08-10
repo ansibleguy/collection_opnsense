@@ -42,13 +42,7 @@ See: [Docs](https://opnsense.ansibleguy.net)
 
 Feel free to contribute to this project using [pull-requests](https://github.com/ansibleguy/collection_opnsense/pulls), [issues](https://github.com/ansibleguy/collection_opnsense/issues) and [discussions](https://github.com/ansibleguy/collection_opnsense/discussions)!
 
-**What to contribute**:
-
-* add ansible-based [tests](https://github.com/ansibleguy/collection_opnsense/blob/latest/tests) for some error-case(s) you have encountered
-* extend or correct the [documentation](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs)
-* contribute code fixes or optimizations
-* implement additional API endpoints => see [development guide](https://opnsense.ansibleguy.net/en/latest/usage/4_develop.html)
-* test unstable modules and report bugs/errors
+See also: [Contributing](https://github.com/ansibleguy/collection_opnsense/blob/latest/CONTRIBUTING.md)
 
 ----
 
@@ -57,10 +51,6 @@ Feel free to contribute to this project using [pull-requests](https://github.com
 **Development States**:
 
 not implemented => development => [testing](https://github.com/ansibleguy/collection_opnsense/tree/latest/tests) => unstable (_practical testing_) => stable
-
-### Roadmap poll
-
-Choose what modules YOU would find useful: [Roadmap Poll](https://github.com/ansibleguy/collection_opnsense/discussions/14)
 
 ### Implemented
 
@@ -88,13 +78,13 @@ Choose what modules YOU would find useful: [Roadmap Poll](https://github.com/ans
 | **DNS**             | ansibleguy.opnsense.unbound_domain                                     | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/unbound_domain.html)                                     | stable   |
 | **DNS**             | ansibleguy.opnsense.unbound_host_alias                                 | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/unbound_host_alias.html)                                 | stable |
 | **Syslog**          | ansibleguy.opnsense.syslog                                             | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/syslog.html)                                             | stable   |
-| **IPSec**           | ansibleguy.opnsense.ipsec_connection, ansibleguy.opnsense.ipsec_tunnel | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | unstable |
-| **IPSec**           | ansibleguy.opnsense.ipsec_pool, ansibleguy.opnsense.ipsec_network      | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | unstable |
-| **IPSec**           | ansibleguy.opnsense.ipsec_auth_local                                   | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | unstable |
-| **IPSec**           | ansibleguy.opnsense.ipsec_auth_remote                                  | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | unstable |
-| **IPSec**           | ansibleguy.opnsense.ipsec_child                                        | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | unstable |
-| **IPSec**           | ansibleguy.opnsense.ipsec_vti                                          | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | unstable |
-| **IPSec**           | ansibleguy.opnsense.ipsec_cert                                         | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | unstable |
+| **IPSec**           | ansibleguy.opnsense.ipsec_connection, ansibleguy.opnsense.ipsec_tunnel | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | stable |
+| **IPSec**           | ansibleguy.opnsense.ipsec_pool, ansibleguy.opnsense.ipsec_network      | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | stable |
+| **IPSec**           | ansibleguy.opnsense.ipsec_auth_local                                   | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | stable |
+| **IPSec**           | ansibleguy.opnsense.ipsec_auth_remote                                  | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | stable |
+| **IPSec**           | ansibleguy.opnsense.ipsec_child                                        | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | stable |
+| **IPSec**           | ansibleguy.opnsense.ipsec_vti                                          | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | stable |
+| **IPSec**           | ansibleguy.opnsense.ipsec_cert                                         | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html)                                              | stable |
 | **Traffic Shaper**  | ansibleguy.opnsense.shaper_pipe                                        | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/shaper.html)                                             | stable |
 | **Traffic Shaper**  | ansibleguy.opnsense.shaper_queue                                       | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/shaper.html)                                             | stable |
 | **Traffic Shaper**  | ansibleguy.opnsense.shaper_rule                                        | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/shaper.html)                                             | stable |

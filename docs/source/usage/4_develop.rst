@@ -31,10 +31,65 @@ There are `module-templates <https://github.com/ansibleguy/collection_opnsense/b
 Adding new module
 *****************
 
+**Checklist**:
+
+- Create the module-file at:
+  '<COLLECTION>/plugins/modules/<MODULE>.py'
+  You can copy the template from '<COLLECTION>/plugins/modules/_tmpl_obj.py'
+
+- For most modules you should create a sub-file to handle the actual logic so the main module-file is kept clean:
+  '<COLLECTION>/plugins/module_utils/main/<MODULE>.py'
+  You can copy the template from '<COLLECTION>/plugins/module_utils/main/_tmpl.py'
+
+- Add **ansible-based tests**:
+
+  I personally like to write tests before adding new modules and testing the modules functionality from the start (test-driven-development)
+
+  - You can copy the template from '<COLLECTION>/tests/_tmpl.yml'
+
+    Rename all calls to the new module.
+
+  - Add a cleanup-task in '<COLLECTION>/tests/cleanup.yml' (set state we will expect when re-running the tests)
+
+  - Enable the test once it runs successfully - add it to '<COLLECTION>/scripts/test.sh'
+
+
+- Add **documentation**:
+
+  - You can copy the template from '<COLLECTION>/docs/source/_tmpl/module_template.rst' and replace '<module>' and links
+
+    `reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_ is preferred, but markdown is also supported
+
+    Also add important module-specific information.
+
+  - Optional: We should also add **inline module-documentation** `as standardized for Ansible <https://docs.ansible.com/ansible/latest/dev_guide/developing_modules_documenting.html#documentation-block>`_
+
+    To keep the main module file clean - the documentation should be placed in '<COLLECTION>/plugins/module_utils/inline_docs/'
+
+    You can copy the template from '<COLLECTION>/plugins/module_utils/inline_docs/_tmpl.py'
+
+    You can then import the documentation inside the main module file.
+
+- Add the module to '<COLLECTION>/meta/runtime.yml'
+
+- Add the module as option to the 'ansibleguy.opnsense.list' module:
+
+  '<COLLECTION>/plugins/modules/list.py'
+
+- Add the module as option to the 'ansibleguy.opnsense.reload' module:
+
+  '<COLLECTION>/plugins/modules/reload.py'
+
+- If you are implementing a new service:
+
+  Add the service as option to the 'ansibleguy.opnsense.service' module:
+
+  '<COLLECTION>/plugins/modules/service.py'
+
+
 Testing
 =======
 
-Copy the test-template '_tmpl.yml' and rename all calls to the new module.
 
 Run the tests like this:
 
