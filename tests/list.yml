@@ -20,7 +20,7 @@
       ansibleguy.opnsense.list:
         target: "{{ item }}"
       when: not ansible_check_mode
-      loop: ['unbound_general', 'unbound_host', 'unbound_domain', 'unbound_forward', 'unbound_host_alias', 'unbound_dot']
+      loop: ['unbound_general', 'unbound_acl', 'unbound_host', 'unbound_domain', 'unbound_forward', 'unbound_host_alias', 'unbound_dot']
 
     - name: Querying config - Traffic shaper
       ansibleguy.opnsense.list:

@@ -52,6 +52,14 @@
     - name: Cleanup Unbound General
       ansibleguy.opnsense.unbound_general:
 
+    - name: Cleanup Unbound DNS ACLs
+      ansibleguy.opnsense.unbound_acl:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+
     - name: Cleanup Unbound DNS-over-TLS
       ansibleguy.opnsense.unbound_dot:
         domain: "{{ item.d }}"
