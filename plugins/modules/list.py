@@ -33,6 +33,7 @@ TARGETS = [
     'frr_bgp_as_path', 'frr_bgp_route_map', 'frr_ospf_prefix_list', 'frr_ospf_route_map', 'webproxy_forward',
     'webproxy_acl', 'webproxy_icap', 'webproxy_auth', 'ipsec_connection', 'ipsec_pool',
     'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote', 'frr_general', 'unbound_general',
+    'unbound_acl',
 ]
 
 
@@ -82,6 +83,10 @@ def run_module():
         elif target == 'unbound_general':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_general import \
                 General as Target_Obj
+
+        elif target == 'unbound_acl':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_acl import \
+                Acl as Target_Obj
 
         elif target == 'unbound_host':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.unbound_host import \
