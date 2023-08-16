@@ -39,6 +39,7 @@ Adding new module
 
   You can copy the template from '<COLLECTION>/plugins/modules/_tmpl_obj.py'
 
+  Note: When adding module-parameters - you can copy/paste the field-description from the OPNSense web-ui! We don't have to reinvent the wheel. (*'full help' toggle*)
 
 - For most modules you should create a sub-file to handle the actual logic so the main module-file is kept clean:
 
