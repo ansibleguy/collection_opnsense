@@ -59,6 +59,7 @@
         action: 'deny'
         networks: ['192.168.0.0/24']
         description: 'Deny access'
+        reload: false  # speed
       register: opn1
       failed_when: >
         opn1.failed or
@@ -70,16 +71,29 @@
         action: 'deny'
         networks: ['192.168.0.0/25']
         description: 'Deny access'
+        reload: false  # speed
       register: opn2
       failed_when: >
         opn2.failed or
         not opn2.changed
 
+    - name: Changing 1 - more
+      ansibleguy.opnsense.unbound_acl:
+        name: 'ANSIBLE_TEST_1_1'
+        action: 'deny'
+        networks: ['10.10.0.0/29', '192.168.0.0/25']
+        description: 'Deny access'
+        reload: false  # speed
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        not opn10.changed
+
     - name: Disabling 1
       ansibleguy.opnsense.unbound_acl:
         name: 'ANSIBLE_TEST_1_1'
         action: 'deny'
-        networks: ['192.168.0.0/25']
+        networks: ['10.10.0.0/29', '192.168.0.0/25']
         description: 'Deny access'
         enabled: false
       register: opn3
@@ -92,9 +106,10 @@
       ansibleguy.opnsense.unbound_acl:
         name: 'ANSIBLE_TEST_1_1'
         action: 'deny'
-        networks: ['192.168.0.0/25']
+        networks: ['10.10.0.0/29', '192.168.0.0/25']
         description: 'Deny access'
         enabled: false
+        reload: false  # speed
       register: opn4
       failed_when: >
         opn4.failed or
@@ -105,8 +120,9 @@
       ansibleguy.opnsense.unbound_acl:
         name: 'ANSIBLE_TEST_1_1'
         action: 'deny'
-        networks: ['192.168.0.0/25']
+        networks: ['10.10.0.0/29', '192.168.0.0/25']
         description: 'Deny access'
+        reload: false  # speed
       register: opn5
       failed_when: >
         opn5.failed or
@@ -119,6 +135,7 @@
         action: 'allow_snoop'
         networks: ['192.168.0.128/29', '192.168.0.192/29']
         description: 'Allow snoop'
+        reload: false  # speed
       register: opn6
       failed_when: >
         opn6.failed or
@@ -131,6 +148,7 @@
         action: 'allow_snoop'
         networks: ['192.168.0.128/29', '192.168.0.192/29']
         description: 'Allow snoop'
+        reload: false  # speed
       register: opn7
       failed_when: >
         opn7.failed or
@@ -141,6 +159,7 @@
       ansibleguy.opnsense.unbound_acl:
         name: 'ANSIBLE_TEST_1_2'
         state: 'absent'
+        reload: false  # speed
       register: opn8
       failed_when: >
         opn8.failed or
