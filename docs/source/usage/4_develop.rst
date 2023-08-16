@@ -34,12 +34,16 @@ Adding new module
 **Checklist**:
 
 - Create the module-file at:
+
   '<COLLECTION>/plugins/modules/<MODULE>.py'
+
   You can copy the template from '<COLLECTION>/plugins/modules/_tmpl_obj.py'
 
 
 - For most modules you should create a sub-file to handle the actual logic so the main module-file is kept clean:
+
   '<COLLECTION>/plugins/module_utils/main/<MODULE>.py'
+
   You can copy the template from '<COLLECTION>/plugins/module_utils/main/_tmpl.py'
 
 
