@@ -6,7 +6,7 @@
 DNS - Unbound - ACL
 ===================
 
-**STATE**: stable
+**STATE**: unstable
 
 **TESTS**: `Playbook <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/unbound_acl.yml>`_
 
@@ -29,10 +29,9 @@ Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "enabled","boolean","false","true","\-","En- or disable the ACL"
     "name","string","true","\-","n","Unique name of the ACL"
-    "action","string","false","allow","\-","What to to with DNS request that match the criteria. One of: 'allow', 'deny', 'refuse', 'allow_snoop', 'deny_non_local', 'refuse_non_local'"
-    "networks","list","false for state changes, else true","\-","nets","The list of networks in CIDR notation to apply this ACL to"
+    "action","string","false","allow","\-","What to to with DNS request that match the criteria. One of: 'allow', 'deny', 'refuse', 'allow_snoop', 'deny_non_local', 'refuse_non_local'. **Allow**: Choose what to do with DNS requests that match the criteria specified below. **Deny**: This action stops queries from hosts within the netblock defined below. **Refuse**: This action also stops queries from hosts within the netblock defined below, but sends a DNS rcode REFUSED error message back to the client. **Allow**: This action allows queries from hosts within the netblock defined below. **Allow Snoop**: This action allows recursive and nonrecursive access from hosts within the netblock defined below. Used for cache snooping and ideally should only be configured for your administrative host. **Deny Non-local**: Allow only authoritative local-data queries from hosts within the netblock defined below. Messages that are disallowed are dropped. **Refuse Non-local**: Allow only authoritative local-data queries from hosts within the netblock defined below. Sends a DNS rcode REFUSED error message back to the client for messages that are disallowed."
+    "networks","list","false for state changes, else true","\-","nets","List of networks in CIDR notation to apply this ACL on. For example: 192.168.1.0/24"
     "description","string","false","\-","desc","The description for the ACL"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
@@ -56,12 +55,12 @@ Examples
       tasks:
         - name: Example
           ansibleguy.opnsense.unbound_acl:
-            # enabled: true
-            # name: ''
+            name: 'example'
             # action: ''
-            # networks: ['']
+            # networks: []
             # description: ''
             # reload: true
+            # enabled: true
 
         - name: Adding
           ansibleguy.opnsense.unbound_acl:
