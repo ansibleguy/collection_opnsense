@@ -14,8 +14,6 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.utils import profiler
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
         diff_remove_empty
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
-        RELOAD_MOD_ARG
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.bind_record import \
         RECORD_MOD_ARGS
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_record import \
@@ -31,11 +29,6 @@ EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/bind.html'
 
 
 def run_module():
-    module_args = dict(
-        **RECORD_MOD_ARGS,
-        **RELOAD_MOD_ARG,
-    )
-
     result = dict(
         changed=False,
         diff={
@@ -45,7 +38,7 @@ def run_module():
     )
 
     module = AnsibleModule(
-        argument_spec=module_args,
+        argument_spec=RECORD_MOD_ARGS,
         supports_check_mode=True,
     )
 

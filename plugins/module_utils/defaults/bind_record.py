@@ -1,5 +1,5 @@
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
-    OPN_MOD_ARGS, STATE_MOD_ARG
+    OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
 
 RECORD_DEFAULTS = {
     'type': 'A',
@@ -42,5 +42,6 @@ RECORD_MOD_ARGS = dict(
     ),
     **STATE_MOD_ARG,
     **RECORD_MATCH_FIELDS_ARG,
+    **RELOAD_MOD_ARG,
     **OPN_MOD_ARGS,
 )
