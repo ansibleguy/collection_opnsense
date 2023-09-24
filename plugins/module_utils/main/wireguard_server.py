@@ -75,6 +75,11 @@ class Server(BaseModule):
                     f"Gateway '{self.p['gateway']}' is not a valid IP-address!"
                 )
 
+            if is_unset(self.p['private_key']) or is_unset(self.p['public_key']):
+                self.m.fail_json(
+                    "You need to provide a 'public_key' and 'private_key'!"
+                )
+
         for entry in self.p['allowed_ips']:
             if not is_ip_or_network(entry):
                 self.m.fail_json(

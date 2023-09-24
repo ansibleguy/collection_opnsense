@@ -74,10 +74,28 @@
       register: opn18
       failed_when: not opn18.failed
 
+    - name: Adding 1 - failing because of missing pk
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        allowed_ips: ['192.168.0.1']
+        public_key: "{{ test.pub1 }}"
+      register: opn19
+      failed_when: not opn19.failed
+
+    - name: Adding 1 - failing because of missing pub
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        allowed_ips: ['192.168.0.1']
+        private_key: "{{ test.priv1 }}"
+      register: opn20
+      failed_when: not opn20.failed
+
     - name: Adding 1
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
         allowed_ips: ['192.168.0.1']
+        public_key: "{{ test.pub1 }}"
+        private_key: "{{ test.priv1 }}"
       register: opn4
       failed_when: >
         opn4.failed or
@@ -87,6 +105,8 @@
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
         allowed_ips: ['192.168.0.1']
+        public_key: "{{ test.pub1 }}"
+        private_key: "{{ test.priv1 }}"
         enabled: false
       register: opn6
       failed_when: >
@@ -98,6 +118,8 @@
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
         allowed_ips: ['192.168.0.1']
+        public_key: "{{ test.pub1 }}"
+        private_key: "{{ test.priv1 }}"
         enabled: false
       register: opn9
       failed_when: >
@@ -109,6 +131,8 @@
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
         allowed_ips: ['192.168.0.1']
+        public_key: "{{ test.pub1 }}"
+        private_key: "{{ test.priv1 }}"
       register: opn7
       failed_when: >
         opn7.failed or
