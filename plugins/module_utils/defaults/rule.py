@@ -1,5 +1,5 @@
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
-    OPN_MOD_ARGS, STATE_MOD_ARG
+    OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
 
 RULE_DEFAULTS = {
     'sequence': 1,
@@ -122,6 +122,7 @@ RULE_MOD_ARGS = dict(
     **STATE_MOD_ARG,
     **RULE_MATCH_FIELDS_ARG,
     **OPN_MOD_ARGS,
+    **RELOAD_MOD_ARG,
 )
 
 RULE_MOD_ARG_KEY_FIELD = dict(

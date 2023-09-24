@@ -43,6 +43,7 @@ class SNat(BaseModule):
         'sequence': {'min': 1, 'max': 99999},
     }
     EXIST_ATTR = 'rule'
+    API_CMD_REL = 'apply'
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)

@@ -13,7 +13,8 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule impo
 
 def process(m: AnsibleModule, p: dict, r: dict) -> None:
     s = Session(module=m)
-    existing_rules = Rule(module=m, session=s, result={}).get_existing()
+    meta_rule = Rule(module=m, session=s, result={})
+    existing_rules = meta_rule.get_existing()
 
     if isinstance(p['key_field'], list):
         # edge case
@@ -22,6 +23,7 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
     defaults = {}
     overrides = {
         **p['override'],
+        'reload': False,
         'match_fields': p['match_fields'],
         'debug': p['debug'],
         'firewall': p['firewall'],
@@ -48,7 +50,7 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
             **defaults,
             **p['defaults'],
             **rule_config,
-            **{p['key_field']: rule_key},
+            p['key_field']: rule_key,
             **overrides,
         }
 
@@ -105,4 +107,5 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
         except ModuleSoftError:
             continue
 
+    meta_rule.reload()
     s.close()

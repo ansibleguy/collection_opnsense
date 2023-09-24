@@ -94,6 +94,7 @@ Definition
     "state","string","false","'present'","st","State of the rule. One of: 'present', 'absent'"
     "enabled","boolean","false","true","en","If the rule should be en- or disabled"
     "uuid","string","false","\-","\-","Optionally you can supply the uuid of an existing rule"
+    "reload","boolean","false","true","apply", .. include:: ../_include/param_reload.rst
 
 .. include:: ../_include/param_basic.rst
 
@@ -153,6 +154,7 @@ Basic
             # enabled: true
             # uuid: 'a9d85c00-0aa2-4705-b855-96aae16e05d7'  # optionally use uuid to identify existing rules
             # debug: true
+            # reload: true
 
         - name: Listing
           ansibleguy.opnsense.list:

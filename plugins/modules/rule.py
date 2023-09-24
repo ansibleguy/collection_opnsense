@@ -14,6 +14,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
 try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.utils import profiler
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.rule import RULE_MOD_ARGS
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import OPN_MOD_ARGS, RELOAD_MOD_ARG
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
 
@@ -45,6 +46,8 @@ def run_module():
     def process():
         rule.check()
         rule.process()
+        if result['changed'] and module.params['reload']:
+            rule.reload()
 
     if PROFILE or module.params['debug']:
         profiler(check=process, log_file='rule.log')

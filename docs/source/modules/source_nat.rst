@@ -89,6 +89,7 @@ Module alias: ansibleguy.opnsense.snat
     "state","string","false","'present'","st","State of the rule. One of: 'present', 'absent'"
     "enabled","boolean","false","true","en","If the rule should be en- or disabled"
     "uuid","string","false","\-","\-","Optionally you can supply the uuid of an existing rule"
+    "reload","boolean","false","true","apply", .. include:: ../_include/param_reload.rst
 
 .. include:: ../_include/param_basic.rst
 
@@ -147,6 +148,7 @@ Examples
             # enabled: true
             # debug: false
             # state: 'present'
+            # reload: true
 
         - name: Adding rule
           ansibleguy.opnsense.source_nat:

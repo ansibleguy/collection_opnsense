@@ -49,6 +49,7 @@ ansibleguy.opnsense.rule_multi
     "state","string","false","'present'","\-","Options: 'present', 'absent'"
     "enabled","boolean","false","true","\-","If all rules should be en- or disabled"
     "output_info","boolean","false","false","info","Enable to show some information on processing at runtime. Will be hidden if the tasks 'no_log' parameter is set to 'true'."
+    "reload","boolean","false","true","apply", .. include:: ../_include/param_reload.rst
 
 ansibleguy.opnsense.rule_purge
 ==============================
@@ -135,6 +136,7 @@ Basics
             # fail_verification: false
             # fail_processing: false
             # output_info: false
+            # reload: true
 
         - name: Pulling existing rules
           ansibleguy.opnsense.list:

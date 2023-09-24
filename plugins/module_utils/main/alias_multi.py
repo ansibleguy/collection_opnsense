@@ -42,7 +42,7 @@ def process(m: AnsibleModule, p: dict, r: dict, ) -> None:
             **ALIAS_DEFAULTS,
             **defaults,
             **alias_config,
-            **{'name': alias_name},
+            'name': alias_name,
             **overrides,
         }
         real_cnf['content'] = list(map(str, ensure_list(real_cnf['content'])))

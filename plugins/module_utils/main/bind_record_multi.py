@@ -26,6 +26,7 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
 
     defaults = {'round_robin': False}
     overrides = {
+        'reload': False,
         'match_fields': p['match_fields'],
         'debug': p['debug'],
         'firewall': p['firewall'],
@@ -131,4 +132,5 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
         except ModuleSoftError:
             continue
 
+    meta_record.reload()
     s.close()

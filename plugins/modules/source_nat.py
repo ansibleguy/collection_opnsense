@@ -16,7 +16,7 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.rule import \
         RULE_MOD_ARGS
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
-        OPN_MOD_ARGS, STATE_MOD_ARG
+        OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.source_nat import SNat
 
 except MODULE_EXCEPTIONS:
@@ -69,6 +69,7 @@ def run_module():
         ),
         **shared_rule_args,
         **STATE_MOD_ARG,
+        **RELOAD_MOD_ARG,
         **OPN_MOD_ARGS,
     )
 
@@ -90,6 +91,8 @@ def run_module():
     def process():
         snat.check()
         snat.process()
+        if result['changed'] and module.params['reload']:
+            snat.reload()
 
     if PROFILE or module.params['debug']:
         profiler(check=process, log_file='source_nat.log')

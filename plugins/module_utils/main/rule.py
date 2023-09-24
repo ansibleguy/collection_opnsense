@@ -44,6 +44,7 @@ class Rule(BaseModule):
     INT_VALIDATIONS = {
         'sequence': {'min': 1, 'max': 99999},
     }
+    API_CMD_REL = 'apply'
 
     def __init__(
             self, module: AnsibleModule, result: dict, cnf: dict = None,
