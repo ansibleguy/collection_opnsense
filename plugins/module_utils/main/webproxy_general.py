@@ -21,7 +21,7 @@ class General(GeneralModule):
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
         'errors', 'icp_port', 'log', 'log_store', 'log_target', 'log_ignore',
-        'dns_servers', 'dns_prio_ipv4', 'use_via_header', 'handling_forwarded_for',
+        'dns_servers', 'use_via_header', 'handling_forwarded_for',
         'hostname', 'email', 'suppress_version', 'connect_timeout', 'handling_uri_whitespace',
         'pinger', 'enabled',
     ]
@@ -30,7 +30,6 @@ class General(GeneralModule):
         'errors': 'error_pages',
         'icp_port': 'icpPort',
         'dns_servers': 'alternateDNSservers',
-        'dns_prio_ipv4': 'dnsV4First',
         'handling_forwarded_for': 'forwardedForHandling',
         'handling_uri_whitespace': 'uriWhitespaceHandling',
         'pinger': 'enablePinger',
@@ -48,7 +47,7 @@ class General(GeneralModule):
     }
     FIELDS_TYPING = {
         'bool': [
-            'enabled', 'pinger', 'suppress_version', 'use_via_header', 'dns_prio_ipv4',
+            'enabled', 'pinger', 'suppress_version', 'use_via_header',
         ],
         'list': ['dns_servers'],  # log_ignore = special handling
         'select': [

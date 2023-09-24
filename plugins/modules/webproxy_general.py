@@ -58,14 +58,6 @@ def run_module():
             type='list', elements='str', required=False, default=[],
             description='IPs of alternative DNS servers you like to use'
         ),
-        dns_prio_ipv4=dict(
-            type='bool', required=False, default=False, aliases=['dns_ipv4_first'],
-            description='This option reverses the order of preference to make Squid contact '
-                        'dual-stack websites over IPv4 first. Squid will still perform both '
-                        'IPv6 and IPv4 DNS lookups before connecting. This option will restrict '
-                        'the situations under which IPv6 connectivity is used (and tested) and will '
-                        'hide network problems which would otherwise be detected and warned about'
-        ),
         use_via_header=dict(
             type='bool', required=False, default=True,
             description='If set (default), Squid will include a Via header in requests and replies '

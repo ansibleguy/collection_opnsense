@@ -142,7 +142,6 @@ ansibleguy.opnsense.webproxy_general
     "log_target","string","false","file","\-","One of: 'file', 'file_extendend', 'file_json', 'syslog', 'syslog_json'. Send log data to the selected target. When syslog is selected, facility local 4 will be used to send messages of info level for these logs"
     "log_ignore","list","false","\-","\-","Type subnets/addresses you want to ignore for the access.log"
     "dns_servers","list","false","\-","\-","IPs of alternative DNS servers you like to use"
-    "dns_prio_ipv4","boolean","false","false","dns_ipv4_first","This option reverses the order of preference to make Squid contact dual-stack websites over IPv4 first. Squid will still perform both IPv6 and IPv4 DNS lookups before connecting. This option will restrict the situations under which IPv6 connectivity is used (and tested) and will hide network problems which would otherwise be detected and warned about"
     "use_via_header","boolean","false","true","\-","If set (default), Squid will include a Via header in requests and replies as required by RFC2616"
     "pinger","boolean","false","true","\-","Toggles the Squid pinger service. This service is used in the selection of the best parent proxy"
     "handling_forwarded_for","string","false","default","forwarded_for_handling, forwarded_for, handle_ff","One of: 'default', 'on', 'off', 'transparent', 'delete', 'truncate'. Select what to do with X-Forwarded-For header. If set to: 'on', Squid will append your client's IP address in the HTTP requests it forwards. By default it looks like X-Forwarded-For: 192.1.2.3; If set to: 'off', it will appear as X-Forwarded-For: unknown; 'transparent', Squid will not alter the X-Forwarded-For header in any way; If set to: 'delete', Squid will delete the entire X-Forwarded-For header; If set to: 'truncate', Squid will remove all existing X-Forwarded-For entries, and place the client IP as the sole entry"
@@ -393,7 +392,6 @@ ansibleguy.opnsense.webproxy_general
             # log_target: 'file'
             # log_ignore: []
             # dns_servers: []
-            # dns_prio_ipv4: false
             # use_via_header: true
             # suppress_version: false
             # pinger: true
