@@ -44,7 +44,7 @@ body:
         What version of Ansible & Python are you running?
         > Command: `ansible --version`
     validations:
-      required: false
+      required: true
 
   - type: textarea
     id: version-opnsense
@@ -79,7 +79,7 @@ body:
   - type: textarea
     id: config-ansible
     attributes:
-      label: Issue
+      label: Config Ansible
       description: |
         Please provide as the configuration you used when the error occurred!
     validations:
@@ -88,7 +88,7 @@ body:
   - type: textarea
     id: config-opnsense
     attributes:
-      label: Issue
+      label: Config OPNSense
       description: |
         Please provide as the configuration you used when the error occurred!
     validations:
@@ -97,7 +97,7 @@ body:
   - type: textarea
     id: output-debug
     attributes:
-      label: Issue
+      label: Debug Output
       description: |
         Set the [debug option](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/develop.md#debugging) and copy its output.
     validations:
@@ -106,7 +106,7 @@ body:
   - type: textarea
     id: output-profiling
     attributes:
-      label: Issue
+      label: Profiling Output
       description: |
         If the issue is related to time-consumption, you may also add the content of the [profiling logs](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/develop.md#debugging).
     validations:
