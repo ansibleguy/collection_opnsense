@@ -33,11 +33,15 @@ jobs:
         shell: bash
 
       - name: Running PyLint
-        run: pylint --recursive=y .
+        run: |
+          pylint --version
+          pylint --recursive=y .
         shell: bash
 
       - name: Running YamlLint
-        run: yamllint .
+        run: |
+          yamllint --version
+          yamllint .
         shell: bash
 
       - name: Preparing collection for AnsibleLint
@@ -47,5 +51,7 @@ jobs:
         shell: bash
 
       - name: Running AnsibleLint
-        run: ANSIBLE_COLLECTIONS_PATH=/tmp/ansible_lint/collections ansible-lint -c .ansible-lint.yml
+        run: |
+          ansible-lint --version
+          ANSIBLE_COLLECTIONS_PATH=/tmp/ansible_lint/collections ansible-lint -c .ansible-lint.yml
         shell: bash
