@@ -22,8 +22,8 @@ except MODULE_EXCEPTIONS:
 
 PROFILE = False  # create log to profile time consumption
 
-DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/alias_multi.html'
-EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/tests/alias_multi.yml'
+# DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/alias_multi.html'
+# EXAMPLES = 'https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/tests/alias_multi.yml'
 
 
 def run_module():

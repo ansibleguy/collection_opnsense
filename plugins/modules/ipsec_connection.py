@@ -22,8 +22,8 @@ except MODULE_EXCEPTIONS:
 
 PROFILE = False  # create log to profile time consumption
 
-DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
-EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
+# DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
+# EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
 
 VERSION_MAPPING = {
     'ikev1+2': 0,

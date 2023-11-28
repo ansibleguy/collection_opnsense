@@ -21,8 +21,8 @@ except MODULE_EXCEPTIONS:
 
 PROFILE = False  # create log to profile time consumption
 
-DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/webproxy.html'
-EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/webproxy.html'
+# DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/webproxy.html'
+# EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/webproxy.html'
 
 MONTH_MAPPING = {
     1: 'JAN',

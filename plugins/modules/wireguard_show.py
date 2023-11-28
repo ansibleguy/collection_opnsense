@@ -18,8 +18,8 @@ try:
 except MODULE_EXCEPTIONS:
     module_dependency_error()
 
-DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/wireguard.html'
-EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/wireguard.html'
+# DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/wireguard.html'
+# EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/wireguard.html'
 
 
 def run_module():
