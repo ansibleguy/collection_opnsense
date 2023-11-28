@@ -18,11 +18,11 @@ python3 -m pip install httpx
 Then - install the collection itself:
 
 ```bash
-# stable/tested version:
-ansible-galaxy collection install ansibleguy.opnsense
-
 # latest version:
 ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
+
+# stable/tested version:
+ansible-galaxy collection install ansibleguy.opnsense
 
 # install to specific directory for easier development
 cd $PLAYBOOK_DIR
