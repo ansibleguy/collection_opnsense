@@ -32,7 +32,7 @@ def run_module():
         interface=dict(type='str', required=False, aliases=['vxlandev', 'device', 'int']),
         id=dict(type='int', required=True, aliases=['vxlanid', 'vni']),
         local=dict(
-            type='str', required=False, aliases=[
+            type='str', required=False, default='', aliases=[
                 'source_address', 'source_ip', 'vxlanlocal', 'source', 'src',
             ],
             description='The source address used in the encapsulating IPv4/IPv6 header. The address should '
@@ -40,14 +40,14 @@ def run_module():
                         'unicast mode, the listening socket is bound to this address.'
         ),
         remote=dict(
-            type='str', required=False, aliases=[
+            type='str', required=False, default='', aliases=[
                 'remote_address', 'remote_ip', 'destination', 'vxlanremote', 'dest',
             ],
             description='The interface can be configured in a unicast, or point-to-point, mode to create '
                         'a tunnel between two hosts. This is the IP address of the remote end of the tunnel.'
         ),
         group=dict(
-            type='str', required=False, aliases=[
+            type='str', required=False, default='', aliases=[
                 'multicast_group', 'multicast_address', 'multicast_ip', 'vxlangroup',
             ],
             description='The interface can be configured in a multicast mode to create a virtual '

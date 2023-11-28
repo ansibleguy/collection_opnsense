@@ -70,11 +70,30 @@
       register: opn_fail6
       failed_when: not opn_fail6.failed
 
-    - name: Adding 1
+    - name: Adding 1 - failing because of missing remote-address/mc-group (server-side)
       ansibleguy.opnsense.interface_vxlan:
         id: 100
         local: '192.168.0.1'
         interface: 'lan'
+      register: opn_fail7
+      failed_when: not opn_fail7.failed
+      when: not ansible_check_mode
+
+    - name: Adding 1 - failing because interface & remote-address are set (server-side)
+      ansibleguy.opnsense.interface_vxlan:
+        id: 100
+        local: '192.168.0.1'
+        remote: '192.168.2.1'
+        interface: 'lan'
+      register: opn_fail8
+      failed_when: not opn_fail8.failed
+      when: not ansible_check_mode
+
+    - name: Adding 1
+      ansibleguy.opnsense.interface_vxlan:
+        id: 100
+        local: '192.168.0.1'
+        remote: '192.168.2.1'
       register: opn1
       failed_when: >
         opn1.failed or
@@ -84,7 +103,6 @@
       ansibleguy.opnsense.interface_vxlan:
         id: 101
         local: '192.168.1.1'
-        remote: '192.168.2.1'
         group: '192.168.3.1'
         interface: 'lan'
       register: opn5
@@ -96,20 +114,16 @@
       ansibleguy.opnsense.interface_vxlan:
         id: 101
         local: '192.168.1.1'
-        remote: '192.168.2.1'
         group: '192.168.3.1'
         interface: 'lan'
       register: opn6
-      failed_when: >
-        opn6.failed or
-        opn6.changed
+      diff: true
       when: not ansible_check_mode
 
     - name: Removing 2
       ansibleguy.opnsense.interface_vxlan:
         id: 101
         local: '192.168.1.1'
-        remote: '192.168.2.1'
         group: '192.168.3.1'
         interface: 'lan'
         state: 'absent'

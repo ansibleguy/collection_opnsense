@@ -50,7 +50,7 @@ class Vxlan(BaseModule):
                 self.m.fail_json("You need to provide a 'local' ip to create a vxlan!")
 
             for field in self.FIELDS_IP:
-                if self.p[field] is not None and not is_ip(self.p[field]):
+                if not is_unset(self.p[field]) and not is_ip(self.p[field]):
                     self.m.fail_json(
                         f"Value '{self.p[field]}' is not a valid IP-address!"
                     )
