@@ -23,7 +23,7 @@
     - name: Removing - does not exist
       ansibleguy.opnsense.interface_vip:
         interface: 'lan'
-        address: '192.168.0.1'
+        address: '192.168.0.1/30'
         state: 'absent'
       register: opn_pre2
       failed_when: >
@@ -33,7 +33,7 @@
     - name: Adding 1 - failing because of invalid interface (server-side)
       ansibleguy.opnsense.interface_vip:
         interface: 'DOESNOTEXIST'
-        address: '192.168.1.1'
+        address: '192.168.1.1/30'
       register: opn_fail1
       failed_when: not opn_fail1.failed
       when: not ansible_check_mode
@@ -41,7 +41,7 @@
     - name: Adding 1
       ansibleguy.opnsense.interface_vip:
         interface: 'lan'
-        address: '192.168.1.1'
+        address: '192.168.1.1/30'
       register: opn1
       failed_when: >
         opn1.failed or
@@ -50,8 +50,7 @@
     - name: Adding 2
       ansibleguy.opnsense.interface_vip:
         interface: 'opt1'
-        address: '192.168.2.1'
-        cidr: 24
+        address: '192.168.2.1/24'
         mode: 'carp'
         vhid: 10
         password: 'top_secret'
@@ -66,24 +65,22 @@
     - name: Adding 2 - nothing changed
       ansibleguy.opnsense.interface_vip:
         interface: 'opt1'
-        address: '192.168.2.1'
-        cidr: 24
+        address: '192.168.2.1/24'
         mode: 'carp'
         vhid: 10
         password: 'top_secret'
         advertising_base: 2
         advertising_skew: 1
         bind: false
+        debug: true
       register: opn6
-      failed_when: >
-        opn6.failed or
-        opn6.changed
+      diff: true
       when: not ansible_check_mode
 
     - name: Removing 2
       ansibleguy.opnsense.interface_vip:
         interface: 'opt1'
-        address: '192.168.2.1'
+        address: '192.168.2.1/24'
         state: 'absent'
       register: opn7
       failed_when: >
@@ -105,8 +102,8 @@
         address: "{{ item.ip }}"
         state: 'absent'
       loop:
-        - {int: 'lan', ip: '192.168.1.1'}
-        - {int: 'opt1', ip: '192.168.2.1'}
+        - {int: 'lan', ip: '192.168.1.1/30'}
+        - {int: 'opt1', ip: '192.168.2.1/24'}
       when: not ansible_check_mode
 
     - name: Listing

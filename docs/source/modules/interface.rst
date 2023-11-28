@@ -85,10 +85,9 @@ ansibleguy.opnsense.interface_vip
     :widths: 15 10 10 10 10 45
 
     "match_fields","list","false","['address', 'interface']","\-","Fields that are used to match configured VIPs with the running config - if any of those fields are changed, the module will think it's a new entry. At least one of: 'address', 'interface', 'cidr', 'description'"
-    "address", "string", "true", "\-", "addr, ip", "\-"
+    "address", "string", "true", "\-", "addr, ip, network, net", "Provide an address and subnet to use. (e.g 192.168.0.1/24)"
     "interface", "string", "true", "\-", "port, int, if", "Existing interface - you must provide the network port as shown in 'Interfaces - Assignments - Network port'"
     "mode", "string", "false", "ipalias", "m", "One of: 'ipalias', 'carp', 'proxyarp', 'other'"
-    "cidr", "integer", "false", "32", "subnet_bits, subnet", "CIDR of the VIP network"
     "expand", "boolean", "false", "true", "\-", "\-"
     "bind", "boolean", "false", "true", "\-", "Assigning services to the virtual IP's interface will automatically include this address. Uncheck to prevent binding to this address instead"
     "gateway", "string", "false", "\-", "gw", "For some interface types a gateway is required to configure an IP Alias (ppp/pppoe/tun), leave this field empty for all other interface types"
@@ -215,10 +214,9 @@ ansibleguy.opnsense.interface_vip
         - name: Example
           ansibleguy.opnsense.interface_vip:
             interface: 'opt1'
-            address: '192.168.0.100'
+            address: '192.168.0.100/24'
             # match_fields: ['address', 'interface]
             # mode: 'ipalias'
-            # cidr: 32
             # expand: true
             # bind: true
             # gateway: ''
@@ -234,8 +232,7 @@ ansibleguy.opnsense.interface_vip
         - name: Adding VIP
           ansibleguy.opnsense.interface_vip:
             interface: 'opt1'
-            address: '192.168.0.100'
-            cidr: 24
+            address: '192.168.0.100/24'
             mode: 'carp'
             vhid: 10
             password: 'secret'
@@ -252,5 +249,5 @@ ansibleguy.opnsense.interface_vip
         - name: Removing VIP
           ansibleguy.opnsense.interface_vip:
             interface: 'opt1'
-            address: '192.168.0.100'
+            address: '192.168.0.100/24'
             state: 'absent'

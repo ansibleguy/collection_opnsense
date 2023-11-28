@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields
+    validate_int_fields, get_simple_existing
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -19,13 +19,12 @@ class Vip(BaseModule):
     API_CONT = 'vip_settings'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'address', 'mode', 'cidr', 'expand', 'bind', 'gateway', 'password', 'vhid',
+        'address', 'mode', 'expand', 'bind', 'gateway', 'password', 'vhid',
         'advertising_base', 'advertising_skew', 'description', 'interface',
     ]
     FIELDS_ALL = FIELDS_CHANGE
     FIELDS_TRANSLATE = {
-        'address': 'subnet',
-        'cidr': 'subnet_bits',
+        'address': 'network',
         'expand': 'noexpand',
         'bind': 'nobind',
         'advertising_base': 'advbase',
@@ -54,7 +53,23 @@ class Vip(BaseModule):
         if self.p['state'] == 'present':
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
+        self.existing_entries = self.get_existing()
         self._base_check()
 
     def update(self) -> None:
         self.b.update(enable_switch=False)
+
+    # NOTE: workaround for OPNSense handling 'get' differently than 'add' and 'set'
+    #   https://github.com/opnsense/core/issues/7041
+    def get_existing(self) -> list:
+        existing = []
+
+        for entry in self.b.get_existing():
+            entry['address'] = f"{entry['subnet']}/{entry['subnet_bits']}"
+            entry.pop('subnet')
+            entry.pop('subnet_bits')
+            existing.append(entry)
+            for field in self.FIELDS_BOOL_INVERT:
+                entry[field] = not entry[field]
+
+        return existing

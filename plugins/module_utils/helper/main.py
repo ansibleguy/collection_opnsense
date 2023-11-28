@@ -119,15 +119,23 @@ def get_matching(
             if simplify_func is not None:
                 existing = simplify_func(existing)
 
-            for field in match_fields:
-                _matching.append(str(existing[field]) == str(compare_item[field]))
+            try:
+                for field in match_fields:
+                    _matching.append(str(existing[field]) == str(compare_item[field]))
 
-                if module.params['debug']:
-                    if existing[field] != compare_item[field]:
-                        module.warn(
-                            f"NOT MATCHING: "
-                            f"'{existing[field]}' != '{compare_item[field]}'"
-                        )
+                    if module.params['debug']:
+                        if existing[field] != compare_item[field]:
+                            module.warn(
+                                f"NOT MATCHING: "
+                                f"'{existing[field]}' != '{compare_item[field]}'"
+                            )
+
+            except KeyError as error:
+                exit_bug(
+                    "Failed to match existing entry with provided one: "
+                    f"{existing} <=> {sanitize_module_args(compare_item)}; "
+                    f"Error while comparing: {error}"
+                )
 
             if all(_matching):
                 matching = existing
@@ -317,7 +325,10 @@ def validate_str_fields(
                 )
 
 
-def format_int(data: str) -> (int, str):
+def format_int(data: (int, str)) -> (int, str):
+    if isinstance(data, int):
+        return data
+
     if data.isnumeric():
         return int(data)
 
@@ -412,3 +423,8 @@ def unset_check_error(params: dict, field: str, fail: bool) -> bool:
         return False
 
     return True
+
+def sanitize_module_args(args: dict) -> dict:
+    args.pop('api_key')
+    args.pop('api_secret')
+    return args

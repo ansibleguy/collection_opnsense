@@ -28,7 +28,10 @@ EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/interface.html'
 
 def run_module():
     module_args = dict(
-        address=dict(type='str', required=True, aliases=['addr', 'ip']),
+        address=dict(
+            type='str', required=True, aliases=['addr', 'ip', 'network', 'net'],
+            description='Provide an address and subnet to use. (e.g 192.168.0.1/24)',
+        ),
         interface=dict(
             type='str', required=True, aliases=['port', 'int', 'if'],
             description='Existing interface - you must provide the network '
@@ -37,10 +40,6 @@ def run_module():
         mode=dict(
             type='str', required=False, aliases=['m'], default='ipalias',
             choices=['ipalias', 'carp', 'proxyarp', 'other'],
-        ),
-        cidr=dict(
-            type='int', required=False, default=32, aliases=['subnet_bits', 'subnet'],
-            description='CIDR of the VIP network'
         ),
         expand=dict(type='bool', required=False, default=True),
         bind=dict(

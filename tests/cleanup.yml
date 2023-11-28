@@ -219,8 +219,8 @@
         address: "{{ item.ip }}"
         state: 'absent'
       loop:
-        - {int: 'lan', ip: '192.168.1.1'}
-        - {int: 'opt1', ip: '192.168.2.1'}
+        - {int: 'lan', ip: '192.168.1.1/30'}
+        - {int: 'opt1', ip: '192.168.2.1/24'}
 
     - name: Cleanup vlan interfaces
       ansibleguy.opnsense.interface_vlan:
