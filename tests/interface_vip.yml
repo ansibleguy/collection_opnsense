@@ -38,10 +38,17 @@
       failed_when: not opn_fail1.failed
       when: not ansible_check_mode
 
+    - name: Adding 1 - failing because of missing CIDR
+      ansibleguy.opnsense.interface_vip:
+        interface: 'lan'
+        address: '192.168.1.1'
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+
     - name: Adding 1
       ansibleguy.opnsense.interface_vip:
         interface: 'lan'
-        address: '192.168.1.1/30'
+        address: '192.168.1.1/32'
       register: opn1
       failed_when: >
         opn1.failed or
@@ -72,7 +79,6 @@
         advertising_base: 2
         advertising_skew: 1
         bind: false
-        debug: true
       register: opn6
       diff: true
       when: not ansible_check_mode
@@ -102,7 +108,7 @@
         address: "{{ item.ip }}"
         state: 'absent'
       loop:
-        - {int: 'lan', ip: '192.168.1.1/30'}
+        - {int: 'lan', ip: '192.168.1.1/32'}
         - {int: 'opt1', ip: '192.168.2.1/24'}
       when: not ansible_check_mode
 

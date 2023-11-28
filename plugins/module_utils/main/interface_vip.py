@@ -50,6 +50,9 @@ class Vip(BaseModule):
         self.vip = {}
 
     def check(self) -> None:
+        if self.p['address'].find('/') == -1:
+            self.m.fail_json('The address needs to include a subnet CIDR!')
+
         if self.p['state'] == 'present':
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
