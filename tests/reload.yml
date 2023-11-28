@@ -13,6 +13,7 @@
     - name: Reloading
       ansibleguy.opnsense.reload:
         target: "{{ item }}"
+        timeout: 60
       when: not ansible_check_mode
       loop:
         - 'alias'
