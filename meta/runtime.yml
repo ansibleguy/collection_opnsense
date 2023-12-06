@@ -96,6 +96,8 @@ action_groups:
     - ansibleguy.opnsense.system
     - ansibleguy.opnsense.cron
     - ansibleguy.opnsense.syslog
+  ids:
+    - ansibleguy.opnsense.ids_action
   all:
     - metadata:
         extend_group:
@@ -113,6 +115,7 @@ action_groups:
           - ansibleguy.opnsense.route
           - ansibleguy.opnsense.nat
           - ansibleguy.opnsense.system
+          - ansibleguy.opnsense.ids
 
 plugin_routing:
   modules:

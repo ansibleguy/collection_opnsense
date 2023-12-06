@@ -1,0 +1,103 @@
+---
+
+- name: Testing IDS Actions
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: IDS Service Start
+      ansibleguy.opnsense.ids_action:
+        action: 'start'
+      register: opn1
+      failed_when: opn1.failed
+
+    - name: IDS Service Status
+      ansibleguy.opnsense.ids_action:
+        action: 'status'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        'data' not in opn2 or
+        opn2.data | length == 0
+
+    - name: IDS Service Restart
+      ansibleguy.opnsense.ids_action:
+        action: 'restart'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+
+    - name: IDS Get Alert Info - failing because of missing parameter (client-side)
+      ansibleguy.opnsense.ids_action:
+        action: 'get_alert_info'
+      register: opn4
+      failed_when: not opn4.failed
+
+    - name: IDS Get Alert Info
+      ansibleguy.opnsense.ids_action:
+        action: 'get_alert_info'
+        parameter: '1'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        'data' not in opn4
+
+    - name: IDS Get Alert Logs
+      ansibleguy.opnsense.ids_action:
+        action: 'get_alert_logs'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        'data' not in opn5
+
+    - name: IDS Query Alerts
+      ansibleguy.opnsense.ids_action:
+        action: 'query_alerts'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        'data' not in opn6
+
+    - name: IDS Reconfigure
+      ansibleguy.opnsense.ids_action:
+        action: 'reconfigure'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+
+    - name: IDS Drop Alert Logs
+      ansibleguy.opnsense.ids_action:
+        action: 'drop_alert_log'
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+
+    - name: IDS Reload Rules
+      ansibleguy.opnsense.ids_action:
+        action: 'reload_rules'
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+
+    - name: IDS Update Rules
+      ansibleguy.opnsense.ids_action:
+        action: 'update_rules'
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        not opn10.changed
+
+    - name: IDS Service Stop
+      ansibleguy.opnsense.ids_action:
+        action: 'stop'
+      register: opn99
+      failed_when: opn99.failed

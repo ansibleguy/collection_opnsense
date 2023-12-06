@@ -132,6 +132,7 @@ run_test 'ipsec_vti' 1
 run_test 'ipsec_child' 0  # check mode => dependency on connection-entry
 run_test 'ipsec_auth_local' 0  # check mode => dependency on connection/cert-entry
 run_test 'ipsec_auth_remote' 0  # check mode => dependency on connection/cert-entry
+run_test 'ids_action' 1
 run_test 'system' 1
 run_test 'package' 1
 
