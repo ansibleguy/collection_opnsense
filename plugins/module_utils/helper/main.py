@@ -227,20 +227,30 @@ def get_selected(data: dict) -> (str, None):
     return data
 
 
-def get_selected_opt_list(data: (dict, list)) -> (str, None):
+def get_selected_value(data: dict) -> (str, None):
     if isinstance(data, dict):
-        return get_selected(data)
+        for key, values in data.items():
+            if is_true(values['selected']) and 'value' in values:
+                return values['value']
+
+        return ''  # none selected
 
     if isinstance(data, list):
-        for key_value in data:
-            if 'value' in key_value:
-                if is_true(key_value['selected']):
-                    return key_value['value']
+        for values in data:
+            if is_true(values['selected']) and 'value' in values:
+                return values['value']
 
         return ''  # none selected
 
     # if function is re-applied
     return data
+
+
+def get_selected_opt_list(data: (dict, list)) -> (str, None):
+    if isinstance(data, dict):
+        return get_selected(data)
+
+    return get_selected_value(data)
 
 
 def get_selected_list(data: dict, remove_empty: bool = False) -> list:
@@ -259,6 +269,15 @@ def get_selected_list(data: dict, remove_empty: bool = False) -> list:
 
     selected.sort()
     return selected
+
+
+def get_key_by_value_from_selection(selection: dict, value: str) -> (str, None):
+    if isinstance(selection, dict):
+        for key, values in selection.items():
+            if 'value' in values and values['value'] == value:
+                return key
+
+    return None
 
 
 def to_digit(data: bool) -> int:
@@ -393,7 +412,14 @@ def simplify_translate(
                 simple[f] = get_selected_opt_list(simple[f])
 
     for f, vmap in value_map.items():
-        simple[f] = vmap[simple[f]]
+        try:
+            for pretty_value, opn_value in vmap.items():
+                if simple[f] == opn_value:
+                    simple[f] = pretty_value
+                    break
+
+        except KeyError:
+            pass
 
     for k, v in simple.items():
         if isinstance(v, str) and v.isnumeric():

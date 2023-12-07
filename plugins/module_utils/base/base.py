@@ -26,6 +26,7 @@ class Base:
     ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
     ATTR_DIFF_EXCL = 'FIELDS_DIFF_EXCLUDE'
     ATTR_VALUE_MAP = 'FIELDS_VALUE_MAPPING'
+    ATTR_VALUE_MAP_RCV = 'FIELDS_VALUE_MAPPING_RCV'
     ATTR_FIELD_ALL = 'FIELDS_ALL'
     ATTR_FIELD_CH = 'FIELDS_CHANGE'
     ATTR_REL_CONT = 'API_CONT_REL'
@@ -396,6 +397,7 @@ class Base:
     def build_request(self, ignore_fields: list = None) -> dict:
         request = {}
         TRANSLATE_FIELDS = {}
+        TRANSLATE_VALUES = {}
         BOOL_INVERT_FIELDS = []
 
         if ignore_fields is None:
@@ -410,6 +412,9 @@ class Base:
         if hasattr(self.i, self.ATTR_BOOL_INVERT):
             BOOL_INVERT_FIELDS = getattr(self.i, self.ATTR_BOOL_INVERT)
 
+        if hasattr(self.i, self.ATTR_VALUE_MAP):
+            TRANSLATE_VALUES = getattr(self.i, self.ATTR_VALUE_MAP)
+
         for field in self.i.FIELDS_ALL:
             if field in ignore_fields:
                 continue
@@ -423,6 +428,13 @@ class Base:
 
             else:
                 opn_data = self.e[field]
+
+            if field in TRANSLATE_VALUES:
+                try:
+                    opn_data = TRANSLATE_VALUES[field][opn_data]
+
+                except KeyError:
+                    pass
 
             if isinstance(opn_data, bool):
                 if field in BOOL_INVERT_FIELDS:
@@ -556,7 +568,10 @@ class Base:
         if hasattr(self.i, self.ATTR_BOOL_INVERT):
             bool_invert = getattr(self.i, self.ATTR_BOOL_INVERT)
 
-        if hasattr(self.i, self.ATTR_VALUE_MAP):
+        if hasattr(self.i, self.ATTR_VALUE_MAP_RCV):
+            value_map = getattr(self.i, self.ATTR_VALUE_MAP_RCV)
+
+        elif hasattr(self.i, self.ATTR_VALUE_MAP):
             value_map = getattr(self.i, self.ATTR_VALUE_MAP)
 
         return simplify_translate(

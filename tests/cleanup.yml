@@ -536,3 +536,8 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+
+    - name: Cleanup IDS General
+      ansibleguy.opnsense.ids_general:
+        interfaces: ['opt1']
+        enabled: false

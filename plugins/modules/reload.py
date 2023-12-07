@@ -29,7 +29,7 @@ def run_module():
             choices=[
                 'alias', 'route', 'cron', 'unbound', 'syslog', 'ipsec', 'shaper',
                 'monit', 'wireguard', 'interface_vlan', 'interface_vxlan', 'frr',
-                'webproxy', 'interface_vip', 'bind', 'ipsec_legacy',
+                'webproxy', 'interface_vip', 'bind', 'ipsec_legacy', 'ids',
             ],
             description='What part of the running config should be reloaded'
         ),
@@ -121,6 +121,10 @@ def run_module():
         elif target == 'bind':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.bind_domain import \
                 Domain as Target_Obj
+
+        elif target == 'ids':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ids_general import \
+                General as Target_Obj
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

@@ -25,12 +25,6 @@ PROFILE = False  # create log to profile time consumption
 # DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
 # EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/ipsec.html'
 
-VERSION_MAPPING = {
-    'ikev1+2': 0,
-    'ikev1': 1,
-    'ikev2': 2,
-}
-
 
 def run_module():
     module_args = dict(
@@ -91,7 +85,7 @@ def run_module():
         ),
         version=dict(
             type='str', required=False, default='ikev1+2', aliases=['vers', 'v'],
-            choices=list(VERSION_MAPPING.keys()),
+            choices=list(Connection.FIELDS_VALUE_MAPPING['version'].keys()),
             description='IKE major version to use for connection. 1 uses IKEv1 aka ISAKMP, 2 uses IKEv2. A connection '
                         'using IKEv1+IKEv2 accepts both IKEv1 and IKEv2 as a responder and initiates the connection '
                         'actively with IKEv2',
@@ -197,7 +191,6 @@ def run_module():
         supports_check_mode=True,
     )
 
-    module.params['version'] = VERSION_MAPPING[module.params['version']]
     conn = Connection(module=module, result=result)
 
     def process():

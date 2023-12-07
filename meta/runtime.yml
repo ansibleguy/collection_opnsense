@@ -98,6 +98,7 @@ action_groups:
     - ansibleguy.opnsense.syslog
   ids:
     - ansibleguy.opnsense.ids_action
+    - ansibleguy.opnsense.ids_general
   all:
     - metadata:
         extend_group:

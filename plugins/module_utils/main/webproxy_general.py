@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_true, get_selected, get_selected_list, simplify_translate, to_digit
+    is_true, get_selected, get_selected_list, to_digit
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import GeneralModule
 
 
@@ -13,8 +13,8 @@ class General(GeneralModule):
         'search': 'get',
     }
     API_KEY = 'general'
-    API_KEY_PATH = f'proxy.{API_KEY}'
     API_KEY_1 = 'proxy'
+    API_KEY_PATH = f'{API_KEY_1}.{API_KEY}'
     API_MOD = 'proxy'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
@@ -70,12 +70,7 @@ class General(GeneralModule):
             **self.call_cnf, **{'command': self.CMDS['search']}
         })[self.API_KEY_1][self.API_KEY]
 
-        simple = simplify_translate(
-            existing=settings,
-            typing=self.FIELDS_TYPING,
-            translate=self.FIELDS_TRANSLATE,
-            ignore=self.FIELDS_IGNORE,
-        )
+        simple = self.b._simplify_existing(settings)
 
         simple['log'] = is_true(
             settings['logging']['enable'][self.FIELDS_TRANSLATE_SPECIAL['log']]

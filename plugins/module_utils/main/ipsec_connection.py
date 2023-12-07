@@ -54,11 +54,18 @@ class Connection(BaseModule):
             'rekey_seconds', 'reauth_seconds',
         ],
     }
-    FIELDS_VALUE_MAPPING = {
+    FIELDS_VALUE_MAPPING = {  # sending
         'version': {
-            'IKEv1+IKEv2': 0,
-            'IKEv1': 1,
-            'IKEv2': 2,
+            'ikev1+2': 0,
+            'ikev1': 1,
+            'ikev2': 2,
+        },
+    }
+    FIELDS_VALUE_MAPPING_RCV = {  # receiving
+        'version': {
+            'ikev1+2': 'IKEv1+IKEv2',
+            'ikev1': 'IKEv1',
+            'ikev2': 'IKEv2',
         }
     }
     INT_VALIDATIONS = {
