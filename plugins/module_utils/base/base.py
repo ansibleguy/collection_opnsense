@@ -1,6 +1,7 @@
 # could be implemented using inheritance in the future..
 
-# pylint: disable=W0212,R0912
+# NOTE: pylint is basically right, but I really do not want to take the time to refactor this..
+# pylint: disable=W0212,R0912,R0915
 
 from typing import Callable
 

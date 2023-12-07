@@ -70,6 +70,7 @@ class General(GeneralModule):
             **self.call_cnf, **{'command': self.CMDS['search']}
         })[self.API_KEY_1][self.API_KEY]
 
+        # pylint: disable=W0212
         simple = self.b._simplify_existing(settings)
 
         simple['log'] = is_true(

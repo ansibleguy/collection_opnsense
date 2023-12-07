@@ -10,6 +10,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.alias imp
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
 
 
+# pylint: disable=R0915
 def process(m: AnsibleModule, p: dict, r: dict) -> None:
     s = Session(module=m)
     meta_alias = Alias(module=m, session=s, result={})

@@ -66,6 +66,7 @@ ACTION_MAPPING = {'reload': 'reconfigure'}
 API_CONTROLLER = 'service'
 
 
+# pylint: disable=R0915
 def run_module():
     service_choices = list(SERVICES.keys())
     service_choices.sort()

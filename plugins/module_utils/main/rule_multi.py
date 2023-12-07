@@ -11,6 +11,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api impor
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.rule import Rule
 
 
+# pylint: disable=R0915
 def process(m: AnsibleModule, p: dict, r: dict) -> None:
     s = Session(module=m)
     meta_rule = Rule(module=m, session=s, result={})

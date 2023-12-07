@@ -48,6 +48,7 @@ class Record(BaseModule):
         self.exists = False
         self.exists_rr = False
 
+    # pylint: disable=R0915
     def check(self) -> None:
         if self.p['state'] == 'present':
             if is_unset(self.p['value']):

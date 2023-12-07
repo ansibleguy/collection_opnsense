@@ -31,7 +31,8 @@ def run_module():
     module_args = dict(
         interfaces=dict(
             type='list', elements='str', required=True, aliases=['ints'],
-            description='Select interface(s) to use. When enabling IPS, only use physical interfaces here (no vlans etc)'
+            description='Select interface(s) to use. When enabling IPS, only use physical interfaces here '
+                        '(no vlans etc)'
         ),
         block=dict(
             type='bool', required=False, default=False, aliases=['protection', 'ips'],

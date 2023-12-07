@@ -229,7 +229,7 @@ def get_selected(data: dict) -> (str, None):
 
 def get_selected_value(data: dict) -> (str, None):
     if isinstance(data, dict):
-        for key, values in data.items():
+        for values in data.values():
             if is_true(values['selected']) and 'value' in values:
                 return values['value']
 
@@ -360,6 +360,7 @@ def sort_param_lists(params: dict) -> None:
             params[k].sort()
 
 
+# pylint: disable=R0914,R0915
 def simplify_translate(
         existing: dict, translate: dict = None, typing: dict = None,
         bool_invert: list = None, ignore: list = None, value_map: dict = None,
