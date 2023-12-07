@@ -48,8 +48,8 @@ def run_module():
                 'drop_alert_log', 'reload_rules', 'update_rules',
             ],
         ),
-        parameter=dict(
-            type='str', required=False, aliases=['param'],
+        alert_id=dict(
+            type='str', required=False, aliases=['alert'],
             description="Parameter Alert-ID needed for 'get_alert_info'",
         ),
         **OPN_MOD_ARGS,
@@ -65,8 +65,8 @@ def run_module():
     )
 
     action = module.params['action']
-    if action == 'get_alert_info' and module.params['parameter'] is None:
-        module.fail_json("You need to provide an Alert-ID as 'parameter' to execute 'get_alert_info'!")
+    if action == 'get_alert_info' and module.params['alert_id'] is None:
+        module.fail_json("You need to provide an Alert-ID as 'alert_id' to execute 'get_alert_info'!")
 
     # translate actions to api-commands
     cmd = action
@@ -91,8 +91,8 @@ def run_module():
 
     else:
         params = []
-        if module.params['parameter'] is not None:
-            params = [module.params['parameter']]
+        if module.params['alert_id'] is not None:
+            params = [module.params['alert_id']]
 
         info = single_get(
             module=module,
