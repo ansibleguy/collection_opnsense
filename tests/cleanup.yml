@@ -396,7 +396,10 @@
             - name: 'test4'
               type: 'CNAME'
         state: 'absent'
-      ignore_errors: true  # domain does not exist
+      register: bind_cleanup1
+      failed_when:
+        - bind_cleanup1.failed
+        - "'does not seem to exist' not in bind_cleanup1.msg"
 
     - name: Cleanup BIND Domains
       ansibleguy.opnsense.bind_domain:

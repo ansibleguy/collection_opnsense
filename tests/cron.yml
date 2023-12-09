@@ -13,12 +13,13 @@
       target: 'cron'
 
   tasks:
-    - name: Listing (none)
+    # NOTE: one exists because of IDS
+    - name: Listing
       ansibleguy.opnsense.list:
       register: opn7
       failed_when: >
         'data' not in opn7 or
-        opn7.data | length != 0
+        opn7.data | length != 1
 
     - name: Removing - does not exist
       ansibleguy.opnsense.cron:
@@ -123,7 +124,7 @@
       register: opn8
       failed_when: >
         'data' not in opn8 or
-        opn8.data | length != 2
+        opn8.data | length != 3
       when: not ansible_check_mode
 
     - name: Cleanup
