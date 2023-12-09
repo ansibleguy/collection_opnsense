@@ -51,11 +51,13 @@
 
     - name: Cleanup Unbound General
       ansibleguy.opnsense.unbound_general:
+        reload: false  # speed
 
     - name: Cleanup Unbound DNS ACLs
       ansibleguy.opnsense.unbound_acl:
         name: "{{ item }}"
         state: 'absent'
+        reload: false  # speed
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -65,6 +67,7 @@
         domain: "{{ item.d }}"
         target: "{{ item.t }}"
         state: 'absent'
+        reload: false  # speed
       loop:
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
@@ -74,6 +77,7 @@
         domain: "{{ item.d }}"
         target: "{{ item.t }}"
         state: 'absent'
+        reload: false  # speed
       loop:
         - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
         - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
@@ -86,7 +90,7 @@
         domain: 'dummy'
         state: 'absent'
         match_fields: ['description']
-        timeout: 60
+        reload: false  # speed
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -98,7 +102,7 @@
         domain: 'dummy'
         state: 'absent'
         match_fields: ['description']
-        timeout: 60
+        reload: false  # speed
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -111,11 +115,16 @@
         server: '192.168.0.1'
         state: 'absent'
         match_fields: ['description']
-        timeout: 60
+        reload: false  # speed
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_1_3'
+
+    - name: Reload Unbound
+      ansibleguy.opnsense.reload:
+        target: 'unbound'
+        timeout: 200  # sooo slow
 
     - name: Cleanup syslog
       ansibleguy.opnsense.syslog:
