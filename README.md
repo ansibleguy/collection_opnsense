@@ -5,7 +5,7 @@
 [![Docs](https://readthedocs.org/projects/opnsense_ansible/badge/?version=latest&style=flat)](https://opnsense.ansibleguy.net)
 [![Ansible Galaxy](https://badges.ansibleguy.net/galaxy.badge.svg)](https://galaxy.ansible.com/ui/repo/published/ansibleguy/opnsense)
 
-[Functional Test Logs (if failed)](https://badges.ansibleguy.net/log/collection_opnsense_test.log)
+Functional Test Logs: [Short](https://badges.ansibleguy.net/log/collection_opnsense_test_short.log), [Full](https://badges.ansibleguy.net/log/collection_opnsense_test.log)
 
 ----
 

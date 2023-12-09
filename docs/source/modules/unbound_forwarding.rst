@@ -36,6 +36,12 @@ This module manages DNS-Forwardings that can be found in the WEB-UI menu: 'Servi
 
 .. include:: ../_include/unbound_mass.rst
 
+.. warning::
+
+    Unbound service actions like 'reload' can take very long (>90s). Please be aware of the **possible downtime**!
+
+    You may also need to increase the module :code:`timeout`.
+
 Examples
 ********
 

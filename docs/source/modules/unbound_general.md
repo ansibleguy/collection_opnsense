@@ -12,6 +12,14 @@
 
 This module requires OPNsense 23.7 or later.
 
+## Info
+
+**WARNING:** Unbound service actions like 'reload' can take very long (>90s). Please be aware of the **possible downtime**!
+
+
+You may also need to increase the module `timeout`.
+
+
 ## Definition
 
 For basic parameters see: [Basics](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/use_basic.md#definition)

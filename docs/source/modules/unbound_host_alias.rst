@@ -41,6 +41,12 @@ Use these for changing DNS results or for adding custom DNS records.
 
 Keep in mind that all resource record types (i.e. A, AAAA, MX, etc. records) of a specified host below are being overwritten.
 
+.. warning::
+
+    Unbound service actions like 'reload' can take very long (>90s). Please be aware of the **possible downtime**!
+
+    You may also need to increase the module :code:`timeout`.
+
 Usage
 *****
 

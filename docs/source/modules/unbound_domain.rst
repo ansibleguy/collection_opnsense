@@ -37,6 +37,12 @@ This module manages DNS domain-overrides configuration that can be found in the 
 
 Entries like these override an entire domain by specifying an authoritative DNS server to be queried for that domain.
 
+.. warning::
+
+    Unbound service actions like 'reload' can take very long (>90s). Please be aware of the **possible downtime**!
+
+    You may also need to increase the module :code:`timeout`.
+
 Usage
 *****
 
