@@ -121,11 +121,6 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_1_3'
 
-    - name: Reload Unbound
-      ansibleguy.opnsense.reload:
-        target: 'unbound'
-        timeout: 200  # sooo slow
-
     - name: Cleanup syslog
       ansibleguy.opnsense.syslog:
         description: "{{ item }}"
