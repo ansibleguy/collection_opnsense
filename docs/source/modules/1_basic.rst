@@ -18,6 +18,7 @@ All modules
     api_key, string, "false, true if 'api_credential_file' is not used", \- , "API key used to authenticate, alternative to 'api_credential_file'"
     api_secret, string, "false, true if 'api_credential_file' is not used", \- , "API secret used to authenticate, alternative to 'api_credential_file'. Is set as 'no_log' parameter."
     api_credential_file, path, "false, true if 'api_key' and 'api_secret' are not used", \- , "Path to the api-credential file as downloaded through the web-interface. Alternative to 'api_key' and 'api_secret'."
+    api_retries, int, false, 3, "Number of retries on API requests, when there is a connection error or timeout."
     ssl_verify, bool, false, true, "If the certificate of the target firewall should be validated. RECOMMENDED FOR PRODUCTION USAGE!"
     ssl_ca_file, path, false, \- , "If you use an internal certificate-authority to create the certificate of the target firewall, provide the path to its public key for validation."
     debug, boolean, false, false, "Used to en-/disable the debug mode. All API requests and responses will be shown as Ansible warnings at runtime. Will be hidden if the tasks 'no_log' parameter is set to 'true'."

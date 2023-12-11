@@ -203,3 +203,9 @@ def timeout_override(module: AnsibleModule, timeout: float) -> float:
         timeout = module.params['timeout']
 
     return timeout
+
+def get_api_retries(module: AnsibleModule) -> int:
+    if not module.params['api_retries']:
+        return 3
+
+    return module.params['api_retries']
