@@ -62,6 +62,10 @@ def process(m: AnsibleModule, p: dict, r: dict) -> None:
                 module=m, module_args=RULE_MOD_ARGS, log_mod='rule',
                 key=rule_key, cnf=real_cnf,
         ):
+            # NOTE: parameter type-casting not done automatically
+            if 'interface' in real_cnf and isinstance(real_cnf['interface'], str):
+                real_cnf['interface'] = [real_cnf['interface']]
+
             valid_rules[rule_key] = real_cnf
 
     # manage rules

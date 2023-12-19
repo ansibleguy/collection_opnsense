@@ -23,6 +23,7 @@
           ANSIBLE_TEST_2_1:
           ANSIBLE_TEST_2_2:
           ANSIBLE_TEST_2_3:
+          ANSIBLE_TEST_2_4:
         state: 'absent'
       register: opn1
       failed_when: >
@@ -77,6 +78,55 @@
         opn3.failed or
         not opn3.changed
 
+    - name: Changing - not changed
+      ansibleguy.opnsense.rule_multi:
+        rules:
+          ANSIBLE_TEST_2_1:
+            source_net: '192.168.1.0/24'
+            destination_invert: true
+            destination_net: '10.1.0.0/8'
+            action: 'block'
+          ANSIBLE_TEST_2_2:
+            source_net: '192.168.0.0/24'
+            destination_net: '192.168.10.0/24'
+            destination_port: 8080
+            protocol: 'TCP'
+            interface: ['lan']
+          ANSIBLE_TEST_2_3:
+            source_invert: true
+            source_net: 'bogons'
+            ip_protocol: 'inet6'
+            action: 'block'
+      when: not ansible_check_mode
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        opn7.changed
+
+    - name: Adding 2
+      ansibleguy.opnsense.rule_multi:
+        rules:
+          ANSIBLE_TEST_2_4:
+            interface: 'opt1'
+            protocol: 'ICMP'
+      when: not ansible_check_mode
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+
+    - name: Changing 2 - not changed
+      ansibleguy.opnsense.rule_multi:
+        rules:
+          ANSIBLE_TEST_2_4:
+            interface: 'opt1'
+            protocol: 'ICMP'
+      when: not ansible_check_mode
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.changed
+
     - name: Fail on client-side validation
       ansibleguy.opnsense.rule_multi:
         rules:
@@ -104,7 +154,7 @@
       register: opn4
       failed_when: >
         'data' not in opn4 or
-        opn4.data | length != 3
+        opn4.data | length != 4
       when: not ansible_check_mode
 
     - name: Removing
@@ -113,6 +163,7 @@
           ANSIBLE_TEST_2_1:
           ANSIBLE_TEST_2_2:
           ANSIBLE_TEST_2_3:
+          ANSIBLE_TEST_2_4:
         state: 'absent'
 
     - name: Checking cleanup
