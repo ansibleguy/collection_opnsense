@@ -34,6 +34,7 @@ body:
       description: |
         What version of the Collection are you using?
         > Command: `ansible-galaxy collection list | grep opnsense`
+      render: bash
     validations:
       required: true
 
@@ -44,6 +45,7 @@ body:
       description: |
         What version of Ansible & Python are you running?
         > Command: `ansible --version`
+      render: bash
     validations:
       required: true
 
@@ -54,6 +56,7 @@ body:
       description: |
         What version of OPNSense are you running?
         Find it in the WebUI at 'System - Firmware - Status'
+      render: bash
     validations:
       required: true
 
@@ -65,6 +68,7 @@ body:
         If the module targets a non-default plugin:
         What version of the OPNSense-Plugin are you running?
         Find it in the WebUI at 'System - Firmware - Plugins'
+      render: bash
     validations:
       required: false
 
@@ -83,6 +87,7 @@ body:
       label: Config Ansible
       description: |
         Please provide as the configuration you used when the error occurred!
+      render: yaml
     validations:
       required: true
 
@@ -92,8 +97,9 @@ body:
       label: Config OPNSense
       description: |
         Please provide as the configuration you used when the error occurred!
+      render: bash
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: output-debug
@@ -101,6 +107,7 @@ body:
       label: Debug Output
       description: |
         Set the [debug option](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/develop.md#debugging) and copy its output.
+      render: bash
     validations:
       required: true
 
@@ -111,5 +118,6 @@ body:
       description: |
         If the issue is related to time-consumption, you may also add the content of the
         [profiling logs](https://github.com/ansibleguy/collection_opnsense/blob/latest/docs/develop.md#debugging).
+      render: bash
     validations:
       required: false
