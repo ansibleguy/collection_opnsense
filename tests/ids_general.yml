@@ -63,11 +63,6 @@
         log_retention: 14
         syslog: true
         log_level: 'info'
-        debug: true
-      register: opn1
-      failed_when: >
-        opn1.failed or
-        not opn1.changed
 
     - name: Changing 1
       ansibleguy.opnsense.ids_general:
