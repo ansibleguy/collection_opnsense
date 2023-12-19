@@ -31,6 +31,7 @@
         target: '1.1.1.1'
         verify: 'dot.opnsense.test.ansibleguy.net'
         state: 'absent'
+        reload: false
       register: opn1
       failed_when: >
         opn1.failed or
@@ -131,6 +132,7 @@
         domain: "{{ item.d }}"
         target: "{{ item.t }}"
         state: 'absent'
+        reload: false
       loop:
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
         - {d: 'dot.opnsense.test.ansibleguy.net', t: '1.1.1.2'}

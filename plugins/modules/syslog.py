@@ -11,7 +11,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.utils import profiler
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.wrapper import module_wrapper
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
         diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
@@ -21,7 +21,6 @@ try:
 except MODULE_EXCEPTIONS:
     module_dependency_error()
 
-PROFILE = False  # create log to profile time consumption
 
 # DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/syslog.html'
 # EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/syslog.html'
@@ -86,22 +85,8 @@ def run_module():
         supports_check_mode=True,
     )
 
-    syslog = Syslog(module=module, result=result)
+    module_wrapper(Syslog(module=module, result=result))
 
-    def process():
-        syslog.check()
-        syslog.process()
-        if result['changed'] and module.params['reload']:
-            syslog.reload()
-
-    if PROFILE or module.params['debug']:
-        profiler(check=process, log_file='syslog.log')
-        # log in /tmp/ansibleguy.opnsense/
-
-    else:
-        process()
-
-    syslog.s.close()
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 

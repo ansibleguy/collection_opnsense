@@ -21,6 +21,7 @@ All modules
     ssl_verify, bool, false, true, "If the certificate of the target firewall should be validated. RECOMMENDED FOR PRODUCTION USAGE!"
     ssl_ca_file, path, false, \- , "If you use an internal certificate-authority to create the certificate of the target firewall, provide the path to its public key for validation."
     debug, boolean, false, false, "Used to en-/disable the debug mode. All API requests and responses will be shown as Ansible warnings at runtime. Will be hidden if the tasks 'no_log' parameter is set to 'true'."
+    profiling, boolean, false, false, "Used to en-/disable the profiling mode. Time consumption of the module will be logged to '/tmp/ansibleguy.opnsense'."
     timeout, float, false, \- , "Manually override the modules default timeout"
 
 Modules managing multiple entries

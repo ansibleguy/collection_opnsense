@@ -45,6 +45,7 @@
         target: 'host.opnsense.test.ansibleguy.net'
         description: 'ANSIBLE_TEST_1_1'
         state: 'absent'
+        reload: false
       register: opn1
       failed_when: >
         opn1.failed or
@@ -56,6 +57,7 @@
         alias: 'a'
         domain: 'opnsense.test.ansibleguy.net'
         target: 'does.not.exist'
+        reload: false
       register: opn11
       failed_when: not opn11.failed
 
@@ -64,6 +66,7 @@
         alias: 'b'
         domain: '!INVALID-DOMAIN!'
         target: 'host.opnsense.test.ansibleguy.net'
+        reload: false
       register: opn12
       failed_when: not opn12.failed
 
@@ -174,6 +177,7 @@
         alias: 'dummy'
         domain: 'dummy'
         state: 'absent'
+        reload: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
@@ -185,6 +189,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         description: 'ANSIBLE_TEST_2_1'
         state: 'absent'
+        reload: false
 
     - name: Listing
       ansibleguy.opnsense.list:

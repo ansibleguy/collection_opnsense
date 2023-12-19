@@ -3,16 +3,18 @@ from pstats import Stats
 from io import StringIO
 from datetime import datetime
 from pathlib import Path
+from typing import Callable
+from inspect import stack as inspect_stack
+from inspect import getfile as inspect_getfile
+
 from httpx import ConnectError, ConnectTimeout
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
     DEBUG_CONFIG
-from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
-    exit_env
 
 
 def profiler(
-        check, log_file: str = None, kwargs: dict = None,
+        check: Callable, kwargs: dict, module_name: str = None,
         sort: str = 'tottime', show_top_n: int = 20
 ) -> (list, dict, bool, None):
     # note: https://stackoverflow.com/questions/10326936/sort-cprofile-output-by-percall-when-profiling-a-python-script
@@ -20,10 +22,11 @@ def profiler(
     _ = Profile()
     _.enable()
 
+    if module_name is None:
+        module_name = inspect_getfile(inspect_stack()[1][0]).rsplit('/', 1)[1].rsplit('.', 1)[0]
+
     httpx_error = None
     check_response = None
-    if kwargs is None:
-        kwargs = {}
 
     try:
         check_response = check(**kwargs)
@@ -38,18 +41,18 @@ def profiler(
     del cleaned_result[1:5]
     cleaned_result = '\n'.join(cleaned_result)
 
-    if log_file is not None:
+    if module_name is not None:
         log_path = Path(DEBUG_CONFIG['path_log'])
         if not log_path.exists():
             log_path.mkdir()
 
-        with open(f'{log_path}/{log_file}', 'a+', encoding='utf-8') as log:
+        with open(f'{log_path}/{module_name}.log', 'a+', encoding='utf-8') as log:
             log.write(f"\n{datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')} | {cleaned_result}\n")
 
     else:
         print(cleaned_result)
 
-    if httpx_error is None:
-        return check_response
+    if httpx_error is not None:
+        print(f"HTTP ERROR: {httpx_error}")
 
-    exit_env(httpx_error)
+    return check_response

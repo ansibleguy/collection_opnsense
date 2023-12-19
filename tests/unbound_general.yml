@@ -23,6 +23,7 @@
     - name: Configuring - failing because of invalid port
       ansibleguy.opnsense.unbound_general:
         port: 0
+        reload: false
       register: opn_fail1
       failed_when: not opn_fail1.failed
 
@@ -30,24 +31,28 @@
       ansibleguy.opnsense.unbound_general:
         interfaces:
           - 'DOES-NOT-EXIST'
+        reload: false
       register: opn_fail2
       failed_when: not opn_fail2.failed
 
     - name: Configuring - failing because of invalid DNS64 prefix
       ansibleguy.opnsense.unbound_general:
         dns64_prefix: 'INVALID-PREFIX'
+        reload: false
       register: opn_fail3
       failed_when: not opn_fail3.failed
 
     - name: Configuring - failing because of invalid DHCP domain
       ansibleguy.opnsense.unbound_general:
         dhcp_domain: '!INVALID-DOMAIN!'
+        reload: false
       register: opn_fail4
       failed_when: not opn_fail4.failed
 
     - name: Configuring - failing because of invalid local zone type
       ansibleguy.opnsense.unbound_general:
         local_zone_type: 'INVALID-TYPE'
+        reload: false
       register: opn_fail5
       failed_when: not opn_fail5.failed
 
@@ -55,6 +60,7 @@
       ansibleguy.opnsense.unbound_general:
         outgoing_interfaces:
           - 'DOES-NOT-EXIST'
+        reload: false
       register: opn_fail6
       failed_when: not opn_fail6.failed
 
@@ -184,4 +190,5 @@
     - name: Cleanup
       ansibleguy.opnsense.unbound_general:
         enabled: false
+        reload: false
       when: not ansible_check_mode

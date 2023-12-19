@@ -22,7 +22,6 @@ try:
 except MODULE_EXCEPTIONS:
     module_dependency_error()
 
-PROFILE = False  # create log to profile time consumption
 
 # DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/rule_multi.html'
 # EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/rule_multi.html'
@@ -61,12 +60,11 @@ def run_module():
         supports_check_mode=True,
     )
 
-    if PROFILE or module.params['debug']:
+    if module.params['profiling'] or module.params['debug']:
         profiler(
             check=process, kwargs=dict(
                 m=module, p=module.params, r=result,
             ),
-            log_file='rule_multi.log'  # /tmp/ansibleguy.opnsense/
         )
 
     else:

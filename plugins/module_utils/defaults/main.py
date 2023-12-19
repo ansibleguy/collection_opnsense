@@ -7,6 +7,7 @@ OPN_MOD_ARGS = dict(
     ssl_verify=dict(type='bool', required=False, default=True),
     ssl_ca_file=dict(type='path', required=False),
     debug=dict(type='bool', required=False, default=False),
+    profiling=dict(type='bool', required=False, default=False),
     timeout=dict(type='float', required=False),
 )
 BUILTIN_ALIASES = [

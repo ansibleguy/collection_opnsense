@@ -11,7 +11,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.utils import profiler
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.wrapper import module_wrapper
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
@@ -20,7 +20,6 @@ try:
 except MODULE_EXCEPTIONS:
     module_dependency_error()
 
-PROFILE = False  # create log to profile time consumption
 
 # DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/frr_bgp.html#ansibleguy-opnsense-frr-bgp-as-path'
 # EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/frr_bgp.html#id6'
@@ -59,22 +58,8 @@ def run_module():
         supports_check_mode=True,
     )
 
-    as_path = AsPath(module=module, result=result)
+    module_wrapper(AsPath(module=module, result=result))
 
-    def process():
-        as_path.check()
-        as_path.process()
-        if result['changed'] and module.params['reload']:
-            as_path.reload()
-
-    if PROFILE or module.params['debug']:
-        profiler(check=process, log_file='frr_bgp_as_path.log')
-        # log in /tmp/ansibleguy.opnsense/
-
-    else:
-        process()
-
-    as_path.s.close()
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 

@@ -26,12 +26,14 @@
         name: 'ANSIBLE_TEST_1_1'
         action: 'INVALID_ACTION'
         networks: ['192.168.0.0/24']
+        reload: false
       register: opn_fail2
       failed_when: not opn_fail2.failed
 
     - name: Adding - failing because no network was provided
       ansibleguy.opnsense.unbound_acl:
         name: 'ANSIBLE_TEST_1_1'
+        reload: false
       register: opn_fail3
       failed_when: not opn_fail3.failed
 
@@ -39,6 +41,7 @@
       ansibleguy.opnsense.unbound_acl:
         name: 'ANSIBLE_TEST_1_1'
         networks: ['192.168.0.0/258']
+        reload: false
       register: opn_fail4
       failed_when: not opn_fail4.failed
 
@@ -50,6 +53,7 @@
           123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
           123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789
           12345678901234567890123456789012345678901234567890123456
+        reload: false
       register: opn_fail1
       failed_when: not opn_fail1.failed
 
@@ -96,6 +100,7 @@
         networks: ['10.10.0.0/29', '192.168.0.0/25']
         description: 'Deny access'
         enabled: false
+        reload: false
       register: opn3
       failed_when: >
         opn3.failed or
@@ -178,6 +183,7 @@
       ansibleguy.opnsense.unbound_acl:
         name: "{{ item }}"
         state: 'absent'
+        reload: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'

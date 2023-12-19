@@ -32,6 +32,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         value: '192.168.0.1'
         state: 'absent'
+        reload: false
       register: opn1
       failed_when: >
         opn1.failed or
@@ -44,6 +45,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         value: "{{ item.v }}"
         type: "{{ item.t }}"
+        reload: false
       register: opn_fail1
       failed_when: not opn_fail1.failed
       loop:
@@ -178,6 +180,7 @@
         domain: 'dummy'
         value: '192.168.0.1'
         state: 'absent'
+        reload: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'

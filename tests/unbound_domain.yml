@@ -32,6 +32,7 @@
         server: '192.168.0.1'
         state: 'absent'
         description: 'ANSIBLE_TEST_1_1'
+        reload: false
       register: opn1
       failed_when: >
         opn1.failed or
@@ -42,6 +43,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         server: 'INVALID-IP'
         description: 'ANSIBLE_TEST_1_1'
+        reload: false
       register: opn11
       failed_when: not opn11.failed
 
@@ -50,6 +52,7 @@
         domain: '!INVALID-DOMAIN!'
         server: 'INVALID-IP'
         description: 'ANSIBLE_TEST_1_1'
+        reload: false
       register: opn12
       failed_when: not opn12.failed
 
@@ -58,6 +61,7 @@
         domain: 'opnsense.test.ansibleguy.net'
         server: "{{ item }}"
         description: 'ANSIBLE_TEST_1_1'
+        reload: false
       register: opn14
       failed_when: not opn14.failed
       loop:
@@ -190,6 +194,7 @@
         domain: 'dummy.local'
         server: '192.168.0.1'
         state: 'absent'
+        reload: false
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'

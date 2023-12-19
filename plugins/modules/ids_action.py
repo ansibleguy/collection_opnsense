@@ -19,7 +19,6 @@ try:
 except MODULE_EXCEPTIONS:
     module_dependency_error()
 
-PROFILE = False  # create log to profile time consumption
 
 # DOCUMENTATION = 'https://opnsense.ansibleguy.net/en/latest/modules/ids.html'
 # EXAMPLES = 'https://opnsense.ansibleguy.net/en/latest/modules/ids.html'

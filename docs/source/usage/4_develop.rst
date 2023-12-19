@@ -197,14 +197,11 @@ The profiler will wrap around this function call and analyze it.
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.utils import profiler
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.target_module import process
 
-    PROFILE = True
-
-    if PROFILE:
+    if module.params['profiling']:
         profiler(
             check=process, kwargs=dict(
                 m=module, p=module.params, r=result,
             ),
-            log_file='target_module.log'  # in folder: /tmp/ansibleguy.opnsense/
         )
 
     else:

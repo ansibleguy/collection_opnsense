@@ -30,6 +30,7 @@
         domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.1'
         state: 'absent'
+        reload: false
       register: opn1
       failed_when: >
         opn1.failed or
@@ -69,6 +70,7 @@
         domain: 'fwd.opnsense.test.ansibleguy.net'
         target: '1.1.1.2'
         enabled: false
+        reload: false
       register: opn6
       failed_when: >
         opn6.failed or
@@ -123,6 +125,7 @@
         domain: "{{ item.d }}"
         target: "{{ item.t }}"
         state: 'absent'
+        reload: false
       loop:
         - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.1'}
         - {d: 'fwd.opnsense.test.ansibleguy.net', t: '1.1.1.2'}
