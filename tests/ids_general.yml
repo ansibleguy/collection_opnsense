@@ -63,7 +63,6 @@
         log_retention: 14
         syslog: true
         log_level: 'info'
-        profiling: true
         debug: true
       register: opn1
       failed_when: >

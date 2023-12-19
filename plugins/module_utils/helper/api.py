@@ -109,13 +109,25 @@ def get_params_path(cnf: dict) -> str:
     return params_path
 
 
+def _clean_response(response: dict) -> dict:
+    response_data = response.copy()
+    for field in [
+        'headers', 'next_request', '_decoder', 'stream', 'extensions', 'history', 'is_closed',
+        'is_stream_consumed', 'default_encoding',
+    ]:
+        if field in response_data:
+            response_data.pop(field)
+
+    return response_data
+
+
 def debug_api(
         module: AnsibleModule, method: str = None, url: str = None,
         data: dict = None, headers: dict = None, response: dict = None,
 ) -> None:
     if 'debug' in module.params and module.params['debug']:
         if response is not None:
-            msg = f"RESPONSE: '{response.__dict__}'"
+            msg = f"RESPONSE: '{_clean_response(response.__dict__)}'"
 
         else:
             msg = f'REQUEST: {method} | URL: {url}'
