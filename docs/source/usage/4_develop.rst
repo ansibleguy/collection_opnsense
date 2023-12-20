@@ -11,6 +11,18 @@ The basic API interaction is handled in 'ansibleguy.opnsense.plugins.module_util
 
 It is a generic abstraction layer for interacting with the api - therefore all plugins should be able to function with it!
 
+Install
+*******
+
+You can install the collection to a specific directory for easier testing.
+
+.. code-block:: bash
+
+    cd $PLAYBOOK_DIR
+    ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git,<COMMIT/BRANCH> -p ./collections
+
+Of course you can always place the repository at :code:`${PLAYBOOK_DIR}/ansible_collections/ansibleguy/opnsense` so it gets picked-up by Ansible.
+
 API Definition
 **************
 

@@ -38,7 +38,7 @@ This module manages DNS-Forwardings that can be found in the WEB-UI menu: 'Servi
 
 .. warning::
 
-    Unbound service actions like 'reload' can take very long (>90s). Please be aware of the **possible downtime**!
+    Unbound service actions like :code:`reload` can take very long (>90s). Please be aware of the **possible downtime**!
 
     You may also need to increase the module :code:`timeout`.
 

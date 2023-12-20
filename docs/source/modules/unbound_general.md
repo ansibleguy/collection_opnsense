@@ -14,7 +14,7 @@ This module requires OPNsense 23.7 or later.
 
 ## Info
 
-**WARNING:** Unbound service actions like 'reload' can take very long (>90s). Please be aware of the **possible downtime**!
+**WARNING:** Unbound service actions like :code:`reload` can take very long (>90s). Please be aware of the **possible downtime**!
 
 
 You may also need to increase the module `timeout`.

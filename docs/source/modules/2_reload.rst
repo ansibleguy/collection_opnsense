@@ -17,7 +17,7 @@ This module can reload the running/loaded configuration for a specified part of 
 
 Most modules of this collection will automatically reload its relevant running config on change - but you can speed up mass-management of items when disabling reload on single module-calls (*reload: false*), and do it afterward using THIS module.
 
-Alternatively you can use the :ref:`ansibleguy.opnsense.service <modules_service>` module with action 'reload' if you like it better.
+Alternatively you can use the :ref:`ansibleguy.opnsense.service <modules_service>` module with action :code:`reload` if you like it better.
 
 Definition
 **********

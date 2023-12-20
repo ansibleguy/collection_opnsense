@@ -27,10 +27,6 @@ ansible-galaxy collection install git+https://github.com/ansibleguy/collection_o
 ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git,1.2.7
 ## OR
 ansible-galaxy collection install ansibleguy.opnsense
-
-# install to specific directory for easier development
-cd $PLAYBOOK_DIR
-ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git -p ./collections
 ```
 
 ----

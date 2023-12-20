@@ -24,7 +24,7 @@ The configured lists are matched by its unique file-name.
 
 .. warning::
 
-    Unbound service actions like 'reload' can take very long (>90s). Please be aware of the **possible downtime**!
+    Unbound service actions like :code:`reload` can take very long (>90s). Please be aware of the **possible downtime**!
 
     You may also need to increase the module :code:`timeout`.
 

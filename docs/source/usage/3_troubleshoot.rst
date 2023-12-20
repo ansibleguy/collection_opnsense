@@ -8,14 +8,14 @@
 
 If you get error messages - you should at first check if there are any errors listed.
 
-Sometimes the error message can be pretty long, therefore you might want to copy its output into an editor of your choice and Strg+F/search for the terms 'Error:' or '_content'!
+Sometimes the error message can be pretty long, therefore you might want to copy its output into an editor of your choice and Strg+F/search for the terms :code:`Error:` or :code:`_content`!
 
 Per example:
 
 .. code-block:: bash
 
     # OUTPUT:
-    fatal: [localhost]: FAILED! => {"changed": false, "msg": "API call failed | Error: {'rule.interface': 'option not in list'} | Response: {'status_code': 200, 'headers': Headers({'content-type': 'application/json; charset=UTF-8', 'content-length': '73', 'date': 'Tue, 30 Aug 2022 15:17:57 GMT', 'server': 'OPNsense'}), '_request': <Request('POST', 'https://FIREWALL/api/firewall/filter/addRule')>, 'next_request': None, 'extensions': {'http_version': b'HTTP/1.1', 'reason_phrase': b'OK', 'network_stream': <httpcore.backends.sync.SyncStream object at 0x7f7efa1975b0>}, 'history': [], 'is_closed': True, 'is_stream_consumed': True, 'default_encoding': 'utf-8', 'stream': <httpx._client.BoundSyncStream object at 0x7f7efa1b28e0>, '_num_bytes_downloaded': 73, '_decoder': <httpx._decoders.IdentityDecoder object at 0x7f7efa139190>, '_elapsed': datetime.timedelta(microseconds=189718), '_content': b'{\"result\":\"failed\",\"validations\":{\"rule.interface\":\"option not in list\"}}', '_encoding': 'UTF-8', '_text': '{\"result\":\"failed\",\"validations\":{\"rule.interface\":\"option not in list\"}}'}"}
+    fatal: [localhost]: FAILED! => {"changed": false, "msg": "API call failed | Error: {'rule.interface': 'option not in list'} | Response: {'status_code': 200, '_request': <Request('POST', 'https://FIREWALL/api/firewall/filter/addRule')>, '_num_bytes_downloaded': 73, '_elapsed': datetime.timedelta(microseconds=189718), '_content': b'{\"result\":\"failed\",\"validations\":{\"rule.interface\":\"option not in list\"}}', '_text': '{\"result\":\"failed\",\"validations\":{\"rule.interface\":\"option not in list\"}}'}"}
 
     # ERROR:
     {'rule.interface': 'option not in list'}
@@ -66,7 +66,7 @@ Known issues
 
   Many of the modules need to 'apply' its configuration after a change happened.
 
-  Sometimes this 'reload' takes some time as the firewall needs to process some information.
+  Sometimes this :code:`reload` takes some time as the firewall needs to process some information.
 
   Per example:
 
