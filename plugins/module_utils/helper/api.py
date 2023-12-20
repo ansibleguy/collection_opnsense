@@ -146,7 +146,7 @@ def debug_api(
                     f"{log_path}/{DEBUG_CONFIG['log_api_calls']}",
                     'a+', encoding='utf-8'
             ) as log:
-                log.write(f"\n{datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')} | {method} => {url}")
+                log.write(f"\n{datetime.now().strftime('%Y-%m-%d %H:%M:%S:%f')} | {method} => {url}\n")
 
         module.warn(msg)
 

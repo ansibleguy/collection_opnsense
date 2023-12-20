@@ -37,7 +37,8 @@ class Base:
     ATTR_API_CONT = 'API_CONT'
     ATTR_HEADERS = 'call_headers'
     ATTR_TYPING = 'FIELDS_TYPING'
-    ATTR_FIELD_ID = 'FIELD_ID'
+    ATTR_FIELD_ID = 'FIELD_ID'  # field we use for matching
+    ATTR_FIELD_PK = 'FIELD_PK'  # field opnsense uses as primary key
     PARAM_MATCH_FIELDS = 'match_fields'
 
     REQUIRED_ATTRS = [
@@ -347,8 +348,12 @@ class Base:
 
         self._set_existing()
 
+        field_pk = 'uuid'
+        if hasattr(self.i, self.ATTR_FIELD_PK):
+            field_pk = getattr(self.i, self.ATTR_FIELD_PK)
+
         diff = {
-            'uuid': self.e['uuid'] if 'uuid' in self.e else None
+            field_pk: self.e[field_pk] if field_pk in self.e else None
         }
 
         for field in self.i.FIELDS_ALL:

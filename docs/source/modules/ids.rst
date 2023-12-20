@@ -65,6 +65,17 @@ Interfaces for 'ids_general' must be provided as used in the network config (*p.
     "log_rotate","string","false","weekly","\-","One of: 'weekly', 'daily'. Rotate alert logs at provided interval"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
+ansibleguy.opnsense.ids_rule
+===============================
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "sid","integer","true","\-","id","Unique signature-ID of the rule you want to modify"
+    "action","string","false","alert","a","One of 'alert', 'drop'. Set action to perform here, only used when in IPS mode"
+    "enabled","boolean","false","true","\-","En- or disable the rule"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 
 Usage
@@ -123,7 +134,7 @@ ansibleguy.opnsense.ids_action
 
 
 ansibleguy.opnsense.ids_general
-===========================
+===============================
 
 .. code-block:: yaml
 
@@ -188,6 +199,49 @@ ansibleguy.opnsense.ids_general
         - name: Listing Settings
           ansibleguy.opnsense.list:
           #  target: 'ids_general'
+          register: existing_settings
+
+        - name: Printing Settings
+          ansible.builtin.debug:
+            var: existing_settings.data
+
+ansibleguy.opnsense.ids_rule
+============================
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: false
+      module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'ids_rule'
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.ids_rule:
+            sid: 2400000
+            # enabled: true
+            # action: 'alert'
+            # reload: true
+            # debug: false
+
+        - name: Setting rule with ID 2400000 to drop
+          ansibleguy.opnsense.ids_rule:
+            sid: 2400000
+            action: 'drop'
+
+        - name: Disabling rule with ID 2400011
+          ansibleguy.opnsense.ids_rule:
+            sid: 2400011
+            enabled: false
+
+        - name: Listing Settings
+          ansibleguy.opnsense.list:
+          #  target: 'ids_rule'
           register: existing_settings
 
         - name: Printing Settings

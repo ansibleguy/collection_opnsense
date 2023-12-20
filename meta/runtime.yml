@@ -99,6 +99,12 @@ action_groups:
   ids:
     - ansibleguy.opnsense.ids_action
     - ansibleguy.opnsense.ids_general
+    - ansibleguy.opnsense.ids_policy
+    - ansibleguy.opnsense.ids_policy_rule
+    - ansibleguy.opnsense.ids_rule
+    - ansibleguy.opnsense.ids_ruleset
+    - ansibleguy.opnsense.ids_ruleset_properties
+    - ansibleguy.opnsense.ids_user_rule
   all:
     - metadata:
         extend_group:

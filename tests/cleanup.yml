@@ -548,3 +548,12 @@
       ansibleguy.opnsense.ids_general:
         interfaces: ['opt1']
         enabled: false
+
+    # - name: Cleanup IDS Policy
+    #   ansibleguy.opnsense.ids_policy:
+    #     description: 'ANSIBLE_TEST_1_1'
+    #     state: absent
+
+    - name: Cleanup IDS Rule
+      ansibleguy.opnsense.ids_rule:
+        sid: 2400000
