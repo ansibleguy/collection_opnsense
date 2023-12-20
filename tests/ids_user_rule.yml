@@ -1,0 +1,159 @@
+---
+
+- name: Testing IDS User-Rule
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      target: 'ids_user_rule'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Removing 1 - does not exist
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+        source_ip: '192.168.10.1'
+        destination_ip: '1.1.1.1'
+        ssl_fingerprint: 'B5:E1:B3:70:5E:7C:FF:EB:92:C4:29:E5:5B:AC:2F:AE:70:17:E9:9E'
+        action: 'alert'
+        bypass: false
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 - nothing changed
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+        source_ip: '192.168.10.1'
+        destination_ip: '1.1.1.1'
+        ssl_fingerprint: 'B5:E1:B3:70:5E:7C:FF:EB:92:C4:29:E5:5B:AC:2F:AE:70:17:E9:9E'
+        action: 'alert'
+        bypass: false
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        opn7.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 - more
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+        source_ip: '192.168.20.1'
+        destination_ip: '1.1.0.0'
+        ssl_fingerprint: 'B5:E1:B3:70:5E:7C:FF:EB:92:C4:29:E5:5B:AC:2F:AE:70:17:E9:9E'
+        action: 'pass'
+        bypass: true
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 - nothing changed
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+        source_ip: '192.168.20.1'
+        destination_ip: '1.1.0.0'
+        ssl_fingerprint: 'B5:E1:B3:70:5E:7C:FF:EB:92:C4:29:E5:5B:AC:2F:AE:70:17:E9:9E'
+        action: 'pass'
+        bypass: true
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+        source_ip: '192.168.20.1'
+        destination_ip: '1.1.0.0'
+        ssl_fingerprint: 'B5:E1:B3:70:5E:7C:FF:EB:92:C4:29:E5:5B:AC:2F:AE:70:17:E9:9E'
+        action: 'pass'
+        bypass: true
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+        source_ip: '192.168.20.1'
+        destination_ip: '1.1.0.0'
+        ssl_fingerprint: 'B5:E1:B3:70:5E:7C:FF:EB:92:C4:29:E5:5B:AC:2F:AE:70:17:E9:9E'
+        action: 'pass'
+        bypass: true
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+        source_ip: '192.168.20.1'
+        destination_ip: '1.1.0.0'
+        ssl_fingerprint: 'B5:E1:B3:70:5E:7C:FF:EB:92:C4:29:E5:5B:AC:2F:AE:70:17:E9:9E'
+        action: 'pass'
+        bypass: true
+        enabled: true
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1 - nothing changed
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+        source_ip: '192.168.20.1'
+        destination_ip: '1.1.0.0'
+        ssl_fingerprint: 'B5:E1:B3:70:5E:7C:FF:EB:92:C4:29:E5:5B:AC:2F:AE:70:17:E9:9E'
+        action: 'pass'
+        bypass: true
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        opn5.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      when: not ansible_check_mode

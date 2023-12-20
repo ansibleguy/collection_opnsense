@@ -562,3 +562,8 @@
     - name: Cleanup IDS Rule
       ansibleguy.opnsense.ids_rule:
         sid: 2400000
+
+    - name: Cleanup IDS User-Rule
+      ansibleguy.opnsense.ids_user_rule:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'

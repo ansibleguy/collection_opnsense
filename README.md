@@ -151,8 +151,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **IDS/IPS**         | ansibleguy.opnsense.ids_policy_rule                                    | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html)                                           | development |
 | **IDS/IPS**         | ansibleguy.opnsense.ids_rule                                           | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html)                                           | unstable |
 | **IDS/IPS**         | ansibleguy.opnsense.ids_ruleset                                        | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html)                                           | unstable |
-| **IDS/IPS**         | ansibleguy.opnsense.ids_ruleset_properties                             | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html)                                           | development |
-| **IDS/IPS**         | ansibleguy.opnsense.ids_user_rule                                      | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html)                                           | development |
+| **IDS/IPS**         | ansibleguy.opnsense.ids_user_rule                                      | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html)                                           | unstable |
 
 
 ### Roadmap

@@ -8,14 +8,13 @@ Intrusion Prevention System
 
 **STATE**: unstable
 
-**TESTS**: `ansibleguy.opnsense.ids_general <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_general.yml>`_,
-`ansibleguy.opnsense.ids_action <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_action.yml>`_,
-`ansibleguy.opnsense.ids_policy <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_policy.yml>`_,
-`ansibleguy.opnsense.ids_policy_rule <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_policy_rule.yml>`_,
-`ansibleguy.opnsense.ids_rule <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_rule.yml>`_,
-`ansibleguy.opnsense.ids_ruleset <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_ruleset.yml>`_,
-`ansibleguy.opnsense.ids_ruleset_properties <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_ruleset_properties.yml>`_,
-`ansibleguy.opnsense.ids_user_rule <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_user_rule.yml>`_,
+**TESTS**: `ansibleguy.opnsense.ids_general <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_general.yml>`_ |
+`ansibleguy.opnsense.ids_action <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_action.yml>`_ |
+`ansibleguy.opnsense.ids_policy <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_policy.yml>`_ |
+`ansibleguy.opnsense.ids_policy_rule <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_policy_rule.yml>`_ |
+`ansibleguy.opnsense.ids_rule <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_rule.yml>`_ |
+`ansibleguy.opnsense.ids_ruleset <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_ruleset.yml>`_ |
+`ansibleguy.opnsense.ids_user_rule <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/ids_user_rule.yml>`_
 
 **API Docs**: `IDS <https://docs.opnsense.org/development/api/core/ids.html>`_
 
@@ -91,6 +90,22 @@ ansibleguy.opnsense.ids_rule
     "enabled","boolean","false","true","\-","En- or disable the rule"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
+
+ansibleguy.opnsense.ids_user_rule
+=================================
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "name","string","true","\-","description, desc","Unique rule name"
+    "source_ip","string","false","\-","source, src_ip, src","Set the source IP or network to match. Leave this field empty for using 'any'"
+    "destination_ip","string","false","\-","destination, dst_ip, dst","Set the destination IP or network to match. Leave this field empty for using 'any'"
+    "ssl_fingerprint","string","false","\-","fingerprint, ssl_fp","The SSL fingerprint, for example: 'B5:E1:B3:70:5E:7C:FF:EB:92:C4:29:E5:5B:AC:2F:AE:70:17:E9:9E'"
+    "action","string","false","alert",a","One of 'alert', 'drop', 'pass'. Set action to perform here, only used when in IPS mode"
+    "bypass","boolean","false","false","bp","Set bypass keyword. Increases traffic throughput. Suricata reads a packet, decodes it, checks it in the flow table. If the corresponding flow is local bypassed then it simply skips all streaming, detection and output and the packet goes directly out in IDS mode and to verdict in IPS mode"
+    "enabled","boolean","false","true","\-","En- or disable the rule"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 Usage
 *****
@@ -295,11 +310,71 @@ ansibleguy.opnsense.ids_rule
             sid: 2400011
             enabled: false
 
-        - name: Listing Settings
+        - name: Listing Rules
           ansibleguy.opnsense.list:
           #  target: 'ids_rule'
-          register: existing_settings
+          register: existing_rules
 
-        - name: Printing Settings
+        - name: Printing Rules
           ansible.builtin.debug:
-            var: existing_settings.data
+            var: existing_rules.data
+
+
+ansibleguy.opnsense.ids_user_rule
+=================================
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: false
+      module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'ids_user_rule'
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.ids_user_rule:
+            name: 'Example'
+            # source_ip: ''
+            # destination_ip: ''
+            # ssl_fingerprint: ''
+            # action: 'alert'
+            # bypass: false
+            # enabled: true
+            # reload: true
+            # debug: false
+
+        - name: Adding
+          ansibleguy.opnsense.ids_user_rule:
+            name: 'ANSIBLE_TEST_1_1'
+            source_ip: '192.168.10.1'
+            destination_ip: '1.1.1.1'
+            action: 'alert'
+            bypass: false
+
+        - name: Disabling
+          ansibleguy.opnsense.ids_user_rule:
+            name: 'ANSIBLE_TEST_1_1'
+            source_ip: '192.168.10.1'
+            destination_ip: '1.1.1.1'
+            action: 'alert'
+            bypass: false
+            enabled: false
+
+        - name: Removing
+          ansibleguy.opnsense.ids_user_rule:
+            name: 'ANSIBLE_TEST_1_1'
+            state: 'absent'
+
+        - name: Listing Rules
+          ansibleguy.opnsense.list:
+          #  target: 'ids_user_rule'
+          register: existing_rules
+
+        - name: Printing Rules
+          ansible.builtin.debug:
+            var: existing_rules.data

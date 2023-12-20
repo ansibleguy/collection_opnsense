@@ -18,7 +18,7 @@ class Rule(BaseModule):
     API_MOD = 'ids'
     API_CONT = 'settings'
     API_CONT_REL = 'service'
-    API_CMD_REL = 'reconfigure'
+    API_CMD_REL = 'reloadRules'
     FIELDS_CHANGE = ['action']
     FIELDS_ALL = ['enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
@@ -51,6 +51,8 @@ class Rule(BaseModule):
             self.toggle()
 
     def _search_call(self) -> list:
+        # NOTE: workaround for issue with incomplete response-data from 'get' endpoint:
+        #   https://github.com/opnsense/core/issues/7094
         existing = self.s.post(cnf={
             **self.call_cnf,
             'command': self.CMDS['search'],
