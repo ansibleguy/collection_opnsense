@@ -2,10 +2,6 @@
 
 set -eo pipefail
 
-# todo: some plugins will be needed as prerequisites - should be installed automatically
-#   os-firewall, os-wireguard, os-frr, os-bind
-# todo: also: a opt1 interface is needed for some tests
-
 echo ''
 
 DEBUG=false
