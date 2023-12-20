@@ -165,7 +165,7 @@ If you want to output something to ansible's runtime - use 'module.warn':
 
     module.warn(f"{before} != {after}")
 
-You can also use the 'debug' argument to enable verbose output of the api requests. 
+You can also use the :code:`debug` argument to enable verbose output of the api requests.
 
 .. code-block:: yaml
 
@@ -173,9 +173,9 @@ You can also use the 'debug' argument to enable verbose output of the api reques
       ansibleguy.opnsense.alias:
         debug: true
 
-'Multi' modules also support the 'debug' parameter on a per-item basis - so you don't get flooded.
+'Multi' modules also support the :code:`debug` parameter on a per-item basis - so you don't get flooded.
 
-When the debug-mode is enabled some useful log files are created in the directory '/tmp/ansibleguy.opnsense'
+When the debug-mode is enabled some useful log files are created in the directory :code:`/tmp/ansibleguy.opnsense`
 
 .. code-block:: bash
 

@@ -106,7 +106,7 @@ body:
     attributes:
       label: Debug Output
       description: |
-        Set the [debug option](https://opnsense.ansibleguy.net/en/latest/usage/4_develop.html#debugging) and copy its output.
+        Set the [debug option](https://opnsense.ansibleguy.net/en/latest/usage/3_troubleshoot.html#verbose-output) and copy its output.
       render: bash
     validations:
       required: true
@@ -117,7 +117,7 @@ body:
       label: Profiling Output
       description: |
         If the issue is related to time-consumption, you may also add the content of the
-        [profiling logs](https://opnsense.ansibleguy.net/en/latest/usage/4_develop.html#profiling).
+        [profiling logs](https://opnsense.ansibleguy.net/en/latest/usage/3_troubleshoot.html#verbose-output).
       render: bash
     validations:
       required: false

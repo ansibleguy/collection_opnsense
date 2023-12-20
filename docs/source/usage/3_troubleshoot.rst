@@ -20,6 +20,30 @@ Per example:
     # ERROR:
     {'rule.interface': 'option not in list'}
 
+Verbose output
+**************
+
+You can also use the :code:`debug` argument to enable verbose output:
+
+.. code-block:: yaml
+
+    - name: Example
+      ansibleguy.opnsense.alias:
+        debug: true
+
+When the debug-mode is enabled some useful log files are created in the directory :code:`/tmp/ansibleguy.opnsense` (*HTTP requests made, profiling of time consumption*)
+
+If you only want the profiling logs written, you can also use the :code:`profiling` argument:
+
+.. code-block:: yaml
+
+    - name: Example
+      ansibleguy.opnsense.alias:
+        profiling: true
+
+
+'Multi' modules also support these parameters on a per-item basis - so you don't get flooded.
+
 Known errors
 ************
 
