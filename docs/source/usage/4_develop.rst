@@ -173,6 +173,8 @@ Verbose output
 
 If you want to output something to ansible's runtime - use 'module.warn':
 
+NOTE: This output is buffered by Ansible until the task has finished.
+
 .. code-block:: python3
 
     module.warn(f"{before} != {after}")

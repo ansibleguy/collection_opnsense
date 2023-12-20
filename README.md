@@ -35,7 +35,6 @@ ansible-galaxy collection install ansibleguy.opnsense
 
 See: [Docs](https://opnsense.ansibleguy.net)
 
-
 ----
 
 ## Contribute
@@ -45,6 +44,17 @@ Feel free to contribute to this project using [pull-requests](https://github.com
 See also: [Contributing](https://github.com/ansibleguy/collection_opnsense/blob/latest/CONTRIBUTING.md)
 
 ----
+
+## Version Support
+
+The `ansibleguy.opnsense` modules always support the latest version of OPNSense.
+
+If an API changed, the current module-implementation might fail for firewalls running an older firmware.
+
+See also: [Firmware-Upgrade using ansibleguy.opnsense.system](https://opnsense.ansibleguy.net/en/latest/modules/system.html#examples)
+
+----
+
 
 ## Modules
 

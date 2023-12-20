@@ -59,6 +59,7 @@ def run_module():
             if module.params['debug']:
                 module.warn(f"Waiting for firewall to complete '{module.params['action']}'!")
 
+            # todo: cleaner way of handling if no upgrade is needed
             result['failed'] = not wait_for_response(module=module)
 
             if result['failed']:

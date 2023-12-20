@@ -31,9 +31,9 @@ You need to add a `opt1` dummy-interface named `TEST`. The assigned IPs do not m
 
 ### Internet access
 
-To perform some tests (package/firmware, ids) the test firewall needs to reach some public service:
+To perform some tests (system, ids) the test firewall needs to reach some public service:
 
-* package/firmware - `pkg.opnsense.org`
+* system - `pkg.opnsense.org`
 * ids - `rules.emergingthreats.net`
 
 ----
