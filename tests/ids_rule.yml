@@ -21,7 +21,7 @@
         'data' not in opn_pre1
 
     - name: Adding 1 - failing because of non-existing rule
-      ansibleguy.opnsense.ids_policy:
+      ansibleguy.opnsense.ids_rule:
         sid: 13374206969
         enabled: true
       register: opn_fail1
@@ -31,10 +31,6 @@
       ansibleguy.opnsense.ids_rule:
         sid: 2400000
         action: 'drop'
-      register: opn1
-      failed_when: >
-        opn1.failed or
-        not opn1.changed
 
     - name: Disabling 1
       ansibleguy.opnsense.ids_rule:
@@ -67,6 +63,16 @@
       failed_when: >
         opn4.failed or
         not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1 - nothing changed
+      ansibleguy.opnsense.ids_rule:
+        sid: 2400000
+        action: 'drop'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        opn5.changed
       when: not ansible_check_mode
 
     - name: Cleanup

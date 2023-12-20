@@ -130,8 +130,9 @@ run_test 'ipsec_auth_local' 0  # check mode => dependency on connection/cert-ent
 run_test 'ipsec_auth_remote' 0  # check mode => dependency on connection/cert-entry
 run_test 'ids_action' 1
 run_test 'ids_general' 1
-# run_test 'ids_policy' 1
+run_test 'ids_ruleset' 1
 run_test 'ids_rule' 1
+# run_test 'ids_policy' 1
 run_test 'system' 1
 run_test 'package' 1
 

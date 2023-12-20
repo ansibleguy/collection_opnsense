@@ -65,8 +65,22 @@ Interfaces for 'ids_general' must be provided as used in the network config (*p.
     "log_rotate","string","false","weekly","\-","One of: 'weekly', 'daily'. Rotate alert logs at provided interval"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
-ansibleguy.opnsense.ids_rule
+ansibleguy.opnsense.ids_ruleset
 ===============================
+
+The :code:`reload` action will download/update the rulesets. If modifying multiple ones in a loop you might want to disable it on single calls.
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "name","string","true","\-","description, desc","Name of the ruleset you want to modify. Will show a list of existing ones if an invalid one is supplied!"
+    "enabled","boolean","false","true","\-","En- or disable the ruleset"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
+
+ansibleguy.opnsense.ids_rule
+============================
 
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
@@ -204,6 +218,48 @@ ansibleguy.opnsense.ids_general
         - name: Printing Settings
           ansible.builtin.debug:
             var: existing_settings.data
+
+ansibleguy.opnsense.ids_ruleset
+===============================
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: false
+      module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'ids_ruleset'
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.ids_ruleset:
+            name: 'ET open/drop'
+            # enabled: true
+            # reload: true
+            # debug: false
+
+        - name: Enabling & downloading ruleset 'ET open/drop'
+          ansibleguy.opnsense.ids_ruleset:
+            name: 'ET open/compromised'
+            reload: true
+
+        - name: Disabling ruleset 'ET open/compromised'
+          ansibleguy.opnsense.ids_ruleset:
+            name: 'ET open/compromised'
+            enabled: false
+
+        - name: Listing Settings
+          ansibleguy.opnsense.list:
+          #  target: 'ids_ruleset'
+          register: existing_rulesets
+
+        - name: Printing Rulesets
+          ansible.builtin.debug:
+            var: existing_rulesets.data
 
 ansibleguy.opnsense.ids_rule
 ============================

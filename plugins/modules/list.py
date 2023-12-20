@@ -33,7 +33,7 @@ TARGETS = [
     'frr_bgp_as_path', 'frr_bgp_route_map', 'frr_ospf_prefix_list', 'frr_ospf_route_map', 'webproxy_forward',
     'webproxy_acl', 'webproxy_icap', 'webproxy_auth', 'ipsec_connection', 'ipsec_pool',
     'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote', 'frr_general', 'unbound_general',
-    'unbound_acl', 'ids_general', 'ids_policy', 'ids_rule',
+    'unbound_acl', 'ids_general', 'ids_policy', 'ids_rule', 'ids_ruleset',
 ]
 
 
@@ -335,6 +335,10 @@ def run_module():
         elif target == 'ids_rule':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ids_rule import \
                 Rule as Target_Obj
+
+        elif target == 'ids_ruleset':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ids_ruleset import \
+                Ruleset as Target_Obj
 
     except AttributeError:
         module_dependency_error()

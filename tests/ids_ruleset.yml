@@ -1,0 +1,59 @@
+---
+
+- name: Testing IDS Ruleset
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      target: 'ids_ruleset'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Adding 1 - failing because of non-existing ruleset
+      ansibleguy.opnsense.ids_ruleset:
+        name: 'DOES-NOT-EXIST'
+        enabled: true
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Enabling 1 (used by other tests)
+      ansibleguy.opnsense.ids_ruleset:
+        name: 'ET open/drop'
+
+    - name: Enabling 2
+      ansibleguy.opnsense.ids_ruleset:
+        name: 'ET open/compromised'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Enabling 2 - nothing changed
+      ansibleguy.opnsense.ids_ruleset:
+        name: 'ET open/compromised'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 2
+      ansibleguy.opnsense.ids_ruleset:
+        name: 'ET open/compromised'
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode

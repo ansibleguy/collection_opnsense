@@ -554,6 +554,11 @@
     #     description: 'ANSIBLE_TEST_1_1'
     #     state: absent
 
+    - name: Cleanup IDS Ruleset
+      ansibleguy.opnsense.ids_ruleset:
+        name: 'ET open/compromised'
+        enabled: false
+
     - name: Cleanup IDS Rule
       ansibleguy.opnsense.ids_rule:
         sid: 2400000
