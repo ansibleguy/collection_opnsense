@@ -39,7 +39,7 @@ This module manages DNS-over-TLS configuration that can be found in the WEB-UI m
 
 .. warning::
 
-    Unbound service actions like :code:`reload` can take very long (>90s). Please be aware of the **possible downtime**!
+    Unbound service actions like :code:`reload` can take long. Please be aware of the **possible downtime**!
 
     You may also need to increase the module :code:`timeout`.
 
@@ -66,6 +66,7 @@ Examples
             # port: 53
             # verify: 'dot.template.ansibleguy.net'
             # state: 'present'
+            # reload: true
             # enabled: true
             # debug: false
 

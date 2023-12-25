@@ -39,7 +39,7 @@ Entries like these override an entire domain by specifying an authoritative DNS 
 
 .. warning::
 
-    Unbound service actions like :code:`reload` can take very long (>90s). Please be aware of the **possible downtime**!
+    Unbound service actions like :code:`reload` can take long. Please be aware of the **possible downtime**!
 
     You may also need to increase the module :code:`timeout`.
 
@@ -84,6 +84,7 @@ Examples
             # match_fields: ['description']
             # description: 'example'
             # state: 'present'
+            # reload: true
             # enabled: true
             # debug: false
 
