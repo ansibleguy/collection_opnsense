@@ -120,7 +120,7 @@ ansibleguy.opnsense.ids_policy
     "rulesets","list","false","\-","rs","Rulesets this policy applies to (all when none selected). Rulesets must be enabled beforehand!"
     "action","list","false","\-","a","One or multiple of: 'disable', 'alert', 'drop'. Rule configured action"
     "new_action","string","false","alert","na","One or multiple of: 'default', 'disable', 'alert', 'drop'. Action to perform when filter policy applies"
-    "rules","dictionary","false","\-","\-","Key-value pairs of policy-rules as provided by the enabled rulesets. Values must be string or lists. Example: '{\"rules\": {\"signature_severity\": [\"Minor\", \"Major\"], \"tag\": \"Dshield\"}}'"
+    "rules","dictionary","false","\-","\-","Key-value pairs of policy-rules as provided by the enabled rulesets. Values must be string or lists. Example: '{rules: {signature_severity: [Minor, Major], tag: Dshield}}'"
 
 Info
 ****
