@@ -549,11 +549,6 @@
         interfaces: ['opt1']
         enabled: false
 
-    # - name: Cleanup IDS Policy
-    #   ansibleguy.opnsense.ids_policy:
-    #     description: 'ANSIBLE_TEST_1_1'
-    #     state: absent
-
     - name: Cleanup IDS Ruleset
       ansibleguy.opnsense.ids_ruleset:
         name: 'ET open/compromised'
@@ -567,3 +562,8 @@
       ansibleguy.opnsense.ids_user_rule:
         name: 'ANSIBLE_TEST_1_1'
         state: 'absent'
+
+    - name: Cleanup IDS Policy
+      ansibleguy.opnsense.ids_policy:
+        description: 'ANSIBLE_TEST_1_1'
+        state: absent
