@@ -62,8 +62,7 @@ class Rule(BaseModule):
                 if rule[self.FIELD_ID] == self.p[self.FIELD_ID]:
                     self.exists = True
                     self.call_cnf['params'] = [rule['uuid']]
-                    # pylint: disable=W0212
-                    self.rule = self.b._simplify_existing(
+                    self.rule = self.b.simplify_existing(
                         self.s.get(cnf={
                             **self.call_cnf,
                             'command': self.CMDS['detail'],

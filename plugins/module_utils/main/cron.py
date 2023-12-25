@@ -62,8 +62,7 @@ class CronJob(BaseModule):
                     self.available_commands.append(cmd)
 
     def _simplify_existing(self, existing: dict) -> dict:
-        # pylint: disable=W0212
-        simple = self.b._simplify_existing(existing)
+        simple = self.b.simplify_existing(existing)
         simple.pop('origin')
         self._build_all_available_cmds(existing['command'])
         return simple

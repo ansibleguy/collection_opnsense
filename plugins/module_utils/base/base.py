@@ -562,7 +562,7 @@ class Base:
             if _existing is not None and len(_existing) > 0:
                 self.e = _existing
 
-    def _simplify_existing(self, existing: dict) -> dict:
+    def simplify_existing(self, existing: dict) -> dict:
         translate, typing, bool_invert, value_map = {}, {}, [], {}
 
         if hasattr(self.i, self.ATTR_TRANSLATE):
@@ -595,7 +595,7 @@ class Base:
         if hasattr(self.i, '_simplify_existing'):
             return self.i._simplify_existing
 
-        return self._simplify_existing
+        return self.simplify_existing
 
     def _call_search(self) -> (list, dict):
         if hasattr(self.i, '_search_call'):

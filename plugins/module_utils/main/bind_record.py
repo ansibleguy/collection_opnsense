@@ -96,11 +96,10 @@ class Record(BaseModule):
                     'You may have to create it before managing its records.'
                 )
 
-            # pylint: disable=W0212
             self.existing = get_multiple_matching(
                 module=self.m, existing_items=self.existing_entries,
                 compare_item=self.p, match_fields=self.p['match_fields'],
-                simplify_func=self.b._simplify_existing,
+                simplify_func=self.b.simplify_existing,
             )
 
             self.exists_rr = len(self.existing) > 1

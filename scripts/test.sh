@@ -133,7 +133,7 @@ run_test 'ids_general' 1
 run_test 'ids_ruleset' 1
 run_test 'ids_rule' 1
 run_test 'ids_user_rule' 1
-# run_test 'ids_policy' 1
+run_test 'ids_policy' 1
 run_test 'system' 1
 run_test 'package' 1
 

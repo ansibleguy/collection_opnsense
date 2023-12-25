@@ -66,8 +66,10 @@ bash scripts/test.sh
 
 ----
 
-## Logs of automatic tests
+## Automatic tests
 
 The tests are run automatically using the [AnsibleGuy infrastructure](https://github.com/ansibleguy/_meta_cicd)!
+
+It is based on [some bash scripts](https://github.com/ansibleguy/_meta_cicd/blob/latest/templates/usr/local/bin/cicd/collection_test.sh.j2) and systemd timers.
 
 Logs for those functional tests can be found here: [Short](https://badges.ansibleguy.net/log/collection_opnsense_test_short.log), [Full](https://badges.ansibleguy.net/log/collection_opnsense_test.log)

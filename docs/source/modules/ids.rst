@@ -107,10 +107,27 @@ ansibleguy.opnsense.ids_user_rule
     "enabled","boolean","false","true","\-","En- or disable the rule"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
-Usage
-*****
 
-TBD
+ansibleguy.opnsense.ids_policy
+==============================
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "name","string","true","\-","description, desc","Unique policy name"
+    "priority","integer","false","0","prio","Policies are processed on a first match basis a lower number means more important"
+    "rulesets","list","false","\-","rs","Rulesets this policy applies to (all when none selected). Rulesets must be enabled beforehand!"
+    "action","list","false","\-","a","One or multiple of: 'disable', 'alert', 'drop'. Rule configured action"
+    "new_action","string","false","alert","na","One or multiple of: 'default', 'disable', 'alert', 'drop'. Action to perform when filter policy applies"
+    "rules","dictionary","false","\-","\-","Key-value pairs of policy-rules as provided by the enabled rulesets. Values must be string or lists. Example: '{\"rules\": {\"signature_severity\": [\"Minor\", \"Major\"], \"tag\": \"Dshield\"}}'"
+
+Info
+****
+
+.. warning::
+
+    The :code:`list` module will not return all details of the existing entries `as the current implementation does not scale well <https://github.com/opnsense/core/issues/7094>`_.
 
 Examples
 ********
@@ -378,3 +395,69 @@ ansibleguy.opnsense.ids_user_rule
         - name: Printing Rules
           ansible.builtin.debug:
             var: existing_rules.data
+
+ansibleguy.opnsense.ids_policy
+==============================
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: false
+      module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'ids_policy'
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.ids_policy:
+            name: 'Example'
+            # priority: 0
+            # rulesets: []
+            # action: []
+            # new_action: 'alert'
+            # rules: {}
+            # enabled: true
+            # reload: true
+            # debug: false
+
+        - name: Adding
+          ansibleguy.opnsense.ids_policy:
+            name: 'ANSIBLE_TEST_1_1'
+            priority: 1
+            rulesets: 'ET open/drop'
+            action: ['drop']
+            new_action: 'alert'
+            rules:
+              classtype: ['misc-attack', 'bad-unknown']
+              signature_severity: 'Minor'
+
+        - name: Disabling
+          ansibleguy.opnsense.ids_policy:
+            name: 'ANSIBLE_TEST_1_1'
+            priority: 1
+            rulesets: 'ET open/drop'
+            action: ['drop']
+            new_action: 'alert'
+            rules:
+              classtype: ['misc-attack', 'bad-unknown']
+              signature_severity: 'Minor'
+            enabled: false
+
+        - name: Removing
+          ansibleguy.opnsense.ids_policy:
+            name: 'ANSIBLE_TEST_1_1'
+            state: 'absent'
+
+        - name: Listing Policies
+          ansibleguy.opnsense.list:
+          #  target: 'ids_policy'
+          register: existing_policies
+
+        - name: Printing Policies
+          ansible.builtin.debug:
+            var: existing_policies.data
+

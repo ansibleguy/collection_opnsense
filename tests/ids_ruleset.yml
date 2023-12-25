@@ -29,7 +29,10 @@
 
     - name: Enabling 1 (used by other tests)
       ansibleguy.opnsense.ids_ruleset:
-        name: 'ET open/drop'
+        name: "{{ item }}"
+      loop:
+        - 'ET open/drop'
+        - 'OPNsense-App-detect/test'
 
     - name: Enabling 2
       ansibleguy.opnsense.ids_ruleset:
