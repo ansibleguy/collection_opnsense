@@ -116,8 +116,7 @@ class GeneralModule:
         self._build_diff()
 
     def _search_call(self, fail_response: bool = False) -> dict:
-        # pylint: disable=W0212
-        return self.b._simplify_existing(
+        return self.b.simplify_existing(
             self.b.search(
                 fail_response=fail_response
             )
