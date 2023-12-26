@@ -156,4 +156,4 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 
 ### Roadmap
 
-See: [Feature Requests](https://github.com/ansibleguy/collection_opnsense/issues)
+See: [Feature Requests](https://github.com/ansibleguy/collection_opnsense/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)
