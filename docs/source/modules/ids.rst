@@ -121,6 +121,21 @@ ansibleguy.opnsense.ids_policy
     "action","list","false","\-","a","One or multiple of: 'disable', 'alert', 'drop'. Rule configured action"
     "new_action","string","false","alert","na","One or multiple of: 'default', 'disable', 'alert', 'drop'. Action to perform when filter policy applies"
     "rules","dictionary","false","\-","\-","Key-value pairs of policy-rules as provided by the enabled rulesets. Values must be string or lists. Example: '{rules: {signature_severity: [Minor, Major], tag: Dshield}}'"
+    "enabled","boolean","false","true","\-","En- or disable the Policy"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
+ansibleguy.opnsense.ids_policy_rule
+===================================
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "sid","integer","true","\-","id","Unique signature-ID of the rule you want to match"
+    "action","string","false","alert","a","One of: 'alert', 'drop'. Rule configured action"
+    "enabled","boolean","false","true","\-","En- or disable the rule"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
 
 Info
 ****
@@ -461,3 +476,51 @@ ansibleguy.opnsense.ids_policy
           ansible.builtin.debug:
             var: existing_policies.data
 
+ansibleguy.opnsense.ids_policy_rule
+===================================
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: false
+      module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'ids_policy_rule'
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.ids_policy_rule:
+            sid: 2400000
+            # action: 'alert'
+            # enabled: true
+            # reload: true
+            # debug: false
+
+        - name: Adding
+          ansibleguy.opnsense.ids_policy_rule:
+            sid: 2400000
+            action: 'alert'
+
+        - name: Disabling
+          ansibleguy.opnsense.ids_policy_rule:
+            sid: 2400000
+            action: 'alert'
+            enabled: false
+
+        - name: Removing
+          ansibleguy.opnsense.ids_policy_rule:
+            sid: 2400000
+            state: 'absent'
+
+        - name: Listing Rules
+          ansibleguy.opnsense.list:
+          #  target: 'ids_policy_rule'
+          register: existing_rules
+
+        - name: Printing Rules
+          ansible.builtin.debug:
+            var: existing_rules.data

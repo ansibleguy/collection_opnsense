@@ -1,0 +1,95 @@
+---
+
+- name: Testing IDS Policy-Rule
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      target: 'ids_policy_rule'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Adding 1
+      ansibleguy.opnsense.ids_policy_rule:
+        sid: 2400000
+        action: 'alert'
+
+    - name: Adding 1 - nothing changed
+      ansibleguy.opnsense.ids_policy_rule:
+        sid: 2400000
+        action: 'alert'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1
+      ansibleguy.opnsense.ids_policy_rule:
+        sid: 2400000
+        action: 'drop'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 - nothing changed
+      ansibleguy.opnsense.ids_policy_rule:
+        sid: 2400000
+        action: 'drop'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        opn5.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1
+      ansibleguy.opnsense.ids_policy_rule:
+        sid: 2400000
+        action: 'drop'
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.ids_policy_rule:
+        sid: 2400000
+        action: 'drop'
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.ids_policy_rule:
+        sid: 2400000
+        action: 'drop'
+        enabled: true
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.ids_policy_rule:
+        sid: 2400000
+        state: absent
+      when: not ansible_check_mode

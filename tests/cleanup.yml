@@ -567,3 +567,8 @@
       ansibleguy.opnsense.ids_policy:
         description: 'ANSIBLE_TEST_1_1'
         state: absent
+
+    - name: Cleanup IDS Policy-Rule
+      ansibleguy.opnsense.ids_policy_rule:
+        sid: 2400000
+        state: absent

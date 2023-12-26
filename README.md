@@ -24,7 +24,7 @@ Then - install the collection itself:
 ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git
 
 # stable/tested version:
-ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git,1.2.7
+ansible-galaxy collection install git+https://github.com/ansibleguy/collection_opnsense.git,1.2.8
 ## OR
 ansible-galaxy collection install ansibleguy.opnsense
 ```
@@ -151,7 +151,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **IDS/IPS**         | ansibleguy.opnsense.ids_rule                                           | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html#id5)                                            | unstable |
 | **IDS/IPS**         | ansibleguy.opnsense.ids_user_rule                                      | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html#id6)                                            | unstable |
 | **IDS/IPS**         | ansibleguy.opnsense.ids_policy                                         | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html#id7)                                            | unstable |
-| **IDS/IPS**         | ansibleguy.opnsense.ids_policy_rule                                    | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html#id8)                                            | development |
+| **IDS/IPS**         | ansibleguy.opnsense.ids_policy_rule                                    | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html#id8)                                            | unstable |
 
 
 ### Roadmap
