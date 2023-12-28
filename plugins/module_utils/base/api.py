@@ -18,20 +18,20 @@ HTTPX_EXCEPTIONS = (
 class Session:
     def __init__(self, module: AnsibleModule, timeout: float = DEFAULT_TIMEOUT):
         self.m = module
-        timeout = timeout_override(module=module, timeout=timeout)
-        self.t = httpx.Timeout(timeout=timeout)
-        setdefaulttimeout(timeout)
-        self.s = self._start()
+        self.s = self._start(timeout)
 
-    def _start(self) -> httpx.Client:
+    def _start(self, timeout: float) -> httpx.Client:
         check_host(module=self.m)
         check_or_load_credentials(module=self.m)
+        timeout = timeout_override(module=self.m, timeout=timeout)
+        setdefaulttimeout(timeout)
         verify = ssl_verification(module=self.m)
         retries = get_api_retries(module=self.m)
+
         return httpx.Client(
             base_url=f"https://{self.m.params['firewall']}:{self.m.params['api_port']}/api",
             auth=(self.m.params['api_key'], self.m.params['api_secret']),
-            timeout=self.t,
+            timeout=httpx.Timeout(timeout=timeout),
             transport=httpx.HTTPTransport(verify=verify, retries=retries),
         )
 
@@ -49,7 +49,7 @@ class Session:
             response = check_response(
                 module=self.m,
                 cnf=cnf,
-                response=self.s.get(url=call_url, timeout=self.t)
+                response=self.s.get(url=call_url)
             )
 
         except HTTPX_EXCEPTIONS as error:
@@ -86,7 +86,7 @@ class Session:
                 module=self.m,
                 cnf=cnf,
                 response=self.s.post(
-                    url=call_url, json=data, headers=headers, timeout=self.t
+                    url=call_url, json=data, headers=headers
                 )
             )
 
