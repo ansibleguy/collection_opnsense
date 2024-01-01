@@ -24,8 +24,8 @@ class Session:
         check_host(module=self.m)
         check_or_load_credentials(module=self.m)
 
-        if 'timeout' in self.m.params and self.m.params['timeout'] is not None:
-            timeout = self.m.params['timeout']
+        if 'api_timeout' in self.m.params and self.m.params['api_timeout'] is not None:
+            timeout = self.m.params['api_timeout']
 
         setdefaulttimeout(timeout)
 
@@ -35,7 +35,7 @@ class Session:
             timeout=httpx.Timeout(timeout=timeout),
             transport=httpx.HTTPTransport(
                 verify=ssl_verification(module=self.m),
-                retries=self.m.params['retries'],
+                retries=self.m.params['api_retries'],
             ),
         )
 

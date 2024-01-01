@@ -1,16 +1,58 @@
 OPN_MOD_ARGS = dict(
-    firewall=dict(type='str', required=True),
-    api_port=dict(type=int, required=False, default=443),
-    api_key=dict(type='str', required=False, no_log=True),
-    api_secret=dict(type='str', required=False, no_log=True),
-    api_credential_file=dict(type='path', required=False),
-    ssl_verify=dict(type='bool', required=False, default=True),
-    ssl_ca_file=dict(type='path', required=False),
-    debug=dict(type='bool', required=False, default=False),
-    profiling=dict(type='bool', required=False, default=False),
-    timeout=dict(type='float', required=False),
-    retries=dict(type='int', required=False, default=1),
+    firewall=dict(
+        type='str', required=True,
+        description="IP-Address or DNS hostname of the target firewall. "
+                    "Must be included as 'common name' or 'subject alternative name' in the firewalls web-certificate "
+                    "to use 'ssl_verify=true'"
+    ),
+    api_port=dict(
+        type=int, required=False, default=443,
+        description='Port the target firewall uses for its web-interface'
+    ),
+    api_key=dict(
+        type='str', required=False, no_log=True,
+        description="API key used to authenticate, alternative to 'api_credential_file'"
+    ),
+    api_secret=dict(
+        type='str', required=False, no_log=True,
+        description="API secret used to authenticate, alternative to 'api_credential_file'. "
+                    "Is set as 'no_log' parameter"
+    ),
+    api_credential_file=dict(
+        type='path', required=False,
+        description="Path to the api-credential file as downloaded through the web-interface. "
+                    "Alternative to 'api_key' and 'api_secret'"
+    ),
+    ssl_verify=dict(
+        type='bool', required=False, default=True,
+        description='If the certificate of the target firewall should be validated. RECOMMENDED FOR PRODUCTION USAGE!'
+    ),
+    ssl_ca_file=dict(
+        type='path', required=False,
+        description='If you use an internal certificate-authority to create the certificate of the target firewall, '
+                    'provide the path to its public key for validation'
+    ),
+    debug=dict(
+        type='bool', required=False, default=False,
+        description="Used to en-/disable the debug mode. All API requests and responses will be shown "
+                    "as Ansible warnings at runtime. Will be hidden if the tasks 'no_log' parameter is set to 'true'"
+    ),
+    profiling=dict(
+        type='bool', required=False, default=False,
+        description="Used to en-/disable the profiling mode. "
+                    "Time consumption of the module will be logged to '/tmp/ansibleguy.opnsense'"
+    ),
+    api_timeout=dict(
+        type='float', required=False, aliases=['timeout'],
+        description='Manually override the modules default API-request timeout'
+    ),
+    api_retries=dict(
+        type='int', required=False, default=0, aliases=['connect_retries'],
+        description='Number of retries on API requests, in case there is an error when establishing the connection. '
+                    'This does not handle errors returned by the OPNSense system'
+    ),
 )
+
 BUILTIN_ALIASES = [
     'bogons', 'bogonsv6', 'sshlockout', 'virusprot',
 ]
