@@ -53,6 +53,11 @@ If an API changed, the current module-implementation might fail for firewalls ru
 
 See also: [Firmware-Upgrade using ansibleguy.opnsense.system](https://opnsense.ansibleguy.net/en/latest/modules/system.html#examples)
 
+
+**WARNING**:
+
+> The next few OPNSense releases might contain [API changes](https://github.com/opnsense/core/issues/7094) that might impact/break the functionality of some modules. I'll try to address these soon enough if the time is in our favour (;
+
 ----
 
 
