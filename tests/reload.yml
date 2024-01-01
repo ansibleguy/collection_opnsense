@@ -17,8 +17,10 @@
       when: not ansible_check_mode
       loop:
         - 'alias'
+        - 'rule'
         - 'route'
         - 'cron'
+        - 'unbound'
         - 'syslog'
         - 'ipsec'
         - 'ipsec_legacy'
@@ -31,3 +33,4 @@
         - 'frr'
         - 'webproxy'
         - 'bind'
+        - 'ids'
