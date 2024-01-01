@@ -61,7 +61,7 @@ class Base:
     def search(self, fail_response: bool = False) -> (dict, list):
         if fail_response:
             # find response keys in initial development
-            exit_debug(self.i.s.get(cnf={
+            exit_debug(self._api_get(cnf={
                 **self.i.call_cnf, **{'command': self.i.CMDS['search']}
             }))
 
@@ -74,7 +74,7 @@ class Base:
         if hasattr(self.i, self.ATTR_GET_MOD):
             mod_get = getattr(self.i, self.ATTR_GET_MOD)
 
-        data = self.i.s.get(cnf={
+        data = self._api_get(cnf={
             **self.i.call_cnf,
             **{
                 'module': mod_get,
@@ -168,7 +168,7 @@ class Base:
         self.i.r['changed'] = True
 
         if not self.i.m.check_mode:
-            return self.i.s.post(cnf={
+            return self._api_post(cnf={
                 **self.i.call_cnf, **{
                     'command': self.i.CMDS['add'],
                     'data': self._get_request_data(),
@@ -290,7 +290,7 @@ class Base:
             cont_rel = getattr(self.i, self.ATTR_REL_CONT)
 
         if not self.i.m.check_mode:
-            return self.i.s.post(cnf={
+            return self._api_post(cnf={
                 'module': self.i.API_MOD,
                 'controller': cont_rel,
                 'command': self.i.API_CMD_REL,
