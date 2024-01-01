@@ -196,16 +196,3 @@ def api_pretty_exception(method: str, url: str, error) -> ConnectionError:
         msg = f"Got timeout calling '{call}'!"
 
     return ConnectionError(msg)
-
-
-def timeout_override(module: AnsibleModule, timeout: float) -> float:
-    if 'timeout' in module.params and module.params['timeout'] is not None:
-        timeout = module.params['timeout']
-
-    return timeout
-
-def get_api_retries(module: AnsibleModule) -> int:
-    if not module.params['api_retries']:
-        return 3
-
-    return module.params['api_retries']

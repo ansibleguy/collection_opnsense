@@ -6,7 +6,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.api import \
     check_host, ssl_verification, check_response, get_params_path, debug_api, \
-    check_or_load_credentials, api_pretty_exception, timeout_override, get_api_retries
+    check_or_load_credentials, api_pretty_exception
 
 DEFAULT_TIMEOUT = 20.0
 HTTPX_EXCEPTIONS = (
@@ -23,16 +23,20 @@ class Session:
     def _start(self, timeout: float) -> httpx.Client:
         check_host(module=self.m)
         check_or_load_credentials(module=self.m)
-        timeout = timeout_override(module=self.m, timeout=timeout)
+
+        if 'timeout' in self.m.params and self.m.params['timeout'] is not None:
+            timeout = self.m.params['timeout']
+
         setdefaulttimeout(timeout)
-        verify = ssl_verification(module=self.m)
-        retries = get_api_retries(module=self.m)
 
         return httpx.Client(
             base_url=f"https://{self.m.params['firewall']}:{self.m.params['api_port']}/api",
             auth=(self.m.params['api_key'], self.m.params['api_secret']),
             timeout=httpx.Timeout(timeout=timeout),
-            transport=httpx.HTTPTransport(verify=verify, retries=retries),
+            transport=httpx.HTTPTransport(
+                verify=ssl_verification(module=self.m),
+                retries=self.m.params['retries'],
+            ),
         )
 
     def get(self, cnf: dict) -> dict:
