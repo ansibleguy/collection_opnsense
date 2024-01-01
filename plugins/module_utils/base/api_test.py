@@ -39,6 +39,12 @@ def test_session_creation():
     s.close()
 
 
+def test_session_contextmanager():
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
+    with Session(module=DUMMY_MODULE):
+        pass
+
+
 # todo: to test this we need to create a http-server that's able to abort connections before they are established
 # @pytest.mark.parametrize('retries', [
 #     0,

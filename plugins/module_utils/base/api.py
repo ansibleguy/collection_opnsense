@@ -105,16 +105,22 @@ class Session:
     def close(self) -> None:
         self.s.close()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
 
 def single_get(module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOUT) -> dict:
-    s = Session(module=module, timeout=timeout)
-    response = s.get(cnf=cnf)
-    s.close()
+    with Session(module=module, timeout=timeout) as s:
+        response = s.get(cnf=cnf)
+
     return response
 
 
 def single_post(module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOUT, headers: dict = None) -> dict:
-    s = Session(module=module, timeout=timeout)
-    response = s.post(cnf=cnf, headers=headers)
-    s.close()
+    with Session(module=module, timeout=timeout) as s:
+        response = s.post(cnf=cnf, headers=headers)
+
     return response

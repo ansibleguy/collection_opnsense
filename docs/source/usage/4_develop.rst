@@ -146,6 +146,16 @@ One can choose to either:
       session.post(cnf={'controller': 'alias', 'command': 'delItem', 'params': [uuid]})
       session.close()
 
+  or using a context-manager:
+
+  .. code-block:: python3
+
+      from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
+      with Session(module=module) as session:
+          session.get(cnf={'controller': 'alias', 'command': 'addItem', 'data': {'name': 'dummy', ...}})
+          session.post(cnf={'controller': 'alias', 'command': 'delItem', 'params': [uuid]})
+
+
 - use a single call - if only one is needed
 
   p.e. toggle a cronjob or restart a service

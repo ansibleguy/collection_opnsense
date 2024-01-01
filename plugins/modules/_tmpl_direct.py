@@ -47,66 +47,62 @@ def run_module():
         supports_check_mode=True,
     )
 
-    session = Session(module=module)
+    with Session(module=module) as _:  # rename to 'session'
+        # do api interactions here
+        exists = True  # check via api if the item already exists
+        # session.get(cnf={
+        #     'module': 'API-Module',
+        #     'controller': 'API-Controller',
+        #     'command': 'API-info-command',
+        #     'data': {'tests'}
+        # })
 
-    # do api interactions here
-    exists = True  # check via api if the item already exists
-    # session.get(cnf={
-    #     'module': 'API-Module',
-    #     'controller': 'API-Controller',
-    #     'command': 'API-info-command',
-    #     'data': {'tests'}
-    # })
-
-    if exists:
-        result['diff']['before'] = 'test'  # set to current value for diff-mode
-
-    if module.params['state'] == 'absent':
         if exists:
-            result['changed'] = True
-            if not module.check_mode:
-                # remove item via api if not in check-mode
-                # session.post(cnf={
-                #     'module': 'API-Module',
-                #     'controller': 'API-Controller',
-                #     'command': 'API-delete-command',
-                #     'params': ['uuid'],
-                # })
-                pass
+            result['diff']['before'] = 'test'  # set to current value for diff-mode
 
-    else:
-        if exists:
-            value_changed = True  # compare existing item config with configured one
-            if value_changed:
-                result['diff']['after'] = 'tests'  # set to configured value(s)
+        if module.params['state'] == 'absent':
+            if exists:
+                result['changed'] = True
                 if not module.check_mode:
-                    # update item via api if not in check-mode
+                    # remove item via api if not in check-mode
                     # session.post(cnf={
                     #     'module': 'API-Module',
                     #     'controller': 'API-Controller',
-                    #     'command': 'API-update-command',
-                    #     'data': {'tests'},
+                    #     'command': 'API-delete-command',
                     #     'params': ['uuid'],
                     # })
                     pass
 
         else:
-            result['diff']['after'] = 'tests'  # set to configured value(s)
-            if not module.check_mode:
-                # create item via api if not in check-mode
-                # session.post(cnf={
-                #     'module': 'API-Module',
-                #     'controller': 'API-Controller',
-                #     'command': 'API-add-command',
-                #     'data': {'tests'},
-                # })
-                pass
+            if exists:
+                value_changed = True  # compare existing item config with configured one
+                if value_changed:
+                    result['diff']['after'] = 'tests'  # set to configured value(s)
+                    if not module.check_mode:
+                        # update item via api if not in check-mode
+                        # session.post(cnf={
+                        #     'module': 'API-Module',
+                        #     'controller': 'API-Controller',
+                        #     'command': 'API-update-command',
+                        #     'data': {'tests'},
+                        #     'params': ['uuid'],
+                        # })
+                        pass
 
-    # don't forget to call the 'reload' endpoint to activate the changes (if available/needed)
+            else:
+                result['diff']['after'] = 'tests'  # set to configured value(s)
+                if not module.check_mode:
+                    # create item via api if not in check-mode
+                    # session.post(cnf={
+                    #     'module': 'API-Module',
+                    #     'controller': 'API-Controller',
+                    #     'command': 'API-add-command',
+                    #     'data': {'tests'},
+                    # })
+                    pass
 
-    # cleanup and exit
+        # don't forget to call the 'reload' endpoint to activate the changes (if available/needed)
 
-    session.close()
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 

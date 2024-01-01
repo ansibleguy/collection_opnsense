@@ -44,34 +44,32 @@ def run_module():
         }
     )
 
-    s = Session(module=module)
-
-    is_enabled = is_true(
-        s.get(cnf={
-            'module': 'quagga',
-            'controller': 'bfd',
-            'command': 'get',
-        })['bfd']['enabled']
-    )
-    result['diff']['before']['enabled'] = is_enabled
-
-    if is_enabled != module.params['enabled']:
-        result['changed'] = True
-
-        if not module.check_mode:
-            s.post(cnf={
+    with Session(module=module) as s:
+        is_enabled = is_true(
+            s.get(cnf={
                 'module': 'quagga',
                 'controller': 'bfd',
-                'command': 'set',
-                'data': {'bfd': {'enabled': to_digit(module.params['enabled'])}}
-            })
-            s.post(cnf={
-                'module': 'quagga',
-                'controller': 'service',
-                'command': 'reconfigure',
-            })
+                'command': 'get',
+            })['bfd']['enabled']
+        )
+        result['diff']['before']['enabled'] = is_enabled
 
-    s.close()
+        if is_enabled != module.params['enabled']:
+            result['changed'] = True
+
+            if not module.check_mode:
+                s.post(cnf={
+                    'module': 'quagga',
+                    'controller': 'bfd',
+                    'command': 'set',
+                    'data': {'bfd': {'enabled': to_digit(module.params['enabled'])}}
+                })
+                s.post(cnf={
+                    'module': 'quagga',
+                    'controller': 'service',
+                    'command': 'reconfigure',
+                })
+
     module.exit_json(**result)
 
 

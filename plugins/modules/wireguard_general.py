@@ -44,34 +44,32 @@ def run_module():
         }
     )
 
-    s = Session(module=module)
-
-    is_enabled = is_true(
-        s.get(cnf={
-            'module': 'wireguard',
-            'controller': 'general',
-            'command': 'get',
-        })['general']['enabled']
-    )
-    result['diff']['before']['enabled'] = is_enabled
-
-    if is_enabled != module.params['enabled']:
-        result['changed'] = True
-
-        if not module.check_mode:
-            s.post(cnf={
+    with Session(module=module) as s:
+        is_enabled = is_true(
+            s.get(cnf={
                 'module': 'wireguard',
                 'controller': 'general',
-                'command': 'set',
-                'data': {'general': {'enabled': to_digit(module.params['enabled'])}}
-            })
-            s.post(cnf={
-                'module': 'wireguard',
-                'controller': 'service',
-                'command': 'reconfigure',
-            })
+                'command': 'get',
+            })['general']['enabled']
+        )
+        result['diff']['before']['enabled'] = is_enabled
 
-    s.close()
+        if is_enabled != module.params['enabled']:
+            result['changed'] = True
+
+            if not module.check_mode:
+                s.post(cnf={
+                    'module': 'wireguard',
+                    'controller': 'general',
+                    'command': 'set',
+                    'data': {'general': {'enabled': to_digit(module.params['enabled'])}}
+                })
+                s.post(cnf={
+                    'module': 'wireguard',
+                    'controller': 'service',
+                    'command': 'reconfigure',
+                })
+
     module.exit_json(**result)
 
 
