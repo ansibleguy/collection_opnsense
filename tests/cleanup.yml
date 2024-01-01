@@ -203,6 +203,8 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_1_3'
+        - 'ANSIBLE_TEST_1_4'
 
     - name: Cleanup wireguard peers
       ansibleguy.opnsense.wireguard_peer:

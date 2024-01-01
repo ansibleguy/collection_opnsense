@@ -90,6 +90,16 @@
       register: opn20
       failed_when: not opn20.failed
 
+    - name: Adding 1 - failing because of non-existent CARP-VIP
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_1'
+        allowed_ips: ['192.168.0.1']
+        private_key: "{{ test.priv1 }}"
+        public_key: "{{ test.pub1 }}"
+        vip: '192.168.3.1'
+      register: opn24
+      failed_when: not opn24.failed
+
     - name: Adding 1
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
@@ -232,6 +242,43 @@
         opn16.changed
       when: not ansible_check_mode
 
+    - name: Adding dummy CARP-VIP
+      ansibleguy.opnsense.interface_vip:
+        interface: 'opt1'
+        address: '192.168.2.1/24'
+        mode: 'carp'
+        vhid: 10
+        password: 'top_secret'
+      when: not ansible_check_mode
+
+    - name: Adding 4 - linked to CARP-VIP
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_4'
+        allowed_ips: ['192.168.3.1']
+        public_key: "{{ test.pub2 }}"
+        private_key: "{{ test.priv2 }}"
+        peers: ['ANSIBLE_TEST_2_1']
+        vip: '192.168.2.1'
+      register: opn21
+      failed_when: >
+        opn21.failed or
+        not opn21.changed
+      when: not ansible_check_mode
+
+    - name: Adding 4 - nothing changed
+      ansibleguy.opnsense.wireguard_server:
+        name: 'ANSIBLE_TEST_1_4'
+        allowed_ips: ['192.168.3.1']
+        public_key: "{{ test.pub2 }}"
+        private_key: "{{ test.priv2 }}"
+        peers: ['ANSIBLE_TEST_2_1']
+        vip: '192.168.2.1'
+      register: opn22
+      failed_when: >
+        opn22.failed or
+        opn22.changed
+      when: not ansible_check_mode
+
     - name: Cleanup
       ansibleguy.opnsense.wireguard_server:
         name: "{{ item }}"
@@ -240,11 +287,19 @@
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_1_3'
+        - 'ANSIBLE_TEST_1_4'
       when: not ansible_check_mode
 
     - name: Cleanup peer
       ansibleguy.opnsense.wireguard_peer:
         name: 'ANSIBLE_TEST_2_1'
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Cleanup VIP
+      ansibleguy.opnsense.interface_vip:
+        interface: 'opt1'
+        address: '192.168.2.1/24'
         state: 'absent'
       when: not ansible_check_mode
 

@@ -16,16 +16,18 @@ class Server(BaseModule):
         'del': 'delServer',
         'set': 'setServer',
         'search': 'get',
+        'detail': 'getServer',
         'toggle': 'toggleserver',
     }
-    API_KEY_PATH = 'server.servers.server'
+    API_KEY = 'server'
+    API_KEY_PATH = f'server.servers.{API_KEY}'
     API_MOD = 'wireguard'
     API_CONT = 'server'
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
         'public_key', 'private_key', 'port', 'mtu', 'dns_servers', 'allowed_ips',
-        'disable_routes', 'gateway', 'peers',
+        'disable_routes', 'gateway', 'peers', 'vip',
     ]
     FIELDS_ALL = [FIELD_ID, 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
@@ -35,11 +37,13 @@ class Server(BaseModule):
         'private_key': 'privkey',
         'allowed_ips': 'tunneladdress',
         'disable_routes': 'disableroutes',
+        'vip': 'carp_depend_on',
     }
     FIELDS_TYPING = {
         'bool': ['enabled', 'disable_routes'],
         'list': ['dns_servers', 'allowed_ips', 'peers'],
         'int': ['port', 'mtu', 'instance'],
+        'select' : ['vip'],
     }
     FIELDS_DIFF_EXCLUDE = ['private_key']
     INT_VALIDATIONS = {
@@ -54,6 +58,7 @@ class Server(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session)
         self.server = {}
         self.existing_peers = None
+        self.existing_vips = {}
 
     def check(self) -> None:
         if self.p['state'] == 'present':
@@ -99,6 +104,9 @@ class Server(BaseModule):
 
         if self.p['state'] == 'present':
             self.p['peers'] = self._find_peers()
+            if not is_unset(self.p['vip']):
+                self.p['vip'] = self._find_vip()
+
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
 
     def _find_peers(self) -> list:
@@ -121,3 +129,30 @@ class Server(BaseModule):
                 peers.append(existing[peer])
 
         return peers
+
+    def _find_vip(self) -> str:
+        # "[192.168.1.1]  on opt1 (vhid 1)"
+        search_vip = f"[{self.p['vip']}]"
+        existing_vips = []
+
+        for uuid, values in self.existing_vips.items():
+            if values['value'].find(search_vip) != -1:
+                return uuid
+
+            if values['value'].find('[') != -1:
+                existing_vips.append(values['value'].split('[', 1)[1].split(']')[0])
+
+        self.m.fail_json(f"Provided VIP '{self.p['vip']}' was not found! Existing ones: {existing_vips}")
+
+    def _search_call(self) -> list:
+        raw = self.b.search()
+        if len(raw) > 0:
+            self.existing_vips = raw[list(raw.keys())[0]][self.FIELDS_TRANSLATE['vip']]
+
+        if len(raw) == 0:
+            self.existing_vips = self.s.get(cnf={
+                **self.call_cnf,
+                'command': self.CMDS['detail'],
+            })[self.API_KEY][self.FIELDS_TRANSLATE['vip']]
+
+        return raw

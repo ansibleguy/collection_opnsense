@@ -45,6 +45,12 @@ def run_module():
         ),
         disable_routes=dict(type='bool', default=False, required=False, aliases=['disableroutes']),
         gateway=dict(type='str', required=False, default='', aliases=['gw']),
+        vip=dict(
+            type='str', required=False, default='',
+            aliases=['vip_depend', 'carp', 'carp_depend'],
+            description='The Virtual-CARP-IP (CARP VHID) to depend on. '
+                        'When this virtual address is not in master state, then the instance will be shutdown'
+        ),
         peers=dict(type='list', elements='str', required=False, default=[], aliases=['clients']),
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
