@@ -21,9 +21,9 @@ class Session:
         timeout = timeout_override(module=module, timeout=timeout)
         self.t = httpx.Timeout(timeout=timeout)
         setdefaulttimeout(timeout)
-        self.s = self.start()
+        self.s = self._start()
 
-    def start(self) -> httpx.Client:
+    def _start(self) -> httpx.Client:
         check_host(module=self.m)
         check_or_load_credentials(module=self.m)
         return httpx.Client(
@@ -101,84 +101,14 @@ class Session:
 
 
 def single_get(module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOUT) -> dict:
-    check_host(module=module)
-    timeout = timeout_override(module=module, timeout=timeout)
-    setdefaulttimeout(timeout)
-
-    params_path = get_params_path(cnf=cnf)
-    call_url = f"https://{module.params['firewall']}:{module.params['api_port']}/api/" \
-               f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
-
-    debug_api(
-        module=module,
-        method='GET',
-        url=call_url,
-    )
-
-    check_or_load_credentials(module=module)
-
-    try:
-        response = check_response(
-            module=module,
-            cnf=cnf,
-            response=httpx.get(
-                url=call_url,
-                auth=(module.params['api_key'], module.params['api_secret']),
-                verify=ssl_verification(module=module),
-                timeout=httpx.Timeout(timeout=timeout),
-            )
-        )
-
-    except HTTPX_EXCEPTIONS as error:
-        raise api_pretty_exception(method='GET', url=call_url, error=error)
-
+    s = Session(module=module, timeout=timeout)
+    response = s.get(cnf=cnf)
+    s.close()
     return response
 
 
-def single_post(
-        module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOUT,
-        headers: dict = None) -> dict:
-    check_host(module=module)
-
-    timeout = timeout_override(module=module, timeout=timeout)
-    setdefaulttimeout(timeout)
-
-    if headers is None:
-        headers = {}
-
-    data = None
-
-    if 'data' in cnf and cnf['data'] is not None and len(cnf['data']) > 0:
-        headers['Content-Type'] = 'application/json'
-        data = cnf['data']
-
-    params_path = get_params_path(cnf=cnf)
-    call_url = f"https://{module.params['firewall']}:{module.params['api_port']}/api/" \
-               f"{cnf['module']}/{cnf['controller']}/{cnf['command']}{params_path}"
-
-    debug_api(
-        module=module,
-        method='POST',
-        url=call_url,
-        data=data,
-        headers=headers,
-    )
-
-    check_or_load_credentials(module=module)
-
-    try:
-        response = check_response(
-            module=module,
-            cnf=cnf,
-            response=httpx.post(
-                url=call_url,
-                auth=(module.params['api_key'], module.params['api_secret']), verify=ssl_verification(module=module),
-                json=data, headers=headers,
-                timeout=httpx.Timeout(timeout=timeout),
-            )
-        )
-
-    except HTTPX_EXCEPTIONS as error:
-        raise api_pretty_exception(method='POST', url=call_url, error=error)
-
+def single_post(module: AnsibleModule, cnf: dict, timeout: float = DEFAULT_TIMEOUT, headers: dict = None) -> dict:
+    s = Session(module=module, timeout=timeout)
+    response = s.post(cnf=cnf, headers=headers)
+    s.close()
     return response
