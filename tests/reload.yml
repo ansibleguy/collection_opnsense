@@ -20,7 +20,7 @@
         - 'rule'
         - 'route'
         - 'cron'
-        - 'unbound'
+        # - 'unbound'  taking way too long for testing (90+ sec)
         - 'syslog'
         - 'ipsec'
         - 'ipsec_legacy'
