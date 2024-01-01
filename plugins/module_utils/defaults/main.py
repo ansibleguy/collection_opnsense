@@ -10,6 +10,7 @@ OPN_MOD_ARGS = dict(
     debug=dict(type='bool', required=False, default=False),
     profiling=dict(type='bool', required=False, default=False),
     timeout=dict(type='float', required=False),
+    retries=dict(type='int', required=False, default=1),
 )
 BUILTIN_ALIASES = [
     'bogons', 'bogonsv6', 'sshlockout', 'virusprot',
