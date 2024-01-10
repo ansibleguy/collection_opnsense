@@ -2,6 +2,12 @@
 
 .. include:: ../_include/head.rst
 
+.. |img_module_abstraction| image:: ../../_static/img/module_abstraction.svg
+   :class: wiki-img
+
+.. |img_module_abstraction_actions| image:: ../../_static/img/module_abstraction_actions.svg
+   :class: wiki-img
+
 ===========
 4 - Develop
 ===========
@@ -39,6 +45,19 @@ Module
 ******
 
 There are `module-templates <https://github.com/ansibleguy/collection_opnsense/blob/latest/plugins/modules/>`_ that can be copied - so you don't have to re-write the basic structure.
+
+Abstraction
+***********
+
+* **Module Abstraction**
+
+   |img_module_abstraction|
+
+
+* **Module Action-Abstraction**
+
+   |img_module_abstraction_actions|
+
 
 Adding new module
 *****************
