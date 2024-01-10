@@ -57,7 +57,7 @@ See also: [Firmware-Upgrade using ansibleguy.opnsense.system](https://opnsense.a
 
 **WARNING**:
 
-> The next few OPNSense releases might contain [API changes](https://github.com/opnsense/core/issues/7094) that might impact/break the functionality of some modules. I'll try to address these soon enough if the time is in our favour (;
+> The next few OPNSense releases might contain [API changes](https://github.com/ansibleguy/collection_opnsense/issues/51) that might impact/break the functionality of some modules.
 
 ----
 
