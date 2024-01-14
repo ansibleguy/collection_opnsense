@@ -7,12 +7,12 @@ on:
     branches: [latest]
     paths:
       - '**.py'
-      - '.github/workflows/test.yml'
+      - '.github/workflows/unit_test.yml'
   pull_request:
     branches: [latest]
     paths:
       - '**.py'
-      - '.github/workflows/test.yml'
+      - '.github/workflows/unit_test.yml'
 
 jobs:
   build:

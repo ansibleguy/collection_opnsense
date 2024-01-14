@@ -8,14 +8,14 @@ on:
     paths:
       - '**.py'
       - '**.yml'
-      - '.github/workflows/test.yml'
+      - '.github/workflows/lint.yml'
       - 'requirements_lint.txt'
   pull_request:
     branches: [latest]
     paths:
       - '**.py'
       - '**.yml'
-      - '.github/workflows/test.yml'
+      - '.github/workflows/lint.yml'
       - 'requirements_lint.txt'
 
 jobs:
