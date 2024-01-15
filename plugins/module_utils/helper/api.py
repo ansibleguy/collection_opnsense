@@ -195,4 +195,8 @@ def api_pretty_exception(method: str, url: str, error) -> ConnectionError:
     if str(error).find('timed out') != -1:
         msg = f"Got timeout calling '{call}'!"
 
+    if str(error).find('CERTIFICATE_VERIFY_FAILED') != -1 or str(error).find('certificate verify failed') != -1:
+        msg = f"SSL verification failed '{url}'! Make sure to follow the the documentation: "\
+              "https://opnsense.ansibleguy.net/en/latest/usage/2_basic.html#ssl-certificate"
+
     return ConnectionError(msg)
