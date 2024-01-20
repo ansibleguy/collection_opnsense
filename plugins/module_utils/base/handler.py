@@ -31,5 +31,5 @@ def exit_cnf(msg: str):
 def module_dependency_error() -> None:
     exit_env(
         'For this Ansible-module to work you must install its dependencies first: '
-        "'python3 -m pip install httpx'"
+        "'python3 -m pip install --upgrade httpx'"
     )

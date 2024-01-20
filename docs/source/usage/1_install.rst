@@ -19,7 +19,7 @@ The `httpx python module <https://www.python-httpx.org/>`_ is used for API commu
 
 .. code-block:: bash
 
-    python3 -m pip install httpx
+    python3 -m pip install --upgrade httpx
 
 
 Collection

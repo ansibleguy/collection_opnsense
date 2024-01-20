@@ -15,7 +15,7 @@ Functional Test Logs: [Short](https://badges.ansibleguy.net/log/collection_opnse
 The [httpx python module](https://www.python-httpx.org/) is used for API communications!
 
 ```bash
-python3 -m pip install httpx
+python3 -m pip install --upgrade httpx
 ```
 
 Then - install the collection itself:
