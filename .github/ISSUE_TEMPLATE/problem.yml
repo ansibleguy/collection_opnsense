@@ -16,7 +16,7 @@ body:
         - [ ] Read the troubleshooting info: [Info](https://github.com/ansibleguy/collection_opnsense#errors)
 
         - [ ] Check if there are existing [issues](https://github.com/ansibleguy/collection_opnsense/issues)
-        or [discussions](https://github.com/ansible-semaphore/semaphore/discussions) regarding your topic
+        or [discussions](https://github.com/ansibleguy/collection_opnsense/discussions) regarding your topic
 
   - type: textarea
     id: modules
