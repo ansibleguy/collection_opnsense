@@ -19,11 +19,11 @@ class Vlan(BaseModule):
     API_MOD = 'interfaces'
     API_CONT = 'vlan_settings'
     API_CMD_REL = 'reconfigure'
-    FIELDS_CHANGE = ['interface', 'vlan', 'priority']
+    FIELDS_CHANGE = ['interface', 'vlan', 'priority', 'device']
     FIELDS_ALL = [FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
-        # 'name': 'vlanif',  # can't be configured
+        'device': 'vlanif',
         'interface': 'if',
         'vlan': 'tag',
         'priority': 'pcp',
@@ -50,6 +50,9 @@ class Vlan(BaseModule):
 
             if is_unset(self.p['vlan']):
                 self.m.fail_json("You need to provide a 'vlan' to create a vlan-interface!")
+
+            if is_unset(self.p['device']):
+                self.p['device'] = f"vlan0.{self.p['vlan']}"  # OPNSense forces us to start with 'vlan0' for some reason
 
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 

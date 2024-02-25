@@ -27,7 +27,10 @@ except MODULE_EXCEPTIONS:
 
 def run_module():
     module_args = dict(
-        # name=dict(type='str', required=True, aliases=['vlanif']),  # can't be configured
+        device=dict(
+            type='str', required=False, aliases=['vlanif'],
+            description="Optional 'device' of the entry. Needs to start with 'vlan0'",
+        ),
         interface=dict(
             type='str', required=False, aliases=['parent', 'port', 'int', 'if'],
             description='Existing VLAN capable interface - you must provide the network '

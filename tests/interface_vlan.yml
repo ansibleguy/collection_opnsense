@@ -72,12 +72,33 @@
       failed_when: not opn_fail5.failed
       when: not ansible_check_mode
 
+    - name: Adding 2 - failing because of invalid device-name (server-side)
+      ansibleguy.opnsense.interface_vlan:
+        description: 'ANSIBLE_TEST_1_2'
+        interface: 'vtnet0'
+        vlan: 100
+        device: 'vlan100'
+      register: opn_fail5
+      failed_when: not opn_fail5.failed
+      when: not ansible_check_mode
+
+    - name: Adding 2 - failing because of duplicate device-name (server-side)
+      ansibleguy.opnsense.interface_vlan:
+        description: 'ANSIBLE_TEST_1_2'
+        interface: 'vtnet0'
+        vlan: 100
+        device: 'vlan0.100'
+      register: opn_fail5
+      failed_when: not opn_fail5.failed
+      when: not ansible_check_mode
+
     - name: Adding 2
       ansibleguy.opnsense.interface_vlan:
         description: 'ANSIBLE_TEST_1_2'
         interface: 'vtnet0'
         vlan: 101
         priority: 5
+        device: 'vlan0.101'
       register: opn5
       failed_when: >
         opn5.failed or
@@ -89,6 +110,7 @@
         interface: 'vtnet0'
         vlan: 101
         priority: 5
+        device: 'vlan0.101'
       register: opn6
       failed_when: >
         opn6.failed or
@@ -101,6 +123,7 @@
         interface: 'vtnet0'
         vlan: 101
         priority: 5
+        device: 'vlan0.101'
         state: 'absent'
       register: opn7
       failed_when: >
