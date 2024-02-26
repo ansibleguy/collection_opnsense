@@ -10,18 +10,9 @@
       ssl_verify: false
 
   tasks:
-    - name: Showing handshakes
+    - name: Showing config
       ansibleguy.opnsense.wireguard_show:
-        target: 'handshake'
       register: opn1
       failed_when: >
         opn1.failed or
         'data' not in opn1
-
-    - name: Showing config
-      ansibleguy.opnsense.wireguard_show:
-        target: 'config'
-      register: opn2
-      failed_when: >
-        opn2.failed or
-        'data' not in opn2

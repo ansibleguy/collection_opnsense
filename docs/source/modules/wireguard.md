@@ -56,9 +56,7 @@ For basic parameters see: [Basics](https://opnsense.ansibleguy.net/en/latest/usa
 
 ### ansibleguy.opnsense.wireguard_show
 
-| Parameter   | Type    | Required | Default value | Aliases                                                                                            | Comment                                                 |
-|:------------|:--------|:---------|:--------------|:---------------------------------------------------------------------------------------------------|:--------------------------------------------------------|
-| target      | string  | false    | handshake     | -                                                                                                  | What information to query. One of: 'handshake', 'config' |
+Will return the information seen at the `VPN - Wireguard - Diagnostics` page
 
 ### ansibleguy.opnsense.wireguard_general
 
@@ -107,16 +105,11 @@ To make a dynamic WireGuard endpoint to re-connect you may want to create a [gat
   tasks:
     - name: Example
       ansibleguy.opnsense.wireguard_show:
-        # target: 'handshake'
-
-    - name: Querying the current WireGuard handshakes
-      ansibleguy.opnsense.wireguard_show:
-        target: 'handshake'
-      register: wg_hands
+      register: wg_status
 
     - name: Printing
       ansible.builtin.debug:
-        var: wg_hands.data
+        var: wg_status.data
 ```
 
 ### ansibleguy.opnsense.wireguard_peer

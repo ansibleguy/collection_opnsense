@@ -24,11 +24,6 @@ except MODULE_EXCEPTIONS:
 
 def run_module():
     module_args = dict(
-        target=dict(
-            type='str', required=False, default='handshake',
-            choices=['handshake', 'config'],
-            description='What information to query'
-        ),
         **OPN_MOD_ARGS,
     )
 
@@ -37,17 +32,12 @@ def run_module():
         supports_check_mode=True,
     )
 
-    command_mapping = {
-        'config': 'showconf',
-        'handshake': 'showhandshake',
-    }
-
     info = single_get(
         module=module,
         cnf={
             'module': 'wireguard',
             'controller': 'service',
-            'command': command_mapping[module.params['target']],
+            'command': 'show',
         }
     )
 
