@@ -11,15 +11,6 @@
 
 **Service Docs**: [WireGuard - Site to Site](https://docs.opnsense.org/manual/how-tos/wireguard-s2s.html) | [WireGuard - Client to Site](https://docs.opnsense.org/manual/how-tos/wireguard-client.html)
 
-## Prerequisites
-
-You need to install the WireGuard plugin:
-```
-os-wireguard
-```
-
-You can also install it using the [package module](https://opnsense.ansibleguy.net/en/latest/modules/package.html).
-
 ## Definition
 
 For basic parameters see: [Basics](https://opnsense.ansibleguy.net/en/latest/usage/2_basic.html)

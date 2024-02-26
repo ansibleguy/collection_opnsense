@@ -18,8 +18,7 @@ Most tests fail if some other config is found.
 
 Some tests need packages to be pre-installed:
 
-* rule* -  `os-firewall`
-* wireguard_* - `os-wireguard`
+* webproxy_* - `os-squid`
 * frr_* - `os-frr`
 * bind_* - `os-bind`
 

@@ -42,7 +42,7 @@
         name: 'ANSIBLE_TEST_1_1'
         version: 'ikev2'
         unique: 'replace'
-        proposals: ['aes256gcm16-ecp521', 'aes256-sha512-x25519']
+        proposals: ['default', 'aes256-sha256-modp2048', 'aes256gcm16-sha512-modp2048']
       register: opn1
       failed_when: >
         opn1.failed or
@@ -53,7 +53,7 @@
         name: 'ANSIBLE_TEST_1_1'
         version: 'ikev2'
         unique: 'replace'
-        proposals: ['aes256gcm16-ecp521', 'aes256-sha512-x25519']
+        proposals: ['default', 'aes256-sha256-modp2048', 'aes256gcm16-sha512-modp2048']
       register: opn2
       failed_when: >
         opn2.failed or
@@ -64,7 +64,7 @@
       ansibleguy.opnsense.ipsec_connection:
         name: 'ANSIBLE_TEST_1_1'
         unique: 'replace'
-        proposals: 'aes256gcm16-ecp521'
+        proposals: 'aes256gcm16-sha512-modp2048'
         reauth_seconds: 3600
         keying_tries: 5
       register: opn3
@@ -76,7 +76,7 @@
       ansibleguy.opnsense.ipsec_connection:
         name: 'ANSIBLE_TEST_1_1'
         unique: 'replace'
-        proposals: 'aes256gcm16-ecp521'
+        proposals: 'aes256gcm16-sha512-modp2048'
         reauth_seconds: 3600
         keying_tries: 5
         enabled: false
@@ -90,7 +90,7 @@
       ansibleguy.opnsense.ipsec_tunnel:
         name: 'ANSIBLE_TEST_1_1'
         unique: 'replace'
-        proposals: 'aes256gcm16-ecp521'
+        proposals: 'aes256gcm16-sha512-modp2048'
         reauth_seconds: 3600
         keying_tries: 5
         enabled: false
@@ -100,7 +100,7 @@
       ansibleguy.opnsense.ipsec_connection:
         name: 'ANSIBLE_TEST_1_1'
         unique: 'replace'
-        proposals: 'aes256gcm16-ecp521'
+        proposals: 'aes256gcm16-sha512-modp2048'
         reauth_seconds: 3600
         keying_tries: 5
         enabled: false
@@ -114,7 +114,7 @@
       ansibleguy.opnsense.ipsec_connection:
         name: 'ANSIBLE_TEST_1_1'
         unique: 'replace'
-        proposals: 'aes256gcm16-ecp521'
+        proposals: 'aes256gcm16-sha512-modp2048'
         reauth_seconds: 3600
         keying_tries: 5
       register: opn6
@@ -128,7 +128,6 @@
         name: 'ANSIBLE_TEST_1_2'
         unique: 'never'
         version: 'ikev1'
-        proposals: ['aes128-sha512-ecp224', 'aes128-sha512-ecp384']
         reauth_seconds: 7200
         dpd_timeout_seconds: 7200
         dpd_delay_seconds: 7200
@@ -150,7 +149,6 @@
         name: 'ANSIBLE_TEST_1_2'
         unique: 'never'
         version: 'ikev1'
-        proposals: ['aes128-sha512-ecp224', 'aes128-sha512-ecp384']
         reauth_seconds: 7200
         dpd_timeout_seconds: 7200
         dpd_delay_seconds: 7200

@@ -16,7 +16,7 @@
       target: 'package'
 
   vars:
-    test_app1: 'os-api-backup'
+    test_app1: 'os-iperf'
     test_app2: 'os-dmidecode'
 
   tasks:
@@ -27,7 +27,7 @@
 
     - name: Installing - exists
       ansibleguy.opnsense.package:
-        name: 'os-firewall'
+        name: 'os-squid'
         action: 'install'
       register: opn1
       failed_when: >
