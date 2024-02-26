@@ -21,11 +21,24 @@ Web Proxy
 `webproxy_pac_match <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_pac_match.yml>`_ |
 `webproxy_pac_rule <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/webproxy_pac_rule.yml>`_
 
-**API Docs**: `Core - Proxy <https://docs.opnsense.org/development/api/core/proxy.html>`_
+**API Docs**: `Plugins - Proxy <https://docs.opnsense.org/development/api/plugins/proxy.html>`_
 
 **Service Docs**: `Transparent Proxy <https://docs.opnsense.org/manual/how-tos/proxytransparent.html>`_ |
 `Caching Proxy <https://docs.opnsense.org/manual/how-tos/cachingproxy.html>`_ |
 `Web Proxy/Filter <https://docs.opnsense.org/manual/how-tos/proxywebfilter.html>`_
+
+Prerequisites
+*************
+
+You need to install the following plugin:
+
+.. code-block:: bash
+
+    os-squid
+
+You can also install it using the :ref:`ansibleguy.opnsense.package <modules_package>` module.
+
+----
 
 Info
 ****

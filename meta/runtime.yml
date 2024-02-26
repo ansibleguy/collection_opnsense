@@ -132,3 +132,27 @@ plugin_routing:
       redirect: ansibleguy.opnsense.ipsec_pool
     snat:
       redirect: ansibleguy.opnsense.source_nat
+    proxy_general:
+      redirect: ansibleguy.opnsense.webproxy_general
+    proxy_cache:
+      redirect: ansibleguy.opnsense.webproxy_cache
+    proxy_parent:
+      redirect: ansibleguy.opnsense.webproxy_parent
+    proxy_traffic:
+      redirect: ansibleguy.opnsense.webproxy_traffic
+    proxy_forward:
+      redirect: ansibleguy.opnsense.webproxy_forward
+    proxy_acl:
+      redirect: ansibleguy.opnsense.webproxy_acl
+    proxy_icap:
+      redirect: ansibleguy.opnsense.webproxy_icap
+    proxy_auth:
+      redirect: ansibleguy.opnsense.webproxy_auth
+    proxy_remote_acl:
+      redirect: ansibleguy.opnsense.webproxy_remote_acl
+    proxy_pac_proxy:
+      redirect: ansibleguy.opnsense.webproxy_pac_proxy
+    proxy_pac_match:
+      redirect: ansibleguy.opnsense.webproxy_pac_match
+    proxy_pac_rule:
+      redirect: ansibleguy.opnsense.webproxy_pac_rule
