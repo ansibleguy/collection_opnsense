@@ -58,6 +58,10 @@ Examples
           ansibleguy.opnsense.system:
             action: 'update'
 
+        - name: Wait for information to be refreshed
+          ansible.builtin.pause:
+            seconds: 10
+
         - name: Start upgrade - will wait until finished
           ansibleguy.opnsense.system:
             action: 'upgrade'
