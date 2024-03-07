@@ -16,7 +16,7 @@
       target: 'package'
 
   vars:
-    test_app1: 'os-iperf'
+    test_app1: 'os-hw-probe'
     test_app2: 'os-dmidecode'
 
   tasks:
