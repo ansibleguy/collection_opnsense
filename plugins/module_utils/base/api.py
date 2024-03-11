@@ -32,7 +32,7 @@ class Session:
         return httpx.Client(
             base_url=f"https://{self.m.params['firewall']}:{self.m.params['api_port']}/api",
             auth=(self.m.params['api_key'], self.m.params['api_secret']),
-            timeout=httpx.Timeout(timeout=timeout),
+            timeout=httpx.Timeout(timeout=timeout, connect=2.0),
             transport=httpx.HTTPTransport(
                 verify=ssl_verification(module=self.m),
                 retries=self.m.params['api_retries'],

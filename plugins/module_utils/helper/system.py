@@ -4,6 +4,7 @@ from datetime import datetime
 
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session, HTTPX_EXCEPTIONS
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import CONNECTION_TEST_TIMEOUT
 
 
@@ -31,20 +32,62 @@ def _wait_msg(module: AnsibleModule, msg: str):
 def wait_for_response(module: AnsibleModule) -> bool:
     timeout = time() + module.params['wait_timeout']
 
-    if module.params['action'] == 'upgrade':
-        _wait_msg(module, 'Waiting download & upgrade to finish..')
-        sleep(int(module.params['wait_timeout'] / 2))
-
-    else:
-        _wait_msg(module, 'Waiting for service to stop..')
-        sleep(10)
+    _wait_msg(module, 'Waiting for service to stop..')
+    sleep(10)
 
     while time() < timeout:
+        poll_interval_start = time()
+
         if _opn_reachable(module=module):
             _wait_msg(module, 'Got response!')
             return True
 
         _wait_msg(module, 'Waiting for response..')
-        sleep(module.params['poll_interval'])
+        poll_interval_elapsed = time() - poll_interval_start
+        if poll_interval_elapsed < module.params['poll_interval']:
+            sleep(module.params['poll_interval'] - poll_interval_elapsed)
 
-    return False
+    raise TimeoutError
+
+
+def wait_for_update(module: AnsibleModule, s: Session) -> bool:
+    timeout = time() + module.params['wait_timeout']
+
+    if module.params['action'] == 'upgrade':
+        _wait_msg(module, 'Waiting for download & upgrade to finish..')
+
+    else:
+        _wait_msg(module, 'Waiting for update to finish..')
+
+    sleep(2)
+
+    while time() < timeout:
+        poll_interval_start = time()
+
+        try:
+            result = s.get({
+                'command': 'upgradestatus',
+                'module': 'core',
+                'controller': 'firmware',
+            })
+            status = result['status']
+
+            _wait_msg(module, f"Got response: {status}")
+
+            if status == 'error' and 'log' in result:
+                _wait_msg(module, f"Got error: {result['log']}")
+                return False
+
+            if status == 'done':
+                _wait_msg(module, f"Got result: {result['log']}")
+                return True
+
+        except HTTPX_EXCEPTIONS:
+            # not reachable while rebooting
+            _wait_msg(module, 'Waiting for response..')
+
+        poll_interval_elapsed = time() - poll_interval_start
+        if poll_interval_elapsed < module.params['poll_interval']:
+            sleep(module.params['poll_interval'] - poll_interval_elapsed)
+
+    raise TimeoutError

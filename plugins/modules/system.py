@@ -11,9 +11,10 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler i
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import single_post
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import OPN_MOD_ARGS
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.system import wait_for_response
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.system import wait_for_response, \
+        wait_for_update
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -46,24 +47,26 @@ def run_module():
     }
 
     if not module.check_mode:
-        single_post(
-            module=module,
-            cnf={
+        with Session(module=module) as s:
+            s.post({
                 'command': module.params['action'],
                 'module': 'core',
                 'controller': 'firmware',
-            }
-        )
+            })
 
-        if module.params['action'] in ['reboot', 'upgrade'] and module.params['wait']:
-            if module.params['debug']:
-                module.warn(f"Waiting for firewall to complete '{module.params['action']}'!")
+            if module.params['wait']:
+                if module.params['debug']:
+                    module.warn(f"Waiting for firewall to complete '{module.params['action']}'!")
 
-            # todo: cleaner way of handling if no upgrade is needed
-            result['failed'] = not wait_for_response(module=module)
+                try:
+                    if module.params['action'] in ['upgrade', 'update']:
+                        result['failed'] = not wait_for_update(module=module, s=s)
 
-            if result['failed']:
-                result['timeout_exceeded'] = True
+                    elif module.params['action'] == 'reboot':
+                        result['failed'] = not wait_for_response(module=module)
+
+                except TimeoutError:
+                    result['timeout_exceeded'] = True
 
     module.exit_json(**result)
 

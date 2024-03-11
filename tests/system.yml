@@ -14,11 +14,6 @@
       ansibleguy.opnsense.system:
         action: 'update'
 
-    - name: Wait for information to be refreshed
-      ansible.builtin.pause:
-        seconds: 10
-      when: not ansible_check_mode
-
     - name: Upgrade with wait
       ansibleguy.opnsense.system:
         action: 'upgrade'
