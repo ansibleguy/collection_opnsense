@@ -62,7 +62,7 @@ def run_module():
         ),
         start_action=dict(
             type='str', required=False, aliases=['start'], default='start',
-            choices=['none', 'trap+start', 'route', 'start', 'trap'],
+            choices=['none', 'trap|start', 'route', 'start', 'trap'],
             description='Action to perform after loading the configuration. The default of none loads the connection '
                         'only, which then can be manually initiated or used as a responder configuration. The value '
                         'trap installs a trap policy which triggers the tunnel as soon as matching traffic has been '
