@@ -574,3 +574,11 @@
       ansibleguy.opnsense.ids_policy_rule:
         sid: 2400000
         state: absent
+
+    - name: Cleanup OpenVPN Client
+      ansibleguy.opnsense.openvpn_client:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'

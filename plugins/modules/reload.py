@@ -45,6 +45,7 @@ def run_module():
                 'webproxy',
                 'bind',
                 'ids',
+                'openvpn',
             ],
             description='What part of the running config should be reloaded'
         ),
@@ -140,6 +141,10 @@ def run_module():
         elif target == 'ids':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ids_general import \
                 General as Target_Obj
+
+        elif target == 'openvpn':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.openvpn_client import \
+                Client as Target_Obj
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

@@ -135,6 +135,10 @@ run_test 'ids_rule' 1
 run_test 'ids_user_rule' 1
 run_test 'ids_policy' 1
 run_test 'ids_policy_rule' 1
+run_test 'openvpn_client' 1
+# run_test 'openvpn_overwrite' 1
+# run_test 'openvpn_static_key' 1
+# run_test 'openvpn_server' 1
 run_test 'system' 1
 run_test 'package' 1
 

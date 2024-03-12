@@ -35,6 +35,14 @@ To perform some tests (system, ids) the test firewall needs to reach some public
 * system - `pkg.opnsense.org`
 * ids - `rules.emergingthreats.net`
 
+### Certificates
+
+These internal certificates need to be created:
+
+* CA: `OpenVPN`
+* Client Certificate: `OpenVPN Client`
+* Server Certificate: `OpenVPN Server` - SAN `DNS:openvpn.intern`
+
 ----
 
 ## Run

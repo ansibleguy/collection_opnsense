@@ -105,6 +105,11 @@ action_groups:
     - ansibleguy.opnsense.ids_ruleset
     - ansibleguy.opnsense.ids_ruleset_properties
     - ansibleguy.opnsense.ids_user_rule
+  openvpn:
+    - ansibleguy.opnsense.openvpn_client
+    - ansibleguy.opnsense.openvpn_server
+    - ansibleguy.opnsense.openvpn_static_key
+    - ansibleguy.opnsense.openvpn_overwrite
   all:
     - metadata:
         extend_group:
@@ -123,6 +128,7 @@ action_groups:
           - ansibleguy.opnsense.nat
           - ansibleguy.opnsense.system
           - ansibleguy.opnsense.ids
+          - ansibleguy.opnsense.openvpn
 
 plugin_routing:
   modules:

@@ -1,0 +1,202 @@
+---
+
+- name: Testing OpenVPN Client
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      target: 'openvpn_instance'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1 - failing because no remote was provided
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_1_1'
+        protocol: 'udp'
+        mode: 'tun'
+        certificate: 'OpenVPN Client'
+        ca: 'OpenVPN'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding 1 - failing because no ca/cert was provided
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_1_1'
+        remote: 'openvpn.test.ansibleguy.net:20000'
+        protocol: 'udp'
+        mode: 'tun'
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+
+    - name: Adding 1
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_1_1'
+        remote: 'openvpn.test.ansibleguy.net:20000'
+        protocol: 'udp'
+        mode: 'tun'
+        network_remote: ['192.168.77.128/27']
+        ca: 'OpenVPN'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_1_1'
+        remote: 'openvpn.test.ansibleguy.net:20000'
+        protocol: 'udp'
+        mode: 'tun'
+        network_remote: ['192.168.77.128/27', '192.168.89.64/27']
+        log_level: 5
+        ca: 'OpenVPN'
+        certificate: 'OpenVPN Client'
+        mtu: 1400
+        mss_fix: true
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+
+    - name: Disabling 1
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_1_1'
+        remote: 'openvpn.test.ansibleguy.net:20000'
+        protocol: 'udp'
+        mode: 'tun'
+        network_remote: ['192.168.77.128/27', '192.168.89.64/27']
+        log_level: 5
+        ca: 'OpenVPN'
+        certificate: 'OpenVPN Client'
+        mtu: 1400
+        mss_fix: true
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_1_1'
+        remote: 'openvpn.test.ansibleguy.net:20000'
+        protocol: 'udp'
+        mode: 'tun'
+        network_remote: ['192.168.77.128/27', '192.168.89.64/27']
+        log_level: 5
+        ca: 'OpenVPN'
+        certificate: 'OpenVPN Client'
+        mtu: 1400
+        mss_fix: true
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_1_1'
+        remote: 'openvpn.test.ansibleguy.net:20000'
+        protocol: 'udp'
+        mode: 'tun'
+        network_remote: ['192.168.77.128/27', '192.168.89.64/27']
+        log_level: 5
+        ca: 'OpenVPN'
+        certificate: 'OpenVPN Client'
+        mtu: 1400
+        mss_fix: true
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_1_2'
+        remote: 'openvpn.test.ansibleguy.net:24000'
+        protocol: 'tcp'
+        mode: 'tap'
+        network_local: '192.168.67.0/29'
+        network_remote: '192.168.67.128/29'
+        ca: 'OpenVPN'
+        certificate: 'OpenVPN Client'
+        mtu: 1420
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_1_2'
+        remote: 'openvpn.test.ansibleguy.net:24000'
+        protocol: 'tcp'
+        mode: 'tap'
+        network_local: '192.168.67.0/29'
+        network_remote: '192.168.67.128/29'
+        ca: 'OpenVPN'
+        certificate: 'OpenVPN Client'
+        mtu: 1420
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_1_2'
+        state: 'absent'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn8
+      failed_when: >
+        'data' not in opn8 or
+        opn8.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.openvpn_client:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_post1
+      failed_when: >
+        'data' not in opn_post1 or
+        opn_post1.data | length != 0

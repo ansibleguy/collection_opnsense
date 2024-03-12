@@ -26,12 +26,12 @@ except MODULE_EXCEPTIONS:
 def run_module():
     module_args = dict(
         # general
-        description=dict(
-            type='str', required=True, default='', aliases=['desc', 'name'],
+        name=dict(
+            type='str', required=True, aliases=['desc', 'description'],
             description='The name used to match this config to existing entries'
         ),
         remote=dict(
-            type='str', required=True, aliases=['peer', 'server'],
+            type='str', required=False, aliases=['peer', 'server'],
             description='Remote host name or IP address with optional port'
         ),
         protocol=dict(
@@ -40,7 +40,7 @@ def run_module():
             description='Use protocol for communicating with remote host.'
         ),
         port=dict(
-            type='str', required=False, default='',
+            type='str', required=False, default='', aliases=['local_port', 'bind_port'],
             description='Port number to use.'
                         'Specifies a bind address, or nobind when client does not have a specific bind address.'
         ),
@@ -78,7 +78,7 @@ def run_module():
         ),
         # trust
         certificate=dict(
-            type='str', required=True, default='', aliases=['cert'],
+            type='str', required=False, aliases=['cert'],
             description='Certificate to use for this service.'
         ),
         ca=dict(
@@ -95,7 +95,7 @@ def run_module():
         authentication=dict(
             type='str', required=False, default='', aliases=['auth', 'auth_algo'],
             choices=[
-                'BLAKE2b512', 'BLAKE2s256', 'whirlpool', 'none',
+                '', 'BLAKE2b512', 'BLAKE2s256', 'whirlpool', 'none',
                 'MD4', 'MD5', 'MD5-SHA1', 'RIPEMD160', 'SHA1', 'SHA224', 'SHA256', 'SHA3-224', 'SHA3-256',
                 'SHA3-384', 'SHA3-512', 'SHA384', 'SHA512', 'SHA512-224', 'SHA512-256', 'SHAKE128', 'SHAKE256',
             ],
@@ -120,12 +120,12 @@ def run_module():
         ),
         # routing
         network_local=dict(
-            type='list', elements='str', required=False, default=[], aliases=['local', 'net_local', 'push_route'],
+            type='list', elements='str', required=False, default=[], aliases=['net_local', 'push_route'],
             description='These are the networks accessible on this host, these are pushed via route{-ipv6} '
                         'clauses in OpenVPN to the client.'
         ),
         network_remote=dict(
-            type='list', elements='str', required=False, default=[], aliases=['remote', 'net_remote', 'route'],
+            type='list', elements='str', required=False, default=[], aliases=['net_remote', 'route'],
             description='Remote networks for the server, add route to routing table after connection is established'
         ),
         # misc
