@@ -31,7 +31,7 @@ def run_module():
             description='The name used to match this config to existing entries'
         ),
         remote=dict(
-            type='str', required=False, aliases=['peer', 'server'],
+            type='list', elements='str', required=False, aliases=['peer', 'server'],
             description='Remote host name or IP address with optional port'
         ),
         protocol=dict(

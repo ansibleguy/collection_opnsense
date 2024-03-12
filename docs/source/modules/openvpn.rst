@@ -26,7 +26,7 @@ ansibleguy.opnsense.openvpn_client
     :widths: 15 10 10 10 10 45
 
     "name","string","true","\-","description, desc","The name used to match this config to existing entries"
-    "remote","string","true","\-","peer, server","Remote host name or IP address with optional port"
+    "remote","list","true","\-","peer, server","Remote host name or IP address with optional port"
     "protocol","string","false","udp","proto","One of: 'udp', 'udp4', 'udp6', 'tcp', 'tcp4', 'tcp6'. Use protocol for communicating with remote host."
     "port","integer","false","\-","local_port, bind_port","Port number to use. Specifies a bind address, or nobind when client does not have a specific bind address."
     "address","string","false","\-","bind_address, bind, ip","Optional IP address for bind. If specified, OpenVPN will bind to this address only. If unspecified, OpenVPN will bind to all interfaces."
@@ -57,7 +57,102 @@ Usage
 
 The instance description/name is used to match your config to the existing entries.
 
+----
+
 Examples
 ********
 
-tbd
+ansibleguy.opnsense.openvpn_client
+==================================
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'openvpn_instance'
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.openvpn_client:
+            name: 'example'
+            remote: 'example.ovpn.ansibleguy.net:10000'
+            # protocol: 'udp'
+            # port: ''
+            # address: ''
+            # mode: 'tun'
+            # log_level: 3
+            # keepalive_interval: ''
+            # keepalive_timeout: ''
+            # carp_depend_on: ''
+            # certificate: ''
+            # ca: ''
+            # tls_key: ''
+            # authentication: ''
+            # username: ''
+            # password: ''
+            # renegotiate_time: ''
+            # network_local: []
+            # network_remote: []
+            # options: []
+            # mtu: ''
+            # fragment_size: ''
+            # mss_fix: ''
+            # reload: true
+            # enabled: true
+
+        - name: Adding
+          ansibleguy.opnsense.openvpn_client:
+            name: 'test1'
+            remote: 'openvpn.test.ansibleguy.net:20000'
+            protocol: 'udp'
+            mode: 'tun'
+            network_remote: ['192.168.77.128/27', '192.168.89.64/27']
+            log_level: 2
+            ca: 'OpenVPN'
+            certificate: 'OpenVPN Client'
+            mtu: 1400
+
+        - name: Changing
+          ansibleguy.opnsense.openvpn_client:
+            name: 'test1'
+            remote: 'openvpn.test.ansibleguy.net:10000'
+            protocol: 'tcp'
+            mode: 'tun'
+            network_remote: ['192.168.77.0/24']
+            log_level: 5
+            ca: 'OpenVPN'
+            certificate: 'OpenVPN Client'
+            mtu: 1400
+
+        - name: Disabling
+          ansibleguy.opnsense.openvpn_client:
+            name: 'test1'
+            remote: 'openvpn.test.ansibleguy.net:10000'
+            protocol: 'tcp'
+            mode: 'tun'
+            network_remote: ['192.168.77.0/24']
+            log_level: 5
+            ca: 'OpenVPN'
+            certificate: 'OpenVPN Client'
+            mtu: 1400
+            enabled: false
+
+        - name: Listing
+          ansibleguy.opnsense.list:
+            # target: 'openvpn_instance'
+          register: existing_entries
+
+        - name: Printing tests
+          ansible.builtin.debug:
+            var: existing_entries.data
+
+        - name: Removing
+          ansibleguy.opnsense.openvpn_client:
+            name: 'test1'
+            state: 'absent'
