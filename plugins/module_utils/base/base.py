@@ -11,7 +11,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main im
     get_simple_existing, to_digit, get_matching, simplify_translate, is_unset, \
     sort_param_lists
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.handler import \
-    exit_bug, exit_debug, ModuleSoftError
+    exit_bug, ModuleSoftError
 
 
 class Base:
@@ -27,6 +27,7 @@ class Base:
     ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
     ATTR_DIFF_EXCL = 'FIELDS_DIFF_EXCLUDE'
     ATTR_VALUE_MAP = 'FIELDS_VALUE_MAPPING'
+    ATTR_BUILD_COPY = 'FIELDS_BUILD_COPY'
     ATTR_VALUE_MAP_RCV = 'FIELDS_VALUE_MAPPING_RCV'
     ATTR_FIELD_ALL = 'FIELDS_ALL'
     ATTR_FIELD_CH = 'FIELDS_CHANGE'
@@ -40,6 +41,7 @@ class Base:
     ATTR_FIELD_ID = 'FIELD_ID'  # field we use for matching
     ATTR_FIELD_PK = 'FIELD_PK'  # field opnsense uses as primary key
     PARAM_MATCH_FIELDS = 'match_fields'
+    QUERY_MAX_ENTRIES = 1000
 
     REQUIRED_ATTRS = [
         ATTR_AK_PATH,
@@ -53,18 +55,13 @@ class Base:
     def __init__(self, instance):
         self.i = instance  # module-specific object
         self.e = {}  # existing entry
+        self.raw = None  # to save first raw existing entry - to resolve user input per selection
 
         for attr in self.REQUIRED_ATTRS:
             if not hasattr(self.i, attr):
                 exit_bug(f"Module has no '{attr}' attribute set!")
 
-    def search(self, fail_response: bool = False) -> (dict, list):
-        if fail_response:
-            # find response keys in initial development
-            exit_debug(self._api_get(cnf={
-                **self.i.call_cnf, **{'command': self.i.CMDS['search']}
-            }))
-
+    def search(self) -> (dict, list):
         # workaround if 'get' needs to be performed using other api module/controller
         cont_get, mod_get = self.i.API_CONT, self.i.API_MOD
 
@@ -74,13 +71,49 @@ class Base:
         if hasattr(self.i, self.ATTR_GET_MOD):
             mod_get = getattr(self.i, self.ATTR_GET_MOD)
 
-        data = self._api_get(cnf={
-            **self.i.call_cnf,
-            **{
-                'module': mod_get,
-                'controller': cont_get,
+        self.i.call_cnf['controller'] = cont_get
+        self.i.call_cnf['module'] = mod_get
+
+        if self.i.CMDS['search'].startswith('search'):
+            # case for api-refactoring: https://github.com/ansibleguy/collection_opnsense/issues/51
+            if 'detail' not in self.i.CMDS:
+                exit_bug("To use the 'search' commands you need to also define the related 'detail' (get) command!")
+
+            data = []
+
+            for base_entry in self._api_post({
+                **self.i.call_cnf,
                 'command': self.i.CMDS['search'],
-            }
+                'data': {'current': 1, 'rowCount': self.QUERY_MAX_ENTRIES},
+            })['rows']:
+                # todo: perform async calls for parallel data fetching
+                data.append({
+                    **self._search_path_handling(
+                        self._api_get({
+                            **self.i.call_cnf,
+                            'command': self.i.CMDS['detail'],
+                            'params': [base_entry[self.field_pk]]
+                        })
+                    ),
+                    **base_entry,
+                })
+                if self.raw is None:
+                    self.raw = data[0]
+
+            if self.raw is None:
+                self.raw = self._search_path_handling(
+                    self._api_get({
+                        **self.i.call_cnf,
+                        'command': self.i.CMDS['detail'],
+                    })
+                )
+
+            return data
+
+        # legacy api handling (fewer requests needed)
+        data = self._api_get({
+            **self.i.call_cnf,
+            'command': self.i.CMDS['search'],
         })
 
         if hasattr(self.i, self.ATTR_GET_ADD):
@@ -91,7 +124,7 @@ class Base:
                         self._search_path_handling(data=data, ak_path=ak_path)
                     )
 
-        return self._search_path_handling(data)
+        return  self._search_path_handling(data)
 
     def _search_path_handling(self, data: dict, ak_path: str = None) -> dict:
         # resolving API_KEY_PATH's so data from nested dicts gets extracted as configured
@@ -137,8 +170,8 @@ class Base:
             self.i.exists = True
             self.i.r['diff']['before'] = self.build_diff(data=match)
 
-            if 'uuid' in match:
-                self.i.call_cnf['params'] = [match['uuid']]
+            if self.field_pk in match:
+                self.i.call_cnf['params'] = [match[self.field_pk]]
 
     def process(self) -> None:
         if 'state' in self.i.p and self.i.p['state'] == 'absent':
@@ -238,14 +271,14 @@ class Base:
 
         if 'enabled' in existing:
             if existing['enabled'] != self.i.p['enabled']:
-                BOOL_INVERT_FIELDS = []
+                _bool_invert_fields = []
                 enable = self.i.p['enabled']
                 invert = False
 
                 if hasattr(self.i, self.ATTR_BOOL_INVERT):
-                    BOOL_INVERT_FIELDS = getattr(self.i, self.ATTR_BOOL_INVERT)
+                    _bool_invert_fields = getattr(self.i, self.ATTR_BOOL_INVERT)
 
-                if 'enabled' in BOOL_INVERT_FIELDS:
+                if 'enabled' in _bool_invert_fields:
                     invert = True
                     enable = not enable
 
@@ -307,7 +340,7 @@ class Base:
         return self._api_post(cnf={
             **self.i.call_cnf, **{
                 'command': self.i.CMDS['toggle'],
-                'params': [getattr(self.i, self.i.EXIST_ATTR)['uuid'], value],
+                'params': [getattr(self.i, self.i.EXIST_ATTR)[self.field_pk], value],
             }
         })
 
@@ -341,23 +374,19 @@ class Base:
         if not isinstance(data, dict):
             exit_bug('The diff-source object must be of type dict!')
 
-        EXCLUDE_FIELDS = []
+        _exclude_fields = []
 
         if hasattr(self.i, self.ATTR_DIFF_EXCL):
-            EXCLUDE_FIELDS = getattr(self.i, self.ATTR_DIFF_EXCL)
+            _exclude_fields = getattr(self.i, self.ATTR_DIFF_EXCL)
 
         self._set_existing()
 
-        field_pk = 'uuid'
-        if hasattr(self.i, self.ATTR_FIELD_PK):
-            field_pk = getattr(self.i, self.ATTR_FIELD_PK)
-
         diff = {
-            field_pk: self.e[field_pk] if field_pk in self.e else None
+            self.field_pk: self.e[self.field_pk] if self.field_pk in self.e else None
         }
 
         for field in self.i.FIELDS_ALL:
-            if field in EXCLUDE_FIELDS:
+            if field in _exclude_fields:
                 continue
 
             stringify = True
@@ -370,7 +399,12 @@ class Base:
                     diff[field] = self.i.p[field]
 
             if isinstance(diff[field], list):
-                diff[field].sort()
+                try:
+                    diff[field].sort()
+
+                except TypeError:
+                    raise exit_bug(f"Field not defined as 'select_opt_list' type: {diff[field]}")
+
                 stringify = False
 
             elif isinstance(diff[field], str) and diff[field].isnumeric:
@@ -381,8 +415,8 @@ class Base:
                 except (TypeError, ValueError):
                     pass
 
-            elif isinstance(diff[field], dict) and 'uuid' in diff[field]:
-                diff[field] = diff[field]['uuid']
+            elif isinstance(diff[field], dict) and self.field_pk in diff[field]:
+                diff[field] = diff[field][self.field_pk]
 
             elif isinstance(diff[field], (bool, int)):
                 stringify = False
@@ -402,9 +436,9 @@ class Base:
 
     def build_request(self, ignore_fields: list = None) -> dict:
         request = {}
-        TRANSLATE_FIELDS = {}
-        TRANSLATE_VALUES = {}
-        BOOL_INVERT_FIELDS = []
+        _translate_fields = {}
+        _translate_values = {}
+        _bool_invert_fields = []
 
         if ignore_fields is None:
             ignore_fields = []
@@ -413,37 +447,40 @@ class Base:
             self.e = getattr(self.i, self.i.EXIST_ATTR)
 
         if hasattr(self.i, self.ATTR_TRANSLATE):
-            TRANSLATE_FIELDS = getattr(self.i, self.ATTR_TRANSLATE)
-
-        if hasattr(self.i, self.ATTR_BOOL_INVERT):
-            BOOL_INVERT_FIELDS = getattr(self.i, self.ATTR_BOOL_INVERT)
+            _translate_fields = getattr(self.i, self.ATTR_TRANSLATE)
 
         if hasattr(self.i, self.ATTR_VALUE_MAP):
-            TRANSLATE_VALUES = getattr(self.i, self.ATTR_VALUE_MAP)
+            _translate_values = getattr(self.i, self.ATTR_VALUE_MAP)
+
+        if hasattr(self.i, self.ATTR_BOOL_INVERT):
+            _bool_invert_fields = getattr(self.i, self.ATTR_BOOL_INVERT)
 
         for field in self.i.FIELDS_ALL:
             if field in ignore_fields:
                 continue
 
             opn_field = field
-            if field in TRANSLATE_FIELDS:
-                opn_field = TRANSLATE_FIELDS[field]
+            if field in _translate_fields:
+                opn_field = _translate_fields[field]
 
             if field in self.i.p:
                 opn_data = self.i.p[field]
 
-            else:
+            elif field in self.e:
                 opn_data = self.e[field]
 
-            if field in TRANSLATE_VALUES:
+            else:
+                opn_data = ''
+
+            if field in _translate_values:
                 try:
-                    opn_data = TRANSLATE_VALUES[field][opn_data]
+                    opn_data = _translate_values[field][opn_data]
 
                 except KeyError:
                     pass
 
             if isinstance(opn_data, bool):
-                if field in BOOL_INVERT_FIELDS:
+                if field in _bool_invert_fields:
                     opn_data = not opn_data
 
                 request[opn_field] = to_digit(opn_data)
@@ -587,6 +624,13 @@ class Base:
             bool_invert=bool_invert,
             value_map=value_map,
         )
+
+    @property
+    def field_pk(self) -> str:
+        if hasattr(self.i, self.ATTR_FIELD_PK):
+            return getattr(self.i, self.ATTR_FIELD_PK)
+
+        return 'uuid'
 
     def _call_simple(self) -> Callable:
         if hasattr(self.i, 'simplify_existing'):

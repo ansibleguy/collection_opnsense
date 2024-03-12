@@ -253,6 +253,16 @@ def get_selected_opt_list(data: (dict, list)) -> (str, None):
     return get_selected_value(data)
 
 
+def get_selected_opt_list_idx(data: list) -> int:
+    idx = 0
+    for values in data:
+        if is_true(values['selected']):
+            return idx
+
+        idx += 1
+
+    return 0
+
 def get_selected_list(data: dict, remove_empty: bool = False) -> list:
     if isinstance(data, list):
         # if function is re-applied
@@ -411,6 +421,9 @@ def simplify_translate(
 
             elif t == 'select_opt_list':
                 simple[f] = get_selected_opt_list(simple[f])
+
+            elif t == 'select_opt_list_idx':
+                simple[f] = get_selected_opt_list_idx(simple[f])
 
     for f, vmap in value_map.items():
         try:

@@ -29,8 +29,8 @@ class BaseModule:
             'controller': self.b.i.API_CONT,
         }
 
-    def _search_call(self, fail_response: bool = False) -> list:
-        return self.b.search(fail_response=fail_response)
+    def _search_call(self) -> list:
+        return self.b.search()
 
     def _base_check(self, match_fields: list = None):
         if match_fields is None:
@@ -43,7 +43,7 @@ class BaseModule:
         if match_fields is not None:
             self.b.find(match_fields=match_fields)
             if self.exists:
-                self.call_cnf['params'] = [getattr(self, self.EXIST_ATTR)['uuid']]
+                self.call_cnf['params'] = [getattr(self, self.EXIST_ATTR)[self.b.field_pk]]
 
         if self.p['state'] == 'present':
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
@@ -115,12 +115,8 @@ class GeneralModule:
         self.settings = self._search_call()
         self._build_diff()
 
-    def _search_call(self, fail_response: bool = False) -> dict:
-        return self.b.simplify_existing(
-            self.b.search(
-                fail_response=fail_response
-            )
-        )
+    def _search_call(self) -> dict:
+        return self.b.simplify_existing(self.b.search())
 
     def get_existing(self) -> dict:
         return self._search_call()
