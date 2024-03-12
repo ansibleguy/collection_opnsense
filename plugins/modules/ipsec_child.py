@@ -67,7 +67,7 @@ def run_module():
                         'only, which then can be manually initiated or used as a responder configuration. The value '
                         'trap installs a trap policy which triggers the tunnel as soon as matching traffic has been '
                         'detected. The value start initiates the connection actively. To immediately initiate a '
-                        'connection for which trap policies have been installed, user Trap+start',
+                        'connection for which trap policies have been installed, user Trap|start',
         ),
         close_action=dict(
             type='str', required=False, aliases=['close'], default='none',
