@@ -18,6 +18,8 @@ OpenVPN
 Definition
 **********
 
+.. include:: ../_include/param_basic.rst
+
 ansibleguy.opnsense.openvpn_client
 ==================================
 
@@ -37,7 +39,7 @@ ansibleguy.opnsense.openvpn_client
     "carp_depend_on","string","false","\-","vip, vip_depend, carp, carp_depend","The CARP VHID to depend on. When this virtual address is not in master state, then the instance will be shutdown."
     "certificate","string","true if no ca","\-","cert","Certificate to use for this service."
     "ca","string","false","true if no certificate","certificate_authority, authority","Select a certificate authority when it differs from the attached certificate."
-    "tls_key","string","false","\-","tls_static_key","Add an additional layer of HMAC authentication on top of the TLS control channel to mitigate DoS attacks and attacks on the TLS stack. The prefixed mode determines if this measurement is only used for authentication (--tls-auth) or includes encryption (--tls-crypt)."
+    "key","string","false","\-","tls_key, tls_static_key","Add an additional layer of HMAC authentication on top of the TLS control channel to mitigate DoS attacks and attacks on the TLS stack. The prefixed mode determines if this measurement is only used for authentication (--tls-auth) or includes encryption (--tls-crypt)."
     "authentication","string","false","\-","auth, auth_algo","One of: 'BLAKE2b512', 'BLAKE2s256', 'whirlpool', 'none', 'MD4', 'MD5', 'MD5-SHA1', 'RIPEMD160', 'SHA1', 'SHA224', 'SHA256', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512', 'SHA384', 'SHA512', 'SHA512-224', 'SHA512-256', 'SHAKE128', 'SHAKE256'. Authenticate data channel packets and (if enabled) tls-auth control channel packets with HMAC using message digest algorithm alg."
     "username","string","false","\-","user","(optional) Username to send to the server for authentication when required."
     "password","string","false","\-","pwd","Password belonging to the user specified above"
@@ -50,7 +52,18 @@ ansibleguy.opnsense.openvpn_client
     "mss_fix","string","false","\-","mss","Announce to TCP sessions running over the tunnel that they should limit their send packet sizes such that after OpenVPN has encapsulated them, the resulting UDP packet size that OpenVPN sends to its peer will not exceed the recommended size."
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
-.. include:: ../_include/param_basic.rst
+ansibleguy.opnsense.openvpn_static_key
+======================================
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "name","string","true","\-","description, desc","The name used to match this config to existing entries"
+    "mode","string","false","tun","type","Define the use of this key, authentication (--tls-auth) or authentication and encryption (--tls-crypt)"
+    "key","string","false","\-","\-","OpenVPN Static key. If empty - it will be auto-generated."
+
+
 
 Usage
 *****
@@ -154,5 +167,59 @@ ansibleguy.opnsense.openvpn_client
 
         - name: Removing
           ansibleguy.opnsense.openvpn_client:
+            name: 'test1'
+            state: 'absent'
+
+----
+
+ansibleguy.opnsense.openvpn_static_key
+======================================
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'openvpn_static_key'
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.openvpn_static_key:
+            name: 'example'
+            # mode: 'crypt'
+            # key: ''
+
+        - name: Adding
+          ansibleguy.opnsense.openvpn_static_key:
+            name: 'test1'
+            # key: => will be auto-generated
+
+        - name: Changing
+          ansibleguy.opnsense.openvpn_static_key:
+            name: 'test1'
+            key: '#\n# 2048 bit OpenVPN static key\n#\n-----BEGIN OpenVPN Static key V1-----\n
+              c07e43dc02829f88184b4fb74243e4ac\nb1d24d1d1a74cd21df8ac64a527915ae\n9c736c0c219eb33774e40e61f6f660c8\n
+              daf44730850fae665f5f609a71e99f3c\n8a636b16dff7434ce3b7f9aca896287b\nd6c62d2f6d7db4e9cfcfe0f101cc6474\n
+              0c98246fbcd203891a0343777c7551c7\naa2ba1e6a6ab4fcf593a894d4da8f180\nd44645b5a658e17f5d48408a020430c3\n
+              5b768f413a2ec69ead015750cacb53d7\n64a19bce04b29f11d3ca7560a99958b6\n9203f493fd7e740b5a5a3d1afe1b4185\n
+              50043805c5bac513baf2306e42c1c1f8\n0fd16661536a3ee72ffbd1d2d1b1f6c0\n9683064c9bc044ee0357f4b94f5687ed\n
+              67cb013625cfb9b113ecff16674d63e6\n-----END OpenVPN Static key V1-----'
+
+        - name: Listing
+          ansibleguy.opnsense.list:
+            # target: 'openvpn_static_key'
+          register: existing_entries
+
+        - name: Printing tests
+          ansible.builtin.debug:
+            var: existing_entries.data
+
+        - name: Removing
+          ansibleguy.opnsense.openvpn_static_key:
             name: 'test1'
             state: 'absent'

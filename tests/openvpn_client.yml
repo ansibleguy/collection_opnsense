@@ -200,3 +200,42 @@
       failed_when: >
         'data' not in opn_post1 or
         opn_post1.data | length != 0
+
+- name: Testing OpenVPN Client with Static Key
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Adding dummy key
+      ansibleguy.opnsense.openvpn_static_key:
+        name: 'ANSIBLE_TEST_2_1'
+      when: not ansible_check_mode
+
+    - name: Adding 1 with link to static-key
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_2_1'
+        remote: 'openvpn.test.ansibleguy.net'
+        ca: 'OpenVPN'
+        key: 'ANSIBLE_TEST_2_1'
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        not opn10.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.openvpn_client:
+        name: 'ANSIBLE_TEST_2_1'
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Cleanup key
+      ansibleguy.opnsense.openvpn_static_key:
+        name: 'ANSIBLE_TEST_2_1'
+        state: 'absent'
+      when: not ansible_check_mode

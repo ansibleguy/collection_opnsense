@@ -582,3 +582,14 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_2_1'
+
+    - name: Cleanup OpenVPN Static-Keys
+      ansibleguy.opnsense.openvpn_static_key:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_2_1'
+        - 'ANSIBLE_TEST_3_1'

@@ -1,0 +1,119 @@
+---
+
+- name: Testing OpenVPN Static-Keys
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      target: 'openvpn_static_key'
+
+  vars:
+    test_key: '#\n# 2048 bit OpenVPN static key\n#\n-----BEGIN OpenVPN Static key V1-----\n
+        c07e43dc02829f88184b4fb74243e4ac\nb1d24d1d1a74cd21df8ac64a527915ae\n9c736c0c219eb33774e40e61f6f660c8\n
+        daf44730850fae665f5f609a71e99f3c\n8a636b16dff7434ce3b7f9aca896287b\nd6c62d2f6d7db4e9cfcfe0f101cc6474\n
+        0c98246fbcd203891a0343777c7551c7\naa2ba1e6a6ab4fcf593a894d4da8f180\nd44645b5a658e17f5d48408a020430c3\n
+        5b768f413a2ec69ead015750cacb53d7\n64a19bce04b29f11d3ca7560a99958b6\n9203f493fd7e740b5a5a3d1afe1b4185\n
+        50043805c5bac513baf2306e42c1c1f8\n0fd16661536a3ee72ffbd1d2d1b1f6c0\n9683064c9bc044ee0357f4b94f5687ed\n
+        67cb013625cfb9b113ecff16674d63e6\n-----END OpenVPN Static key V1-----'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.openvpn_static_key:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1
+      ansibleguy.opnsense.openvpn_static_key:
+        name: 'ANSIBLE_TEST_1_1'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      ansibleguy.opnsense.openvpn_static_key:
+        name: 'ANSIBLE_TEST_1_1'
+        key: "{{ test_key }}"
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+
+    - name: Changing 1 - nothing changed
+      ansibleguy.opnsense.openvpn_static_key:
+        name: 'ANSIBLE_TEST_1_1'
+        key: "{{ test_key }}"
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2
+      ansibleguy.opnsense.openvpn_static_key:
+        name: 'ANSIBLE_TEST_1_2'
+        mode: 'auth'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.openvpn_static_key:
+        name: 'ANSIBLE_TEST_1_2'
+        mode: 'auth'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.openvpn_static_key:
+        name: 'ANSIBLE_TEST_1_2'
+        state: 'absent'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn8
+      failed_when: >
+        'data' not in opn8 or
+        opn8.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.openvpn_static_key:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_post1
+      failed_when: >
+        'data' not in opn_post1 or
+        opn_post1.data | length != 0

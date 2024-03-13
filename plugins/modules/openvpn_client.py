@@ -85,8 +85,8 @@ def run_module():
             type='str', required=False, default='', aliases=['certificate_authority', 'authority'],
             description='Select a certificate authority when it differs from the attached certificate.'
         ),
-        tls_key=dict(
-            type='str', required=False, default='', aliases=['tls_static_key'],
+        key=dict(
+            type='str', required=False, default='', aliases=['tls_key', 'tls_static_key'],
             description='Add an additional layer of HMAC authentication on top of the TLS control channel to '
                         'mitigate DoS attacks and attacks on the TLS stack. The prefixed mode determines if '
                         'this measurement is only used for authentication (--tls-auth) or includes encryption '

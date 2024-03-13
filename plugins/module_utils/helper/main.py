@@ -290,6 +290,14 @@ def get_key_by_value_from_selection(selection: dict, value: str) -> (str, None):
     return None
 
 
+def get_key_by_value_end_from_selection(selection: dict, value: str) -> (str, None):
+    if isinstance(selection, dict):
+        for key, values in selection.items():
+            if 'value' in values and values['value'].endswith(value):
+                return key
+
+    return None
+
 def to_digit(data: bool) -> int:
     return 1 if data else 0
 

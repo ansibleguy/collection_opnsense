@@ -170,8 +170,9 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **IDS/IPS**         | ansibleguy.opnsense.ids_policy_rule                                    | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/ids.html#id8)                                            | unstable    |
 | **OpenVPN**         | ansibleguy.opnsense.openvpn_client                                     | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | unstable    |
 | **OpenVPN**         | ansibleguy.opnsense.openvpn_server                                     | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | development |
-| **OpenVPN**         | ansibleguy.opnsense.openvpn_static_key                                 | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | development |
-| **OpenVPN**         | ansibleguy.opnsense.openvpn_overwrite                                  | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | development |
+| **OpenVPN**         | ansibleguy.opnsense.openvpn_static_key                                 | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | unstable    |
+| **OpenVPN**         | ansibleguy.opnsense.openvpn_client_override                            | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | development |
+| **OpenVPN**         | ansibleguy.opnsense.openvpn_status                                     | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | development |
 
 
 ### Roadmap
