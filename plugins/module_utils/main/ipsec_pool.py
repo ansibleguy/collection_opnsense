@@ -13,15 +13,14 @@ class Pool(BaseModule):
         'add': 'add',
         'del': 'del',
         'set': 'set',
-        'search': 'get',
+        'search': 'search',
+        'detail': 'get',
         'toggle': 'toggle',
     }
     API_KEY_PATH = 'pool'
-    API_KEY_PATH_GET = 'swanctl.Pools.Pool'
     API_MOD = 'ipsec'
     API_CONT = 'pools'
     API_CONT_REL = 'service'
-    API_CONT_GET = 'connections'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = ['network']
     FIELDS_ALL = ['enabled', FIELD_ID]

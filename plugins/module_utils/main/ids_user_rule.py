@@ -49,8 +49,6 @@ class Rule(BaseModule):
         return self._search_call()
 
     def _search_call(self) -> list:
-        # NOTE: workaround for issue with incomplete response-data from 'get' endpoint:
-        #   https://github.com/opnsense/core/issues/7094
         existing = self.s.post(cnf={
             **self.call_cnf,
             'command': self.CMDS['search'],

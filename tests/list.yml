@@ -80,3 +80,20 @@
         'ipsec_cert', 'ipsec_connection', 'ipsec_child', 'ipsec_pool',
         'ipsec_auth_local', 'ipsec_auth_remote', 'ipsec_vti',
       ]
+
+    - name: Querying config - IDS
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: [
+        'ids_general', 'ids_policy', 'ids_rule', 'ids_ruleset', 'ids_user_rule',
+        'ids_policy_rule',
+      ]
+
+    - name: Querying config - OpenVPN
+      ansibleguy.opnsense.list:
+        target: "{{ item }}"
+      when: not ansible_check_mode
+      loop: [
+        'openvpn_instance', 'openvpn_static_key',
+      ]

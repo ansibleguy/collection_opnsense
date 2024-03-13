@@ -62,7 +62,7 @@ class Base:
             if not hasattr(self.i, attr):
                 exit_bug(f"Module has no '{attr}' attribute set!")
 
-    def search(self) -> (dict, list):
+    def search(self, match_fields: list = None) -> (dict, list):
         # workaround if 'get' needs to be performed using other api module/controller
         cont_get, mod_get = self.i.API_CONT, self.i.API_MOD
 
@@ -81,21 +81,33 @@ class Base:
                 exit_bug("To use the 'search' commands you need to also define the related 'detail' (get) command!")
 
             data = []
+            # if we can - we only perform the 'detail' call for the already matched entry to save on needed requests
+            base_match_fields = False
+            base_match_fields_checked = False
 
             for base_entry in self._api_post({
                 **self.i.call_cnf,
                 'command': self.i.CMDS['search'],
                 'data': {'current': 1, 'rowCount': self.QUERY_MAX_ENTRIES},
             })['rows']:
+                if match_fields is not None and not base_match_fields_checked:
+                    base_match_fields_checked = True
+                    base_match_fields = all(field in base_entry for field in match_fields)
+
                 # todo: perform async calls for parallel data fetching
-                data.append({
-                    **self._search_path_handling(
+                detail_entry = {}
+                if not base_match_fields or \
+                        all(base_entry[field] == self.i.p[field] for field in match_fields):
+                    detail_entry = self._search_path_handling(
                         self._api_get({
                             **self.i.call_cnf,
                             'command': self.i.CMDS['detail'],
                             'params': [base_entry[self.field_pk]]
                         })
-                    ),
+                    )
+
+                data.append({
+                    **detail_entry,
                     **base_entry,
                 })
                 if self.raw is None:
@@ -111,7 +123,7 @@ class Base:
 
             return data
 
-        # legacy api handling (fewer requests needed)
+        # legacy api handling (fewer requests needed; much simpler client-side handling)
         data = self._api_get({
             **self.i.call_cnf,
             'command': self.i.CMDS['search'],
@@ -158,7 +170,7 @@ class Base:
 
     def find(self, match_fields: list) -> None:
         if self.i.existing_entries is None:
-            self.i.existing_entries = self._call_search()
+            self.i.existing_entries = self._call_search(match_fields)
 
         match = get_matching(
             module=self.i.m, existing_items=self.i.existing_entries,
@@ -647,14 +659,14 @@ class Base:
 
         return self.simplify_existing
 
-    def _call_search(self) -> (list, dict):
+    def _call_search(self, match_fields: list = None) -> (list, dict):
         if hasattr(self.i, '_search_call'):
             return self.i._search_call()
 
         if hasattr(self.i, 'search_call'):
             return self.i.search_call()
 
-        return self.search()
+        return self.search(match_fields)
 
     def _api_headers(self) -> dict:
         if hasattr(self.i, self.ATTR_HEADERS):

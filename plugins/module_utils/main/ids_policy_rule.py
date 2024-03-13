@@ -14,6 +14,7 @@ class Rule(BaseModule):
         'del': 'delPolicyRule',
         'set': 'setPolicyRule',
         'search': 'searchPolicyRule',
+        'detail': 'getPolicyRule',
         'toggle': 'togglePolicyRule',
     }
     API_KEY_PATH = 'policies.rule'
@@ -43,8 +44,6 @@ class Rule(BaseModule):
         self.r['changed'] = self.r['diff']['before'] != self.r['diff']['after']
 
     def _search_call(self) -> list:
-        # NOTE: workaround for issue with incomplete response-data from 'get' endpoint:
-        #   https://github.com/opnsense/core/issues/7094
         existing = self.s.post(cnf={
             **self.call_cnf,
             'command': self.CMDS['search'],

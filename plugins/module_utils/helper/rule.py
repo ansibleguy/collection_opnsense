@@ -31,13 +31,13 @@ def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:
         if cnf['source_net'] == 'any' and cnf['destination_net'] == 'any':
             module.warn(
                 "Configuring allow-rules with 'any' source and "
-                "'any' destination is bad practise!"
+                "'any' destination is bad practice!"
             )
 
         elif cnf['destination_net'] == 'any' and cnf['destination_port'] == 'any':
             module.warn(
                 "Configuring allow-rules to 'any' destination "
-                "using 'all' ports is bad practise!"
+                "using 'all' ports is bad practice!"
             )
 
 
