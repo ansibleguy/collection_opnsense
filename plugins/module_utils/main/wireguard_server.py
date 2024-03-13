@@ -45,7 +45,7 @@ class Server(BaseModule):
         'int': ['port', 'mtu', 'instance'],
         'select' : ['vip'],
     }
-    FIELDS_DIFF_EXCLUDE = ['private_key']
+    FIELDS_DIFF_NO_LOG = ['private_key']
     INT_VALIDATIONS = {
         'mtu': {'min': 1, 'max': 9300},
     }

@@ -40,7 +40,7 @@ class Parent(GeneralModule):
         'user': r'^([0-9a-zA-Z\._\-]){1,32}$',
         'password': r'^([0-9a-zA-Z\._\-]){1,32}$',
     }
-    FIELDS_DIFF_EXCLUDE = ['password']
+    FIELDS_DIFF_NO_LOG = ['password']
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         GeneralModule.__init__(self=self, m=module, r=result, s=session)

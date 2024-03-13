@@ -31,7 +31,7 @@ class Vip(BaseModule):
         'advertising_skew': 'advskew',
         'description': 'descr',
     }
-    FIELDS_DIFF_EXCLUDE = ['password']
+    FIELDS_DIFF_NO_LOG = ['password']
     FIELDS_BOOL_INVERT = ['expand', 'bind']
     FIELDS_TYPING = {
         'bool': ['expand', 'bind'],

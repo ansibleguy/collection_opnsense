@@ -26,8 +26,8 @@ class Base:
     ATTR_BOOL_INVERT = 'FIELDS_BOOL_INVERT'
     ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
     ATTR_DIFF_EXCL = 'FIELDS_DIFF_EXCLUDE'
+    ATTR_DIFF_NO_LOG = 'FIELDS_DIFF_NO_LOG'
     ATTR_VALUE_MAP = 'FIELDS_VALUE_MAPPING'
-    ATTR_BUILD_COPY = 'FIELDS_BUILD_COPY'
     ATTR_VALUE_MAP_RCV = 'FIELDS_VALUE_MAPPING_RCV'
     ATTR_FIELD_ALL = 'FIELDS_ALL'
     ATTR_FIELD_CH = 'FIELDS_CHANGE'
@@ -42,6 +42,7 @@ class Base:
     ATTR_FIELD_PK = 'FIELD_PK'  # field opnsense uses as primary key
     PARAM_MATCH_FIELDS = 'match_fields'
     QUERY_MAX_ENTRIES = 1000
+    VALUE_NO_LOG = 'VALUE_SPECIFIED_IN_NO_LOG_PARAMETER'
 
     REQUIRED_ATTRS = [
         ATTR_AK_PATH,
@@ -55,7 +56,7 @@ class Base:
     def __init__(self, instance):
         self.i = instance  # module-specific object
         self.e = {}  # existing entry
-        self.raw = None  # to save first raw existing entry - to resolve user input per selection
+        self.raw = None  # save first raw existing entry - to resolve user input per selection
 
         for attr in self.REQUIRED_ATTRS:
             if not hasattr(self.i, attr):
@@ -124,7 +125,7 @@ class Base:
                         self._search_path_handling(data=data, ak_path=ak_path)
                     )
 
-        return  self._search_path_handling(data)
+        return self._search_path_handling(data)
 
     def _search_path_handling(self, data: dict, ak_path: str = None) -> dict:
         # resolving API_KEY_PATH's so data from nested dicts gets extracted as configured
@@ -201,11 +202,10 @@ class Base:
         self.i.r['changed'] = True
 
         if not self.i.m.check_mode:
-            return self._api_post(cnf={
-                **self.i.call_cnf, **{
-                    'command': self.i.CMDS['add'],
-                    'data': self._get_request_data(),
-                }
+            return self._api_post({
+                **self.i.call_cnf,
+                'command': self.i.CMDS['add'],
+                'data': self._get_request_data(),
             })
 
     def update(self, enable_switch: bool = True) -> dict:
@@ -251,11 +251,10 @@ class Base:
                     response = self.i._update_call()
 
                 else:
-                    response = self._api_post(cnf={
-                        **self.i.call_cnf, **{
-                            'command': self.i.CMDS['set'],
-                            'data': self._get_request_data(),
-                        }
+                    response = self._api_post({
+                        **self.i.call_cnf,
+                        'command': self.i.CMDS['set'],
+                        'data': self._get_request_data(),
                     })
 
                 if self.i.p['debug']:
@@ -305,9 +304,9 @@ class Base:
                 response = self.i._delete_call()
 
             else:
-                response = self._api_post(cnf={
+                response = self._api_post({
                     **self.i.call_cnf,
-                    **{'command': self.i.CMDS['del']}
+                    'command': self.i.CMDS['del'],
                 })
 
             if self.i.p['debug']:
@@ -323,7 +322,7 @@ class Base:
             cont_rel = getattr(self.i, self.ATTR_REL_CONT)
 
         if not self.i.m.check_mode:
-            return self._api_post(cnf={
+            return self._api_post({
                 'module': self.i.API_MOD,
                 'controller': cont_rel,
                 'command': self.i.API_CMD_REL,
@@ -337,11 +336,10 @@ class Base:
         return self.build_request()
 
     def _change_enabled_state(self, value: int) -> dict:
-        return self._api_post(cnf={
-            **self.i.call_cnf, **{
-                'command': self.i.CMDS['toggle'],
-                'params': [getattr(self.i, self.i.EXIST_ATTR)[self.field_pk], value],
-            }
+        return self._api_post({
+            **self.i.call_cnf,
+            'command': self.i.CMDS['toggle'],
+            'params': [getattr(self.i, self.i.EXIST_ATTR)[self.field_pk], value],
         })
 
     def _is_enabled(self, invert: bool) -> bool:
@@ -375,9 +373,13 @@ class Base:
             exit_bug('The diff-source object must be of type dict!')
 
         _exclude_fields = []
+        _no_log_fields = []
 
         if hasattr(self.i, self.ATTR_DIFF_EXCL):
             _exclude_fields = getattr(self.i, self.ATTR_DIFF_EXCL)
+
+        if hasattr(self.i, self.ATTR_DIFF_NO_LOG):
+            _no_log_fields = getattr(self.i, self.ATTR_DIFF_NO_LOG)
 
         self._set_existing()
 
@@ -387,6 +389,10 @@ class Base:
 
         for field in self.i.FIELDS_ALL:
             if field in _exclude_fields:
+                continue
+
+            if field in _no_log_fields:
+                diff[field] = self.VALUE_NO_LOG
                 continue
 
             stringify = True

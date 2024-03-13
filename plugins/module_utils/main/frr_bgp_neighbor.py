@@ -28,7 +28,7 @@ class Neighbor(BaseModule):
         'connect_timer', 'description', 'prefix_list_in', 'prefix_list_out',
         'route_map_in', 'route_map_out',
     ]
-    FIELDS_DIFF_EXCLUDE = ['password']
+    FIELDS_DIFF_NO_LOG = ['password']
     FIELDS_ALL = ['enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {

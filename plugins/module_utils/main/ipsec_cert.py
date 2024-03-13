@@ -29,7 +29,7 @@ class KeyPair(BaseModule):
         'private_key': 'privateKey',
     }
     FIELDS_TYPING = {}
-    FIELDS_DIFF_EXCLUDE = ['private_key']
+    FIELDS_DIFF_NO_LOG = ['private_key']
     EXIST_ATTR = 'key'
     TIMEOUT = 30.0  # ipsec reload
 
