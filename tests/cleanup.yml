@@ -22,7 +22,7 @@
 
     - name: Cleanup packages
       ansibleguy.opnsense.package:
-        name: ['os-api-backup', 'os-dmidecode']
+        name: ['os-hw-probe', 'os-dmidecode']
         action: "{{ item }}"
         timeout: 60
       diff: false

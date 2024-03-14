@@ -109,7 +109,10 @@ action_groups:
     - ansibleguy.opnsense.openvpn_client
     - ansibleguy.opnsense.openvpn_server
     - ansibleguy.opnsense.openvpn_static_key
-    - ansibleguy.opnsense.openvpn_overwrite
+    - ansibleguy.opnsense.openvpn_status
+    - ansibleguy.opnsense.openvpn_client_override
+    - ansibleguy.opnsense.openvpn_client_template
+    - ansibleguy.opnsense.openvpn_client_export
   all:
     - metadata:
         extend_group:

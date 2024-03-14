@@ -25,7 +25,6 @@ except MODULE_EXCEPTIONS:
 
 def run_module():
     module_args = dict(
-        # general
         name=dict(
             type='str', required=True, aliases=['desc', 'description'],
             description='The name used to match this config to existing entries'

@@ -8,12 +8,19 @@ OpenVPN
 
 **STATE**: testing
 
-**TESTS**: `ansibleguy.opnsense.openvpn_client <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_client.yml>`_
+**TESTS**: `ansibleguy.opnsense.openvpn_client <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_client.yml>`_ |
+`ansibleguy.opnsense.openvpn_static_key <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_static_key.yml>`_
 
 **API Docs**: `OpenVPN <https://docs.opnsense.org/development/api/core/openvpn.html>`_
 
 **Service Docs**: `OpenVPN <https://docs.opnsense.org/troubleshooting/openvpn.html>`_
 
+Info
+****
+
+You can use the :ref:`ansibleguy.opnsense.service <modules_service>` module to interact with the OpenVPN service.
+
+----
 
 Definition
 **********
@@ -60,10 +67,20 @@ ansibleguy.opnsense.openvpn_static_key
     :widths: 15 10 10 10 10 45
 
     "name","string","true","\-","description, desc","The name used to match this config to existing entries"
-    "mode","string","false","tun","type","Define the use of this key, authentication (--tls-auth) or authentication and encryption (--tls-crypt)"
+    "mode","string","false","crypt","type","One of: 'auth', 'crypt'. Define the use of this key, authentication (--tls-auth) or authentication and encryption (--tls-crypt)"
     "key","string","false","\-","\-","OpenVPN Static key. If empty - it will be auto-generated."
 
+ansibleguy.opnsense.openvpn_status
+==================================
 
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "target","string","false","sessions","kind","One of: 'sessions', 'routes'. What information to query"
+
+
+----
 
 Usage
 *****
@@ -202,13 +219,25 @@ ansibleguy.opnsense.openvpn_static_key
         - name: Changing
           ansibleguy.opnsense.openvpn_static_key:
             name: 'test1'
-            key: '#\n# 2048 bit OpenVPN static key\n#\n-----BEGIN OpenVPN Static key V1-----\n
-              c07e43dc02829f88184b4fb74243e4ac\nb1d24d1d1a74cd21df8ac64a527915ae\n9c736c0c219eb33774e40e61f6f660c8\n
-              daf44730850fae665f5f609a71e99f3c\n8a636b16dff7434ce3b7f9aca896287b\nd6c62d2f6d7db4e9cfcfe0f101cc6474\n
-              0c98246fbcd203891a0343777c7551c7\naa2ba1e6a6ab4fcf593a894d4da8f180\nd44645b5a658e17f5d48408a020430c3\n
-              5b768f413a2ec69ead015750cacb53d7\n64a19bce04b29f11d3ca7560a99958b6\n9203f493fd7e740b5a5a3d1afe1b4185\n
-              50043805c5bac513baf2306e42c1c1f8\n0fd16661536a3ee72ffbd1d2d1b1f6c0\n9683064c9bc044ee0357f4b94f5687ed\n
-              67cb013625cfb9b113ecff16674d63e6\n-----END OpenVPN Static key V1-----'
+            key: '#\n# 2048 bit OpenVPN static key\n#\n
+              -----BEGIN OpenVPN Static key V1-----\n
+              c07e43dc02829f88184b4fb74243e4ac\
+              nb1d24d1d1a74cd21df8ac64a527915ae\n
+              9c736c0c219eb33774e40e61f6f660c8\n
+              daf44730850fae665f5f609a71e99f3c\n
+              8a636b16dff7434ce3b7f9aca896287b\n
+              d6c62d2f6d7db4e9cfcfe0f101cc6474\n
+              0c98246fbcd203891a0343777c7551c7\n
+              aa2ba1e6a6ab4fcf593a894d4da8f180\n
+              d44645b5a658e17f5d48408a020430c3\n
+              5b768f413a2ec69ead015750cacb53d7\n
+              64a19bce04b29f11d3ca7560a99958b6\n
+              9203f493fd7e740b5a5a3d1afe1b4185\n
+              50043805c5bac513baf2306e42c1c1f8\n
+              0fd16661536a3ee72ffbd1d2d1b1f6c0\n
+              9683064c9bc044ee0357f4b94f5687ed\n
+              67cb013625cfb9b113ecff16674d63e6\n
+              -----END OpenVPN Static key V1-----'
 
         - name: Listing
           ansibleguy.opnsense.list:
@@ -223,3 +252,36 @@ ansibleguy.opnsense.openvpn_static_key
           ansibleguy.opnsense.openvpn_static_key:
             name: 'test1'
             state: 'absent'
+
+----
+
+ansibleguy.opnsense.openvpn_status
+==================================
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+      tasks:
+        - name: Querying OpenVPN Sessions
+          ansibleguy.opnsense.openvpn_status:
+            target: 'sessions'
+          register: ovpn_sessions
+
+        - name: Printing Sessions
+          ansible.builtin.debug:
+            var: ovpn_sessions.data
+
+        - name: Querying OpenVPN Routes
+          ansibleguy.opnsense.openvpn_status:
+            target: 'routes'
+          register: ovpn_routes
+
+        - name: Printing Routes
+          ansible.builtin.debug:
+            var: ovpn_routes.data

@@ -34,6 +34,13 @@ SERVICES = {
         'c': 'trafficshaper', 'a': ['reload', 'status', 'restart'],
         'm': {'restart': 'flushreload', 'status': 'statistics'}
     },
+    'openvpn': {
+        'c': 'openvpn', 'a': ['stop', 'status', 'start', 'reload', 'restart'],
+        'm': {
+            'start': 'startService', 'reload': 'reconfigure', 'restart': 'restartService',
+            'status': 'searchSessions', 'stop': 'stopService',
+        },
+    },
     #   note: these would support more actions:
     'ids': {}, 'proxy': {}, 'unbound': {},
     # plugins
@@ -80,6 +87,8 @@ def run_module():
         action=dict(
             type='str', required=True, aliases=['do', 'a'],
             choices=['reload', 'restart', 'start', 'status', 'stop'],
+            description='What action to execute. Some services may not support all of these actions - '
+                        'the module will inform you in that case'
         ),
         **OPN_MOD_ARGS,
     )

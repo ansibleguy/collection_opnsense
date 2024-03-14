@@ -1,0 +1,23 @@
+---
+
+- name: Testing OpenVPN Status
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+  tasks:
+    - name: Querying OpenVPN Sessions
+      ansibleguy.opnsense.openvpn_status:
+        target: 'sessions'
+      register: opn1
+      failed_when: "'data' not in opn1"
+
+    - name: Querying OpenVPN Routes
+      ansibleguy.opnsense.openvpn_status:
+        target: 'routes'
+      register: opn2
+      failed_when: "'data' not in opn2"
