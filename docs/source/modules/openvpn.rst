@@ -9,7 +9,8 @@ OpenVPN
 **STATE**: testing
 
 **TESTS**: `ansibleguy.opnsense.openvpn_client <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_client.yml>`_ |
-`ansibleguy.opnsense.openvpn_static_key <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_static_key.yml>`_
+`ansibleguy.opnsense.openvpn_static_key <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_static_key.yml>`_ |
+`ansibleguy.opnsense.openvpn_status <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_status.yml>`_
 
 **API Docs**: `OpenVPN <https://docs.opnsense.org/development/api/core/openvpn.html>`_
 

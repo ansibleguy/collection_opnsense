@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright: (C) 2023, AnsibleGuy <guy@ansibleguy.net>
+# Copyright: (C) 2024, AnsibleGuy <guy@ansibleguy.net>
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
 # template to be copied to implement new modules
@@ -16,7 +16,9 @@ try:
         diff_remove_empty
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main._tmpl import TMPL
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.openvpn import \
+        OPENVPN_INSTANCE_MOD_ARGS
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.openvpn_server import Server
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -29,132 +31,144 @@ except MODULE_EXCEPTIONS:
 def run_module():
     module_args = dict(
         # general
-        name=dict(
-            type='str', required=True, aliases=['desc', 'description'],
-            description='The name used to match this config to existing entries'
-        ),
-        remote=dict(
-            type='str', required=False, aliases=['peer', 'server'],
-            description='Remote host name or IP address with optional port'
-        ),
-        protocol=dict(
-            type='str', required=False, default='udp', aliases=['proto'],
-            choices=['udp', 'udp4', 'udp6', 'tcp', 'tcp4', 'tcp6'],
-            description='Use protocol for communicating with remote host.'
-        ),
         port=dict(
-            type='str', required=False, default='', aliases=['local_port', 'bind_port'],
-            description='Port number to use.'
-                        'Specifies a bind address, or nobind when client does not have a specific bind address.'
+            type='int', required=False, default=1194, aliases=['local_port', 'bind_port'],
+            description='Port number to use'
         ),
-        address=dict(
-            type='str', required=False, default='', aliases=['bind_address', 'ip', 'bind'],
-            description='Optional IP address for bind.'
-                        'If specified, OpenVPN will bind to this address only.'
-                        'If unspecified, OpenVPN will bind to all interfaces.'
+        server_ip4=dict(
+            type='str', required=False, default='', aliases=['server', 'client_net_ip4', 'net_ip4'],
+            description='This directive will set up an OpenVPN server which will allocate addresses to clients '
+                        'out of the given network/netmask. The server itself will take the .1 address of the given '
+                        'network for use as the server-side endpoint of the local TUN/TAP interface'
         ),
-        mode=dict(
-            type='str', required=False, default='tun', aliases=['type'], choices=['tun', 'tap'],
-            description='Choose the type of tunnel, OSI Layer 3 [tun] is the most common option '
-                        'to route IPv4 or IPv6 traffic, [tap] offers Ethernet 802.3 (OSI Layer 2) connectivity '
-                        'between hosts and is usually combined with a bridge.'
+        server_ip6=dict(
+            type='str', required=False, default='', aliases=['server6', 'client_net_ip6', 'net_ip6'],
+            description='This directive will set up an OpenVPN server which will allocate addresses to clients '
+                        'out of the given network/netmask. The server itself will take the next base address (+1) '
+                        'of the given network for use as the server-side endpoint of the local TUN/TAP interface'
         ),
-        log_level=dict(
-            type='int', required=False, default=3, aliases=['verbosity', 'verb'],
-            choices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
-            description='Output verbosity level. 0 = no output, 1-4 = normal, 5 = log packets, 6-11 debug'
+        max_connections=dict(
+            type='str', required=False, default='', aliases=['max_conn', 'max_clients'],
+            description='Specify the maximum number of clients allowed to concurrently connect to this server.'
         ),
-        keepalive_interval=dict(
-            type='str', required=False, default='', aliases=['kai'],
-            description='Ping interval in seconds. 0 to disable keep alive'
-        ),
-        keepalive_timeout=dict(
-            type='str', required=False, default='', aliases=['kat'],
-            description='Causes OpenVPN to restart after n seconds pass without reception of a '
-                        'ping or other packet from remote.'
-        ),
-        carp_depend_on=dict(
-            aliases=['vip', 'vip_depend', 'carp', 'carp_depend'],
-            type='str', required=False, default='',
-            description='The carp VHID to depend on, when this virtual address is not in '
-                        'master state, the interface cost will be set to the demoted cost'
+        topology=dict(
+            type='str', required=False, default='subnet', aliases=['topo'],
+            choices=['net30', 'p2p', 'subnet'],
+            description='Configure virtual addressing topology when running in --dev tun mode. This directive '
+                        'has no meaning in --dev tap mode, which always uses a subnet topology.'
         ),
         # trust
-        certificate=dict(
-            type='str', required=False, aliases=['cert'],
-            description='Certificate to use for this service.'
+        crl=dict(
+            type='str', required=False, default='', aliases=['certificate_revocation_list', 'revocation_list'],
+            description='Select a certificate revocation list to use for this service.'
         ),
-        ca=dict(
-            type='str', required=False, default='', aliases=['certificate_authority', 'authority'],
-            description='Select a certificate authority when it differs from the attached certificate.'
+        verify_client_cert=dict(
+            type='str', required=False, default='require', aliases=['verify_client', 'verify_cert'],
+            choices=['require', 'none'],
+            description='Specify if the client is required to offer a certificate.'
         ),
-        tls_key=dict(
-            type='str', required=False, default='', aliases=['tls_static_key'],
-            description='Add an additional layer of HMAC authentication on top of the TLS control channel to '
-                        'mitigate DoS attacks and attacks on the TLS stack. The prefixed mode determines if '
-                        'this measurement is only used for authentication (--tls-auth) or includes encryption '
-                        '(--tls-crypt).'
+        cert_depth=dict(  # select
+            type='int', required=False, default=0, aliases=['verify_client', 'verify_cert'],
+            choices=[0, 1, 2, 3, 4, 5],
+            description='When a certificate-based client logs in, do not accept certificates below this depth. '
+                        'Useful for denying certificates made with intermediate CAs generated from the same CA as '
+                        'the server. '
+                        '0 = Do not check, 1 = Client+Server, 2 = Client+Intermediate+Server, '
+                        '3 = Client+2xInter+Server, 4 = Client+3xInter+Server, '
+                        '5 = Client+4xInter+Server'
         ),
-        authentication=dict(
-            type='str', required=False, default='', aliases=['auth', 'auth_algo'],
-            choices=[
-                '', 'BLAKE2b512', 'BLAKE2s256', 'whirlpool', 'none',
-                'MD4', 'MD5', 'MD5-SHA1', 'RIPEMD160', 'SHA1', 'SHA224', 'SHA256', 'SHA3-224', 'SHA3-256',
-                'SHA3-384', 'SHA3-512', 'SHA384', 'SHA512', 'SHA512-224', 'SHA512-256', 'SHAKE128', 'SHAKE256',
-            ],
-            description='Authenticate data channel packets and (if enabled) tls-auth control channel packets with '
-                        'HMAC using message digest algorithm alg.'
+        data_ciphers=dict(
+            type='list', elements='str', required=False, default=[], aliases=['ciphers'],
+            choices=['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305'],
+            description='Restrict the allowed ciphers to be negotiated to the ciphers in this list.'
         ),
-        # auth
-        username=dict(
-            type='str', required=False, default='', aliases=['user'],
-            description='(optional) Username to send to the server for authentication when required.'
+        data_ciphers_fallback=dict(
+            type='str', required=False, default='', aliases=['ciphers_fallback'],
+            choices=['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305'],
+            description='Configure a cipher that is used to fall back to if we could not determine which cipher the '
+                        'peer is willing to use. This option should only be needed to connect to peers that are '
+                        'running OpenVPN 2.3 or older versions, and have been configured with --enable-small '
+                        '(typically used on routers or other embedded devices).'
         ),
-        password=dict(
-            type='str', required=False, default='', aliases=['pwd'], no_log=True,
-            description='Password belonging to the user specified above'
+        ocsp=dict(
+            type='bool', required=False, default=False,
+            description='When the CA used supplies an authorityInfoAccess OCSP URI extension, '
+                        'it will be used to validate the client certificate.'
         ),
-        renegotiate_time=dict(
-            type='str', required=False, default='', aliases=['reneg_time', 'reneg'],
-            description='Renegotiate data channel key after n seconds (default=3600). When using a one time '
-                        'password, be advised that your connection will automatically drop because your '
-                        'password is not valid anymore. Set to 0 to disable, remember to change your '
-                        'client as well.'
+        # authentication
+        auth_mode=dict(
+            type='list', elements='str', required=False, default='',
+            aliases=['authentication_mode', 'auth_source'],
+            description='Select authentication methods to use, leave empty if no challenge response '
+                        'authentication is needed.'
         ),
-        # routing
-        network_local=dict(
-            type='list', elements='str', required=False, default=[], aliases=['net_local', 'push_route'],
-            description='These are the networks accessible on this host, these are pushed via route{-ipv6} '
-                        'clauses in OpenVPN to the client.'
+        auth_group=dict(
+            type='str', required=False, default='', aliases=['group'],
+            description='Restrict access to users in the selected local group. Please be aware that other '
+                        'authentication backends will refuse to authenticate when using this option.'
         ),
-        network_remote=dict(
-            type='list', elements='str', required=False, default=[], aliases=['net_remote', 'route'],
-            description='Remote networks for the server, add route to routing table after connection is established'
+        user_as_cn=dict(
+            type='bool', required=False, default=False, aliases=['username_as_cn'],
+            description='Use the authenticated username as the common-name, rather than the common-name '
+                        'from the client certificate.'
+        ),
+        user_cn_strict=dict(
+            type='bool', required=False, default=False, aliases=['username_cn_strict'],
+            description='When authenticating users, enforce a match between the Common Name of the client '
+                        'certificate and the username given at login.'
+        ),
+        auth_token_time=dict(
+            type='str', required=False, default='', aliases=['auth_time', 'token_time'],
+            description='After successful user/password authentication, the OpenVPN server will with this option '
+                        'generate a temporary authentication token and push that to the client. On the following '
+                        'renegotiations, the OpenVPN client will pass this token instead of the users password. '
+                        'On the server side the server will do the token authentication internally and it will NOT '
+                        'do any additional authentications against configured external user/password authentication '
+                        'mechanisms. When set to 0, the token will never expire, any other value specifies the '
+                        'lifetime in seconds.'
         ),
         # misc
-        options=dict(
-            type='list', elements='str', required=False, default=[], aliases=['opts'],
-            description='Various less frequently used yes/no options which can be set for this instance.',
-            choices=[
-                'client-to-client', 'duplicate-cn', 'passtos', 'persist-remote-ip', 'route-nopull', 'route-noexec',
-                'remote-random',
-            ],
+        push_options=dict(
+            type='list', elements='str', required=False, default=[], aliases=['push_opts'],
+            choices=['block-outside-dns', 'register-dns'],
+            description='Various less frequently used yes/no options which can be pushed to the client '
+                        'for this instance.',
         ),
-        mtu=dict(
-            type='str', required=False, default='', aliases=['tun_mtu'],
-            description='Take the TUN device MTU to be tun-mtu and derive the link MTU from it.'
+        redirect_gateway=dict(
+            type='list', elements='str', required=False, default=[], aliases=['redirect_gw', 'redir_gw'],
+            choices=['local', 'autolocal', 'def1', 'bypass_dhcp', 'bypass_dns', 'block_local', 'ipv6', 'notipv4'],
+            description='Automatically execute routing commands to cause all outgoing IP traffic to be '
+                        'redirected over the VPN.',
         ),
-        fragment_size=dict(
-            type='str', required=False, default='', aliases=['frag_size'],
-            description='Enable internal datagram fragmentation so that no UDP datagrams are sent which are larger '
-                        'than the specified byte size.'
+        route_metric=dict(
+            type='str', required=False, default='', aliases=['metric'],
+            description='Specify a default metric m for use with --route on the connecting client (push option).'
         ),
-        mss_fix=dict(
-            type='bool', required=False, default=False, aliases=['mss'],
-            description='Announce to TCP sessions running over the tunnel that they should limit their send packet '
-                        'sizes such that after OpenVPN has encapsulated them, the resulting UDP packet size that '
-                        'OpenVPN sends to its peer will not exceed the recommended size.'
+        register_dns=dict(
+            type='bool', required=False, default=False,
+            description='Run ipconfig /flushdns and ipconfig /registerdns on connection initiation. '
+                        'This is known to kick Windows into recognizing pushed DNS servers.'
         ),
+        domain=dict(
+            type='str', required=False, default='', aliases=['dns_domain'],
+            description='Set Connection-specific DNS Suffix.'
+        ),
+        domain_list=dict(
+            type='list', elements='str', required=False, default=[], aliases=['dns_domain_search'],
+            description='Add name to the domain search list. Repeat this option to add more entries. '
+                        'Up to 10 domains are supported'
+        ),
+        dns_servers=dict(
+            type='list', elements='str', required=False, default=[], aliases=['dns'],
+            description='Set primary domain name server IPv4 or IPv6 address. '
+                        'Repeat this option to set secondary DNS server addresses.'
+        ),
+        ntp_servers=dict(
+            type='list', elements='str', required=False, default=[], aliases=['ntp'],
+            description='Set primary NTP server address (Network Time Protocol). '
+                        'Repeat this option to set secondary NTP server addresses.'
+        ),
+        **OPENVPN_INSTANCE_MOD_ARGS,
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,
@@ -174,7 +188,7 @@ def run_module():
         supports_check_mode=True,
     )
 
-    module_wrapper(TMPL(module=module, result=result))
+    module_wrapper(Server(module=module, result=result))
 
     result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
