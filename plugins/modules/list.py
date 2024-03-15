@@ -29,7 +29,7 @@ TARGETS = [
     'frr_ospf3_interface', 'frr_ospf_interface', 'bind_acl', 'frr_ospf_network', 'frr_rip', 'bind_general',
     'bind_blocklist', 'bind_record', 'interface_vip', 'webproxy_general', 'webproxy_cache', 'webproxy_parent',
     'webproxy_traffic', 'webproxy_remote_acl', 'webproxy_pac_proxy', 'webproxy_pac_match', 'webproxy_pac_rule',
-    'cron', 'unbound_dot', 'ipsec_cert', 'source_nat', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
+    'cron', 'unbound_dot', 'ipsec_cert', 'ipsec_psk', 'source_nat', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
     'frr_bgp_as_path', 'frr_bgp_route_map', 'frr_ospf_prefix_list', 'frr_ospf_route_map', 'webproxy_forward',
     'webproxy_acl', 'webproxy_icap', 'webproxy_auth', 'ipsec_connection', 'ipsec_pool',
     'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote', 'frr_general', 'unbound_general',
@@ -120,6 +120,10 @@ def run_module():
         elif target == 'ipsec_cert':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_cert import \
                 KeyPair as Target_Obj
+
+        elif target == 'ipsec_psk':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_psk import \
+                PreSharedKey as Target_Obj
 
         elif target == 'shaper_pipe':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.shaper_pipe import \
