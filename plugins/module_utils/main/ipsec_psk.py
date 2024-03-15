@@ -68,7 +68,6 @@ class PreSharedKey(BaseModule):
         else:
             simple['uuid'] = None
 
-        self.m.warn(f'simple: {simple}')
         return simple
 
     def update(self) -> None:
