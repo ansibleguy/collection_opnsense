@@ -44,7 +44,7 @@ class PreSharedKey(BaseModule):
             for field in self.FIELDS_ALL:
                 if is_unset(self.p[field]):
                     self.m.fail_json(
-                        "You need to supply '{}' to create an IPSec certificate!".format(field)
+                        f"You need to supply '{field}' to create an IPSec certificate!"
                     )
                 self.p[field] = self.p[field].strip()
         self._base_check()
@@ -71,4 +71,3 @@ class PreSharedKey(BaseModule):
 
     def update(self) -> None:
         self.b.update(enable_switch=False)
-        return
