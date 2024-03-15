@@ -33,10 +33,13 @@ def run_module():
         ),
         identity_remote=dict(
             type='str', required=False, aliases=['remote_ident'],
-            description='(optional) This can be either an IP address, fully qualified domain name or an email address to identify the remote host.'
+            description='(optional) This can be either an IP address, fully qualified domain name or '
+                        'an email address to identify the remote host.'
         ),
         psk=dict(type='str', required=False, no_log=True, aliases=['key', 'secret']),
-        type=dict(type='str', required=False, choices=['PSK', 'EAP'], default='PSK', aliases=['kind']),
+        type=dict(
+            type='str', required=False, choices=['PSK', 'EAP'], default='PSK', aliases=['kind'],
+        ),
         **RELOAD_MOD_ARG_DEF_FALSE,
         **STATE_ONLY_MOD_ARG,
         **OPN_MOD_ARGS,
