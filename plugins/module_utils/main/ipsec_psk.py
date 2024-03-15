@@ -50,7 +50,6 @@ class PreSharedKey(BaseModule):
         self._base_check()
 
     def _simplify_existing(self, psk: dict) -> dict:
-        self.m.warn(f'current psk: {psk}')
         # makes processing easier
         simple = {}
         for field in self.FIELDS_STRING:
