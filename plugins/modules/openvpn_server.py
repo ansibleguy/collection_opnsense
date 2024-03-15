@@ -67,9 +67,9 @@ def run_module():
             choices=['require', 'none'],
             description='Specify if the client is required to offer a certificate.'
         ),
-        cert_depth=dict(  # select
-            type='int', required=False, default=0, aliases=['verify_client', 'verify_cert'],
-            choices=[0, 1, 2, 3, 4, 5],
+        cert_depth=dict(
+            type='str', required=False, default='', aliases=['certificate_depth'],
+            choices=['', '1', '2', '3', '4', '5'],
             description='When a certificate-based client logs in, do not accept certificates below this depth. '
                         'Useful for denying certificates made with intermediate CAs generated from the same CA as '
                         'the server. '
@@ -82,22 +82,22 @@ def run_module():
             choices=['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305'],
             description='Restrict the allowed ciphers to be negotiated to the ciphers in this list.'
         ),
-        data_ciphers_fallback=dict(
-            type='str', required=False, default='', aliases=['ciphers_fallback'],
-            choices=['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305'],
+        data_cipher_fallback=dict(
+            type='str', required=False, default='', aliases=['cipher_fallback'],
+            choices=['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305', ''],
             description='Configure a cipher that is used to fall back to if we could not determine which cipher the '
                         'peer is willing to use. This option should only be needed to connect to peers that are '
                         'running OpenVPN 2.3 or older versions, and have been configured with --enable-small '
                         '(typically used on routers or other embedded devices).'
         ),
         ocsp=dict(
-            type='bool', required=False, default=False,
+            type='bool', required=False, default=False, aliases=['use_ocsp', 'verify_ocsp'],
             description='When the CA used supplies an authorityInfoAccess OCSP URI extension, '
                         'it will be used to validate the client certificate.'
         ),
         # authentication
         auth_mode=dict(
-            type='list', elements='str', required=False, default='',
+            type='list', elements='str', required=False, default=[],
             aliases=['authentication_mode', 'auth_source'],
             description='Select authentication methods to use, leave empty if no challenge response '
                         'authentication is needed.'
@@ -141,7 +141,7 @@ def run_module():
                         'redirected over the VPN.',
         ),
         route_metric=dict(
-            type='str', required=False, default='', aliases=['metric'],
+            type='str', required=False, default='', aliases=['metric', 'push_metric'],
             description='Specify a default metric m for use with --route on the connecting client (push option).'
         ),
         register_dns=dict(

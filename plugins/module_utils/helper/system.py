@@ -32,7 +32,7 @@ def _wait_msg(module: AnsibleModule, msg: str):
 def wait_for_response(module: AnsibleModule) -> bool:
     timeout = time() + module.params['wait_timeout']
 
-    _wait_msg(module, 'Waiting for service to stop..')
+    _wait_msg(module, 'Waiting for services to stop..')
     sleep(10)
 
     while time() < timeout:

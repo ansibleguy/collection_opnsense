@@ -25,8 +25,8 @@ class Server(BaseModule):
     FIELDS_CHANGE = [
         'protocol', 'port', 'address', 'mode', 'log_level', 'keepalive_interval', 'keepalive_timeout',
         'certificate', 'ca', 'key', 'authentication', 'renegotiate_time', 'network_local', 'network_remote',
-        'options', 'mtu', 'fragment_size', 'mss_fix', 'server_ipv4', 'server_ip6', 'max_connections',
-        'topology', 'crl', 'verify_client_cert', 'cert_depth', 'data_ciphers', 'data_ciphers_fallback',
+        'options', 'mtu', 'fragment_size', 'mss_fix', 'server_ip4', 'server_ip6', 'max_connections',
+        'topology', 'crl', 'verify_client_cert', 'cert_depth', 'data_ciphers', 'data_cipher_fallback',
         'ocsp', 'auth_mode', 'auth_group', 'user_as_cn', 'user_cn_strict', 'auth_token_time', 'push_options',
         'redirect_gateway', 'route_metric', 'register_dns', 'domain', 'domain_list', 'dns_servers',
         'ntp_servers',
@@ -60,6 +60,9 @@ class Server(BaseModule):
         'push_options': 'various_push_flags',
         'domain': 'dns_domain',
         'domain_list': 'dns_domain_search',
+        'ocsp': 'use_ocsp',
+        'data_ciphers': 'data-ciphers',
+        'data_cipher_fallback': 'data-ciphers-fallback',
     }
     FIELDS_BOOL_INVERT = []
     FIELDS_TYPING = {
@@ -71,7 +74,7 @@ class Server(BaseModule):
         'select': [
             'certificate', 'ca', 'key', 'authentication', 'carp_depend_on', 'log_level',
             'mode', 'protocol', 'role', 'topology', 'crl', 'verify_client_cert', 'cert_depth',
-            'data_ciphers_fallback', 'auth_group',
+            'data_cipher_fallback', 'auth_group',
         ],
         'select_opt_list_idx': ['log_level'],
         'int': ['fragment_size', 'mtu', 'route_metric'],

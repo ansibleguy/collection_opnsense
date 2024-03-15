@@ -138,7 +138,7 @@ run_test 'ids_policy_rule' 1
 run_test 'openvpn_status' 1
 run_test 'openvpn_static_key' 1
 run_test 'openvpn_client' 1
-# run_test 'openvpn_server' 1
+run_test 'openvpn_server' 1
 # run_test 'openvpn_client_override' 1
 # run_test 'openvpn_client_template' 1
 # run_test 'openvpn_client_export' 1

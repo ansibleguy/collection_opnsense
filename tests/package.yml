@@ -61,6 +61,11 @@
         opn9.failed or
         not opn9.changed
 
+    - name: Waiting for backend-data to refresh
+      ansible.builtin.pause:
+        seconds: 5
+      when: not ansible_check_mode
+
     - name: Checking if installed
       ansibleguy.opnsense.list:
       register: opn12
