@@ -51,8 +51,8 @@ ansibleguy.opnsense.openvpn_server
     "renegotiate_time","integer","false","\-","reneg_time, reneg","Renegotiate data channel key after n seconds (default=3600). When using a one time password, be advised that your connection will automatically drop because your password is not valid anymore. Set to 0 to disable, remember to change your client as well."
     "auth_token_time","integer","false","\-","auth_time, token_time","After successful user/password authentication, the OpenVPN server will with this option generate a temporary authentication token and push that to the client. On the following renegotiations, the OpenVPN client will pass this token instead of the users password. On the server side the server will do the token authentication internally and it will NOT do any additional authentications against configured external user/password authentication mechanisms. When set to 0, the token will never expire, any other value specifies the lifetime in seconds."
     "certificate","string","true if no ca","\-","cert","Certificate to use for this service."
-    "ca","string","false","true if no certificate","certificate_authority, authority","Select a certificate authority when it differs from the attached certificate."
-    "crl","string","false","false","certificate_revocation_list, revocation_list","Select a certificate revocation list to use for this service."
+    "ca","string","true if no certificate","\-","certificate_authority, authority","Select a certificate authority when it differs from the attached certificate."
+    "crl","string","false","\-","certificate_revocation_list, revocation_list","Select a certificate revocation list to use for this service."
     "key","string","false","\-","tls_key, tls_static_key","Add an additional layer of HMAC authentication on top of the TLS control channel to mitigate DoS attacks and attacks on the TLS stack. The prefixed mode determines if this measurement is only used for authentication (--tls-auth) or includes encryption (--tls-crypt)."
     "authentication","string","false","\-","auth, auth_algo","One of: 'BLAKE2b512', 'BLAKE2s256', 'whirlpool', 'none', 'MD4', 'MD5', 'MD5-SHA1', 'RIPEMD160', 'SHA1', 'SHA224', 'SHA256', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512', 'SHA384', 'SHA512', 'SHA512-224', 'SHA512-256', 'SHAKE128', 'SHAKE256'. Authenticate data channel packets and (if enabled) tls-auth control channel packets with HMAC using message digest algorithm alg."
     "network_local","list","false","\-","local, net_local, push_route","These are the networks accessible on this host, these are pushed via route{-ipv6} clauses in OpenVPN to the client"
@@ -63,14 +63,14 @@ ansibleguy.opnsense.openvpn_server
     "auth_group","string","false","\-","group","Restrict access to users in the selected local group. Please be aware that other authentication backends will refuse to authenticate when using this option."
     "options","list","false","\-","opts","One or multiple of: 'client-to-client', 'duplicate-cn', 'passtos', 'persist-remote-ip', 'route-nopull', 'route-noexec', 'remote-random'. Various less frequently used yes/no options which can be set for this instance."
     "push_options","list","false","\-","push_opts","One or multiple of: 'block-outside-dns', 'register-dns'. Various less frequently used yes/no options which can be pushed to the client for this instance."
-    "redirect_gateway","list","false","\-","push_opts","One or multiple of: 'local', 'autolocal', 'def1', 'bypass_dhcp', 'bypass_dns', 'block_local', 'ipv6', 'notipv4'. Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN."
+    "redirect_gateway","list","false","\-","redirect_gw, redir_gw","One or multiple of: 'local', 'autolocal', 'def1', 'bypass_dhcp', 'bypass_dns', 'block_local', 'ipv6', 'notipv4'. Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN."
     "domain","string","false","\-","dns_domain","Set Connection-specific DNS Suffix."
     "domain_list","list","false","\-","dns_domain_search","Add name to the domain search list. Repeat this option to add more entries. Up to 10 domains are supported"
     "dns_servers","list","false","\-","dns","Set primary domain name server IPv4 or IPv6 address. Repeat this option to set secondary DNS server addresses."
     "ntp_servers","list","false","\-","ntp","Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses."
     "mtu","integer","false","\-","tun_mtu","Take the TUN device MTU to be tun-mtu and derive the link MTU from it."
     "route_metric","integer","false","\-","metric, push_metric","Specify a default metric m for use with --route on the connecting client (push option)."
-    "fragment_size","string","false","\-","frag_size","Enable internal datagram fragmentation so that no UDP datagrams are sent which are larger than the specified byte size."
+    "fragment_size","integer","false","\-","frag_size","Enable internal datagram fragmentation so that no UDP datagrams are sent which are larger than the specified byte size."
     "verify_client_cert","string","false","require","verify_client, verify_cert","One of: 'require', 'none'. Specify if the client is required to offer a certificate."
     "cert_depth","integer","false","\-","certificate_depth","From 1 to 5. When a certificate-based client logs in, do not accept certificates below this depth. Useful for denying certificates made with intermediate CAs generated from the same CA as the server."
     "register_dns","boolean","false","false","\-","Run ipconfig /flushdns and ipconfig /registerdns on connection initiation. This is known to kick Windows into recognizing pushed DNS servers."
@@ -99,7 +99,7 @@ ansibleguy.opnsense.openvpn_client
     "renegotiate_time","integer","false","\-","reneg_time, reneg","Renegotiate data channel key after n seconds (default=3600). When using a one time password, be advised that your connection will automatically drop because your password is not valid anymore. Set to 0 to disable, remember to change your client as well."
     "carp_depend_on","string","false","\-","vip, vip_depend, carp, carp_depend","The CARP VHID to depend on. When this virtual address is not in master state, then the instance will be shutdown."
     "certificate","string","true if no ca","\-","cert","Certificate to use for this service."
-    "ca","string","false","true if no certificate","certificate_authority, authority","Select a certificate authority when it differs from the attached certificate."
+    "ca","string","true if no certificate","\-","certificate_authority, authority","Select a certificate authority when it differs from the attached certificate."
     "key","string","false","\-","tls_key, tls_static_key","Add an additional layer of HMAC authentication on top of the TLS control channel to mitigate DoS attacks and attacks on the TLS stack. The prefixed mode determines if this measurement is only used for authentication (--tls-auth) or includes encryption (--tls-crypt)."
     "authentication","string","false","\-","auth, auth_algo","One of: 'BLAKE2b512', 'BLAKE2s256', 'whirlpool', 'none', 'MD4', 'MD5', 'MD5-SHA1', 'RIPEMD160', 'SHA1', 'SHA224', 'SHA256', 'SHA3-224', 'SHA3-256', 'SHA3-384', 'SHA3-512', 'SHA384', 'SHA512', 'SHA512-224', 'SHA512-256', 'SHAKE128', 'SHAKE256'. Authenticate data channel packets and (if enabled) tls-auth control channel packets with HMAC using message digest algorithm alg."
     "username","string","false","\-","user","(optional) Username to send to the server for authentication when required."
@@ -108,7 +108,7 @@ ansibleguy.opnsense.openvpn_client
     "network_remote","list","false","\-","remote, net_remote, route","Remote networks for the server, add route to routing table after connection is established"
     "options","list","false","\-","opts","One or multiple of: 'client-to-client', 'duplicate-cn', 'passtos', 'persist-remote-ip', 'route-nopull', 'route-noexec', 'remote-random'. Various less frequently used yes/no options which can be set for this instance."
     "mtu","integer","false","\-","tun_mtu","Take the TUN device MTU to be tun-mtu and derive the link MTU from it."
-    "fragment_size","string","false","\-","frag_size","Enable internal datagram fragmentation so that no UDP datagrams are sent which are larger than the specified byte size."
+    "fragment_size","integer","false","\-","frag_size","Enable internal datagram fragmentation so that no UDP datagrams are sent which are larger than the specified byte size."
     "mss_fix","boolean","false","false","mss","Announce to TCP sessions running over the tunnel that they should limit their send packet sizes such that after OpenVPN has encapsulated them, the resulting UDP packet size that OpenVPN sends to its peer will not exceed the recommended size."
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
@@ -436,6 +436,13 @@ ansibleguy.opnsense.openvpn_static_key
           ansibleguy.opnsense.openvpn_static_key:
             name: 'test1'
             state: 'absent'
+
+        - name: Linking key to OpenVPN-client
+          ansibleguy.opnsense.openvpn_client:
+            name: 'test-client'
+            remote: 'openvpn.test.ansibleguy.net'
+            ca: 'OpenVPN'
+            key: 'test-key'
 
 ----
 
