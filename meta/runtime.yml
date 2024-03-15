@@ -25,6 +25,7 @@ action_groups:
     - ansibleguy.opnsense.ipsec_child
     - ansibleguy.opnsense.ipsec_vti
     - ansibleguy.opnsense.ipsec_cert
+    - ansibleguy.opnsense.ipsec_psk
     - ansibleguy.opnsense.ipsec_connection
     - ansibleguy.opnsense.ipsec_pool
   shaper:
