@@ -3,35 +3,37 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_selected, is_unset
+    get_selected, is_unset, validate_str_fields
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
 class PreSharedKey(BaseModule):
-    FIELD_ID = 'ident'
+    FIELD_ID = 'identity_local'
     CMDS = {
         'add': 'addItem',
         'del': 'delItem',
         'set': 'setItem',
-        'search': 'get',
+        'search': 'searchItem',
+        'detail': 'getItem',
     }
 
-    API_KEY_PATH = 'ipsec.preSharedKeys.preSharedKey'
+    API_KEY_PATH = 'preSharedKey'
     API_MOD = 'ipsec'
     API_CONT = 'pre_shared_keys'
-    API_CONT_REL = 'legacy_subsystem'
-    API_CMD_REL = 'applyConfig'
-    FIELDS_STRING = ['ident', 'remote_ident', 'psk']
-    FIELDS_ALL = FIELDS_STRING + ['type']
-    FIELDS_CHANGE = FIELDS_ALL
+    API_CONT_REL = 'service'
+    API_CMD_REL = 'reconfigure'
+    FIELDS_CHANGE = ['identity_remote', 'psk', 'type']
+    FIELDS_ALL = [FIELD_ID]
+    FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
-        'ident': 'ident',
-        'remote_ident': 'remote_ident',
+        'identity_local': 'ident',
+        'identity_remote': 'remote_ident',
         'psk': 'Key',
         'type': 'keyType',
     }
-    FIELDS_TYPING = {}
-    FIELDS_DIFF_EXCLUDE = []
+    FIELDS_TYPING = {
+        'select': ['type'],
+    }
     EXIST_ATTR = 'psk'
     TIMEOUT = 30.0  # ipsec reload
 
@@ -41,33 +43,10 @@ class PreSharedKey(BaseModule):
 
     def check(self) -> None:
         if self.p['state'] == 'present':
-            for field in self.FIELDS_ALL:
-                if is_unset(self.p[field]):
-                    self.m.fail_json(
-                        f"You need to supply '{field}' to create an IPSec certificate!"
-                    )
-                self.p[field] = self.p[field].strip()
+            if is_unset(self.p['psk']):
+                self.m.fail_json('You need to supply a PSK!')
+
         self._base_check()
-
-    def _simplify_existing(self, psk: dict) -> dict:
-        # makes processing easier
-        simple = {}
-        for field in self.FIELDS_STRING:
-            for k, v in self.FIELDS_TRANSLATE.items():
-                if field == k:
-                    simple[k] = psk[v]
-        simple['type'] = get_selected(psk['keyType'])
-
-        if 'uuid' in psk:
-            simple['uuid'] = psk['uuid']
-
-        elif self.key is not None and 'uuid' in self.key:
-            simple['uuid'] = self.key['uuid']
-
-        else:
-            simple['uuid'] = None
-
-        return simple
 
     def update(self) -> None:
         self.b.update(enable_switch=False)
