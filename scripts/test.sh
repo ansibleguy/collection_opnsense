@@ -71,7 +71,6 @@ run_test 'unbound_host' 1
 run_test 'unbound_domain' 1
 run_test 'unbound_host_alias' 1
 run_test 'syslog' 1
-run_test 'ipsec_cert' 1
 run_test 'shaper_pipe' 1
 run_test 'shaper_queue' 1
 run_test 'shaper_rule' 1
@@ -122,6 +121,8 @@ run_test 'webproxy_remote_acl' 1
 run_test 'webproxy_pac_proxy' 1
 run_test 'webproxy_pac_match' 1
 run_test 'webproxy_pac_rule' 1
+run_test 'ipsec_cert' 1
+run_test 'ipsec_psk' 1
 run_test 'ipsec_pool' 1
 run_test 'ipsec_connection' 1
 run_test 'ipsec_vti' 1

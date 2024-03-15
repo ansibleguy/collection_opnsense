@@ -13,13 +13,14 @@ class KeyPair(BaseModule):
         'add': 'addItem',
         'del': 'delItem',
         'set': 'setItem',
-        'search': 'get',
+        'search': 'searchItem',
+        'detail': 'getItem',
     }
-    API_KEY_PATH = 'ipsec.keyPairs.keyPair'
+    API_KEY_PATH = 'keyPair'
     API_MOD = 'ipsec'
     API_CONT = 'key_pairs'
-    API_CONT_REL = 'legacy_subsystem'
-    API_CMD_REL = 'applyConfig'
+    API_CONT_REL = 'service'
+    API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = ['public_key']
     FIELDS_ALL = ['name', 'private_key', 'type']
     FIELDS_ALL.extend(FIELDS_CHANGE)
@@ -28,7 +29,6 @@ class KeyPair(BaseModule):
         'public_key': 'publicKey',
         'private_key': 'privateKey',
     }
-    FIELDS_TYPING = {}
     FIELDS_DIFF_NO_LOG = ['private_key']
     EXIST_ATTR = 'key'
     TIMEOUT = 30.0  # ipsec reload

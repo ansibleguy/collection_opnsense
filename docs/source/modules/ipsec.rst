@@ -9,6 +9,7 @@ IPSec
 **STATE**: stable
 
 **TESTS**: `ipsec_cert <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_cert.yml>`_ |
+`ipsec_psk <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_psk.yml>`_ |
 `ipsec_connection <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_connection.yml>`_ |
 `ipsec_pool <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_pool.yml>`_ |
 `ipsec_vti <https://github.com/ansibleguy/collection_opnsense/blob/stable/tests/ipsec_vti.yml>`_
@@ -146,6 +147,18 @@ ansibleguy.opnsense.ipsec_cert
     "type","string","false","rsa","\-","Type of the key. Currently the only option is 'rsa'"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
+ansibleguy.opnsense.ipsec_psk
+=============================
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "identity_local","string","true","\-","identity, ident","This can be either an IP address, fully qualified domain name or an email address."
+    "identity_remote","string","false","\-","remote_ident","(optional) This can be either an IP address, fully qualified domain name or an email address to identify the remote host."
+    "psk","string","true","\-","key, secret","\-"
+    "type","string","false","\-","kind","One of: 'PSK', 'EAP'"
+
 
 Usage
 *****
@@ -169,6 +182,9 @@ You may want to use '**ansible-vault**' to **encrypt** your 'private_key' conten
 
 Examples
 ********
+
+ansibleguy.opnsense.ipsec_cert
+==============================
 
 .. code-block:: yaml
 
@@ -220,3 +236,38 @@ Examples
         - name: Manually reloading/applying config
           ansibleguy.opnsense.reload:
             target: 'ipsec'
+
+----
+
+ansibleguy.opnsense.ipsec_psk
+=============================
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        ansibleguy.opnsense.list:
+          target: 'ipsec_psk'
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.ipsec_psk:
+            identity: 'example'
+            psk: 'secret'
+            # type: 'PSK'
+            # identity_remote: ''
+
+        - name: Adding
+          ansibleguy.opnsense.ipsec_psk:
+            identity: 'test1'
+            psk: 'my-super-secret'
+
+        - name: Removing
+          ansibleguy.opnsense.ipsec_psk:
+            identity: 'test1'
+            state: 'absent'
