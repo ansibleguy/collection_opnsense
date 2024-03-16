@@ -492,6 +492,14 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
 
+    - name: Cleanup IPSec PSK
+      ansibleguy.opnsense.ipsec_psk:
+        identity: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE@TEST1'
+        - 'ANSIBLE@TEST2'
+
     - name: Cleanup IPSec childs
       ansibleguy.opnsense.ipsec_child:
         name: "{{ item }}"
