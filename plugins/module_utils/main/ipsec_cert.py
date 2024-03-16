@@ -31,6 +31,7 @@ class KeyPair(BaseModule):
     }
     FIELDS_DIFF_NO_LOG = ['private_key']
     EXIST_ATTR = 'key'
+    FIELDS_TYPING = {}
     TIMEOUT = 30.0  # ipsec reload
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
