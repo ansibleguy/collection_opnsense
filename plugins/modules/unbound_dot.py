@@ -27,7 +27,10 @@ except MODULE_EXCEPTIONS:
 
 def run_module():
     module_args = dict(
-        domain=dict(type='str', required=True, aliases=['dom', 'd']),
+        domain=dict(
+            type='str', required=False, aliases=['dom', 'd'], default='',
+            description='Provide a domain to limit the DNS-over-TLS to or leave empty to act as a catch-all'
+        ),
         target=dict(
             type='str', required=True, aliases=['tgt', 'server', 'srv'],
             description='Server to forward the dns queries to'

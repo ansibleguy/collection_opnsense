@@ -22,7 +22,7 @@ Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
-    "domain","string","true","\-","dom, d","Domain of the DNS-over-TLS entry"
+    "domain","string","false","\-","dom, d","Provide a domain to limit the DNS-over-TLS to or leave empty to act as a catch-all"
     "target","string","true","\-","server, srv, tgt","DNS target server"
     "port","string","false","53","p","DNS port of the target server"
     "verify","string","false","\-","common_name, cn, hostname","Verify if CN in certificate matches this value, **if not set - certificate verification will not be performed**! Must be a valid IP-Address or hostname."
@@ -61,10 +61,10 @@ Examples
       tasks:
         - name: Example
           ansibleguy.opnsense.unbound_dot:
-            domain: 'dot.template.ansibleguy.net'
             target: '1.1.1.1'
+            # domain: ''
             # port: 53
-            # verify: 'dot.template.ansibleguy.net'
+            # verify: ''
             # state: 'present'
             # reload: true
             # enabled: true
