@@ -44,7 +44,7 @@ You want a simple Ansible GUI? Check-out my [Ansible WebUI](https://github.com/a
 
 It was a lot of work (100+ hours) to get those modules working.
 
-If you are happy with the functionality they provide: please [consider donating a few bucks](https://github.com/sponsors/ansibleguy?frequency=one-time&sponsor=ansibleguy) so my doggy can get some treats (;
+If you are happy with the functionality they provide: please [consider donating a few bucks](https://ko-fi.com/ansible0guy)
 
 ----
 
