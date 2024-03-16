@@ -30,6 +30,7 @@
     - name: Enabling 1 (used by other tests)
       ansibleguy.opnsense.ids_ruleset:
         name: "{{ item }}"
+        timeout: 60  # download
       loop:
         - 'ET open/drop'
         - 'OPNsense-App-detect/test'
