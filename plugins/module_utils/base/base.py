@@ -155,7 +155,7 @@ class Base:
 
             return data
 
-        except KeyError as err:
+        except KeyError:
             exit_bug(f"Got invalid API_KEY_PATH: '{ak_path}' not matching data '{data}'")
 
     def get_existing(self, diff_filter: bool = False) -> list:
