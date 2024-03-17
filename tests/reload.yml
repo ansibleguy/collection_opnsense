@@ -34,3 +34,4 @@
         - 'webproxy'
         - 'bind'
         - 'ids'
+        - 'openvpn'
