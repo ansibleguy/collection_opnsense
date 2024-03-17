@@ -593,7 +593,7 @@
         - 'ANSIBLE_TEST_2_1'
 
     - name: Cleanup Client-Overwrite
-      ansibleguy.opnsense.openvpn_client_overwrite:
+      ansibleguy.opnsense.openvpn_client_override:
         name: "{{ item }}"
         state: 'absent'
       loop:

@@ -6,7 +6,7 @@
 OpenVPN
 =======
 
-**STATE**: testing
+**STATE**: unstable
 
 **TESTS**: `ansibleguy.opnsense.openvpn_client <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_client.yml>`_ |
 `ansibleguy.opnsense.openvpn_server <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_server.yml>`_ |
