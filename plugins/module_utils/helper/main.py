@@ -298,6 +298,16 @@ def get_key_by_value_end_from_selection(selection: dict, value: str) -> (str, No
 
     return None
 
+
+def get_key_by_value_beg_from_selection(selection: dict, value: str) -> (str, None):
+    if isinstance(selection, dict):
+        for key, values in selection.items():
+            if 'value' in values and values['value'].startswith(value):
+                return key
+
+    return None
+
+
 def to_digit(data: bool) -> int:
     return 1 if data else 0
 

@@ -166,3 +166,5 @@ plugin_routing:
       redirect: ansibleguy.opnsense.webproxy_pac_match
     proxy_pac_rule:
       redirect: ansibleguy.opnsense.webproxy_pac_rule
+    openvpn_client_overwrite:
+      redirect: ansibleguy.opnsense.openvpn_client_override

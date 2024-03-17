@@ -592,6 +592,14 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
 
+    - name: Cleanup Client-Overwrite
+      ansibleguy.opnsense.openvpn_client_overwrite:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+
     - name: Cleanup OpenVPN Server
       ansibleguy.opnsense.openvpn_server:
         name: "{{ item }}"
@@ -600,6 +608,7 @@
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
+        - 'ANSIBLE_TEST_3_1'
 
     - name: Cleanup OpenVPN Static-Keys
       ansibleguy.opnsense.openvpn_static_key:

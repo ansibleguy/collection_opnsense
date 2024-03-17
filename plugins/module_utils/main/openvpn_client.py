@@ -46,7 +46,6 @@ class Client(BaseModule):
         'mss_fix': 'mssfix',
         'key': 'tls_key',
     }
-    FIELDS_BOOL_INVERT = []
     FIELDS_TYPING = {
         'bool': ['enabled', 'mss_fix'],
         'list': ['network_local', 'network_remote', 'options', 'remote'],

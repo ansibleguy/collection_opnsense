@@ -36,6 +36,7 @@ class PreSharedKey(BaseModule):
     }
     EXIST_ATTR = 'psk'
     TIMEOUT = 30.0  # ipsec reload
+    FIELDS_DIFF_NO_LOG = ['psk']
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
         BaseModule.__init__(self=self, m=module, r=result, s=session)

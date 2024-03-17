@@ -11,6 +11,7 @@ OpenVPN
 **TESTS**: `ansibleguy.opnsense.openvpn_client <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_client.yml>`_ |
 `ansibleguy.opnsense.openvpn_server <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_server.yml>`_ |
 `ansibleguy.opnsense.openvpn_static_key <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_static_key.yml>`_ |
+`ansibleguy.opnsense.openvpn_client_override <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_client_override.yml>`_ |
 `ansibleguy.opnsense.openvpn_status <https://github.com/ansibleguy/collection_opnsense/blob/latest/tests/openvpn_status.yml>`_
 
 **API Docs**: `OpenVPN <https://docs.opnsense.org/development/api/core/openvpn.html>`_
@@ -122,6 +123,33 @@ ansibleguy.opnsense.openvpn_static_key
     "name","string","true","\-","description, desc","The name used to match this config to existing entries"
     "mode","string","false","crypt","type","One of: 'auth', 'crypt'. Define the use of this key, authentication (--tls-auth) or authentication and encryption (--tls-crypt)"
     "key","string","false","\-","\-","OpenVPN Static key. If empty - it will be auto-generated."
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
+ansibleguy.opnsense.openvpn_client_override
+===========================================
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "name","string","true","\-","description, desc","The client's X.509 common-name used to match these override to"
+    "servers","list","true","\-","instances","Select the OpenVPN servers where this override applies to, leave empty for all"
+    "description","string","false","\-","desc","You may enter a description here for your reference (not parsed)."
+    "block","boolean","false","false","block_connection, block_client","Block this client connection based on its common name. Don't use this option to permanently disable a client due to a compromised key or password. Use a CRL (certificate revocation list) instead."
+    "push_reset","boolean","false","false","reset","Don't inherit the global push list for a specific client instance. NOTE: --push-reset is very thorough: it will remove almost all options from the list of to-be-pushed options. In many cases, some of these options will need to be re-configured afterwards - specifically, --topology subnet and --route-gateway will get lost and this will break client configs in many cases."
+    "network_tunnel_ip4","string","false","\-","tun_ip4, tunnel_ip4","Push virtual IP endpoints for client tunnel, overriding dynamic allocation."
+    "network_tunnel_ip6","string","false","\-","tun_ip6, tunnel_ip6","Push virtual IP endpoints for client tunnel, overriding dynamic allocation."
+    "network_local","list","false","\-","net_local, push_route","These are the networks accessible by the client, these are pushed via route{-ipv6} clauses in OpenVPN to the client."
+    "network_remote","list","false","\-","net_remote, route","Remote networks for the server, these are configured via iroute{-ipv6} clauses in OpenVPN and inform the server to send these networks to this specific client."
+    "route_gateway","string","false","\-","route_gw, rt_gw","Specify a default gateway to use for the connected client. Without one set the first address in the netblock is being offered. When segmenting the tunnel (server) network, this one might not be accessible from the client."
+    "redirect_gateway","list","false","\-","redirect_gw, redir_gw","Automatically execute routing commands to cause all outgoing IP traffic to be redirected over the VPN."
+    "register_dns","boolean","false","false","\-","Run ipconfig /flushdns and ipconfig /registerdns on connection initiation. This is known to kick Windows into recognizing pushed DNS servers."
+    "domain","string","false","\-","dns_domain","Set Connection-specific DNS Suffix."
+    "domain_list","list","false","\-","dns_domain_search","Add name to the domain search list. Repeat this option to add more entries. Up to 10 domains are supported"
+    "dns_servers","list","false","\-","dns","Set primary domain name server IPv4 or IPv6 address. Repeat this option to set secondary DNS server addresses."
+    "ntp_servers","list","false","\-","ntp","Set primary NTP server address (Network Time Protocol). Repeat this option to set secondary NTP server addresses."
+    "wins_servers","list","false","\-","wins","Set primary WINS server address (NetBIOS over TCP/IP Name Server). Repeat this option to set secondary WINS server addresses."
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 ansibleguy.opnsense.openvpn_status
 ==================================
@@ -443,6 +471,71 @@ ansibleguy.opnsense.openvpn_static_key
             remote: 'openvpn.test.ansibleguy.net'
             ca: 'OpenVPN'
             key: 'test-key'
+
+----
+
+ansibleguy.opnsense.openvpn_client_override
+===========================================
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.openvpn_client_override:
+            name: 'example'
+            # servers: []
+            # description: ''
+            # block: false
+            # push_reset: false
+            # network_tunnel_ip4: ''
+            # network_tunnel_ip6: ''
+            # network_local: []
+            # network_remote: []
+            # route_gateway: ''
+            # redirect_gateway: []
+            # register_dns: false
+            # domain: ''
+            # domain_list: []
+            # dns_servers: []
+            # ntp_servers: []
+            # wins_servers: []
+            # reload: true
+            # enabled: true
+
+        - name: Adding
+          ansibleguy.opnsense.openvpn_client_override:
+            name: 'test1'
+            servers: 'test-server'
+            network_tunnel_ip4: '192.168.77.3/29'
+            network_local: ['192.168.78.128/27']
+            domain: 'test.vpn'
+            dns_servers: ['1.1.1.1', '8.8.8.8']
+
+        - name: Blocking client
+          ansibleguy.opnsense.openvpn_client_override:
+            name: 'test2'
+            block: true
+
+        - name: Listing
+          ansibleguy.opnsense.list:
+            # target: 'openvpn_client_override'
+          register: existing_entries
+
+        - name: Printing tests
+          ansible.builtin.debug:
+            var: existing_entries.data
+
+        - name: Removing
+          ansibleguy.opnsense.openvpn_client_override:
+            name: 'test1'
+            state: 'absent'
 
 ----
 

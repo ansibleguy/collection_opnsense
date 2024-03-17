@@ -148,11 +148,15 @@ class Base:
             elif hasattr(self.i, self.ATTR_AK_PATH):
                 ak_path = getattr(self.i, self.ATTR_AK_PATH)
 
-        if ak_path is not None:
-            for k in ak_path.split(self.ATTR_AK_PATH_SPLIT_CHAR):
-                data = data[k]
+        try:
+            if ak_path is not None:
+                for k in ak_path.split(self.ATTR_AK_PATH_SPLIT_CHAR):
+                    data = data[k]
 
-        return data
+            return data
+
+        except KeyError as err:
+            exit_bug(f"Got invalid API_KEY_PATH: '{ak_path}' not matching data '{data}'")
 
     def get_existing(self, diff_filter: bool = False) -> list:
         if diff_filter:

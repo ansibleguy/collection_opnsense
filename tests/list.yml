@@ -95,5 +95,5 @@
         target: "{{ item }}"
       when: not ansible_check_mode
       loop: [
-        'openvpn_instance', 'openvpn_static_key',
+        'openvpn_instance', 'openvpn_static_key', 'openvpn_client_overwrite',
       ]

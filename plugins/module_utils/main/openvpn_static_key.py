@@ -28,7 +28,6 @@ class Key(BaseModule):
     FIELDS_TRANSLATE = {
         'name': 'description',
     }
-    FIELDS_BOOL_INVERT = []
     FIELDS_TYPING = {
         'select': ['mode'],
     }

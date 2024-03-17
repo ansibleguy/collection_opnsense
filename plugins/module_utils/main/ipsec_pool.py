@@ -36,8 +36,6 @@ class Pool(BaseModule):
     def check(self) -> None:
         if self.p['state'] == 'present':
             if is_unset(self.p['network']):
-                self.m.fail_json(
-                    "You need to provide a 'network' to create an IPSec-Pool!"
-                )
+                self.m.fail_json("You need to provide a 'network' to create an IPSec-Pool!")
 
         self._base_check()

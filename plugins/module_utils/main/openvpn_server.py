@@ -64,7 +64,6 @@ class Server(BaseModule):
         'data_ciphers': 'data-ciphers',
         'data_cipher_fallback': 'data-ciphers-fallback',
     }
-    FIELDS_BOOL_INVERT = []
     FIELDS_TYPING = {
         'bool': ['enabled', 'mss_fix', 'ocsp', 'user_as_cn', 'user_cn_strict', 'register_dns'],
         'list': [

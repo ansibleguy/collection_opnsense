@@ -29,7 +29,6 @@ class TMPL(BaseModule):
     FIELDS_TRANSLATE = {
         'field1': 'apifield1',
     }
-    FIELDS_BOOL_INVERT = []
     FIELDS_TYPING = {
         'bool': ['enabled'],
         'list': [],

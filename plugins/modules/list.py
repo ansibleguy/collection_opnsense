@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright: (C) 2023, AnsibleGuy <guy@ansibleguy.net>
+# Copyright: (C) 2024, AnsibleGuy <guy@ansibleguy.net>
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
 # module to query running config
@@ -34,7 +34,7 @@ TARGETS = [
     'webproxy_acl', 'webproxy_icap', 'webproxy_auth', 'ipsec_connection', 'ipsec_pool',
     'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote', 'frr_general', 'unbound_general',
     'unbound_acl', 'ids_general', 'ids_policy', 'ids_rule', 'ids_ruleset', 'ids_user_rule', 'ids_policy_rule',
-    'openvpn_instance', 'openvpn_static_key',
+    'openvpn_instance', 'openvpn_static_key', 'openvpn_client_override',
 ]
 
 
@@ -360,6 +360,10 @@ def run_module():
         elif target == 'openvpn_static_key':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.openvpn_static_key import \
                 Key as Target_Obj
+
+        elif target == 'openvpn_client_override':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.openvpn_client_override import \
+                Override as Target_Obj
 
     except AttributeError:
         module_dependency_error()
