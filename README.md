@@ -173,7 +173,7 @@ not implemented => development => [testing](https://github.com/ansibleguy/collec
 | **OpenVPN**         | ansibleguy.opnsense.openvpn_server                                     | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | unstable    |
 | **OpenVPN**         | ansibleguy.opnsense.openvpn_static_key                                 | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | unstable    |
 | **OpenVPN**         | ansibleguy.opnsense.openvpn_status                                     | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | unstable    |
-| **OpenVPN**         | ansibleguy.opnsense.openvpn_client_override                            | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | development |
+| **OpenVPN**         | ansibleguy.opnsense.openvpn_client_override                            | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | unstable |
 | **OpenVPN**         | ansibleguy.opnsense.openvpn_client_template                            | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | development |
 | **OpenVPN**         | ansibleguy.opnsense.openvpn_client_export                              | [Docs](https://opnsense.ansibleguy.net/en/latest/modules/openvpn.html)                                            | development |
 

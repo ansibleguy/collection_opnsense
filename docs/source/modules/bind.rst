@@ -335,7 +335,7 @@ ansibleguy.opnsense.bind_blocklist
             safe_google: true
             safe_youtube: true
 
-        - name: Listing blocklists
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'bind_blocklist'
           register: existing_entries
@@ -388,7 +388,7 @@ ansibleguy.opnsense.bind_acl
             # target: 'bind_acl'
           register: existing_entries
 
-        - name: Printing tests
+        - name: Printing acls
           ansible.builtin.debug:
             var: existing_entries.data
 
@@ -463,7 +463,7 @@ ansibleguy.opnsense.bind_domain
             # target: 'bind_domain'
           register: existing_entries
 
-        - name: Printing tests
+        - name: Printing domains
           ansible.builtin.debug:
             var: existing_entries.data
 
@@ -523,7 +523,7 @@ ansibleguy.opnsense.bind_record
             # target: 'bind_record'
           register: existing_entries
 
-        - name: Printing tests
+        - name: Printing records
           ansible.builtin.debug:
             var: existing_entries.data
 

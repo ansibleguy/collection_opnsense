@@ -143,12 +143,12 @@ To make a dynamic WireGuard endpoint to re-connect you may want to create a [gat
         name: 'test1'
         enabled: false
 
-    - name: Listing peers
+    - name: Listing
       ansibleguy.opnsense.list:
       #  target: 'wireguard_peer'
       register: existing_entries
 
-    - name: Printing
+    - name: Printing peers
       ansible.builtin.debug:
         var: existing_entries.data
 
@@ -203,12 +203,12 @@ To make a dynamic WireGuard endpoint to re-connect you may want to create a [gat
         name: 'test1'
         enabled: false
 
-    - name: Listing servers
+    - name: Listing
       ansibleguy.opnsense.list:
       #  target: 'wireguard_server'
       register: existing_entries
 
-    - name: Printing
+    - name: Printing servers
       ansible.builtin.debug:
         var: existing_entries.data
 

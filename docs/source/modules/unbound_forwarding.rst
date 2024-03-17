@@ -74,7 +74,7 @@ Examples
             domain: 'dot.template.ansibleguy.net'
             target: '1.1.1.1'
 
-        - name: Listing forwardings
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'unbound_forward'
           register: existing_entries

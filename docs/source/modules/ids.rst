@@ -257,7 +257,7 @@ ansibleguy.opnsense.ids_general
             syslog: true
             log_level: 'info'
 
-        - name: Listing Settings
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'ids_general'
           register: existing_settings
@@ -299,7 +299,7 @@ ansibleguy.opnsense.ids_ruleset
             name: 'ET open/compromised'
             enabled: false
 
-        - name: Listing Settings
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'ids_ruleset'
           register: existing_rulesets
@@ -342,7 +342,7 @@ ansibleguy.opnsense.ids_rule
             sid: 2400011
             enabled: false
 
-        - name: Listing Rules
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'ids_rule'
           register: existing_rules
@@ -402,7 +402,7 @@ ansibleguy.opnsense.ids_user_rule
             name: 'ANSIBLE_TEST_1_1'
             state: 'absent'
 
-        - name: Listing Rules
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'ids_user_rule'
           register: existing_rules
@@ -467,7 +467,7 @@ ansibleguy.opnsense.ids_policy
             name: 'ANSIBLE_TEST_1_1'
             state: 'absent'
 
-        - name: Listing Policies
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'ids_policy'
           register: existing_policies
@@ -516,7 +516,7 @@ ansibleguy.opnsense.ids_policy_rule
             sid: 2400000
             state: 'absent'
 
-        - name: Listing Rules
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'ids_policy_rule'
           register: existing_rules

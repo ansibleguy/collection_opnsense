@@ -134,12 +134,12 @@ ansibleguy.opnsense.interface_vlan
             interface: 'vtnet0'
             vlan: 100
     
-        - name: Listing VLANs
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'interface_vlan'
           register: existing_entries
     
-        - name: Printing
+        - name: Printing VLANs
           ansible.builtin.debug:
             var: existing_entries.data
     
@@ -181,12 +181,12 @@ ansibleguy.opnsense.interface_vxlan
             local: '192.168.0.1'
             interface: 'lan'
     
-        - name: Listing VxLANs
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'interface_vxlan'
           register: existing_entries
     
-        - name: Printing
+        - name: Printing VxLANs
           ansible.builtin.debug:
             var: existing_entries.data
     
@@ -237,12 +237,12 @@ ansibleguy.opnsense.interface_vip
             vhid: 10
             password: 'secret'
     
-        - name: Listing VIPs
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'interface_vip'
           register: existing_entries
     
-        - name: Printing
+        - name: Printing VIPs
           ansible.builtin.debug:
             var: existing_entries.data
     

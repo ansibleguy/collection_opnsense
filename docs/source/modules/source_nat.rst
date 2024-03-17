@@ -169,12 +169,12 @@ Examples
             enabled: false
             # match_fields: ['description']
 
-        - name: Listing peers
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'source_nat'
           register: existing_entries
 
-        - name: Printing
+        - name: Printing peers
           ansible.builtin.debug:
             var: existing_entries.data
 

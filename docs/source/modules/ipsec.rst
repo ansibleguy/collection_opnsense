@@ -229,7 +229,7 @@ ansibleguy.opnsense.ipsec_cert
           no_log: true  # could log private keys
           register: existing_entries
 
-        - name: Printing
+        - name: Printing Certificates
           ansible.builtin.debug:
             var: existing_entries.data
 

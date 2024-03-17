@@ -113,11 +113,11 @@ Examples
             description: 'test1'
             # match_fields: ['description']
 
-        - name: Listing domains
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'unbound_domain'
           register: existing_entries
 
-        - name: Printing entries
+        - name: Printing domains
           ansible.builtin.debug:
             var: existing_entries.data

@@ -76,7 +76,7 @@ Examples
             target: '1.1.1.1'
             verify: 'dot.template.ansibleguy.net'
 
-        - name: Listing dots
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'unbound_dot'
           register: existing_entries

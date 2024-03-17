@@ -102,7 +102,7 @@ For basic parameters see: [Basics](https://opnsense.ansibleguy.net/en/latest/usa
         description: 'test2'
         enabled: false
 
-    - name: Listing neighbors
+    - name: Listing
       ansibleguy.opnsense.list:
       #  target: 'frr_bfd_neighbor'
       register: existing_entries

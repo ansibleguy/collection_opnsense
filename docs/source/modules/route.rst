@@ -87,7 +87,7 @@ Examples
             enabled: false
             # match_fields: ['description']
 
-        - name: Listing routes
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'route'
           register: existing_entries

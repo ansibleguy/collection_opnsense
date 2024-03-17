@@ -293,7 +293,7 @@ ansibleguy.opnsense.openvpn_server
             # target: 'openvpn_instance'
           register: existing_entries
 
-        - name: Printing tests
+        - name: Printing instances
           ansible.builtin.debug:
             var: existing_entries.data
 
@@ -390,7 +390,7 @@ ansibleguy.opnsense.openvpn_client
             # target: 'openvpn_instance'
           register: existing_entries
 
-        - name: Printing tests
+        - name: Printing instances
           ansible.builtin.debug:
             var: existing_entries.data
 
@@ -456,7 +456,7 @@ ansibleguy.opnsense.openvpn_static_key
             # target: 'openvpn_static_key'
           register: existing_entries
 
-        - name: Printing tests
+        - name: Printing static-keys
           ansible.builtin.debug:
             var: existing_entries.data
 
@@ -528,7 +528,7 @@ ansibleguy.opnsense.openvpn_client_override
             # target: 'openvpn_client_override'
           register: existing_entries
 
-        - name: Printing tests
+        - name: Printing client-overrides
           ansible.builtin.debug:
             var: existing_entries.data
 

@@ -91,11 +91,11 @@ Examples
             days: '21'
             months: '*'
 
-        - name: Listing jobs
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'cron'
           register: existing_jobs
 
-        - name: Printing
+        - name: Printing jobs
           ansible.builtin.debug:
             var: existing_jobs.data

@@ -92,7 +92,7 @@ Examples
             # target: 'unbound_acl'
           register: existing_entries
 
-        - name: Printing tests
+        - name: Printing acls
           ansible.builtin.debug:
             var: existing_entries.data
 

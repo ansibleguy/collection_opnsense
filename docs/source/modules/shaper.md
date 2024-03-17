@@ -139,7 +139,7 @@ For basic parameters see: [Basics](https://opnsense.ansibleguy.net/en/latest/usa
         bandwidth: 50
         enabled: false
 
-    - name: Listing pipes
+    - name: Listing
       ansibleguy.opnsense.list:
         target: 'shaper_pipe'
       register: existing_entries
@@ -204,7 +204,7 @@ For basic parameters see: [Basics](https://opnsense.ansibleguy.net/en/latest/usa
         weight: 50
         enabled: false
 
-    - name: Listing queue
+    - name: Listing
       ansibleguy.opnsense.list:
         target: 'shaper_queue'
       register: existing_entries
@@ -290,7 +290,7 @@ For basic parameters see: [Basics](https://opnsense.ansibleguy.net/en/latest/usa
         destination_port: 80
         enabled: false
 
-    - name: Listing rules
+    - name: Listing
       ansibleguy.opnsense.list:
         target: 'shaper_rule'
       register: existing_entries

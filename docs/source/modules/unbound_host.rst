@@ -124,11 +124,11 @@ Examples
             description: 'test2'
             # match_fields: ['description']
 
-        - name: Listing hosts
+        - name: Listing
           ansibleguy.opnsense.list:
           #  target: 'unbound_host'
           register: existing_entries
 
-        - name: Printing entries
+        - name: Printing hosts
           ansible.builtin.debug:
             var: existing_entries.data
