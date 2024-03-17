@@ -82,7 +82,7 @@ def wait_for_update(module: AnsibleModule, s: Session) -> bool:
                 _wait_msg(module, f"Got result: {result['log']}")
                 return True
 
-        except HTTPX_EXCEPTIONS:
+        except (HTTPX_EXCEPTIONS, ConnectionError, TimeoutError):
             # not reachable while rebooting
             _wait_msg(module, 'Waiting for response..')
 
