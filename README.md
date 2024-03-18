@@ -1,5 +1,7 @@
 # Ansible Collection - ansibleguy.opnsense
 
+<a href='https://ko-fi.com/ansible0guy' target='_blank'><img height='35' style='border:0px;height:46px;' src='https://az743702.vo.msecnd.net/cdn/kofi3.png?v=0' border='0' alt='Buy me a coffee' />
+
 [![Functional Test Status](https://badges.ansibleguy.net/opnsense.collection.test.svg)](https://github.com/ansibleguy/collection_opnsense/blob/latest/scripts/test.sh)
 [![Lint Test Status](https://badges.ansibleguy.net/opnsense.collection.lint.svg)](https://github.com/ansibleguy/collection_opnsense/blob/latest/scripts/lint.sh)
 [![Unit Test Status](https://github.com/ansibleguy/collection_opnsense/actions/workflows/unit_test.yml/badge.svg)](https://github.com/ansibleguy/collection_opnsense/actions/workflows/unit_test.yml)
