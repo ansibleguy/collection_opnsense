@@ -84,6 +84,8 @@ action_groups:
     - ansibleguy.opnsense.webproxy_pac_proxy
     - ansibleguy.opnsense.webproxy_pac_match
     - ansibleguy.opnsense.webproxy_pac_rule
+  nginx:
+    - ansibleguy.opnsense.nginx_upstream_server
   route:
     - ansibleguy.opnsense.route
   nat:
@@ -128,6 +130,7 @@ action_groups:
           - ansibleguy.opnsense.frr
           - ansibleguy.opnsense.bind
           - ansibleguy.opnsense.webproxy
+          - ansibleguy.opnsense.nginx
           - ansibleguy.opnsense.route
           - ansibleguy.opnsense.nat
           - ansibleguy.opnsense.system
