@@ -29,7 +29,7 @@ def run_module():
         name=dict(
             type='str', required=True, description='Unique name for the proxy',
         ),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         type=dict(
             type='str', required=False, default='proxy',
             choices=['proxy', 'direct', 'http', 'https', 'socks', 'socks4', 'socks5'],
@@ -37,7 +37,7 @@ def run_module():
                         "'proxy' for a Proxy",
         ),
         url=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='A proxy URL in the form proxy.example.com:3128',
         ),
         **RELOAD_MOD_ARG,

@@ -52,22 +52,22 @@ def run_module():
             description='IPv6 addresses the service should listen on'
         ),
         query_source_ipv4=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             aliases=['query_ipv4', 'query_v4'],
             description='Specify the IPv4 address used as a source for outbound queries'
         ),
         query_source_ipv6=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             aliases=['query_ipv6', 'query_v6'],
             description='Specify the IPv6 address used as a source for outbound queries'
         ),
         transfer_source_ipv4=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             aliases=['transfer_ipv4', 'transfer_v4'],
             description='Specify the IPv4 address used as a source for zone transfers'
         ),
         transfer_source_ipv6=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             aliases=['transfer_ipv6', 'transfer_v6'],
             description='Specify the IPv6 address used as a source for zone transfers'
         ),
@@ -135,7 +135,7 @@ def run_module():
             description='This will enable rate-limiting for DNS replies'
         ),
         ratelimit_count=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='Set how many replies per second are allowed'
         ),
         ratelimit_except=dict(

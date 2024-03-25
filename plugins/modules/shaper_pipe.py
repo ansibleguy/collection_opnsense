@@ -35,24 +35,24 @@ def run_module():
             type='str', required=False, default='Mbit', aliases=['bw_metric'],
             choices=['bit', 'Kbit', 'Mbit', 'Gbit'],
         ),
-        queue=dict(type='str', required=False, default=''),
+        queue=dict(type='str', required=False),
         mask=dict(
             type='str', required=False, default='none', choices=['none', 'src-ip', 'dst-ip']
         ),
-        buckets=dict(type='str', required=False, default=''),
+        buckets=dict(type='str', required=False),
         scheduler=dict(
-            type='str', required=False, default='',
-            choices=['', 'fifo', 'rr', 'qfq', 'fq_codel', 'fq_pie']
+            type='str', required=False,
+            choices=['fifo', 'rr', 'qfq', 'fq_codel', 'fq_pie']
         ),
         pie_enable=dict(type='bool', required=False, default=False, aliases=['pie']),
         codel_enable=dict(type='bool', required=False, default=False, aliases=['codel']),
         codel_ecn_enable=dict(type='bool', required=False, default=False, aliases=['codel_ecn']),
-        codel_target=dict(type='str', required=False, default=''),
-        codel_interval=dict(type='str', required=False, default=''),
-        fqcodel_quantum=dict(type='str', required=False, default=''),
-        fqcodel_limit=dict(type='str', required=False, default=''),
-        fqcodel_flows=dict(type='str', required=False, default=''),
-        delay=dict(type='str', required=False, default=''),
+        codel_target=dict(type='str', required=False),
+        codel_interval=dict(type='int', required=False),
+        fqcodel_quantum=dict(type='str', required=False),
+        fqcodel_limit=dict(type='str', required=False),
+        fqcodel_flows=dict(type='str', required=False),
+        delay=dict(type='str', required=False),
         description=dict(type='str', required=True, aliases=['desc']),
         reset=dict(
             type='bool', required=False, default=False, aliases=['flush'],

@@ -28,7 +28,7 @@ except MODULE_EXCEPTIONS:
 def run_module():
     module_args = dict(
         domain=dict(
-            type='str', required=False, aliases=['dom', 'd'], default='',
+            type='str', required=False, aliases=['dom', 'd'],
             description='Provide a domain to limit the DNS-over-TLS to or leave empty to act as a catch-all'
         ),
         target=dict(
@@ -40,7 +40,7 @@ def run_module():
             description='DNS port of the target server'
         ),
         verify=dict(
-            type='str', required=False, aliases=['common_name', 'cn', 'hostname'], default='',
+            type='str', required=False, aliases=['common_name', 'cn', 'hostname'],
             description='Verify if CN in certificate matches this value, if not set - '
                         'certificate verification will not be performed!'
         ),

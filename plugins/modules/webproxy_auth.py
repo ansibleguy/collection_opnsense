@@ -27,13 +27,13 @@ except MODULE_EXCEPTIONS:
 def run_module():
     module_args = dict(
         method=dict(
-            type='str', required=False, default='', aliases=['type', 'target'],
+            type='str', required=False, aliases=['type', 'target'],
             description='The authentication backend to use - as shown in the '
                         "WEB-UI at 'System - Access - Servers'. Per example: "
                         "'Local Database'"
         ),
         group=dict(
-            type='str', required=False, default='', aliases=['local_group'],
+            type='str', required=False, aliases=['local_group'],
             description='Restrict access to users in the selected (local)group. '
                         "NOTE: please be aware that users (or vouchers) which aren't "
                         "administered locally will be denied when using this option"

@@ -36,12 +36,12 @@ def run_module():
                         'events. This option is not compatible with "Enable CARP Failover"'
         ),
         id=dict(
-            type='str', required=False, default='', aliases=['router_id'],
+            type='str', required=False, aliases=['router_id'],
             description='If you have a CARP setup, you may want to configure a router id '
                         'in case of a conflict'
         ),
         cost=dict(
-            type='str', required=False, default='',
+            type='int', required=False,
             aliases=['reference_cost', 'ref_cost'],
             description='Here you can adjust the reference cost in Mbps for path calculation. '
                         'Mostly needed when you bundle interfaces to higher bandwidth'
@@ -58,7 +58,7 @@ def run_module():
                         'redistributed to the other nodes'
         ),
         redistribute_map=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='Route Map to set for Redistribution'
         ),
         originate=dict(
@@ -72,7 +72,7 @@ def run_module():
                         'regardless of if it is available'
         ),
         originate_metric=dict(
-            type='str', default='', required=False, aliases=['orig_metric'],
+            type='int', required=False, aliases=['orig_metric'],
             description='This let you manipulate the metric when advertising default gateway'
         ),
         **RELOAD_MOD_ARG,

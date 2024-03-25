@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields
+    validate_int_fields, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -60,12 +60,12 @@ class Interface(BaseModule):
 
     def check(self) -> None:
         if self.p['state'] == 'present':
-            if self.p['area'] in ['', None]:
+            if is_unset(self.p['area']):
                 self.m.fail_json(
                     'To create a OSPF interface you need to provide its area!'
                 )
 
-            if self.p['auth_type'] not in ['', None] and self.p['auth_key'] in ['', None]:
+            if not is_unset(self.p['auth_type']) and is_unset(self.p['auth_key']):
                 self.m.fail_json(
                     'You need to provide an authentication-key if you enable authentication!'
                 )

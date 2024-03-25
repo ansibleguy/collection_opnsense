@@ -58,7 +58,7 @@ def run_module():
             description='Send packet payload to the log for further analyses'
         ),
         default_packet_size=dict(
-            type='str', default='', required=False, aliases=['packet_size'],
+            type='int', required=False, aliases=['packet_size'],
             description='With this option, you can set the size of the packets on your network. It is possible that '
                         'bigger packets have to be processed sometimes. The engine can still process these bigger '
                         'packets, but processing it will lower the performance. Unset = system default'
@@ -73,14 +73,14 @@ def run_module():
             description='Networks to interpret as local'
         ),
         log_level=dict(
-            type='str', required=False, default='',
-            choices=['', 'info', 'perf', 'config', 'debug'],
+            type='str', required=False,
+            choices=['info', 'perf', 'config', 'debug'],
             description='Increase the verbosity of the Suricata application logging by increasing the log level '
                         'from the default. Unset = system default'
         ),
         pattern_matcher=dict(
-            type='str', required=False, default='', aliases=['algorithm', 'matcher', 'algo'],
-            choices=['', 'ac', 'ac-bs', 'ac-ks', 'hs'],
+            type='str', required=False, aliases=['algorithm', 'matcher', 'algo'],
+            choices=['ac', 'ac-bs', 'ac-ks', 'hs'],
             description="Select the multi-pattern matcher algorithm to use. Options: unset = system default, "
                         "'ac' = 'Aho-Corasick', 'ac-bs' = 'Aho-Corasick, reduced memory implementation', "
                         "'ac-ks' = 'Aho-Corasick, Ken Steele variant', 'hs' = 'Hyperscan'"
@@ -91,21 +91,21 @@ def run_module():
             description='Rotate alert logs at provided interval'
         ),
         profile=dict(
-            type='str', required=False, default='', aliases=['detect_profile'],
-            choices=['', 'low', 'medium', 'high', 'custom'],
+            type='str', required=False, aliases=['detect_profile'],
+            choices=['low', 'medium', 'high', 'custom'],
             description="The detection engine builds internal groups of signatures. The engine allow us to specify "
                         "the profile to use for them, to manage memory on an efficient way keeping a good performance. "
                         "Unset = system default"
         ),
         profile_toclient_groups=dict(
-            type='str', required=False, aliases=['toclient_groups'], default='',
+            type='str', required=False, aliases=['toclient_groups'],
             description='If Custom is specified. The detection engine tries to split out separate signatures into '
                         'groups so that a packet is only inspected against signatures that can actually match. '
                         'As in large rule set this would result in way too many groups and memory usage similar '
                         'groups are merged together'
         ),
         profile_toserver_groups=dict(
-            type='str', required=False, aliases=['toserver_groups'], default='',
+            type='str', required=False, aliases=['toserver_groups'],
             description='If Custom is specified. The detection engine tries to split out separate signatures into '
                         'groups so that a packet is only inspected against signatures that can actually match. '
                         'As in large rule set this would result in way too many groups and memory usage similar '

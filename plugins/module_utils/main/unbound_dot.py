@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    is_ip, valid_hostname, validate_port, is_true
+    is_ip, valid_hostname, validate_port, is_true, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.unbound import \
@@ -42,7 +42,7 @@ class DnsOverTls(BaseModule):
         validate_domain(module=self.m, domain=self.p['domain'])
         validate_port(module=self.m, port=self.p['port'])
 
-        if self.p['verify'] not in ['', None] and \
+        if not is_unset(self.p['verify']) and \
                 not is_ip(self.p['verify']) and \
                 not valid_hostname(self.p['verify']):
             self.m.fail_json(

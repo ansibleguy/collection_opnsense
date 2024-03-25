@@ -30,10 +30,10 @@ def run_module():
     module_args = dict(
         description=dict(type='str', required=True, aliases=['desc']),
         number=dict(type='str', required=False, aliases=['nr']),
-        seq=dict(type='str', required=False, default='', aliases=['seq_number']),
-        action=dict(type='str', required=False, default='', options=['permit', 'deny']),
+        seq=dict(type='int', required=False, aliases=['seq_number']),
+        action=dict(type='str', required=False, options=['permit', 'deny']),
         community=dict(
-            type='str', required=False, default='', aliases=['comm'],
+            type='str', required=False, aliases=['comm'],
             description='The community you want to match. You can also regex and it is '
                         'not validated so please be careful.'
         ),

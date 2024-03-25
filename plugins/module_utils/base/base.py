@@ -241,6 +241,9 @@ class Base:
                         continue
 
                 try:
+                    if self.i.p[field] is None:
+                        self.i.p[field] = ''
+
                     if str(self.e[field]) != str(self.i.p[field]):
                         self.i.r['changed'] = True
 
@@ -443,6 +446,9 @@ class Base:
             elif isinstance(diff[field], (bool, int)):
                 stringify = False
 
+            elif diff[field] is None:
+                diff[field] = ''
+
             if stringify:
                 try:
                     diff[field] = round(float(diff[field]), self.DIFF_FLOAT_ROUND)
@@ -515,6 +521,9 @@ class Base:
 
                 request[opn_field] = join_char.join(opn_data)
 
+            elif opn_data is None:
+                request[opn_field] = ''
+
             else:
                 request[opn_field] = opn_data
 
@@ -545,7 +554,7 @@ class Base:
     ) -> bool:
         entry = None
 
-        if self.i.p[field] != '':
+        if not is_unset(self.i.p[field]):
             found = False
             if set_field is None:
                 set_field = field

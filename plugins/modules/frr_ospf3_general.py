@@ -36,7 +36,7 @@ def run_module():
                         'events. This option is not compatible with "Enable CARP Failover"'
         ),
         id=dict(
-            type='str', required=False, default='', aliases=['router_id'],
+            type='str', required=False, aliases=['router_id'],
             description='If you have a CARP setup, you may want to configure a router id '
                         'in case of a conflict'
         ),

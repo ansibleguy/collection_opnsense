@@ -36,28 +36,28 @@ def run_module():
                 'custom', 'network',
             ]
         ),
-        pidfile=dict(type='path', required=False, default=''),
-        match=dict(type='str', required=False, default=''),
+        pidfile=dict(type='path', required=False),
+        match=dict(type='str', required=False),
         path=dict(
-            type='path', required=False, default='',
+            type='path', required=False,
             description='According to the service type path can be a file or a directory',
         ),
         service_timeout=dict(type='int', required=False, default=300, aliases=['svc_timeout']),
         address=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description="The target IP address for 'Remote Host' and 'Network' checks",
         ),
         interface=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description="The existing Interface for 'Network' checks"
         ),
         start=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='Absolute path to the executable with its arguments to run '
                         'at service-start',
         ),
         stop=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='Absolute path to the executable with its arguments to run '
                         'at service-stop',
         ),
@@ -69,11 +69,11 @@ def run_module():
                         'stopped or unmonitored this service will stop/unmonitor too',
         ),
         polltime=dict(
-            type='str',  required=False, default='',
+            type='str',  required=False,
             description='Set the service poll time. Either as a number of cycles '
                         "'NUMBER CYCLES' or Cron-style '* 8-19 * * 1-5'"
         ),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,

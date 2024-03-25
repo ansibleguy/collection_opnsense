@@ -31,7 +31,7 @@ def run_module():
         name=dict(type='str', required=True),
         public_key=dict(type='str', required=False, alises=['pubkey', 'pub']),
         private_key=dict(type='str', required=False, alises=['privkey', 'priv']),
-        port=dict(type='str', required=False, default=''),
+        port=dict(type='int', required=False),
         mtu=dict(type='int', required=False, default=1420),
         dns_servers=dict(
             type='list', elements='str', required=False, default=[], aliases=['dns'],
@@ -44,9 +44,9 @@ def run_module():
             ]
         ),
         disable_routes=dict(type='bool', default=False, required=False, aliases=['disableroutes']),
-        gateway=dict(type='str', required=False, default='', aliases=['gw']),
+        gateway=dict(type='str', required=False, aliases=['gw']),
         vip=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             aliases=['vip_depend', 'carp', 'carp_depend'],
             description='The Virtual-CARP-IP (CARP VHID) to depend on. '
                         'When this virtual address is not in master state, then the instance will be shutdown'

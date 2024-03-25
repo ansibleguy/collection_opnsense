@@ -44,7 +44,7 @@ def run_module():
                         'drop it, respectively',
         ),
         request_id=dict(
-            type='str', default='', required=False, aliases=['req_id', 'reqid'],
+            type='str', required=False, aliases=['req_id', 'reqid'],
             description='This might be helpful in some scenarios, like route based tunnels (VTI), but works only if '
                         'each CHILD_SA configuration is instantiated not more than once. The default uses dynamic '
                         'reqids, allocated incrementally',
@@ -72,12 +72,10 @@ def run_module():
         close_action=dict(
             type='str', required=False, aliases=['close'], default='none',
             choices=['none', 'trap', 'start'],
-            description='',
         ),
         dpd_action=dict(
             type='str', required=False, aliases=['dpd'], default='clear',
             choices=['clear', 'trap', 'start'],
-            description='',
         ),
         policies=dict(
             type='bool', required=False, default=True, aliases=['pols'],
@@ -98,7 +96,6 @@ def run_module():
         ),
         rekey_seconds=dict(
             type='int', default=3600, required=False, aliases=['rekey_time', 'rekey'],
-            description='',
         ),
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,

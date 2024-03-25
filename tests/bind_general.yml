@@ -199,6 +199,8 @@
     - name: Cleanup
       ansibleguy.opnsense.bind_general:
         enabled: false
+        ratelimit_count:
+        transfer_source_ipv4: ''
       when: not ansible_check_mode
 
 - name: Testing BIND general - acl linking
@@ -224,6 +226,7 @@
       ansibleguy.opnsense.bind_general:
         recursion_acl: 'ANSIBLE_TEST_2_1'
         transfer_acl: 'ANSIBLE_TEST_2_2'
+        ratelimit_count: 50
       register: opn10
       failed_when: >
         opn10.failed or
@@ -234,6 +237,7 @@
       ansibleguy.opnsense.bind_general:
         recursion_acl: 'ANSIBLE_TEST_2_1'
         transfer_acl: 'ANSIBLE_TEST_2_2'
+        ratelimit_count: 50
       register: opn11
       failed_when: >
         opn11.failed or

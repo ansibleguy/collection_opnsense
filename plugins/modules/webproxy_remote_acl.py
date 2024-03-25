@@ -31,15 +31,15 @@ def run_module():
             description='Unique file-name to store the remote acl in'
         ),
         url=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='Url to fetch the acl from'
         ),
         username=dict(
-            type='str', required=False, default='', aliases=['user'],
+            type='str', required=False, aliases=['user'],
             description='Optional user for authentication'
         ),
         password=dict(
-            type='str', required=False, default='', aliases=['pwd'],
+            type='str', required=False, aliases=['pwd'],
             description='Optional password for authentication',
             no_log=True,
         ),
@@ -55,7 +55,7 @@ def run_module():
                         'self-signed certificates are used on the target server!'
         ),
         description=dict(
-            type='str', required=False, default='', aliases=['desc'],
+            type='str', required=False, aliases=['desc'],
             description='A description to explain what this blacklist is intended for'
         ),
         **RELOAD_MOD_ARG,

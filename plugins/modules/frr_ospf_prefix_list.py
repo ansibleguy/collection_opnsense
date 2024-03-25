@@ -28,8 +28,8 @@ except MODULE_EXCEPTIONS:
 def run_module():
     module_args = dict(
         name=dict(type='str', required=True),
-        seq=dict(type='str', required=False, default='', aliases=['seq_number']),
-        action=dict(type='str', required=False, default='', options=['permit', 'deny']),
+        seq=dict(type='int', required=False, aliases=['seq_number']),
+        action=dict(type='str', required=False, options=['permit', 'deny']),
         network=dict(type='str', required=False, aliases=['net']),
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,

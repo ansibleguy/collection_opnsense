@@ -36,19 +36,19 @@ def run_module():
             description='Port number to use'
         ),
         server_ip4=dict(
-            type='str', required=False, default='', aliases=['server', 'client_net_ip4', 'net_ip4'],
+            type='str', required=False, aliases=['server', 'client_net_ip4', 'net_ip4'],
             description='This directive will set up an OpenVPN server which will allocate addresses to clients '
                         'out of the given network/netmask. The server itself will take the .1 address of the given '
                         'network for use as the server-side endpoint of the local TUN/TAP interface'
         ),
         server_ip6=dict(
-            type='str', required=False, default='', aliases=['server6', 'client_net_ip6', 'net_ip6'],
+            type='str', required=False, aliases=['server6', 'client_net_ip6', 'net_ip6'],
             description='This directive will set up an OpenVPN server which will allocate addresses to clients '
                         'out of the given network/netmask. The server itself will take the next base address (+1) '
                         'of the given network for use as the server-side endpoint of the local TUN/TAP interface'
         ),
         max_connections=dict(
-            type='str', required=False, default='', aliases=['max_conn', 'max_clients'],
+            type='int', required=False, aliases=['max_conn', 'max_clients'],
             description='Specify the maximum number of clients allowed to concurrently connect to this server.'
         ),
         topology=dict(
@@ -59,7 +59,7 @@ def run_module():
         ),
         # trust
         crl=dict(
-            type='str', required=False, default='', aliases=['certificate_revocation_list', 'revocation_list'],
+            type='str', required=False, aliases=['certificate_revocation_list', 'revocation_list'],
             description='Select a certificate revocation list to use for this service.'
         ),
         verify_client_cert=dict(
@@ -68,8 +68,8 @@ def run_module():
             description='Specify if the client is required to offer a certificate.'
         ),
         cert_depth=dict(
-            type='str', required=False, default='', aliases=['certificate_depth'],
-            choices=['', '1', '2', '3', '4', '5'],
+            type='int', required=False, aliases=['certificate_depth'],
+            choices=[1, 2, 3, 4, 5],
             description='When a certificate-based client logs in, do not accept certificates below this depth. '
                         'Useful for denying certificates made with intermediate CAs generated from the same CA as '
                         'the server. '
@@ -83,8 +83,8 @@ def run_module():
             description='Restrict the allowed ciphers to be negotiated to the ciphers in this list.'
         ),
         data_cipher_fallback=dict(
-            type='str', required=False, default='', aliases=['cipher_fallback'],
-            choices=['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305', ''],
+            type='str', required=False, aliases=['cipher_fallback'],
+            choices=['AES-256-GCM', 'AES-128-GCM', 'CHACHA20-POLY1305'],
             description='Configure a cipher that is used to fall back to if we could not determine which cipher the '
                         'peer is willing to use. This option should only be needed to connect to peers that are '
                         'running OpenVPN 2.3 or older versions, and have been configured with --enable-small '
@@ -103,7 +103,7 @@ def run_module():
                         'authentication is needed.'
         ),
         auth_group=dict(
-            type='str', required=False, default='', aliases=['group'],
+            type='str', required=False, aliases=['group'],
             description='Restrict access to users in the selected local group. Please be aware that other '
                         'authentication backends will refuse to authenticate when using this option.'
         ),
@@ -118,7 +118,7 @@ def run_module():
                         'certificate and the username given at login.'
         ),
         auth_token_time=dict(
-            type='str', required=False, default='', aliases=['auth_time', 'token_time'],
+            type='int', required=False, aliases=['auth_time', 'token_time'],
             description='After successful user/password authentication, the OpenVPN server will with this option '
                         'generate a temporary authentication token and push that to the client. On the following '
                         'renegotiations, the OpenVPN client will pass this token instead of the users password. '
@@ -141,7 +141,7 @@ def run_module():
                         'redirected over the VPN.',
         ),
         route_metric=dict(
-            type='str', required=False, default='', aliases=['metric', 'push_metric'],
+            type='int', required=False, aliases=['metric', 'push_metric'],
             description='Specify a default metric m for use with --route on the connecting client (push option).'
         ),
         register_dns=dict(
@@ -150,7 +150,7 @@ def run_module():
                         'This is known to kick Windows into recognizing pushed DNS servers.'
         ),
         domain=dict(
-            type='str', required=False, default='', aliases=['dns_domain'],
+            type='str', required=False, aliases=['dns_domain'],
             description='Set Connection-specific DNS Suffix.'
         ),
         domain_list=dict(

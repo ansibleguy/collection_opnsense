@@ -34,9 +34,9 @@ def run_module():
                         'sequence numbers with AS-Path lists. When you want to add a '
                         'new line between you have to completely remove the ACL!'
         ),
-        action=dict(type='str', required=False, default='', options=['permit', 'deny']),
+        action=dict(type='str', required=False, options=['permit', 'deny']),
         as_pattern=dict(
-            type='str', required=False, default='', aliases=['as'],
+            type='str', required=False, aliases=['as'],
             description="The AS pattern you want to match, regexp allowed (e.g. .$ or _1$). "
                         "It's not validated so please be careful!"
         ),

@@ -58,7 +58,7 @@ class Acl(BaseModule):
             if is_unset(self.p['description']):
                 self.m.fail_json('You need to provide a description to create a remote ACL!')
 
-        creds = [self.p['username'] != '', self.p['password'] != '']
+        creds = [not is_unset(self.p['username']), not is_unset(self.p['password'])]
 
         if not all(creds) and any(creds):
             self.m.fail_json(

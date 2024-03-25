@@ -55,7 +55,7 @@ def run_module():
                         'addresses will not be indicated'
         ),
         ssl_ca=dict(
-            type='str', required=False, default='', aliases=['ca'],
+            type='str', required=False, aliases=['ca'],
             description='Select a Certificate Authority to use'
         ),
         ssl_exclude=dict(

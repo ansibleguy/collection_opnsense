@@ -61,7 +61,7 @@ def run_module():
                         'DHCP lease will be registered in Unbound'
         ),
         dhcp_domain=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='The default domain name to use for DHCP lease registration'
         ),
         register_dhcp_static_mappings=dict(

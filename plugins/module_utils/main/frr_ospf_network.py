@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, is_ip_or_network
+    validate_int_fields, is_ip_or_network, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -49,7 +49,7 @@ class Network(BaseModule):
 
     def check(self) -> None:
         if self.p['state'] == 'present':
-            if self.p['area'] in ['', None]:
+            if is_unset(self.p['area']):
                 self.m.fail_json(
                     'To create a OSPF network you need to provide an area!'
                 )

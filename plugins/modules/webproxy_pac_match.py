@@ -54,7 +54,7 @@ def run_module():
         name=dict(
             type='str', required=True, description='Unique name for the match',
         ),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         negate=dict(
             type='bool', required=False, default=False,
             description='Negate this match. '
@@ -71,15 +71,15 @@ def run_module():
                         'different arguments',
         ),
         hostname=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='A hostname pattern like *.opnsense.org',
         ),
         url=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='A URL pattern like forum.opnsense.org/index*',
         ),
         network=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='The network address to match in CIDR notation for example '
                         'like 127.0.0.1/8 or ::1/128',
         ),

@@ -81,7 +81,7 @@ class Peer(BaseModule):
                     f"nor a valid network!"
                 )
 
-        if self.p['endpoint'] != '' and \
+        if not is_unset(self.p['endpoint']) and \
                 not is_ip(self.p['endpoint']) and not is_valid_domain(self.p['endpoint']):
             self.m.fail_json(
                 f"Peer endpoint '{self.p['endpoint']}' is neither a valid IP-address "

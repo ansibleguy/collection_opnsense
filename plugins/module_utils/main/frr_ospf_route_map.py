@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields
+    validate_int_fields, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -48,7 +48,7 @@ class RouteMap(BaseModule):
 
     def check(self) -> None:
         if self.p['state'] == 'present':
-            if self.p['id'] in ['', None] or self.p['action'] in ['', None]:
+            if is_unset(self.p['id']) or is_unset(self.p['action']):
                 self.m.fail_json(
                     'To create a OSPF route-map you need to provide an ID and action!'
                 )

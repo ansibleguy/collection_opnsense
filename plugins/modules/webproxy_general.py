@@ -40,7 +40,7 @@ def run_module():
                         'selected language will be used (standard squid layout), Custom '
                         'offers the possibility to upload your own theme content'
         ),
-        icp_port=dict(type='str', required=False, default='', aliases=['icp']),
+        icp_port=dict(type='int', required=False, aliases=['icp']),
         log=dict(type='bool', required=False, default=True),
         log_store=dict(type='bool', required=False, default=True),
         log_target=dict(
@@ -75,7 +75,7 @@ def run_module():
                         "X-Forwarded-For entries, and place the client IP as the sole entry"
         ),
         hostname=dict(
-            type='str', required=False, default='', aliases=['visible_hostname'],
+            type='str', required=False, aliases=['visible_hostname'],
             description='The hostname to be displayed in proxy server error messages'
         ),
         email=dict(
@@ -87,7 +87,7 @@ def run_module():
             description='Suppress Squid version string info in HTTP headers and HTML error pages'
         ),
         connect_timeout=dict(
-            type='str', required=False, default='',
+            type='int', required=False,
             description='This can help you when having connection issues with IPv6 enabled servers. '
                         'Set a value in seconds (1-120s)'
         ),

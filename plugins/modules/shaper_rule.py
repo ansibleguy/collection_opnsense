@@ -30,8 +30,8 @@ except MODULE_EXCEPTIONS:
 
 def run_module():
     module_args = dict(
-        target_pipe=dict(type='str', required=False, default='', aliases=['pipe']),
-        target_queue=dict(type='str', required=False, default='', aliases=['queue']),
+        target_pipe=dict(type='str', required=False, aliases=['pipe']),
+        target_queue=dict(type='str', required=False, aliases=['queue']),
         sequence=dict(
             type='int', required=False, default=1, aliases=RULE_MOD_ARG_ALIASES['sequence']
         ),
@@ -40,7 +40,7 @@ def run_module():
             description='Matching packets traveling to/from interface',
         ),
         interface2=dict(
-            type='str', required=False, default='', aliases=['int2', 'i2'],
+            type='str', required=False, aliases=['int2', 'i2'],
             description='Secondary interface, matches packets traveling to/from interface '
                         '(1) to/from interface (2). can be combined with direction.',
         ),
@@ -49,7 +49,7 @@ def run_module():
             description="Protocol like 'ip', 'ipv4', 'tcp', 'udp' and so on."
         ),
         max_packet_length=dict(
-            type='str', required=False, default='', aliases=['max_packet_len', 'packet_len', 'iplen'],
+            type='int', required=False, aliases=['max_packet_len', 'packet_len', 'iplen'],
         ),
         source_invert=dict(
             type='bool', required=False, default=False,
@@ -83,8 +83,8 @@ def run_module():
             ]
         ),
         direction=dict(
-            type='str', required=False, default='', aliases=RULE_MOD_ARG_ALIASES['direction'],
-            choices=['', 'in', 'out'], description='Leave empty for both'
+            type='str', required=False, aliases=RULE_MOD_ARG_ALIASES['direction'],
+            choices=['in', 'out'], description='Leave empty for both'
         ),
         description=dict(type='str', required=True, aliases=['desc']),
         reset=dict(

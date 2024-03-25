@@ -68,7 +68,7 @@ class Service(BaseModule):
                     "a remote-host service!"
                 )
 
-            if self.p['address'] != '' and not is_ip(self.p['address']):
+            if not is_unset(self.p['address']) and not is_ip(self.p['address']):
                 self.m.fail_json(
                     f"The address value '{self.p['address']}' is not a valid IP!"
                 )

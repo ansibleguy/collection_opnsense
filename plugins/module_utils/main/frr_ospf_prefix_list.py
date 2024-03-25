@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields
+    validate_int_fields, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -42,7 +42,7 @@ class Prefix(BaseModule):
 
     def check(self) -> None:
         if self.p['state'] == 'present':
-            if self.p['seq'] in ['', None] or self.p['action'] in ['', None] or self.p['network'] in ['', None]:
+            if is_unset(self.p['seq']) or is_unset(self.p['action']) or is_unset(self.p['network']):
                 self.m.fail_json(
                     'To create a OSPF prefix-list you need to provide its sequence-number, '
                     'action and network!'

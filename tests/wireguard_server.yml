@@ -69,7 +69,7 @@
     - name: Adding 1 - failing because of invalid gateway
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         gateway: '192.168.0.1000'
       register: opn18
       failed_when: not opn18.failed
@@ -77,7 +77,7 @@
     - name: Adding 1 - failing because of missing pk
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         public_key: "{{ test.pub1 }}"
       register: opn19
       failed_when: not opn19.failed
@@ -85,7 +85,7 @@
     - name: Adding 1 - failing because of missing pub
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         private_key: "{{ test.priv1 }}"
       register: opn20
       failed_when: not opn20.failed
@@ -93,7 +93,7 @@
     - name: Adding 1 - failing because of non-existent CARP-VIP
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         private_key: "{{ test.priv1 }}"
         public_key: "{{ test.pub1 }}"
         vip: '192.168.3.1'
@@ -103,7 +103,7 @@
     - name: Adding 1
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         public_key: "{{ test.pub1 }}"
         private_key: "{{ test.priv1 }}"
       register: opn4
@@ -114,7 +114,7 @@
     - name: Disabling 1
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         public_key: "{{ test.pub1 }}"
         private_key: "{{ test.priv1 }}"
         enabled: false
@@ -127,7 +127,7 @@
     - name: Disabling 1 - nothing changed
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         public_key: "{{ test.pub1 }}"
         private_key: "{{ test.priv1 }}"
         enabled: false
@@ -140,7 +140,7 @@
     - name: Enabling 1
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_1'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         public_key: "{{ test.pub1 }}"
         private_key: "{{ test.priv1 }}"
       register: opn7
@@ -152,7 +152,7 @@
     - name: Adding 2
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_2'
-        allowed_ips: ['192.168.1.1', '2a0a:e5c0::1/64']
+        allowed_ips: ['192.168.1.1/32', '2a0a:e5c0::1/64']
         public_key: "{{ test.pub1 }}"
         private_key: "{{ test.priv1 }}"
         port: 51999
@@ -168,7 +168,7 @@
     - name: Adding 2 - nothing changed
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_2'
-        allowed_ips: ['192.168.1.1', '2a0a:e5c0::1/64']
+        allowed_ips: ['192.168.1.1/32', '2a0a:e5c0::1/64']
         public_key: "{{ test.pub1 }}"
         private_key: "{{ test.priv1 }}"
         port: 51999
@@ -185,7 +185,7 @@
     - name: Removing 2
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_2'
-        allowed_ips: ['192.168.1.1', '2a0a:e5c0::1/64']
+        allowed_ips: ['192.168.1.1/32', '2a0a:e5c0::1/64']
         public_key: "{{ test.pub1 }}"
         private_key: "{{ test.priv1 }}"
         port: 51999
@@ -212,14 +212,14 @@
       ansibleguy.opnsense.wireguard_peer:
         name: 'ANSIBLE_TEST_2_1'
         target: 'wg.test.ansibleguy.net'
-        allowed_ips: ['192.168.3.2']
+        allowed_ips: ['192.168.3.2/32']
         public_key: "{{ test.pub3 }}"
       when: not ansible_check_mode
 
     - name: Adding 3
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_3'
-        allowed_ips: ['192.168.3.1']
+        allowed_ips: ['192.168.3.1/32']
         public_key: "{{ test.pub2 }}"
         private_key: "{{ test.priv2 }}"
         peers: ['ANSIBLE_TEST_2_1']
@@ -232,7 +232,7 @@
     - name: Adding 3 - nothing changed
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_3'
-        allowed_ips: ['192.168.3.1']
+        allowed_ips: ['192.168.3.1/32']
         public_key: "{{ test.pub2 }}"
         private_key: "{{ test.priv2 }}"
         peers: ['ANSIBLE_TEST_2_1']
@@ -254,7 +254,7 @@
     - name: Adding 4 - linked to CARP-VIP
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_4'
-        allowed_ips: ['192.168.3.1']
+        allowed_ips: ['192.168.3.1/32']
         public_key: "{{ test.pub2 }}"
         private_key: "{{ test.priv2 }}"
         peers: ['ANSIBLE_TEST_2_1']
@@ -268,7 +268,7 @@
     - name: Adding 4 - nothing changed
       ansibleguy.opnsense.wireguard_server:
         name: 'ANSIBLE_TEST_1_4'
-        allowed_ips: ['192.168.3.1']
+        allowed_ips: ['192.168.3.1/32']
         public_key: "{{ test.pub2 }}"
         private_key: "{{ test.priv2 }}"
         peers: ['ANSIBLE_TEST_2_1']

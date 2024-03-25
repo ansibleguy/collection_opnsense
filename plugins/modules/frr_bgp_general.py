@@ -29,7 +29,7 @@ except MODULE_EXCEPTIONS:
 def run_module():
     module_args = dict(
         as_number=dict(type='int', required=True, aliases=['as', 'as_nr']),
-        id=dict(type='str', required=False, default='', aliases=['router_id']),
+        id=dict(type='str', required=False, aliases=['router_id']),
         graceful=dict(
             type='bool', required=False, default=False,
             description='BGP graceful restart functionality as defined in '

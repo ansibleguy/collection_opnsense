@@ -53,7 +53,7 @@ def run_module():
             type='list', elements='str', required=False, aliases=['nets'],
             decription='List of networks in CIDR notation to apply this ACL on. For example: 192.168.1.0/24',
         ),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,
         **RELOAD_MOD_ARG,

@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, is_ip, get_selected
+    validate_int_fields, is_ip, get_selected, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -78,7 +78,7 @@ class Domain(BaseModule):
             if self.p['mode'] != 'primary':
                 self.CMDS['add'] = 'addSecondaryDomain'
 
-            if self.p['query_acl'] != '' or self.p['transfer_acl'] != '':
+            if not is_unset(self.p['query_acl']) or not is_unset(self.p['transfer_acl']):
                 self.acls_needed = True
                 self._search_acls()
 

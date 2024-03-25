@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields
+    validate_int_fields, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -43,7 +43,7 @@ class Community(BaseModule):
 
     def check(self) -> None:
         if self.p['state'] == 'present':
-            if self.p['number'] in ['', None] or self.p['seq'] in ['', None] or self.p['action'] in ['', None]:
+            if is_unset(self.p['number']) or is_unset(self.p['seq']) or is_unset(self.p['action']):
                 self.m.fail_json(
                     'To create a BGP community-list you need to provide a number, '
                     'sequence-number and action!'

@@ -50,7 +50,7 @@
       ansibleguy.opnsense.wireguard_peer:
         name: 'ANSIBLE_TEST_1_1'
         public_key: "{{ test.pub1 }}"
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         port: 70000
       register: opn12
       failed_when: not opn12.failed
@@ -58,7 +58,7 @@
     - name: Adding 1 - failing because of missing public key
       ansibleguy.opnsense.wireguard_peer:
         name: 'ANSIBLE_TEST_1_1'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
       register: opn14
       failed_when: not opn14.failed
 
@@ -72,7 +72,7 @@
       ansibleguy.opnsense.wireguard_peer:
         name: 'ANSIBLE_TEST_1_1'
         target: 'wg.test.ansibleguy.net'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         public_key: "{{ test.pub1 }}"
       register: opn4
       failed_when: >
@@ -83,7 +83,7 @@
       ansibleguy.opnsense.wireguard_peer:
         name: 'ANSIBLE_TEST_1_1'
         target: 'wg.test.ansibleguy.net'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         public_key: "{{ test.pub1 }}"
         enabled: false
       register: opn6
@@ -96,7 +96,7 @@
       ansibleguy.opnsense.wireguard_peer:
         name: 'ANSIBLE_TEST_1_1'
         target: 'wg.test.ansibleguy.net'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         public_key: "{{ test.pub1 }}"
         enabled: false
       register: opn9
@@ -109,7 +109,7 @@
       ansibleguy.opnsense.wireguard_peer:
         name: 'ANSIBLE_TEST_1_1'
         target: 'wg.test.ansibleguy.net'
-        allowed_ips: ['192.168.0.1']
+        allowed_ips: ['192.168.0.1/32']
         public_key: "{{ test.pub1 }}"
       register: opn7
       failed_when: >
@@ -121,7 +121,7 @@
       ansibleguy.opnsense.wireguard_peer:
         name: 'ANSIBLE_TEST_1_2'
         target: 'wg2.test.ansibleguy.net'
-        allowed_ips: ['192.168.1.1']
+        allowed_ips: ['192.168.1.1/32']
         public_key: "{{ test.pub2 }}"
         psk: "{{ test.psk }}"
         keepalive: 5
@@ -135,7 +135,7 @@
       ansibleguy.opnsense.wireguard_peer:
         name: 'ANSIBLE_TEST_1_2'
         target: 'wg2.test.ansibleguy.net'
-        allowed_ips: ['192.168.1.1']
+        allowed_ips: ['192.168.1.1/32']
         public_key: "{{ test.pub2 }}"
         psk: "{{ test.psk }}"
         keepalive: 5

@@ -81,7 +81,7 @@ class Host(BaseModule):
 
         else:
             simple['value'] = host['server']
-            simple['prio'] = None
+            simple['prio'] = ''
 
         return simple
 

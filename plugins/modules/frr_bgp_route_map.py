@@ -28,9 +28,9 @@ except MODULE_EXCEPTIONS:
 
 def run_module():
     module_args = dict(
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         name=dict(type='str', required=True),
-        action=dict(type='str', required=False, default='', options=['permit', 'deny']),
+        action=dict(type='str', required=False, options=['permit', 'deny']),
         id=dict(
             type='int', required=False,
             description='Route-map ID between 10 and 99. Be aware that the sorting '
@@ -50,7 +50,7 @@ def run_module():
             type='list', elements='str', required=False, default=[], aliases=['community']
         ),
         set=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='Free text field for your set, please be careful! '
                         'You can set e.g. "local-preference 300" or "community 1:1" '
                         '(http://www.nongnu.org/quagga/docs/docs-multi/'

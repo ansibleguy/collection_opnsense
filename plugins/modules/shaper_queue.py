@@ -27,17 +27,17 @@ except MODULE_EXCEPTIONS:
 
 def run_module():
     module_args = dict(
-        pipe=dict(type='str', required=False, default=''),
+        pipe=dict(type='str', required=False),
         mask=dict(
             type='str', required=False, default='none', choices=['none', 'src-ip', 'dst-ip']
         ),
-        weight=dict(type='str', required=False, default=''),
-        buckets=dict(type='str', required=False, default=''),
+        weight=dict(type='str', required=False),
+        buckets=dict(type='str', required=False),
         pie_enable=dict(type='bool', required=False, default=False, aliases=['pie']),
         codel_enable=dict(type='bool', required=False, default=False, aliases=['codel']),
         codel_ecn_enable=dict(type='bool', required=False, default=False, aliases=['codel_ecn']),
-        codel_target=dict(type='str', required=False, default=''),
-        codel_interval=dict(type='str', required=False, default=''),
+        codel_target=dict(type='str', required=False),
+        codel_interval=dict(type='int', required=False),
         description=dict(type='str', required=True, aliases=['desc']),
         reset=dict(
             type='bool', required=False, default=False, aliases=['flush'],

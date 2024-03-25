@@ -30,7 +30,7 @@ def run_module():
         ip=dict(type='str', required=True, aliases=[
             'neighbor', 'peer', 'peer_ip', 'address',
         ]),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,
     )

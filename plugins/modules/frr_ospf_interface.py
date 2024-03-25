@@ -28,28 +28,28 @@ except MODULE_EXCEPTIONS:
 def run_module():
     module_args = dict(
         interface=dict(type='str', required=True, aliases=['name', 'int']),
-        auth_type=dict(type='str', required=False, default='', choices=['', 'message-digest']),
-        auth_key=dict(type='str', required=False, default='', no_log=True),
+        auth_type=dict(type='str', required=False, choices=['message-digest']),
+        auth_key=dict(type='str', required=False, no_log=True),
         auth_key_id=dict(type='int', required=False, default=1),
         area=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='Area in wildcard mask style like 0.0.0.0 and no decimal 0'
         ),
-        cost=dict(type='str', required=False, default=''),
+        cost=dict(type='int', required=False),
         cost_demoted=dict(type='int', required=False, default=65535),
         carp_depend_on=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='The carp VHID to depend on, when this virtual address is not in '
                         'master state, the interface cost will be set to the demoted cost'
         ),
-        hello_interval=dict(type='str', required=False, default='', aliases=['hello']),
-        dead_interval=dict(type='str', required=False, default='', aliases=['dead']),
-        retransmit_interval=dict(type='str', required=False, default='', aliases=['retransmit']),
-        transmit_delay=dict(type='str', required=False, default='', aliases=['delay']),
-        priority=dict(type='str', required=False, default='', aliases=['prio']),
+        hello_interval=dict(type='int', required=False, aliases=['hello']),
+        dead_interval=dict(type='int', required=False, aliases=['dead']),
+        retransmit_interval=dict(type='int', required=False, aliases=['retransmit']),
+        transmit_delay=dict(type='int', required=False, aliases=['delay']),
+        priority=dict(type='int', required=False, aliases=['prio']),
         network_type=dict(
-            type='str', required=False, default='', aliases=['nw_type'],
-            choices=['', 'broadcast', 'non-broadcast', 'point-to-multipoint', 'point-to-point'],
+            type='str', required=False, aliases=['nw_type'],
+            choices=['broadcast', 'non-broadcast', 'point-to-multipoint', 'point-to-point'],
         ),
         match_fields=dict(
             type='list', required=False, elements='str',

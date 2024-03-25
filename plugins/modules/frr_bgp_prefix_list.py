@@ -31,12 +31,12 @@ def run_module():
         name=dict(type='str', required=True),
         seq=dict(type='str', required=True, aliases=['sequence', 'seq_number']),
         network=dict(type='str', required=False, aliases=['net']),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         version=dict(
             type='str', required=False, default='IPv4', options=['IPv4', 'IPv6'],
             aliases=['ipv']
         ),
-        action=dict(type='str', required=False, default='', options=['permit', 'deny']),
+        action=dict(type='str', required=False, options=['permit', 'deny']),
         **STATE_MOD_ARG,
         **RELOAD_MOD_ARG,
         **OPN_MOD_ARGS,

@@ -29,7 +29,7 @@ except MODULE_EXCEPTIONS:
 def run_module():
     module_args = dict(
         name=dict(type='str', required=True),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         content=dict(type='list', required=False, default=[], elements='str'),
         type=dict(type='str', required=False, choices=['1', '2'], default='1'),
         **RELOAD_MOD_ARG,

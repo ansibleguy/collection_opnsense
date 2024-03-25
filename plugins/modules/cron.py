@@ -61,7 +61,7 @@ def run_module():
                         "(always all-lowercase)"
         ),
         parameters=dict(
-            type='str', required=False, default='', aliases=['params'],
+            type='str', required=False, aliases=['params'],
             description='Enter parameters for this job if required'
         ),
         **RELOAD_MOD_ARG,

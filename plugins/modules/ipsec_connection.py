@@ -107,7 +107,7 @@ def run_module():
                         'ESP packets',
         ),
         reauth_seconds=dict(
-            type='str', required=False, aliases=['reauth', 'reauth_sec', 'reauth_time'], default='',
+            type='int', required=False, aliases=['reauth', 'reauth_sec', 'reauth_time'],
             description='Time to schedule IKE reauthentication. IKE reauthentication recreates the IKE/ISAKMP SA '
                         'from scratch and re-evaluates the credentials. In asymmetric configurations (with EAP or '
                         'configuration payloads) it might not be possible to actively reauthenticate as responder. '
@@ -117,7 +117,7 @@ def run_module():
                         'with IKEv2 by default',
         ),
         rekey_seconds=dict(
-            type='str', required=False, aliases=['rekey', 'rekey_sec', 'rekey_time'], default='',
+            type='int', required=False, aliases=['rekey', 'rekey_sec', 'rekey_time'],
             description='IKE rekeying refreshes key material using a Diffie-Hellman key exchange, but does not '
                         're-check associated credentials. It is supported with IKEv2 only. IKEv1 performs a '
                         'reauthentication procedure instead. With the default value, IKE rekeying is scheduled '
@@ -126,7 +126,7 @@ def run_module():
                         'enforce rekeying and reauthentication',
         ),
         over_seconds=dict(
-            type='str', required=False, aliases=['over', 'over_sec', 'over_time'], default='',
+            type='int', required=False, aliases=['over', 'over_sec', 'over_time'],
             description='Hard IKE_SA lifetime if rekey/reauth does not complete, as time. To avoid having an IKE or '
                         'ISAKMP connection kept alive if IKE reauthentication or rekeying fails perpetually, a '
                         'maximum hard lifetime may be specified. If the IKE_SA fails to rekey or reauthenticate '
@@ -136,13 +136,13 @@ def run_module():
                         '[0.1 * max(rekey_time, reauth_time)]',
         ),
         dpd_delay_seconds=dict(
-            type='str', required=False, aliases=['dpd_delay', 'dpd_delay_sec', 'dpd_delay_time'], default='',
+            type='int', required=False, aliases=['dpd_delay', 'dpd_delay_sec', 'dpd_delay_time'],
             description='Interval to check the liveness of a peer actively using IKEv2 INFORMATIONAL exchanges or '
                         'IKEv1 R_U_THERE messages. Active DPD checking is only enforced if no IKE or ESP/AH packet '
                         'has been received for the configured DPD delay. Defaults to 0s',
         ),
         dpd_timeout_seconds=dict(
-            type='str', required=False, aliases=['dpd_timeout', 'dpd_timeout_sec'], default='',
+            type='int', required=False, aliases=['dpd_timeout', 'dpd_timeout_sec'],
             description='Charon by default uses the normal retransmission mechanism and timeouts to check the '
                         'liveness of a peer, as all messages are used for liveness checking. For compatibility '
                         'reasons, with IKEv1 a custom interval may be specified. This option has no effect on '
@@ -157,8 +157,8 @@ def run_module():
                         'increases the size of the initial IKE packets',
         ),
         send_certificate=dict(
-            type='str', required=False, default='', aliases=['send_cert'],
-            choices=['', 'ifasked', 'never', 'always'],
+            type='str', required=False, aliases=['send_cert'],
+            choices=['ifasked', 'never', 'always'],
             description='Send certificate payloads when using certificate authentication. With the default of '
                         '[ifasked] the daemon sends certificate payloads only if certificate requests have been '
                         'received. [never] disables sending of certificate payloads altogether whereas [always] '
@@ -166,7 +166,7 @@ def run_module():
                         'authentication is used',
         ),
         keying_tries=dict(
-            type='str', required=False, aliases=['keyingtries'], default='',
+            type='int', required=False, aliases=['keyingtries'],
             description='Number of retransmission sequences to perform during initial connect. Instead of giving '
                         'up initiation after the first retransmission sequence with the default value of 1, '
                         'additional sequences may be started according to the configured value. A value of 0 '

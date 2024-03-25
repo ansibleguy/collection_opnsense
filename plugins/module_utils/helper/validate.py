@@ -72,7 +72,10 @@ MATCH_URL = regex_compile(MATCH_URL_RAW)
 MATCH_MAC_ADDRESS = regex_compile(r'^(?:[0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$')
 
 
-def _is_matching(compiled_regex, value: str) -> bool:
+def _is_matching(compiled_regex, value: (str, None)) -> bool:
+    if value is None:
+        value = ''
+
     return compiled_regex.match(value) is not None
 
 

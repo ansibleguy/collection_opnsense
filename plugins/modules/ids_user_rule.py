@@ -33,15 +33,15 @@ def run_module():
             description='Unique rule name',
         ),
         source_ip=dict(
-            type='str', required=False, aliases=['source', 'src_ip', 'src'], default='',
+            type='str', required=False, aliases=['source', 'src_ip', 'src'],
             description="Set the source IP or network to match. Leave this field empty for using 'any'",
         ),
         destination_ip=dict(
-            type='str', required=False, aliases=['destination', 'dst_ip', 'dst'], default='',
+            type='str', required=False, aliases=['destination', 'dst_ip', 'dst'],
             description="Set the destination IP or network to match. Leave this field empty for using 'any'",
         ),
         ssl_fingerprint=dict(
-            type='str', required=False, aliases=['fingerprint', 'ssl_fp'], default='',
+            type='str', required=False, aliases=['fingerprint', 'ssl_fp'],
             description="The SSL fingerprint, for example: "
                         "'B5:E1:B3:70:5E:7C:FF:EB:92:C4:29:E5:5B:AC:2F:AE:70:17:E9:9E'",
         ),

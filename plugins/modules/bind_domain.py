@@ -38,14 +38,14 @@ def run_module():
             description='Set the IP address of primary server when using secondary mode'
         ),
         transfer_key_algo=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             choices=[
                 'hmac-sha512', 'hmac-sha384', 'hmac-sha256', 'hmac-sha224',
-                'hmac-sha1', 'hmac-md5', '',
+                'hmac-sha1', 'hmac-md5',
             ]
         ),
-        transfer_key_name=dict(type='str', required=False, default=''),
-        transfer_key=dict(type='str', required=False, default='', no_log=True),
+        transfer_key_name=dict(type='str', required=False),
+        transfer_key=dict(type='str', required=False, no_log=True),
         allow_notify=dict(
             type='list', elements='str', required=False, default=[],
             aliases=['allow_notify_secondary', 'allow_notify_slave'],
@@ -94,7 +94,7 @@ def run_module():
             description='Set the DNS server hosting this file. This should usually '
                         'be the FQDN of your firewall where the BIND plugin is installed'
         ),
-        # serial=dict(type='str', required=False, default=''),
+        # serial=dict(type='str', required=False),
         **STATE_MOD_ARG,
         **OPN_MOD_ARGS,
         **RELOAD_MOD_ARG,

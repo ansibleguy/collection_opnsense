@@ -73,17 +73,17 @@ def run_module():
                         "'status' = 'Status failed', "
                         "'timestamp' = 'Timestamp failed', "
                         "'uid' = 'UID failed', "
-                        "'uptime' = 'Uptime failed''"
+                        "'uptime' = 'Uptime failed'"
         ),
         format=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='The email format for alerts. Subject: $SERVICE on $HOST failed'
         ),
         reminder=dict(
             type='int', required=False, default=10,
             description='Send a reminder after some cycles',
         ),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         match_fields=dict(
             type='list', required=False, elements='str',
             description='Fields that are used to match configured alerts with the running config - '

@@ -33,23 +33,23 @@ def run_module():
             description='Remote host name or IP address with optional port'
         ),
         port=dict(
-            type='str', required=False, default='', aliases=['local_port', 'bind_port'],
+            type='int', required=False, aliases=['local_port', 'bind_port'],
             description='Port number to use.'
                         'Specifies a bind address, or nobind when client does not have a specific bind address.'
         ),
         carp_depend_on=dict(
             aliases=['vip', 'vip_depend', 'carp', 'carp_depend'],
-            type='str', required=False, default='',
+            type='str', required=False,
             description='The carp VHID to depend on, when this virtual address is not in '
                         'master state, the interface cost will be set to the demoted cost'
         ),
         # auth
         username=dict(
-            type='str', required=False, default='', aliases=['user'],
+            type='str', required=False, aliases=['user'],
             description='(optional) Username to send to the server for authentication when required.'
         ),
         password=dict(
-            type='str', required=False, default='', aliases=['pwd'], no_log=True,
+            type='str', required=False, aliases=['pwd'], no_log=True,
             description='Password belonging to the user specified above'
         ),
         **OPENVPN_INSTANCE_MOD_ARGS,

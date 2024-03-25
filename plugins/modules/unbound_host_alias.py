@@ -30,7 +30,7 @@ def run_module():
         alias=dict(type='str', required=True, aliases=['hostname']),
         domain=dict(type='str', required=True, aliases=['dom', 'd']),
         target=dict(type='str', required=False, aliases=['tgt', 'host']),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         match_fields=dict(
             type='list', required=False, elements='str',
             description='Fields that are used to match configured override-alias with the running config - '

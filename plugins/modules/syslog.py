@@ -54,9 +54,9 @@ def run_module():
                 'local5', 'local6', 'local7',
             ],
         ),
-        certificate=dict(type='str', required=False, aliases=['cert'], default=''),
+        certificate=dict(type='str', required=False, aliases=['cert']),
         rfc5424=dict(type='bool', required=False, default=False),  # not getting current value from response
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         match_fields=dict(
             type='list', required=False, elements='str',
             description='Fields that are used to match configured syslog-destinations with the running config - '

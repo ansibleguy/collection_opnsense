@@ -30,7 +30,7 @@ def run_module():
     module_args = dict(
         version=dict(type='int', required=False, default=2, aliases=['v']),
         metric=dict(
-            type='str', required=False, default='', aliases=['m', 'default_metric'],
+            type='int', required=False, aliases=['m', 'default_metric'],
             description='Set the default metric to a value between 1 and 16'
         ),
         passive_ints=dict(

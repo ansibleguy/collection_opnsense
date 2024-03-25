@@ -34,7 +34,7 @@ def run_module():
             description='Select the OpenVPN servers where this override applies to, leave empty for all'
         ),
         description=dict(
-            type='str', required=False, aliases=['desc'], default='',
+            type='str', required=False, aliases=['desc'],
             description='You may enter a description here for your reference (not parsed).'
         ),
         block=dict(
@@ -52,11 +52,11 @@ def run_module():
                         "client configs in many cases."
         ),
         network_tunnel_ip4=dict(
-            type='str', required=False, default='', aliases=['tun_ip4', 'tunnel_ip4'],
+            type='str', required=False, aliases=['tun_ip4', 'tunnel_ip4'],
             description='Push virtual IP endpoints for client tunnel, overriding dynamic allocation.'
         ),
         network_tunnel_ip6=dict(
-            type='str', required=False, default='', aliases=['tun_ip6', 'tunnel_ip6'],
+            type='str', required=False, aliases=['tun_ip6', 'tunnel_ip6'],
             description='Push virtual IP endpoints for client tunnel, overriding dynamic allocation.'
         ),
         network_local=dict(
@@ -70,7 +70,7 @@ def run_module():
                         'and inform the server to send these networks to this specific client.'
         ),
         route_gateway=dict(
-            type='str', required=False, default='', aliases=['route_gw', 'rt_gw'],
+            type='str', required=False, aliases=['route_gw', 'rt_gw'],
             description='Specify a default gateway to use for the connected client. Without one set the first '
                         'address in the netblock is being offered. When segmenting the tunnel (server) network, '
                         'this one might not be accessible from the client.'
@@ -87,7 +87,7 @@ def run_module():
                         'This is known to kick Windows into recognizing pushed DNS servers.'
         ),
         domain=dict(
-            type='str', required=False, default='', aliases=['dns_domain'],
+            type='str', required=False, aliases=['dns_domain'],
             description='Set Connection-specific DNS Suffix.'
         ),
         domain_list=dict(

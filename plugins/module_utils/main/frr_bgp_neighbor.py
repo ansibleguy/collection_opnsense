@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    validate_int_fields, is_ip
+    validate_int_fields, is_ip, is_unset
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -81,7 +81,7 @@ class Neighbor(BaseModule):
 
     def check(self) -> None:
         if self.p['state'] == 'present':
-            if self.p['ip'] in ['', None] or self.p['as_number'] in ['', None]:
+            if is_unset(self.p['ip']) or is_unset(self.p['as_number']):
                 self.m.fail_json(
                     'To create a BGP neighbor you need to provide its AS-number and peer-ip!'
                 )
@@ -89,7 +89,7 @@ class Neighbor(BaseModule):
             if not is_ip(self.p['ip']):
                 self.m.fail_json(f"Provided peer IP '{self.p['ip']}' is not a valid IP-Address!")
 
-            if self.p['local_ip'] not in ['', None] and not is_ip(self.p['local_ip']):
+            if not is_unset(self.p['local_ip']) and not is_ip(self.p['local_ip']):
                 self.m.fail_json(f"Provided source IP '{self.p['local_ip']}' is not a valid IP-Address!")
 
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
@@ -123,7 +123,7 @@ class Neighbor(BaseModule):
 
         for key, values in links.items():
             value_name = values['match_fields']['name']
-            provided = self.p[value_name] not in ['', None]
+            provided = not is_unset(self.p[value_name])
             seq_uuid_mapping = {}
 
             if not provided:
@@ -134,7 +134,7 @@ class Neighbor(BaseModule):
                     matching = []
 
                     for api_field, ans_field in values['match_fields'].items():
-                        if self.p[ans_field] not in ['', None]:
+                        if not is_unset(self.p[ans_field]):
                             matching.append(str(entry[api_field]) == str(self.p[ans_field]))
 
                     if all(matching):

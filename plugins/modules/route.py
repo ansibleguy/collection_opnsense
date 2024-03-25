@@ -35,7 +35,7 @@ def run_module():
             type='str', required=True, aliases=['nw', 'net'],
             description='Specify a valid network matching the gateways ip protocol'
         ),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         match_fields=dict(
             type='list', required=False, elements='str',
             description='Fields that are used to match configured routes with the running config - '

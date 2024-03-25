@@ -84,8 +84,8 @@ def run_module():
                         'All accounts that are not in this domain will be blocked to use it'
         ),
         youtube_filter=dict(
-            type='str', required=False, default='', aliases=['youtube'],
-            choices=['', 'strict', 'moderate'], description='Youtube filter level'
+            type='str', required=False, aliases=['youtube'],
+            choices=['strict', 'moderate'], description='Youtube filter level'
         ),
         ports_tcp=dict(
             type='list', elements='str', required=False, aliases=['p_tcp'],

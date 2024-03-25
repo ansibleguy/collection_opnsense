@@ -55,7 +55,7 @@ def run_module():
             description='NAT translation target - Packets matching this rule will be '
                         'mapped to the IP address given here.',
         ),
-        target_port=dict(type='str', required=False, aliases=['nat_port', 'np'], default=''),
+        target_port=dict(type='int', required=False, aliases=['nat_port', 'np']),
         match_fields=dict(
             type='list', required=True, elements='str',
             description='Fields that are used to match configured rules with the running config - '

@@ -33,7 +33,7 @@ def run_module():
             description='IP address of the authoritative DNS server for this domain. '
                         "To use a non-default port for communication, append an '@' with the port number",
         ),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         match_fields=dict(
             type='list', required=False, elements='str',
             description='Fields that are used to match configured domain-overrides with the running config - '

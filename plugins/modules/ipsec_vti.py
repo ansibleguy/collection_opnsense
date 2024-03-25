@@ -40,19 +40,15 @@ def run_module():
         ),
         local_address=dict(
             type='str', required=False, aliases=['local_addr', 'local'],
-            description=''
         ),
         remote_address=dict(
             type='str', required=False, aliases=['remote_addr', 'remote'],
-            description=''
         ),
         local_tunnel_address=dict(
             type='str', required=False, aliases=['local_tun_addr', 'tunnel_local', 'local_tun'],
-            description=''
         ),
         remote_tunnel_address=dict(
             type='str', required=False, aliases=['remote_tun_addr', 'tunnel_remote', 'remote_tun'],
-            description=''
         ),
         **RELOAD_MOD_ARG,
         **STATE_MOD_ARG,

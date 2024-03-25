@@ -31,7 +31,7 @@ def ensure_list(data: (int, str, list, None)) -> list:
 
 
 def is_ip(host: str, ignore_empty: bool = False) -> bool:
-    if ignore_empty and host in ['', ' ']:
+    if ignore_empty and is_unset(host):
         return True
 
     try:
@@ -43,7 +43,7 @@ def is_ip(host: str, ignore_empty: bool = False) -> bool:
 
 
 def is_ip4(host: str, ignore_empty: bool = False) -> bool:
-    if ignore_empty and host in ['', ' ']:
+    if ignore_empty and is_unset(host):
         return True
 
     try:
@@ -55,7 +55,7 @@ def is_ip4(host: str, ignore_empty: bool = False) -> bool:
 
 
 def is_ip6(host: str, ignore_empty: bool = False) -> bool:
-    if ignore_empty and host in ['', ' ']:
+    if ignore_empty and is_unset(host):
         return True
 
     try:
@@ -177,7 +177,7 @@ def validate_port(module: AnsibleModule, port: (int, str), error_func: Callable 
     if error_func is None:
         error_func = module.fail_json
 
-    if port in ['any', '']:
+    if port == 'any' or is_unset(port):
         return True
 
     try:

@@ -47,16 +47,16 @@ def run_module():
                         "include this address. Uncheck to prevent binding to this address instead"
         ),
         gateway=dict(
-            type='str', required=False, aliases=['gw'], default='',
+            type='str', required=False, aliases=['gw'],
             description='For some interface types a gateway is required to configure an '
                         'IP Alias (ppp/pppoe/tun), leave this field empty for all other interface types'
         ),
         password=dict(
-            type='str', required=False, aliases=['pwd'], default='',
+            type='str', required=False, aliases=['pwd'],
             description='VHID group password', no_log=True,
         ),
         vhid=dict(
-            type='str', required=False, aliases=['group', 'grp', 'id'], default='',
+            type='str', required=False, aliases=['group', 'grp', 'id'],
             description='VHID group that the machines will share'
         ),
         advertising_base=dict(
@@ -67,7 +67,7 @@ def run_module():
         advertising_skew=dict(
             type='int', required=False, aliases=['adv_skew', 'skew'], default=0,
         ),
-        description=dict(type='str', required=False, aliases=['desc'], default=''),
+        description=dict(type='str', required=False, aliases=['desc']),
         match_fields=dict(
             type='list', required=False, elements='str',
             description='Fields that are used to match configured VIP with the running config - '

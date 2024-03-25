@@ -50,7 +50,7 @@ def run_module():
             choices=['alert', 'restart', 'start', 'stop', 'exec', 'unmonitor']
         ),
         path=dict(
-            type='path', required=False, default='',
+            type='path', required=False,
             description='The absolute path to the script to execute - if action is '
                         "set to 'execute'. "
                         "Make sure the script is executable by the Monit service"

@@ -28,7 +28,7 @@ except MODULE_EXCEPTIONS:
 def run_module():
     module_args = dict(
         domain=dict(
-            type='str', required=False, default='', aliases=['dom', 'd'],
+            type='str', required=False, aliases=['dom', 'd'],
             description='Domain of the host. All queries for this domain will be forwarded to the nameserver '
                         'specified. Leave empty to catch all queries and forward them to the nameserver'
         ),

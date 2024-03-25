@@ -75,7 +75,7 @@ class Server(BaseModule):
                     "to create a server!"
                 )
 
-            if self.p['gateway'] != '' and not is_ip(self.p['gateway']):
+            if not is_unset(self.p['gateway']) and not is_ip(self.p['gateway']):
                 self.m.fail_json(
                     f"Gateway '{self.p['gateway']}' is not a valid IP-address!"
                 )

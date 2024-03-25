@@ -31,19 +31,19 @@ def run_module():
         ip=dict(type='str', required=True, aliases=['nw_address', 'network_address', 'address']),
         mask=dict(type='int', required=True, aliases=['nw_mask', 'network_mask']),
         area=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='Area in wildcard mask style like 0.0.0.0 and no decimal 0. '
                         'Only use Area in Interface tab or in Network tab once'
         ),
         area_range=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             description='Here you can summarize a network for this area like 192.168.0.0/23'
         ),
         prefix_list_in=dict(
-            type='str', required=False, default='', aliases=['prefix_in', 'pre_in']
+            type='str', required=False, aliases=['prefix_in', 'pre_in']
         ),
         prefix_list_out=dict(
-            type='str', required=False, default='', aliases=['prefix_out', 'pre_out']
+            type='str', required=False, aliases=['prefix_out', 'pre_out']
         ),
         match_fields=dict(
             type='list', required=False, elements='str',

@@ -35,7 +35,7 @@ def run_module():
                         'encryption (--tls-crypt)'
         ),
         key=dict(
-            type='str', required=False, default='', no_log=True,
+            type='str', required=False, no_log=True,
             description='OpenVPN Static key. If empty - it will be auto-generated.'
         ),
         **RELOAD_MOD_ARG,

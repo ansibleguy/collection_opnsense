@@ -103,7 +103,7 @@ class General(GeneralModule):
                         f"It seems you provided an invalid IP address as '{field}': '{ip}'"
                     )
 
-        if self.p['recursion_acl'] != '' or len(self.p['transfer_acl']) > 0 or len(self.p['query_acl']) > 0:
+        if not is_unset(self.p['recursion_acl']) or len(self.p['transfer_acl']) > 0 or len(self.p['query_acl']) > 0:
             # to save time on call if not needed
             self.acls_needed = True
 

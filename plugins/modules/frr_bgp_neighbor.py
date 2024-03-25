@@ -35,22 +35,22 @@ def run_module():
             type='int', required=False, aliases=['as', 'as_nr', 'remote_as']
         ),
         password=dict(
-            type='str', required=False, default='', aliases=['pwd'], no_log=True,
+            type='str', required=False, aliases=['pwd'], no_log=True,
             description='Set a (MD5-hashed) password for BGP authentication.'
         ),
-        weight=dict(type='str', required=False, default=''),
+        weight=dict(type='int', required=False),
         local_ip=dict(
-            type='str', required=False, default='', aliases=['local'],
+            type='str', required=False, aliases=['local'],
             description='Set the local IP connecting to the neighbor. '
                         'This is only required for BGP authentication.'
         ),
         source_int=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             aliases=['update_source', 'update_src', 'src_int'],
             description='Physical name of the IPv4 interface facing the peer'
         ),
         ipv6_link_local_int=dict(
-            type='str', required=False, default='',
+            type='str', required=False,
             aliases=['link_local_int', 'ipv6_ll_int', 'v6_ll_int'],
             description='Interface to use for IPv6 link-local neighbours'
         ),
@@ -103,21 +103,21 @@ def run_module():
                         'This is usually 3 times the keepalive timer'
         ),
         connect_timer=dict(
-            type='str', required=False, default='', aliases=['connecttimer'],
+            type='int', required=False, aliases=['connecttimer'],
             description='The time in seconds how fast a neighbor tries to reconnect.'
         ),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         prefix_list_in=dict(
-            type='str', required=False, default='', aliases=['prefix_in', 'pre_in']
+            type='str', required=False, aliases=['prefix_in', 'pre_in']
         ),
         prefix_list_out=dict(
-            type='str', required=False, default='', aliases=['prefix_out', 'pre_out']
+            type='str', required=False, aliases=['prefix_out', 'pre_out']
         ),
         route_map_in=dict(
-            type='str', required=False, default='', aliases=['map_in', 'rm_in']
+            type='str', required=False, aliases=['map_in', 'rm_in']
         ),
         route_map_out=dict(
-            type='str', required=False, default='', aliases=['map_out', 'rm_out']
+            type='str', required=False, aliases=['map_out', 'rm_out']
         ),
         match_fields=dict(
             type='list', required=False, elements='str',

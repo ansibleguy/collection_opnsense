@@ -38,7 +38,7 @@ def run_module():
             type='int', required=False, aliases=['mxprio'], default=10,
             description='Priority that is only used for MX record types'
         ),
-        description=dict(type='str', required=False, default='', aliases=['desc']),
+        description=dict(type='str', required=False, aliases=['desc']),
         match_fields=dict(
             type='list', required=False, elements='str',
             description='Fields that are used to match configured host-overrides with the running config - '
