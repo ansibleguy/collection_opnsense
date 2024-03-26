@@ -1,0 +1,130 @@
+---
+
+- name: Testing Nginx upstream server
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/ansibleguy.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    ansibleguy.opnsense.list:
+      target: 'ipsec_psk'
+
+  tasks:
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      ansibleguy.opnsense.nginx_upstream_server:
+        description: 'ANSIBLE@TEST1'
+        state: 'absent'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1 - failing because of missing server
+      ansibleguy.opnsense.nginx_upstream_server:
+        description: 'ANSIBLE@TEST1'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding 1 - failing because of missing port
+      ansibleguy.opnsense.nginx_upstream_server:
+        description: 'ANSIBLE@TEST1'
+        server: 192.168.1.1
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding 1 - failing because of missing priority
+      ansibleguy.opnsense.nginx_upstream_server:
+        description: 'ANSIBLE@TEST1'
+        server: 192.168.1.1
+        port: 80
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding 1 - failing because of invalid priority (server-side)
+      ansibleguy.opnsense.ipsec_psk:
+        description: 'ANSIBLE@TEST1'
+        server: 192.168.1.1
+        port: 80
+        priority: -100
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+      when: not ansible_check_mode
+
+    - name: Adding 1
+      ansibleguy.opnsense.ipsec_psk:
+        description: 'ANSIBLE@TEST1'
+        server: 192.168.1.1
+        port: 80
+        priority: 100
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Adding 2
+      ansibleguy.opnsense.ipsec_psk:
+        description: 'ANSIBLE@TEST2'
+        server: 192.168.1.2
+        port: 8080
+        priority: 200
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      ansibleguy.opnsense.ipsec_psk:
+        description: 'ANSIBLE@TEST2'
+        server: 192.168.1.2
+        port: 8080
+        priority: 200
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      ansibleguy.opnsense.ipsec_psk:
+        description: 'ANSIBLE@TEST2'
+        state: 'absent'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn8
+      failed_when: >
+        'data' not in opn8 or
+        opn8.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      ansibleguy.opnsense.ipsec_psk:
+        identity: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE@TEST1'
+        - 'ANSIBLE@TEST2'
+      when: not ansible_check_mode
+
+    - name: Listing
+      ansibleguy.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode

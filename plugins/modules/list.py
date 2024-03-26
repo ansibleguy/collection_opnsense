@@ -31,7 +31,7 @@ TARGETS = [
     'webproxy_traffic', 'webproxy_remote_acl', 'webproxy_pac_proxy', 'webproxy_pac_match', 'webproxy_pac_rule',
     'cron', 'unbound_dot', 'ipsec_cert', 'ipsec_psk', 'source_nat', 'frr_bgp_prefix_list', 'frr_bgp_community_list',
     'frr_bgp_as_path', 'frr_bgp_route_map', 'frr_ospf_prefix_list', 'frr_ospf_route_map', 'webproxy_forward',
-    'webproxy_acl', 'webproxy_icap', 'webproxy_auth', 'ipsec_connection', 'ipsec_pool',
+    'webproxy_acl', 'webproxy_icap', 'webproxy_auth', 'nginx_upstream_server', 'ipsec_connection', 'ipsec_pool',
     'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote', 'frr_general', 'unbound_general',
     'unbound_acl', 'ids_general', 'ids_policy', 'ids_rule', 'ids_ruleset', 'ids_user_rule', 'ids_policy_rule',
     'openvpn_instance', 'openvpn_static_key', 'openvpn_client_override',
@@ -304,6 +304,10 @@ def run_module():
         elif target == 'webproxy_pac_rule':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.webproxy_pac_rule import \
                 Rule as Target_Obj
+
+        elif target == 'nginx_upstream_server':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.nginx_upstream_server import \
+                UpstreamServer as Target_Obj
 
         elif target == 'ipsec_connection':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ipsec_connection import \
