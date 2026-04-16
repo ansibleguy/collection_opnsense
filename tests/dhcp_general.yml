@@ -62,6 +62,34 @@
         opn3.changed
       when: not ansible_check_mode
 
+    - name: Configuring with HA
+      oxlorg.opnsense.dhcp_general:
+        enabled: true
+        interfaces: ['opt1']
+        ha:
+          enabled: true
+          this_server_name: 'primary'
+          max_unacked_clients: 2
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Configuring with HA - Nothing changed
+      oxlorg.opnsense.dhcp_general:
+        enabled: true
+        interfaces: ['opt1']
+        ha:
+          enabled: true
+          this_server_name: 'primary'
+          max_unacked_clients: 2
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        opn5.changed
+      when: not ansible_check_mode
+
     - name: Cleanup
       oxlorg.opnsense.dhcp_general:
         enabled: false

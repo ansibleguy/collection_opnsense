@@ -1,0 +1,116 @@
+---
+
+- name: DHCP HA Peer
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    oxlorg.opnsense.list:
+      target: 'dhcp_ha_peer'
+
+  environment:
+    HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'TEST_PROXY') | default('') }}"
+
+  tasks:
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      oxlorg.opnsense.dhcp_ha_peer:
+        name: 'peer1'
+        role: 'primary'
+        url: 'http://192.168.1.1:8080'
+        state: 'absent'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1
+      oxlorg.opnsense.dhcp_ha_peer:
+        name: 'peer1'
+        role: 'primary'
+        url: 'http://192.168.1.1:8080'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Adding 2
+      oxlorg.opnsense.dhcp_ha_peer:
+        name: 'peer2'
+        role: 'standby'
+        url: 'http://192.168.1.2:8080'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+
+    - name: Changing 2
+      oxlorg.opnsense.dhcp_ha_peer:
+        name: 'peer2'
+        role: 'standby'
+        url: 'http://192.168.1.3:8080'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+      when: not ansible_check_mode
+
+    - name: Changing 2 - Nothing changed
+      oxlorg.opnsense.dhcp_ha_peer:
+        name: 'peer2'
+        role: 'standby'
+        url: 'http://192.168.1.3:8080'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        opn4.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn5
+      failed_when: >
+        'data' not in opn5 or
+        opn5.data | length != 2
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      oxlorg.opnsense.dhcp_ha_peer:
+        name: 'peer2'
+        role: 'standby'
+        url: 'http://192.168.1.3:8080'
+        state: 'absent'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      oxlorg.opnsense.dhcp_ha_peer:
+        name: "{{ item }}"
+        role: 'primary'
+        url: 'http://192.168.1.1:8080'
+        state: 'absent'
+      loop:
+        - 'peer1'
+        - 'peer2'
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode

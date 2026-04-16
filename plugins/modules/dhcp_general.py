@@ -44,6 +44,15 @@ def run_module():
             type='int', required=False, default=4000, aliases=['valid_lifetime'],
             description='Defines how long the addresses (leases) given out by the server are valid (in seconds)',
         ),
+        ha=dict(
+            type='dict',
+            required=False,
+            options=dict(
+                enabled=dict(type='bool', required=False, default=False),
+                this_server_name=dict(type='str', required=False, default=''),
+                max_unacked_clients=dict(type='int', required=False, default=0),
+            )
+        ),
         **EN_ONLY_MOD_ARG,
         **RELOAD_MOD_ARG,
         **OPN_MOD_ARGS,
