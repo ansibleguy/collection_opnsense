@@ -22,7 +22,9 @@ class Peer(BaseModule):
         'name', 'role', 'url',
     ]
     FIELDS_ALL = FIELDS_CHANGE
-    FIELDS_TYPING = {}
+    FIELDS_TYPING = {
+        'select': ['role'],
+    }
     FIELD_ID = 'name'
     EXIST_ATTR = 'peer'
 

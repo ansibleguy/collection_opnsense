@@ -52,4 +52,5 @@ class General(GeneralModule):
             self.FIELDS_ALL = self.FIELDS_CHANGE
             self.FIELDS_TRANSLATE = {k: v for k, v in self.FIELDS_TRANSLATE.items() if not k.startswith('ha_')}
             self.FIELDS_TYPING = {t: [f for f in fields if not f.startswith('ha_')] for t, fields in self.FIELDS_TYPING.items()}
+            self.INT_VALIDATIONS = {k: v for k, v in self.INT_VALIDATIONS.items() if not k.startswith('ha_')}
         GeneralModule.__init__(self=self, m=module, r=result, s=session)
