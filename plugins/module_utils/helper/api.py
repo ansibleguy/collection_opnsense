@@ -15,6 +15,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate im
 
 
 def _load_credential_file(module: AnsibleModule) -> tuple[(str, None), (str, None)]:
+    """Parses credential files, checking for security and format compliance."""
     cred_file_info = Path(module.params['api_credential_file'])
 
     if cred_file_info.is_file():

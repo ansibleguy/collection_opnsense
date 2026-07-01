@@ -4,8 +4,10 @@ from functools import reduce
 from abc import abstractmethod
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import single_get, single_post, Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import get_simple_existing, to_digit, \
-    simplify_translate, is_unset, sort_param_lists, get_matching
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import to_digit, is_unset, sort_param_lists
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.translate import get_simple_existing, \
+    simplify_translate
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.match import get_matching
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.handler import exit_bug, ModuleSoftError
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     validate_int_fields, validate_str_fields
@@ -381,7 +383,7 @@ class BaseLogic:
     def _base_update_enabled(self) -> None:
         existing = getattr(self, self.EXIST_ATTR)
 
-        if 'enabled' in existing:
+        if 'enabled' in existing and 'enabled' in self.p:
             if existing['enabled'] != self.p['enabled']:
                 _bool_invert_fields = []
                 enable = self.p['enabled']

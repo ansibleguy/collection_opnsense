@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.handler impor
     ModuleSoftError
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import \
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.match import \
     get_multiple_matching
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_ip4, is_ip6, is_unset

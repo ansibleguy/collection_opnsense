@@ -11,6 +11,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import
 # This should be kept aligned with getValidators from the AliasContentField
 # https://github.com/opnsense/core/blob/master/src/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/AliasContentField.php
 def validate_values(cnf: dict, error_func: Callable, existing_entries: dict) -> None:
+    """Validates alias values against existing entries and type requirements."""
     v_type = cnf['type']
 
     if isinstance(existing_entries, dict):

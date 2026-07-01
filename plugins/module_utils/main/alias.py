@@ -7,7 +7,9 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.alias import \
     validate_values, filter_builtin_alias, build_updatefreq
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import \
-    get_simple_existing, simplify_translate, is_unset
+    is_unset
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.translate import \
+    get_simple_existing, simplify_translate
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 

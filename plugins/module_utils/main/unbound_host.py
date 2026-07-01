@@ -3,7 +3,9 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import \
-    to_digit, simplify_translate
+    to_digit
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.translate import \
+    simplify_translate
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_ip4, is_ip6, valid_hostname, is_unset
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.unbound import \

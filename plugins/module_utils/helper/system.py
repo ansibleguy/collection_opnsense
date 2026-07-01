@@ -18,6 +18,7 @@ def _opn_reachable_ipv(module: AnsibleModule, address_family: int) -> bool:
 
 
 def _opn_reachable(module: AnsibleModule) -> bool:
+    """Tests reachability of the OPNsense API via IPv4 or IPv6."""
     try:
         return _opn_reachable_ipv(module, AF_INET)
 

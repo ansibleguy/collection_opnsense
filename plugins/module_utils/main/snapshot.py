@@ -13,7 +13,7 @@ class Snapshot(BaseModule):
         'search': 'search',
         'activate': 'activate',
     }
-    API_KEY_PATH = None
+    API_KEY_PATH = ''
     API_MOD = 'core'
     API_CONT = 'snapshots'
     FIELDS_CHANGE = []
