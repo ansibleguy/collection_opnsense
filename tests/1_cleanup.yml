@@ -1113,17 +1113,18 @@
         - 'ANSIBLE_TEST_1_4'
         - 'ANSIBLE_TEST_ACL_1'
 
-    - name: Cleanup HAProxy Actions
-      oxlorg.opnsense.haproxy_action:
-        name: "{{ item }}"
-        state: 'absent'
-      loop:
-        - 'ANSIBLE_TEST_1_1'
-        - 'ANSIBLE_TEST_1_2'
-        - 'ANSIBLE_TEST_1_3'
-        - 'ANSIBLE_TEST_1_4'
-        - 'ANSIBLE_TEST_FCGI_ACTION_1'
-        - 'ANSIBLE_TEST_FCGI_ACTION_2'
+    # waiting for fix: https://github.com/O-X-L/ansible-opnsense/issues/413
+    # - name: Cleanup HAProxy Actions
+    #   oxlorg.opnsense.haproxy_action:
+    #     name: "{{ item }}"
+    #     state: 'absent'
+    #   loop:
+    #     - 'ANSIBLE_TEST_1_1'
+    #     - 'ANSIBLE_TEST_1_2'
+    #     - 'ANSIBLE_TEST_1_3'
+    #     - 'ANSIBLE_TEST_1_4'
+    #     - 'ANSIBLE_TEST_FCGI_ACTION_1'
+    #     - 'ANSIBLE_TEST_FCGI_ACTION_2'
 
     - name: Cleanup HAProxy Lua scripts
       oxlorg.opnsense.haproxy_lua:
@@ -1153,33 +1154,6 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_1_3'
         - 'ANSIBLE_TEST_1_4'
-
-    - name: Cleanup HAProxy Mailers
-      oxlorg.opnsense.haproxy_mailer:
-        name: "{{ item }}"
-        state: 'absent'
-      loop:
-        - 'ANSIBLE_TEST_1_1'
-        - 'ANSIBLE_TEST_1_2'
-        - 'ANSIBLE_TEST_1_3'
-
-    - name: Cleanup HAProxy Map files
-      oxlorg.opnsense.haproxy_mapfile:
-        name: "{{ item }}"
-        state: 'absent'
-      loop:
-        - 'ANSIBLE_TEST_1_1'
-        - 'ANSIBLE_TEST_1_2'
-        - 'ANSIBLE_TEST_1_3'
-
-    - name: Cleanup HAProxy Resolvers
-      oxlorg.opnsense.haproxy_resolver:
-        name: "{{ item }}"
-        state: 'absent'
-      loop:
-        - 'ANSIBLE_TEST_1_1'
-        - 'ANSIBLE_TEST_1_2'
-        - 'ANSIBLE_TEST_1_3'
 
     - name: Cleanup NUT
       oxlorg.opnsense.nut:
