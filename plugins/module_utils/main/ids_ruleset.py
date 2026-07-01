@@ -38,7 +38,7 @@ class Ruleset(BaseModule):
         self.existing_rulesets_desc = []
 
     def check(self) -> None:
-        self._search_call()
+        self.search_call()
         if not self.exists:
             self.m.fail_json(
                 f"The provided ruleset '{self.p[self.FIELD_ID]}' was not found! "
@@ -52,7 +52,7 @@ class Ruleset(BaseModule):
         if self.r['changed']:
             self.toggle()
 
-    def _search_call(self) -> list:
+    def search_call(self) -> list:
         # NOTE: workaround for issue with incomplete response-data from 'get' endpoint:
         #   https://github.com/opnsense/core/issues/7094
         existing = self.s.post(cnf={

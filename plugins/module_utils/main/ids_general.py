@@ -94,7 +94,7 @@ class General(GeneralModule):
 
         self._base_check()
 
-    def _search_call(self) -> dict:
+    def search_call(self) -> dict:
         settings = self.s.get(cnf={
             **self.call_cnf, **{'command': self.CMDS['search']}
         })[self.API_KEY_1][self.API_KEY]

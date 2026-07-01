@@ -777,8 +777,8 @@ class BaseLogic:
         return self.simplify_existing
 
     def _call_search(self, match_fields: list = None) -> (list, dict):
-        if hasattr(self, '_search_call'):
-            return self._search_call()
+        if hasattr(self, 'search_call'):
+            return self.search_call()
 
         return self.search(match_fields)
 

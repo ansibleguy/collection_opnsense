@@ -696,9 +696,6 @@ def run_module():
         elif hasattr(target_inst, 'search_call'):
             target_func = getattr(target_inst, 'search_call')
 
-        elif hasattr(target_inst, '_search_call'):
-            target_func = getattr(target_inst, '_search_call')
-
         else:
             target_func = getattr(target_inst.b, 'get_existing')
 

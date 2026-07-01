@@ -150,7 +150,7 @@ class Server(BaseModule):
 
         self.m.fail_json(f"Provided VIP '{self.p['vip']}' was not found! Existing ones: {existing_vips}")
 
-    def _search_call(self) -> list:
+    def search_call(self) -> list:
         raw = self.search()
         if len(raw) > 0:
             self.existing_vips = raw[list(raw.keys())[0]][self.FIELDS_TRANSLATE['vip']]

@@ -42,13 +42,13 @@ class Rule(BaseModule):
         self.exists = False
 
     def check(self):
-        self._search_call()
+        self.search_call()
         self.r['diff']['after'] = self.build_diff(data=self.p)
 
     def get_existing(self) -> list:
-        return self._search_call()
+        return self.search_call()
 
-    def _search_call(self) -> list:
+    def search_call(self) -> list:
         existing = self.s.post(cnf={
             **self.call_cnf,
             'command': self.CMDS['search'],

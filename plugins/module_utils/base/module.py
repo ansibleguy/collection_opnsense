@@ -49,17 +49,17 @@ class GeneralModule(BaseLogic):
 
     def _base_check(self):
         self._check_validators()
-        self.settings = self._search_call()
+        self.settings = self.search_call()
         self._build_diff()
 
     def check(self) -> None:
         self._base_check()
 
-    def _search_call(self) -> dict:
+    def search_call(self) -> dict:
         return self.simplify_existing(self.search())
 
     def get_existing(self) -> dict:
-        return self._search_call()
+        return self.search_call()
 
     def process(self) -> None:
         self._base_update()

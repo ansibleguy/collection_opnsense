@@ -60,7 +60,7 @@ class DnsOverTls(BaseModule):
 
         self._base_check()
 
-    def _search_call(self) -> list:
+    def search_call(self) -> list:
         dots = []
         raw = self.search()
 

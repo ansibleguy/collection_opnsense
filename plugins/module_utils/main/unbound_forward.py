@@ -51,7 +51,7 @@ class Forward(BaseModule):
         self.find(match_fields=['domain', 'target'])
         self._base_check()
 
-    def _search_call(self) -> list:
+    def search_call(self) -> list:
         fwds = []
         raw = self.search()
 

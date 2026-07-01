@@ -49,7 +49,7 @@ class Policy(BaseModule):
         self.ruleset_names = {}
 
     def check(self) -> None:
-        self._search_call()
+        self.search_call()
         if self.p['state'] == 'present' and not is_unset(self.p['rulesets']):
             if len(self.enabled_rulesets) == 0:
                 self._search_rulesets()
@@ -78,9 +78,9 @@ class Policy(BaseModule):
         self.r['diff']['after'] = self.build_diff(data=self.p)
 
     def get_existing(self) -> list:
-        return self._search_call()
+        return self.search_call()
 
-    def _search_call(self) -> list:
+    def search_call(self) -> list:
         # NOTE: workaround for issue with incomplete response-data from 'get' endpoint:
         #   https://github.com/opnsense/core/issues/7094
         existing = self.s.post(cnf={

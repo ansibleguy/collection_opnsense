@@ -114,7 +114,7 @@ class Record(BaseModule):
 
         self._base_check()
 
-    def _search_call(self) -> list:
+    def search_call(self) -> list:
         self.search_call_domains()
 
         existing = []

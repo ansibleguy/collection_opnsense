@@ -316,12 +316,12 @@ Optional
 
   This can be done either:
 
-  * Using the :code:`self.b.find_single_link` / :code:`self.b.find_multiple_links`
-  * Or manually inside the :code:`check`, :code:`get_existing` or :code:`_search_call` method
+  * Using the :code:`self.find_single_link` / :code:`self.find_multiple_links`
+  * Or manually inside the :code:`check`, :code:`get_existing` or :code:`search_call` method
 
   **Warning**: This can only be used if the endpoint has `the current/old API-behavior <https://github.com/O-X-L/ansible-opnsense/issues/51>`_.
 
-  If this is not possible we need to do it manually inside the :code:`get_existing` or :code:`_search_call` method. Per example see: :code:`bind_domain`
+  If this is not possible we need to do it manually inside the :code:`get_existing` or :code:`search_call` method. Per example see: :code:`bind_domain`
 
 * :code:`FIELDS_BOOL_INVERT`
 

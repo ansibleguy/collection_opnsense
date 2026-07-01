@@ -39,11 +39,11 @@ class Rule(BaseModule):
 
     def check(self) -> None:
         self.r['diff'] =  {'before': {}, 'after': {}}
-        self._search_call()
+        self.search_call()
         self.r['diff']['after'] = self.build_diff(data=self.p)
         self.r['changed'] = self.r['diff']['before'] != self.r['diff']['after']
 
-    def _search_call(self) -> list:
+    def search_call(self) -> list:
         existing = self.s.post(cnf={
             **self.call_cnf,
             'command': self.CMDS['search'],
