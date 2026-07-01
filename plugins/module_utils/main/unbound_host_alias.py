@@ -5,7 +5,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import is_unset
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Alias(BaseModule):
@@ -51,7 +51,7 @@ class Alias(BaseModule):
 
             validate_domain(module=self.m, domain=self.p['domain'])
 
-        self.b.find(match_fields=self.p['match_fields'])
+        self.find(match_fields=self.p['match_fields'])
 
         if self.p['state'] == 'present':
             self._find_target()

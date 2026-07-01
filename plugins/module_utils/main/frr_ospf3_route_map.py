@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class RouteMap(BaseModule):
@@ -55,7 +55,7 @@ class RouteMap(BaseModule):
         self._base_check()
 
         if self.p['state'] == 'present':
-            self.b.find_multiple_links(
+            self.find_multiple_links(
                 field='prefix_list',
                 existing=self.existing_prefixes,
             )
@@ -63,7 +63,7 @@ class RouteMap(BaseModule):
     def get_existing(self) -> list:
         existing = []
 
-        for entry in self.b.get_existing():
+        for entry in self._base_get_existing():
             if len(entry['prefix_list']) > 0:
                 _list = []
                 for pre in entry['prefix_list']:

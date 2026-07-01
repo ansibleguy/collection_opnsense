@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import \
     is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Key(BaseModule):
@@ -51,4 +51,4 @@ class Key(BaseModule):
                         'command': self.CMDS['gen'],
                     })['key']
 
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+            self.r['diff']['after'] = self.build_diff(data=self.p)

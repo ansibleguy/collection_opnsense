@@ -6,7 +6,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import
     is_unset
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_ip
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Pool(BaseModule):

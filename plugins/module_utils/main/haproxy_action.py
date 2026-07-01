@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class HaproxyAction(BaseModule):
@@ -142,47 +142,47 @@ class HaproxyAction(BaseModule):
         self._base_check()
         if self.p['state'] == 'present':
             if self.p.get('linked_acls'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='linked_acls',
                     existing=self.existing_acls,
                 )
             if self.p.get('use_backend'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='use_backend',
                     existing=self.existing_backends,
                 )
             if self.p.get('use_server'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='use_server',
                     existing=self.existing_servers,
                 )
             if self.p.get('http_request_lua'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='http_request_lua',
                     existing=self.existing_luas,
                 )
             if self.p.get('http_response_lua'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='http_response_lua',
                     existing=self.existing_luas,
                 )
             if self.p.get('tcp_request_content_lua'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='tcp_request_content_lua',
                     existing=self.existing_luas,
                 )
             if self.p.get('tcp_response_content_lua'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='tcp_response_content_lua',
                     existing=self.existing_luas,
                 )
             if self.p.get('map_use_backend_file'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='map_use_backend_file',
                     existing=self.existing_mapfiles,
                 )
             if self.p.get('map_use_backend_default'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='map_use_backend_default',
                     existing=self.existing_backends,
                 )

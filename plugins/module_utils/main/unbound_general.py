@@ -6,7 +6,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate im
     is_unset, is_ip6_network
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import GeneralModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import GeneralModule
 
 
 # Supported as of OPNsense 23.7

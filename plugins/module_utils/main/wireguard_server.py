@@ -5,7 +5,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_ip, is_ip_or_network, is_unset
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.wireguard_peer import Peer
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Server(BaseModule):
@@ -94,7 +94,7 @@ class Server(BaseModule):
             if not is_ip(dns):
                 self.m.fail_json(f"DNS-value '{dns}' is not a valid IP-address!")
 
-        self.b.find(match_fields=[self.FIELD_ID])
+        self.find(match_fields=[self.FIELD_ID])
         if self.exists:
             if is_unset(self.p['public_key']) or is_unset(self.p['private_key']):
                 self.p['public_key'] = self.server['public_key']
@@ -151,7 +151,7 @@ class Server(BaseModule):
         self.m.fail_json(f"Provided VIP '{self.p['vip']}' was not found! Existing ones: {existing_vips}")
 
     def _search_call(self) -> list:
-        raw = self.b.search()
+        raw = self.search()
         if len(raw) > 0:
             self.existing_vips = raw[list(raw.keys())[0]][self.FIELDS_TRANSLATE['vip']]
 

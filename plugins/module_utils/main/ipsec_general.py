@@ -2,7 +2,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import GeneralModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import GeneralModule
 
 
 class General(GeneralModule):
@@ -121,7 +121,7 @@ class General(GeneralModule):
 
     def check(self) -> None:
         self._base_check()
-        self.b.find_single_link(
+        self.find_single_link(
             field='local_group',
             existing=self.existing_groups,
             existing_field_id='value',

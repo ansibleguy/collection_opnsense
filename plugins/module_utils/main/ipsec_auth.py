@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.handler import \
     ModuleSoftError
 
@@ -82,7 +82,7 @@ class BaseAuth(BaseModule):
         self._base_check()
 
         if self.p['state'] == 'present':
-            self.b.find_single_link(
+            self.find_single_link(
                 field='connection',
                 existing=self.existing_conns,
                 existing_field_id='description',
@@ -104,7 +104,7 @@ class BaseAuth(BaseModule):
             self.p['authentication'] = 'psk'
             certs, pubkeys = self.p['certificates'], self.p['public_keys']
             self.p['certificates'], self.p['public_keys'] = [], []
-            self.b.create()
+            self._base_create()
 
             self.auth = {}
             self.existing_entries = None
@@ -116,10 +116,10 @@ class BaseAuth(BaseModule):
             self._base_check()
             self._find_links_pubkeys_certs()
 
-            self.b.update()
+            self._base_update()
 
         else:
-            self.b.create()
+            self._base_create()
 
     def _get_existing_pubkeys_certs(self, search: str, existing_target: str):
         for existing in [self.existing_local_auth, self.existing_remote_auth]:
@@ -134,7 +134,7 @@ class BaseAuth(BaseModule):
                 search='certs',
                 existing_target='existing_certs',
             )
-            self.b.find_multiple_links(
+            self.find_multiple_links(
                 existing_field_id='value',
                 field='certificates',
                 existing=self.existing_certs,
@@ -146,7 +146,7 @@ class BaseAuth(BaseModule):
                 search='pubkeys',
                 existing_target='existing_pubkeys',
             )
-            self.b.find_multiple_links(
+            self.find_multiple_links(
                 existing_field_id='value',
                 field='public_keys',
                 existing=self.existing_pubkeys,

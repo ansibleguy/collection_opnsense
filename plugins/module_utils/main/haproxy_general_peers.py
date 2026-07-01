@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import GeneralModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import GeneralModule
 
 
 class HaproxyGeneralPeers(GeneralModule):

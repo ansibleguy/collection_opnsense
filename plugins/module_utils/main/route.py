@@ -6,7 +6,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import
     simplify_translate
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Route(BaseModule):

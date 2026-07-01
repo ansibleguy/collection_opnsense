@@ -3,7 +3,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Redistribution(BaseModule):
@@ -86,7 +86,7 @@ class Redistribution(BaseModule):
     def get_existing(self) -> list:
         existing = []
 
-        for entry in self.b.get_existing():
+        for entry in self._base_get_existing():
             if entry['route_map'] not in [None, ''] and \
                     entry['route_map'] in self.existing_maps:
                 entry['route_map'] = self.existing_maps[entry['route_map']]['name']

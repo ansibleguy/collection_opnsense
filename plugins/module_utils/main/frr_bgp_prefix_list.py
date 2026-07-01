@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Prefix(BaseModule):
@@ -54,21 +54,3 @@ class Prefix(BaseModule):
                 )
 
         self._base_check(match_fields=self.FIELDS_MATCH)
-
-    def process(self) -> None:
-        self.b.process()
-
-    def get_existing(self) -> list:
-        return self.b.get_existing()
-
-    def create(self) -> None:
-        self.b.create()
-
-    def update(self) -> None:
-        self.b.update()
-
-    def delete(self) -> None:
-        self.b.delete()
-
-    def reload(self) -> None:
-        self.b.reload()

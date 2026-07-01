@@ -1,6 +1,6 @@
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class HaproxyBackend(BaseModule):
@@ -136,55 +136,55 @@ class HaproxyBackend(BaseModule):
         if self.p['state'] == 'present':
             # Validate linked servers
             if self.p.get('linked_servers'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='linked_servers',
                     existing=self.existing_servers,
                 )
             # Validate linked FCGIs
             if self.p.get('linked_fcgi'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='linked_fcgi',
                     existing=self.existing_fcgis,
                 )
             # Validate linked resolver
             if self.p.get('linked_resolver'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='linked_resolver',
                     existing=self.existing_resolvers,
                 )
             # Validate health check
             if self.p.get('health_check'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='health_check',
                     existing=self.existing_healthchecks,
                 )
             # Validate linked mailer
             if self.p.get('linked_mailer'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='linked_mailer',
                     existing=self.existing_mailers,
                 )
             # Validate basic auth users
             if self.p.get('basic_auth_users'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='basic_auth_users',
                     existing=self.existing_users,
                 )
             # Validate basic auth groups
             if self.p.get('basic_auth_groups'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='basic_auth_groups',
                     existing=self.existing_groups,
                 )
             # Validate linked actions
             if self.p.get('linked_actions'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='linked_actions',
                     existing=self.existing_actions,
                 )
             # Validate linked errorfiles
             if self.p.get('linked_errorfiles'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='linked_errorfiles',
                     existing=self.existing_errorfiles,
                 )

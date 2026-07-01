@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_ip, is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Service(BaseModule):
@@ -70,14 +70,14 @@ class Service(BaseModule):
                     f"The address value '{self.p['address']}' is not a valid IP!"
                 )
 
-        self.b.find(match_fields=[self.FIELD_ID])
+        self.find(match_fields=[self.FIELD_ID])
 
         if self.p['state'] == 'present':
-            self.b.find_multiple_links(
+            self.find_multiple_links(
                 field='tests',
                 existing=self.existing_tests,
             )
-            self.b.find_multiple_links(
+            self.find_multiple_links(
                 field='depends',
                 existing=self.existing_entries,
             )

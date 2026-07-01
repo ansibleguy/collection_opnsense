@@ -6,7 +6,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import
     get_key_by_value_from_selection, get_key_by_value_end_from_selection
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Client(BaseModule):
@@ -89,19 +89,19 @@ class Client(BaseModule):
 
         if not is_unset(self.p['ca']):
             self.p['ca'] = get_key_by_value_from_selection(
-                selection=self.b.raw['ca'],
+                selection=self.raw['ca'],
                 value=self.p['ca'],
             )
 
         if not is_unset(self.p['certificate']):
             self.p['certificate'] = get_key_by_value_from_selection(
-                selection=self.b.raw[self.FIELDS_TRANSLATE['certificate']],
+                selection=self.raw[self.FIELDS_TRANSLATE['certificate']],
                 value=self.p['certificate'],
             )
 
         if not is_unset(self.p['key']):
             self.p['key'] = get_key_by_value_end_from_selection(
-                selection=self.b.raw[self.FIELDS_TRANSLATE['key']],
+                selection=self.raw[self.FIELDS_TRANSLATE['key']],
                 value=self.p['key'],
             )
 
@@ -110,5 +110,5 @@ class Client(BaseModule):
                 self.r['diff']['before']['mode'] = self.r['diff']['before']['mode'].lower()
                 self.instance['mode'] = self.r['diff']['before']['mode']
 
-            self.r['diff']['after'] = self.b.build_diff(data=self.p)
+            self.r['diff']['after'] = self.build_diff(data=self.p)
             self.r['changed'] = self.r['diff']['before'] != self.r['diff']['after']

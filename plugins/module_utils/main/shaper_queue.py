@@ -2,7 +2,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Queue(BaseModule):
@@ -46,7 +46,7 @@ class Queue(BaseModule):
         self.existing_pipes = None
 
     def check(self) -> None:
-        self.b.find(match_fields=[self.FIELD_ID])
+        self.find(match_fields=[self.FIELD_ID])
 
         if self.p['state'] == 'present':
             if self.p['pipe'] in [None, '']:
@@ -60,7 +60,7 @@ class Queue(BaseModule):
                     self.p['weight'] = self.queue['weight']
 
         if self.p['state'] == 'present':
-            self.b.find_single_link(
+            self.find_single_link(
                 field='pipe',
                 existing=self.existing_pipes,
                 existing_field_id='description',
@@ -71,7 +71,7 @@ class Queue(BaseModule):
     def get_existing(self) -> list:
         existing = []
 
-        for entry in self.b.get_existing():
+        for entry in self._base_get_existing():
             entry['pipe'] = self.existing_pipes[entry['pipe']]['description']
             existing.append(entry)
 
@@ -81,4 +81,4 @@ class Queue(BaseModule):
         if self.p['reset']:
             self.API_CMD_REL = 'flushreload'
 
-        self.b.reload()
+        self._base_reload()

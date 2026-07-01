@@ -6,7 +6,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate im
     is_valid_domain
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Host(BaseModule):
@@ -57,7 +57,7 @@ class Host(BaseModule):
         self._base_check()
 
         if self.p['state'] == 'present':
-            self.b.find_single_link(
+            self.find_single_link(
                 field='set_tag',
                 existing=self.existing_tag,
                 existing_field_id='tag',

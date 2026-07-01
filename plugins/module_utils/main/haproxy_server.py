@@ -1,6 +1,6 @@
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class HaproxyServer(BaseModule):
@@ -82,7 +82,7 @@ class HaproxyServer(BaseModule):
         if self.p['state'] == 'present':
             # Validate linked resolver
             if self.p.get('linked_resolver'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='linked_resolver',
                     existing=self.existing_resolvers,
                 )

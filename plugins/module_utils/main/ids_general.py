@@ -2,7 +2,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import GeneralModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import GeneralModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import \
     get_selected, get_key_by_value_from_selection
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
@@ -99,7 +99,7 @@ class General(GeneralModule):
             **self.call_cnf, **{'command': self.CMDS['search']}
         })[self.API_KEY_1][self.API_KEY]
 
-        simple = self.b.simplify_existing(settings)
+        simple = self.simplify_existing(settings)
 
         try:
             # resolve schedule/cron name to uuid
@@ -124,8 +124,8 @@ class General(GeneralModule):
 
         return simple
 
-    def _build_request(self) -> dict:
-        raw_request = self.b.build_request(
+    def build_request(self) -> dict:
+        raw_request = self._base_build_request(
             ignore_fields=['profile', 'profile_toclient_groups', 'profile_toserver_groups']
         )
         raw_request[self.API_KEY]['detect'] = {

@@ -2,7 +2,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_unset, MATCH_UUID
 
@@ -47,7 +47,7 @@ class ManualSPD(BaseModule):
         self._base_check()
 
         if self.p['state'] == 'present' and not is_unset(self.p['connection_child']):
-            self.b.find_single_link(
+            self.find_single_link(
                 field='connection_child',
                 existing=self._search_connection_child(),
                 existing_field_id='value',

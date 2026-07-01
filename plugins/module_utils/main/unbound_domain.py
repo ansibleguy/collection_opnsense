@@ -6,7 +6,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate im
     validate_port, is_ip
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.unbound import \
     validate_domain
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Domain(BaseModule):

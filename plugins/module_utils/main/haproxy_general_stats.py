@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import GeneralModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import GeneralModule
 
 
 class HaproxyGeneralStats(GeneralModule):
@@ -54,12 +54,12 @@ class HaproxyGeneralStats(GeneralModule):
     def check(self) -> None:
         self._base_check()
 
-        self.b.find_multiple_links(
+        self.find_multiple_links(
             field='allowed_users',
             existing=self.existing_users,
             existing_field_id='name',
         )
-        self.b.find_multiple_links(
+        self.find_multiple_links(
             field='allowed_groups',
             existing=self.existing_groups,
             existing_field_id='name',

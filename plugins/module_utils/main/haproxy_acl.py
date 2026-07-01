@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import is_unset
 
 
@@ -105,19 +105,19 @@ class HaproxyAcl(BaseModule):
                 self.m.fail_json("You need to provide an 'expression' to create an ACL!")
 
             if self.p.get('allowed_users'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='allowed_users',
                     existing=self.existing_users,
                     existing_field_id='name',
                 )
             if self.p.get('allowed_groups'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='allowed_groups',
                     existing=self.existing_groups,
                     existing_field_id='name',
                 )
             if self.p.get('nbsrv_backend'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='nbsrv_backend',
                     existing=self.existing_backends,
                     existing_field_id='name',

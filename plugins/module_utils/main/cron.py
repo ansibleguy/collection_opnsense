@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import
     is_unset
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class CronJob(BaseModule):
@@ -42,7 +42,7 @@ class CronJob(BaseModule):
         if self.p['state'] == 'present' and is_unset(self.p['command']):
             self.m.fail_json("You need to provide a 'command' if you want to create a cron-job!")
 
-        self.b.find(match_fields=[self.FIELD_ID])
+        self.find(match_fields=[self.FIELD_ID])
 
         if self.p['state'] == 'present':
             if self.p['command'] is not None and len(self.available_commands) > 0 and \
@@ -61,7 +61,7 @@ class CronJob(BaseModule):
                     self.available_commands.append(cmd)
 
     def _simplify_existing(self, existing: dict) -> dict:
-        simple = self.b.simplify_existing(existing)
+        simple = self.simplify_existing(existing)
         simple.pop('origin')
         self._build_all_available_cmds(existing['command'])
         return simple

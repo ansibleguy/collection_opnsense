@@ -1,6 +1,6 @@
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class HaproxyFrontend(BaseModule):
@@ -142,37 +142,37 @@ class HaproxyFrontend(BaseModule):
         if self.p['state'] == 'present':
             # Validate default backend
             if self.p.get('default_backend'):
-                self.b.find_single_link(
+                self.find_single_link(
                     field='default_backend',
                     existing=self.existing_backends,
                 )
             # Validate linked actions
             if self.p.get('linked_actions'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='linked_actions',
                     existing=self.existing_actions,
                 )
             # Validate linked errorfiles
             if self.p.get('linked_errorfiles'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='linked_errorfiles',
                     existing=self.existing_errorfiles,
                 )
             # Validate basic auth users
             if self.p.get('basic_auth_users'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='basic_auth_users',
                     existing=self.existing_users,
                 )
             # Validate basic auth groups
             if self.p.get('basic_auth_groups'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='basic_auth_groups',
                     existing=self.existing_groups,
                 )
             # Validate linked CPU affinity rules
             if self.p.get('linked_cpu_affinity_rules'):
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='linked_cpu_affinity_rules',
                     existing=self.existing_cpus,
                 )

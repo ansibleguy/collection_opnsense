@@ -8,7 +8,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.alias impor
     validate_values, filter_builtin_alias, build_updatefreq
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import \
     get_simple_existing, simplify_translate, is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Alias(BaseModule):
@@ -74,7 +74,7 @@ class Alias(BaseModule):
                 f"must be shorter than {self.MAX_ALIAS_LEN} characters",
             )
 
-        self.b.find(match_fields=[self.FIELD_ID])
+        self.find(match_fields=[self.FIELD_ID])
 
         if self.p['state'] == 'present':
             validate_values(error_func=self._error, cnf=self.p, existing_entries=self.existing_entries)
@@ -108,7 +108,7 @@ class Alias(BaseModule):
     def update(self) -> None:
         # checking if alias changed
         if self.alias['type'] == self.p['type']:
-            self.b.update()
+            self._base_update()
 
         else:
             self.r['changed'] = True
@@ -119,7 +119,7 @@ class Alias(BaseModule):
             )
 
     def delete(self) -> None:
-        response = self.b.delete()
+        response = self._base_delete()
 
         if 'in_use' in response:
             self._error(
@@ -138,7 +138,7 @@ class Alias(BaseModule):
     def get_existing(self) -> list:
         return filter_builtin_alias(
             get_simple_existing(
-                entries=self.b.search(),
+                entries=self.search(),
                 simplify_func=self.simplify_existing,
             )
         )

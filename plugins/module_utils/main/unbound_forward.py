@@ -6,7 +6,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.unbound imp
     validate_domain
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_true, is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Forward(BaseModule):
@@ -48,12 +48,12 @@ class Forward(BaseModule):
         if not is_unset(self.p['domain']):
             validate_domain(module=self.m, domain=self.p['domain'])
 
-        self.b.find(match_fields=['domain', 'target'])
+        self.find(match_fields=['domain', 'target'])
         self._base_check()
 
     def _search_call(self) -> list:
         fwds = []
-        raw = self.b.search()
+        raw = self.search()
 
         if len(raw) > 0:
             for uuid, dot in raw.items():

@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_ip, is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Vxlan(BaseModule):
@@ -61,4 +61,4 @@ class Vxlan(BaseModule):
         self._base_check()
 
     def update(self) -> None:
-        self.b.update(enable_switch=False)
+        self._base_update(enable_switch=False)

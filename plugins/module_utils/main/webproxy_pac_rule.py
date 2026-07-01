@@ -2,7 +2,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import is_unset
 
 
@@ -44,14 +44,14 @@ class Rule(BaseModule):
                 'You need to provide at least one proxy and match to create a rule!'
             )
 
-        self.b.find(match_fields=[self.FIELD_ID])
+        self.find(match_fields=[self.FIELD_ID])
 
         if self.p['state'] == 'present':
-            self.b.find_multiple_links(
+            self.find_multiple_links(
                 field='matches',
                 existing=self.existing_matches,
             )
-            self.b.find_multiple_links(
+            self.find_multiple_links(
                 field='proxies',
                 existing=self.existing_proxies,
             )

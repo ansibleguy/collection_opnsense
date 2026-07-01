@@ -6,7 +6,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import
     get_selected
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_ip, is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Domain(BaseModule):
@@ -81,7 +81,7 @@ class Domain(BaseModule):
                 self.acls_needed = True
                 self._search_acls()
 
-        self.b.find(match_fields=[self.FIELD_ID])
+        self.find(match_fields=[self.FIELD_ID])
 
         if self.exists:
             if self.p['state'] != 'present':
@@ -99,11 +99,11 @@ class Domain(BaseModule):
 
         if self.p['state'] == 'present':
             if self.acls_needed:
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='query_acl',
                     existing=self.existing_acls,
                 )
-                self.b.find_multiple_links(
+                self.find_multiple_links(
                     field='transfer_acl',
                     existing=self.existing_acls,
                 )

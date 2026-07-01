@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class OneToOne(BaseModule):
@@ -54,6 +54,6 @@ class OneToOne(BaseModule):
                     "You need to provide an 'interface' to create a one-to-one"
                 )
 
-        self.b.find(match_fields=self.p['match_fields'])
+        self.find(match_fields=self.p['match_fields'])
 
         self._base_check()

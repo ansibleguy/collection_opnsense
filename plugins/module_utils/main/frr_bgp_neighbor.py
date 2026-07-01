@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_ip, is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Neighbor(BaseModule):
@@ -151,7 +151,7 @@ class Neighbor(BaseModule):
     def get_existing(self) -> list:
         existing = []
 
-        for entry in self.b.get_existing():
+        for entry in self._base_get_existing():
             if entry['prefix_list_in'] not in [None, ''] and \
                     entry['prefix_list_in'] in self.existing_prefixes:
                 entry['prefix_list_in'] = self.existing_prefixes[entry['prefix_list_in']]['name']

@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     validate_port_or_range
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Rule(BaseModule):
@@ -73,10 +73,10 @@ class Rule(BaseModule):
                     "create a shaper rule!"
                 )
 
-        self.b.find(match_fields=[self.FIELD_ID])
+        self.find(match_fields=[self.FIELD_ID])
 
         if self.p['state'] == 'present':
-            self.b.find_single_link(
+            self.find_single_link(
                 field='target_pipe',
                 existing=self.existing_pipes,
                 existing_field_id='description',
@@ -85,7 +85,7 @@ class Rule(BaseModule):
             )
 
             if not hasattr(self.p, 'target') or self.p['target'] is None:
-                self.b.find_single_link(
+                self.find_single_link(
                     field='target_queue',
                     existing=self.existing_queues,
                     existing_field_id='description',
@@ -98,7 +98,7 @@ class Rule(BaseModule):
     def get_existing(self) -> list:
         existing = []
 
-        for entry in self.b.get_existing():
+        for entry in self._base_get_existing():
             entry['target_pipe'], entry['target_queue'] = None, None
             target = entry['target']
 
@@ -118,4 +118,4 @@ class Rule(BaseModule):
         if self.p['reset']:
             self.API_CMD_REL = 'flushreload'
 
-        self.b.reload()
+        self._base_reload()

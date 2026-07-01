@@ -50,7 +50,8 @@ ignore=CVS
 # can't be used as an escape character.
 ignore-paths=.*_pytest.py,
              .*_testdata.py,
-             .*venv.*
+             .*venv.*,
+             \.venv.*
 
 # Files or directories matching the regular expression patterns are skipped.
 # The regex matches against base names, not paths. The default value ignores

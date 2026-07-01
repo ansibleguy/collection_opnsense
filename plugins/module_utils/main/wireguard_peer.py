@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_ip, is_ip_or_network, is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_valid_domain
 
@@ -88,7 +88,7 @@ class Peer(BaseModule):
                 f"nor a valid domain!"
             )
 
-        self.b.find(match_fields=[self.FIELD_ID])
+        self.find(match_fields=[self.FIELD_ID])
         if self.p['state'] == 'present' and not is_unset(self.p['servers']):
             self.p['servers'] = self._translate_servers(self.p['servers'])
 
@@ -96,7 +96,7 @@ class Peer(BaseModule):
             if link_servers:
                 self.peer['servers'] = self._translate_servers(self.r['diff']['before']['servers'])
 
-            self.r['diff']['before'] = self.b.build_diff(data=self.peer)
+            self.r['diff']['before'] = self.build_diff(data=self.peer)
 
         self._base_check()
 

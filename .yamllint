@@ -7,5 +7,7 @@ rules:
     allowed-values: ['true', 'false', 'yes', 'no']
     ignore:
       - .github/workflows/
+      - .venv/
+      - venv/
   line-length:
     max: 190

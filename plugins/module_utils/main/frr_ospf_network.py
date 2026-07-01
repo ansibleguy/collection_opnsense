@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_ip_or_network, is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Network(BaseModule):
@@ -62,11 +62,11 @@ class Network(BaseModule):
         self._base_check()
 
         if self.p['state'] == 'present':
-            self.b.find_single_link(
+            self.find_single_link(
                 field='prefix_list_in',
                 existing=self.existing_prefixes,
             )
-            self.b.find_single_link(
+            self.find_single_link(
                 field='prefix_list_out',
                 existing=self.existing_prefixes,
             )
@@ -74,7 +74,7 @@ class Network(BaseModule):
     def get_existing(self) -> list:
         existing = []
 
-        for entry in self.b.get_existing():
+        for entry in self._base_get_existing():
             if entry['prefix_list_in'] not in [None, ''] and \
                     entry['prefix_list_in'] in self.existing_prefixes:
                 entry['prefix_list_in'] = self.existing_prefixes[entry['prefix_list_in']]['name']

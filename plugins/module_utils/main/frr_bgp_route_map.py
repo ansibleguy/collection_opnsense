@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class RouteMap(BaseModule):
@@ -69,12 +69,12 @@ class RouteMap(BaseModule):
             self._find_links()
 
     def _find_links(self) -> None:
-        self.b.find_multiple_links(
+        self.find_multiple_links(
             field='as_path_list',
             existing=self.existing_paths,
             existing_field_id='description',
         )
-        self.b.find_multiple_links(
+        self.find_multiple_links(
             field='community_list',
             existing=self.existing_communities,
             existing_field_id='description',
@@ -113,7 +113,7 @@ class RouteMap(BaseModule):
     def get_existing(self) -> list:
         existing = []
 
-        for entry in self.b.get_existing():
+        for entry in self._base_get_existing():
             if len(entry['as_path_list']) > 0:
                 _list = []
                 for path in entry['as_path_list']:

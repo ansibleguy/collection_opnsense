@@ -6,7 +6,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate im
     is_unset
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.rule import \
     validate_values
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class SNat(BaseModule):
@@ -63,7 +63,7 @@ class SNat(BaseModule):
                 )
 
         self._build_log_name()
-        self.b.find(match_fields=self.p['match_fields'])
+        self.find(match_fields=self.p['match_fields'])
 
         if self.p['state'] == 'present':
             validate_values(module=self.m, cnf=self.p, error_func=self.m.fail_json, kind='nat')

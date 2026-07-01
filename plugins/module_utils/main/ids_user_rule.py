@@ -2,7 +2,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Rule(BaseModule):
@@ -43,7 +43,7 @@ class Rule(BaseModule):
 
     def check(self):
         self._search_call()
-        self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self.r['diff']['after'] = self.build_diff(data=self.p)
 
     def get_existing(self) -> list:
         return self._search_call()
@@ -60,7 +60,7 @@ class Rule(BaseModule):
                 if rule[self.FIELD_ID] == self.p[self.FIELD_ID]:
                     self.exists = True
                     self.call_cnf['params'] = [rule['uuid']]
-                    self.rule = self.b.simplify_existing(
+                    self.rule = self.simplify_existing(
                         self.s.get(cnf={
                             **self.call_cnf,
                             'command': self.CMDS['detail'],

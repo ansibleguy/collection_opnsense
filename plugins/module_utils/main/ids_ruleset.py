@@ -2,7 +2,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import \
     is_true, to_digit
 
@@ -45,7 +45,7 @@ class Ruleset(BaseModule):
                 f"Available ones are: '{self.existing_rulesets_desc}'"
             )
 
-        self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self.r['diff']['after'] = self.build_diff(data=self.p)
         self.r['changed'] = self.r['diff']['before'] != self.r['diff']['after']
 
     def process(self) -> None:

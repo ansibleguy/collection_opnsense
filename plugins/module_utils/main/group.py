@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import
     is_unset, get_key_by_value_from_selection
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Group(BaseModule):
@@ -43,15 +43,15 @@ class Group(BaseModule):
         if self.group['scope'] == 'system':
             self.m.fail_json(f"Not allowed to delete system group {self.group['name']}")
 
-        self.b.delete()
+        self._base_delete()
 
-    def _build_request(self) -> dict:
-        raw_request = self.b.build_request()
+    def build_request(self) -> dict:
+        raw_request = self._base_build_request()
 
         if not is_unset(self.p['member']):
             # translate user-names to user-id's
-            raw_request[self.API_KEY_PATH]['member'] = self.b.RESP_JOIN_CHAR.join([
-                get_key_by_value_from_selection(self.b.raw['member'], m)
+            raw_request[self.API_KEY_PATH]['member'] = self.RESP_JOIN_CHAR.join([
+                get_key_by_value_from_selection(self.raw['member'], m)
                 for m in self.p['member']
             ])
 

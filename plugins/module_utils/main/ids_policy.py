@@ -2,7 +2,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.ids_ruleset import Ruleset
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     is_unset, is_true, ensure_list
@@ -75,7 +75,7 @@ class Policy(BaseModule):
             ruleset_uuids.sort()
             self.p['rulesets'] = ruleset_uuids
 
-        self.r['diff']['after'] = self.b.build_diff(data=self.p)
+        self.r['diff']['after'] = self.build_diff(data=self.p)
 
     def get_existing(self) -> list:
         return self._search_call()
@@ -99,7 +99,7 @@ class Policy(BaseModule):
                         'command': self.CMDS['detail'],
                     })[self.API_KEY]
                     self.policy['rules'] = self._parse_rules(raw_policy)
-                    self.policy = self.b.simplify_existing(raw_policy)
+                    self.policy = self.simplify_existing(raw_policy)
                     self.enabled_rulesets = self._format_ruleset(raw_policy['rulesets'])
                     self.policy['uuid'] = policy['uuid']
                     if 'content' in self.policy:
@@ -126,8 +126,8 @@ class Policy(BaseModule):
 
         return parsed
 
-    def _build_request(self) -> dict:
-        raw_request = self.b.build_request(ignore_fields=['rules'])
+    def build_request(self) -> dict:
+        raw_request = self._base_build_request(ignore_fields=['rules'])
 
         # formatting dynamic rules
         # example: 'policy_content_affected_product: "affected_product.Adobe_Flash,affected_product.Adobe_Reader"'
@@ -135,10 +135,10 @@ class Policy(BaseModule):
         raw_request_content = []
         for key, values in self.p['rules'].items():
             fmt_values = [f'{key}.{value}' for value in ensure_list(values)]
-            raw_request_rules[f'policy_content_{key}'] = self.b.RESP_JOIN_CHAR.join(fmt_values)
+            raw_request_rules[f'policy_content_{key}'] = self.RESP_JOIN_CHAR.join(fmt_values)
             raw_request_content.extend(fmt_values)
 
-        raw_request[self.API_KEY]['content'] = self.b.RESP_JOIN_CHAR.join(raw_request_content)
+        raw_request[self.API_KEY]['content'] = self.RESP_JOIN_CHAR.join(raw_request_content)
 
         return {
             **raw_request,

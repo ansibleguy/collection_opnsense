@@ -2,7 +2,7 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Boot(BaseModule):
@@ -41,12 +41,12 @@ class Boot(BaseModule):
         self._base_check()
 
         if self.p['state'] == 'present':
-            self.b.find_single_link(
+            self.find_single_link(
                 field='interface',
                 existing=self.existing_interface,
                 existing_field_id='value',
             )
-            self.b.find_multiple_links(
+            self.find_multiple_links(
                 field='tag',
                 existing_field_id='tag',
                 existing=self.existing_tag,

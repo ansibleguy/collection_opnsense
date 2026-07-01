@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import \
     is_unset, get_key_by_value_beg_from_selection
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class Override(BaseModule):
@@ -62,7 +62,7 @@ class Override(BaseModule):
             servers = []
             for server in self.p['servers']:
                 servers.append(get_key_by_value_beg_from_selection(
-                    selection=self.b.raw['servers'],
+                    selection=self.raw['servers'],
                     value=server,
                 ))
 

@@ -4,7 +4,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import \
     is_unset
-from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 
 
 class DhcRelayRelay(BaseModule):
@@ -52,7 +52,7 @@ class DhcRelayRelay(BaseModule):
                     break
 
     def get_existing(self) -> list:
-        existing = self.b.get_existing()
+        existing = self._base_get_existing()
         for relay in existing:
             relay['destination'] = self.existing_destinations[relay['destination']]['name']
         return existing
