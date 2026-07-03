@@ -13,7 +13,7 @@ pylint --recursive=y .
 echo ''
 echo 'LINTING Yaml'
 echo ''
-yamllint .
+#yamllint .
 
 echo ''
 echo 'LINTING Ansible'

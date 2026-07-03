@@ -41,6 +41,23 @@ class SubnetV4(BaseModule):
         'gateway', 'routes', 'dns', 'domain', 'domain_search', 'ntp_servers', 'time_servers',
         'tftp_server', 'tftp_file', 'v6_only_preferred',
     ]
+    API_FIELDS_IGNORE = [
+        'option_data',
+        'option_data.boot_file_name',
+        'option_data.classless_static_route',
+        'option_data.domain_name',
+        'option_data.domain_name_servers',
+        'option_data.domain_search',
+        'option_data.ntp_servers',
+        'option_data.routers',
+        'option_data.static_routes',
+        'option_data.tftp_server_name',
+        'option_data.time_servers',
+        'option_data.v4_dnr',
+        'option_data.v6_only_preferred',
+        'option_data_autocollect',
+    ]
+    API_FIELDS_IGNORE.extend(API_FIELDS_OPTIONS)
     POOL_JOIN_CHAR = '\n'
     FIELDS_TRANSLATE_SPECIAL = {
         'dns': 'domain_name_servers',
@@ -57,12 +74,12 @@ class SubnetV4(BaseModule):
         self.subnet = {}
         self.existing_subnets = None
 
-    def _simplify_existing(self, entry: dict) -> dict:
+    def simplify_existing(self, entry: dict) -> dict:
         simple = simplify_translate(
             existing=entry,
             typing=self.FIELDS_TYPING,
             translate=self.FIELDS_TRANSLATE,
-            ignore=self.API_FIELDS_OPTIONS,
+            ignore=self.API_FIELDS_IGNORE,
         )
 
         simple['pools'] = simple['pools'].split(self.POOL_JOIN_CHAR)

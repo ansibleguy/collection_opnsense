@@ -60,7 +60,7 @@ class CronJob(BaseModule):
                 if cmd not in self.available_commands:
                     self.available_commands.append(cmd)
 
-    def _simplify_existing(self, existing: dict) -> dict:
+    def simplify_existing(self, existing: dict) -> dict:
         simple = self.simplify_existing(existing)
         simple.pop('origin')
         self._build_all_available_cmds(existing['command'])

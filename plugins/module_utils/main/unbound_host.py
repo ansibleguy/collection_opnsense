@@ -71,7 +71,7 @@ class Host(BaseModule):
 
         self._base_check()
 
-    def _simplify_existing(self, host: dict) -> dict:
+    def simplify_existing(self, host: dict) -> dict:
         simple = simplify_translate(
             existing=host,
             typing=self.FIELDS_TYPING,

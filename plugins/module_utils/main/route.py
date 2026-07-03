@@ -46,7 +46,7 @@ class Route(BaseModule):
 
         self._base_check()
 
-    def _simplify_existing(self, route: dict) -> dict:
+    def simplify_existing(self, route: dict) -> dict:
         simple = simplify_translate(
             existing=route,
             typing=self.FIELDS_TYPING,

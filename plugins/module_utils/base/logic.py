@@ -262,13 +262,13 @@ class BaseLogic:
             # use already existing filtering to get 'clean' int/.. values
             return get_simple_existing(
                 entries=self._call_search(),
-                simplify_func=self._call_simple(),
+                simplify_func=self.simplify_existing,
                 add_filter=self.build_diff,
             )
 
         return get_simple_existing(
             entries=self._call_search(),
-            simplify_func=self._call_simple(),
+            simplify_func=self.simplify_existing,
         )
 
     def find(self, match_fields: list) -> None:
@@ -280,7 +280,7 @@ class BaseLogic:
             existing_items=self.existing_entries,
             compare_item=self.p,
             match_fields=match_fields,
-            simplify_func=self._call_simple(),
+            simplify_func=self.simplify_existing,
         )
 
         if match is not None:
@@ -768,15 +768,6 @@ class BaseLogic:
     @property
     def field_pk(self) -> str:
         return getattr(self, self.ATTR_FIELD_PK, 'uuid')
-
-    def _call_simple(self) -> Callable:
-        if hasattr(self, 'simplify_existing'):
-            return self.simplify_existing
-
-        if hasattr(self, '_simplify_existing'):
-            return self._simplify_existing
-
-        return self.simplify_existing
 
     def _call_search(self, match_fields: list = None) -> (list, dict):
         if hasattr(self, 'search_call'):

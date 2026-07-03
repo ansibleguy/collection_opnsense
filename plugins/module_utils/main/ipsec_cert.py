@@ -68,7 +68,7 @@ class KeyPair(BaseModule):
 
         self._base_check()
 
-    def _simplify_existing(self, key: dict) -> dict:
+    def simplify_existing(self, key: dict) -> dict:
         # makes processing easier
         simple = {
             'type': get_selected(key['keyType']),

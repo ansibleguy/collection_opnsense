@@ -16,6 +16,21 @@
     HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'TEST_PROXY') | default('') }}"
 
   tasks:
+    # DEBUG:
+    # - oxlorg.opnsense.raw:
+    #     url: 'kea/dhcpv4/search_subnet'
+    #   register: info
+
+    # - ansible.builtin.debug:
+    #     var: info.response
+
+    # - oxlorg.opnsense.dhcp_subnet:
+    #     subnet: "{{ item }}"
+    #     state: 'absent'
+    #   loop:
+    #     - '192.168.88.0/24'
+    #     - '192.168.89.0/24'
+
     - name: Listing
       oxlorg.opnsense.list:
       register: opn_pre1
