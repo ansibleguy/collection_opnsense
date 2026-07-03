@@ -101,6 +101,7 @@ class HaproxyFrontend(BaseModule):
             'connection_behaviour'
         ],
     }
+    FIELDS_OPTIONAL = ['forwarded_header']
 
     EXIST_ATTR = 'haproxy_frontend'
 

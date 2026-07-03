@@ -141,7 +141,7 @@
         bind:
           - '127.0.0.1:8447'
         mode: 'http'
-        stickiness_pattern: 'src'
+        stickiness_pattern: 'sourceipv4'
         stickiness_data_types:
           - 'conn_rate'
           - 'http_req_rate'
