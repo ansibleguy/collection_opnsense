@@ -1,5 +1,4 @@
 # pylint: disable=R0912,R0915
-from functools import reduce
 from abc import abstractmethod
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import single_get, single_post, Session
