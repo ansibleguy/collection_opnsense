@@ -112,6 +112,7 @@ class HaproxyAction(BaseModule):
     FIELDS_TRANSLATE = {
         'kind': 'type',
     }
+    FIELDS_OPTIONAL = ['linked_acls', 'test_type']
 
     EXIST_ATTR = 'haproxy_action'
 
