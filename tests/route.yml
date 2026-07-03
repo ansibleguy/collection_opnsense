@@ -55,7 +55,6 @@
         description: 'ANSIBLE_TEST_2'
         network: '4.4.4.2/32'
         gateway: 'TEST-GW'
-        debug: true
       register: opn9
       when: not ansible_check_mode
 
