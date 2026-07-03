@@ -442,12 +442,12 @@ class MultiModule:
                 if not self.m.check_mode:
                     entry.delete()
 
-            elif entry.b.is_enabled():
+            elif entry.is_enabled():
                 entry_result['changed'] = True
                 self.r['diff']['before'][entry_name] = {'enabled': True}
                 self.r['diff']['after'][entry_name] = {'enabled': False}
                 if not self.m.check_mode:
-                    entry.b.disable()
+                    entry.disable()
 
             self._add_entry_result(entry, entry_result)
 
