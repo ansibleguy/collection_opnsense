@@ -22,7 +22,11 @@ Info
 
 This module can reload the running/loaded configuration for a specified part of the OPNsense system.
 
-Most modules of this collection will automatically reload its relevant running config on change - but you can speed up mass-management of items when disabling reload on single module-calls (*reload: false*), and do it afterward using THIS module.
+Like in the WebUI - you have to "Apply" your changes when you are done modifying.
+
+You can also do so by setting the :code:`reload: true` module-argument of the entries that you are modifying.
+
+But sometimes the apply/reload takes a long time (like unbound with DNS-Blocklists, IPS or GeoIP-Aliases) and thus it makes total sense to only trigger the reload once after all entries have been updated.
 
 Alternatively you can use the :ref:`oxlorg.opnsense.service <modules_service>` module with action :code:`reload` if you like it better.
 

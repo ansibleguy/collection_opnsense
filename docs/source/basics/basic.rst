@@ -35,3 +35,10 @@ Modules managing multiple entries
     "enabled","boolean","false","true","\-","En- or disable the entry"
     "state","string","false","present","\-","One of 'present', 'absent'. Add or remove the entry"
     "match_fields","list","false","depends on the module","\-","Some modules allow you to define the fields that are used to match configured entries with existing ones (Ansible vars/inventory <=> OPNsense). The Ansible-Module will only consider an entry to be the same when all fields in this list match."
+
+Reload / Apply
+**************
+
+Like in the WebUI - you have to "Apply" your changes when you are done modifying.
+
+For more info see: :ref:`oxlorg.opnsense.reload <modules_reload>`
