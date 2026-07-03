@@ -383,32 +383,21 @@ class BaseLogic:
     def _base_update_enabled(self) -> None:
         existing = getattr(self, self.EXIST_ATTR)
 
-        if 'enabled' in existing and 'enabled' in self.p:
-            if existing['enabled'] != self.p['enabled']:
-                _bool_invert_fields = []
-                enable = self.p['enabled']
-                invert = False
+        if 'enabled' not in existing or 'enabled' not in self.p or existing['enabled'] == self.p['enabled']:
+            return
 
-                if hasattr(self, self.ATTR_BOOL_INVERT):
-                    _bool_invert_fields = getattr(self, self.ATTR_BOOL_INVERT)
+        should_be_enabled = self.p['enabled']
+        invert = False
 
-                if 'enabled' in _bool_invert_fields:
-                    invert = True
-                    enable = not enable
+        if 'enabled' in getattr(self, self.ATTR_BOOL_INVERT, []):
+            invert = True
+            should_be_enabled = not should_be_enabled
 
-                if enable:
-                    if hasattr(self, 'enable'):
-                        self.enable()
+        if should_be_enabled:
+            self.enable(invert=invert)
 
-                    else:
-                        self.enable(invert=invert)
-
-                else:
-                    if hasattr(self, 'disable'):
-                        self.disable()
-
-                    else:
-                        self.disable(invert=invert)
+        else:
+            self.disable(invert=invert)
 
     def _base_delete(self) -> dict:
         self.r['changed'] = True
@@ -466,6 +455,7 @@ class BaseLogic:
         })
 
     def is_enabled(self, invert: bool = False) -> bool:
+        # if the translated entry from the OPNsense-API is enabled
         is_enabled = getattr(self, self.EXIST_ATTR)['enabled']
 
         if invert:
