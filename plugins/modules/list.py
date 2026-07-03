@@ -14,6 +14,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.handler impor
 
 try:
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.defaults.main import OPN_MOD_ARGS
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.translate import SimplifyTranslate
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -689,17 +690,20 @@ def run_module():
         if target_inst is None:
             target_inst = Target_Obj(module=module, result=result)
 
-        if hasattr(target_inst, 'get_existing'):
-            # has additional filtering
-            target_func = getattr(target_inst, 'get_existing')
-
-        elif hasattr(target_inst, 'search_call'):
+        if hasattr(target_inst, 'search_call'):
             target_func = getattr(target_inst, 'search_call')
 
         else:
-            target_func = getattr(target_inst.b, 'get_existing')
+            target_func = getattr(target_inst, 'get_existing')
 
-        result['data'] = target_func()
+        data = target_func()
+
+        if isinstance(data, list):
+            for entry in data:
+                if SimplifyTranslate.FLAG_PROCESSED in entry:
+                    entry.pop(SimplifyTranslate.FLAG_PROCESSED)
+
+        result['data'] = data
 
         if hasattr(target_inst, 's'):
             target_inst.s.close()
