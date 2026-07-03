@@ -61,7 +61,7 @@ class CronJob(BaseModule):
                     self.available_commands.append(cmd)
 
     def simplify_existing(self, existing: dict) -> dict:
-        simple = self.simplify_existing(existing)
+        simple = self._base_simplify_existing(existing)
         simple.pop('origin')
         self._build_all_available_cmds(existing['command'])
         return simple

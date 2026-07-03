@@ -745,6 +745,9 @@ class BaseLogic:
                 self.e = _existing
 
     def simplify_existing(self, existing: dict) -> dict:
+        return self._base_simplify_existing(existing)
+
+    def _base_simplify_existing(self, existing: dict) -> dict:
         translate = getattr(self, self.ATTR_TRANSLATE, {})
         typing = getattr(self, self.ATTR_TYPING, {})
         bool_invert = getattr(self, self.ATTR_BOOL_INVERT, [])
