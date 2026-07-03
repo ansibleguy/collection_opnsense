@@ -47,6 +47,9 @@ RULE_DEFAULTS = {
     'debug': False,
     'icmp_type': [],
     'icmpv6_type': [],
+    'divert_to': '',
+    'shaper1': '',
+    'shaper2': '',
 }
 
 RULE_MOD_ARG_ALIASES = {
@@ -263,6 +266,9 @@ RULE_MOD_ARGS = dict(
         ],
         description='If protocol is ICMPv6 you can specify the types'
     ),
+    divert_to=dict(type='str', required=False, description='Target to divert the traffic to'),
+    shaper1=dict(type='str', required=False, description='Traffic Shaper to apply'),
+    shaper2=dict(type='str', required=False, description='Traffic Shaper to apply'),
     **STATE_MOD_ARG,
     **RULE_MATCH_FIELDS_ARG,
 )
