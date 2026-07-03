@@ -330,9 +330,12 @@ class BaseLogic:
                     if field in self.p[self.PARAM_MATCH_FIELDS]:
                         continue
 
-                if hasattr(self, self.ATTR_FIELD_ID):
-                    if field == getattr(self, self.ATTR_FIELD_ID):
-                        continue
+                if field == getattr(self, self.ATTR_FIELD_ID, None):
+                    continue
+
+                if field in getattr(self, self.ATTR_OPTIONAL, []) and field not in self.e:
+                    # OPNsense API may conditionally omit some fields from API-responses :(
+                    continue
 
                 try:
                     if self.p[field] is None:

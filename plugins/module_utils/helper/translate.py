@@ -205,10 +205,6 @@ def get_simple_existing(
     return simple_entries
 
 
-class TranslationError(Exception):
-    pass
-
-
 class SimplifyTranslate:
     """
         Maps and converts OPNsense API response data into the canonical format used by Ansible.
@@ -239,7 +235,7 @@ class SimplifyTranslate:
             self._apply_field_value_mapping(translated)
             return translated
 
-        except (TranslationError, KeyError) as err:
+        except KeyError as err:
             exit_bug(
                 f"Failed to translate API entry to Ansible entry! Maybe the API changed lately? "
                 f"Failed field: {err} | "
