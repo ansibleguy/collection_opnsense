@@ -60,6 +60,7 @@
       failed_when: >
         opn2.failed or
         opn2.changed
+      when: not ansible_check_mode
 
     - name: Revoking - does not exist
       oxlorg.opnsense.privilege:
@@ -71,6 +72,7 @@
       failed_when: >
         opn3.failed or
         opn3.changed
+      when: not ansible_check_mode
 
     - name: Revoking 1
       oxlorg.opnsense.privilege:
@@ -82,6 +84,7 @@
       failed_when: >
         opn4.failed or
         not opn4.changed
+      when: not ansible_check_mode
 
     - name: Revoking 1 - nothing changed
       oxlorg.opnsense.privilege:
@@ -93,6 +96,7 @@
       failed_when: >
         opn5.failed or
         opn5.changed
+      when: not ansible_check_mode
 
     - name: Granting 2
       oxlorg.opnsense.privilege:
@@ -121,6 +125,7 @@
       failed_when: >
         opn7.failed or
         opn7.changed
+      when: not ansible_check_mode
 
     - name: Cleanup Dummy User
       oxlorg.opnsense.user:
@@ -129,7 +134,7 @@
       loop:
         - ANSIBLE_TEST_1_1
         - ANSIBLE_TEST_1_2
-      diff: false
+      when: not ansible_check_mode
 
     - name: Adding Dummy Group
       oxlorg.opnsense.group:
@@ -138,4 +143,4 @@
       loop:
         - ANSIBLE_TEST_1_1
         - ANSIBLE_TEST_1_2
-      diff: false
+      when: not ansible_check_mode
