@@ -1,5 +1,4 @@
 # pylint: disable=R0912,R0915
-from typing import Callable
 from functools import reduce
 from abc import abstractmethod
 

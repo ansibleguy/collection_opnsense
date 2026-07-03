@@ -1,5 +1,4 @@
 from typing import Callable
-from functools import reduce
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.handler import \
     exit_bug
@@ -206,93 +205,148 @@ def get_simple_existing(
     return simple_entries
 
 
-# pylint: disable=R0912,R0914,R0915
-def simplify_translate(
-        existing: dict, translate: dict = None, typing: dict = None,
-        bool_invert: list = None, ignore: list = None, value_map: dict = None,
-) -> dict:
+class TranslationError(Exception):
+    pass
+
+
+class SimplifyTranslate:
     """
         Maps and converts OPNsense API response data into the canonical format used by Ansible.
         Handles field translation, type casting (bool/int/list), and value mapping.
     """
-    simple = {}
-    if translate is None:
-        translate = {}
 
-    if typing is None:
-        typing = {}
+    def __init__(
+            self,
+            translate: dict[str, str] = None,
+            typing: dict[str, str] = None,
+            value_map: dict = None,
+            bool_invert: list[str] = None,
+            ignore: list[str] = None,
+            optional: list[str] = None,
+    ):
+        self._fields_translate: dict[str, str] = translate if translate is not None else {}
+        self._fields_typing: dict[str, str] = typing if typing is not None else {}
+        self._value_map: dict = value_map if value_map is not None else {}
+        self._fields_bool_invert: list[str] = bool_invert if bool_invert is not None else []
+        self._fields_ignore: list[str] = ignore if ignore is not None else []
+        self._fields_optional: list[str] = optional if optional is not None else []
 
-    if bool_invert is None:
-        bool_invert = []
+    def translate(self, existing: dict) -> dict:
+        translated = {}
+        try:
+            translated = self._translate_field_names_api_to_ansible(existing)
+            self._ensure_field_value_typing(translated)
+            self._apply_field_value_mapping(translated)
+            return translated
 
-    if ignore is None:
-        ignore = []
+        except (TranslationError, KeyError) as err:
+            exit_bug(
+                f"Failed to translate API entry to Ansible entry! Maybe the API changed lately? "
+                f"Failed field: {err} | "
+                f"API entry: '{existing}' '{translated}'"
+            )
+            return {}
 
-    if value_map is None:
-        value_map = {}
+    def _translate_field_names_api_to_ansible(self, existing: dict) -> dict:
+        # Ensure the fields returned by the OPNsense API are translated to the ones used by the ansible-modules
+        # This allows us to have clean module-argument
+        translated = {}
 
-    try:
-        # translate api-fields to ansible-fields
-        for k, v in translate.items():
-            if v in existing:
-                simple[k] = existing[v]
-            elif isinstance(v, tuple):
-                simple[k] = reduce(lambda e, i: e[i], v, existing)
+        for field_ansible, field_api in self._fields_translate.items():
+            if isinstance(field_api, tuple):
+                # handle nested fields
+                current_level = existing.copy()
+                skip_optional = False
 
-        translate_fields = translate.values()
-        for k in existing:
-            if k not in translate_fields and k not in ignore:
-                simple[k] = existing[k]
+                for key in field_api:
+                    if field_ansible in self._fields_optional and key not in current_level:
+                        # OPNsense API may conditionally omit some fields from API-responses :(
+                        skip_optional = True
+                        break
 
-        # correct value types to match (for diff-checks)
-        for t, fields in typing.items():
-            for f in fields:
-                if f in ignore:
+                    current_level = current_level[key]
+
+                if skip_optional:
                     continue
 
-                if t == 'bool':
-                    simple[f] = is_true(simple[f])
+                translated[field_ansible] = current_level
 
-                elif t == 'int':
-                    simple[f] = format_int(simple[f])
+            else:
+                if field_ansible in self._fields_optional and field_api not in existing:
+                    # OPNsense API may conditionally omit some fields from API-responses :(
+                    continue
 
-                elif t == 'list':
-                    simple[f] = get_selected_list(data=simple[f], remove_empty=True, get_value=False)
+                translated[field_ansible] = existing[field_api]
 
-                elif t == 'list_value':
-                    simple[f] = get_selected_list(data=simple[f], remove_empty=True, get_value=True)
+        # passthrough for fields that do not have to be translated and should not be "ignored"
+        translate_fields = self._fields_translate.values()
+        for field in existing:
+            if field not in translate_fields and field not in self._fields_ignore:
+                translated[field] = existing[field]
 
-                elif t == 'select':
-                    simple[f] = get_selected(simple[f])
+        return translated
 
-                elif t == 'select_opt_list':
-                    simple[f] = get_selected_opt_list(simple[f])
+    def _ensure_field_value_typing(self, existing: dict):
+        for type_key, fields in self._fields_typing.items():
+            for f in fields:
+                if f in self._fields_ignore:
+                    continue
 
-                elif t == 'select_opt_list_idx':
-                    simple[f] = get_selected_opt_list_idx(simple[f])
+                if f in self._fields_optional and f not in existing:
+                    # OPNsense API may conditionally omit some fields from API-responses :(
+                    continue
 
-        for f, vmap in value_map.items():
+                if type_key == 'bool':
+                    existing[f] = is_true(existing[f])
+
+                elif type_key == 'int':
+                    existing[f] = format_int(existing[f])
+
+                elif type_key == 'list':
+                    existing[f] = get_selected_list(data=existing[f], remove_empty=True, get_value=False)
+
+                elif type_key == 'list_value':
+                    existing[f] = get_selected_list(data=existing[f], remove_empty=True, get_value=True)
+
+                elif type_key == 'select':
+                    existing[f] = get_selected(existing[f])
+
+                elif type_key == 'select_opt_list':
+                    existing[f] = get_selected_opt_list(existing[f])
+
+                elif type_key == 'select_opt_list_idx':
+                    existing[f] = get_selected_opt_list_idx(existing[f])
+
+        for f, value in existing.items():
+            if isinstance(value, str) and value.isnumeric():
+                existing[f] = int(existing[f])
+
+            elif isinstance(value, bool) and f in self._fields_bool_invert:
+                existing[f] = not existing[f]
+
+    def _apply_field_value_mapping(self, existing: dict):
+        for f, vmap in self._value_map.items():
             try:
                 for pretty_value, opn_value in vmap.items():
-                    if simple[f] == opn_value:
-                        simple[f] = pretty_value
+                    if existing[f] == opn_value:
+                        existing[f] = pretty_value
                         break
 
             except KeyError:
                 pass
 
-        for k, v in simple.items():
-            if isinstance(v, str) and v.isnumeric():
-                simple[k] = int(simple[k])
 
-            elif isinstance(v, bool) and k in bool_invert:
-                simple[k] = not simple[k]
-
-    except KeyError as err:
-        exit_bug(
-            f"Failed to translate API entry to Ansible entry! Maybe the API changed lately? "
-            f"Failed field: {err} | "
-            f"API entry: '{existing}' '{simple}'"
-        )
-
-    return simple
+def simplify_translate(
+        existing: dict, translate: dict = None, typing: dict = None,
+        bool_invert: list = None, ignore: list = None, value_map: dict = None, optional: list = None,
+) -> dict:
+    # Wrapper-function for SimplifyTranslate
+    s = SimplifyTranslate(
+        translate=translate,
+        typing=typing,
+        value_map=value_map,
+        bool_invert=bool_invert,
+        ignore=ignore,
+        optional=optional,
+    )
+    return s.translate(existing)
