@@ -27,46 +27,48 @@ def get_matching(
         :return: The matching item dictionary, or None if no match is found.
     """
     matching = None
+    if len(existing_items) == 0:
+        return matching
 
-    if len(existing_items) > 0:
-        if isinstance(existing_items, dict):
-            _existing_items_list = []
-            for uuid, existing in existing_items.items():
-                existing['uuid'] = uuid
-                _existing_items_list.append(existing)
+    existing_items_list = []
+    if isinstance(existing_items, list):
+        existing_items_list = existing_items
 
-            existing_items = _existing_items_list
+    elif isinstance(existing_items, dict):
+        for uuid, existing in existing_items.items():
+            existing['uuid'] = uuid
+            existing_items_list.append(existing)
 
-        for existing in existing_items:
-            _matching = []
+    for existing in existing_items_list:
+        _matching = []
 
-            if simplify_func is not None:
-                existing = simplify_func(existing)
+        if simplify_func is not None:
+            existing = simplify_func(existing)
 
-            try:
-                if not isinstance(match_fields, list):
-                    exit_bug(f"Failed because 'match_fields' are not a list: {type(match_fields)} '{match_fields}'")
+        try:
+            if not isinstance(match_fields, list):
+                exit_bug(f"Failed because 'match_fields' are not a list: {type(match_fields)} '{match_fields}'")
 
-                for field in match_fields:
-                    _matching.append(str(existing[field]) == str(compare_item[field]))
+            for field in match_fields:
+                _matching.append(str(existing[field]) == str(compare_item[field]))
 
-                    if module.params['debug']:
-                        if existing[field] != compare_item[field]:
-                            module.warn(
-                                f"NOT MATCHING: "
-                                f"'{existing[field]}' != '{compare_item[field]}'"
-                            )
+                if module.params['debug']:
+                    if existing[field] != compare_item[field]:
+                        module.warn(
+                            f"NOT MATCHING: "
+                            f"'{existing[field]}' != '{compare_item[field]}'"
+                        )
 
-            except KeyError as error:
-                exit_bug(
-                    "Failed to match existing entry with provided one: "
-                    f"{existing} <=> {_sanitize_module_args(compare_item)}; "
-                    f"Error while comparing: {error}"
-                )
+        except KeyError as error:
+            exit_bug(
+                "Failed to match existing entry with provided one: "
+                f"{existing} <=> {_sanitize_module_args(compare_item)}; "
+                f"Error while comparing: {error}"
+            )
 
-            if all(_matching):
-                matching = existing
-                break
+        if all(_matching):
+            matching = existing
+            break
 
     return matching
 
@@ -81,25 +83,27 @@ def get_multiple_matching(
         :return: A list of matching item dictionaries.
     """
     matching = []
+    if len(existing_items) == 0:
+        return matching
 
-    if len(existing_items) > 0:
-        if isinstance(existing_items, dict):
-            _existing_items_list = []
-            for uuid, existing in existing_items.items():
-                existing['uuid'] = uuid
-                _existing_items_list.append(existing)
+    existing_items_list = []
+    if isinstance(existing_items, list):
+        existing_items_list = existing_items
 
-            existing_items = _existing_items_list
+    elif isinstance(existing_items, dict):
+        for uuid, existing in existing_items.items():
+            existing['uuid'] = uuid
+            existing_items_list.append(existing)
 
-        for existing in existing_items:
-            _simple = get_matching(
-                module=module,
-                existing_items=[existing],
-                compare_item=compare_item,
-                match_fields=match_fields,
-                simplify_func=simplify_func,
-            )
-            if _simple is not None:
-                matching.append(_simple)
+    for existing in existing_items_list:
+        _simple = get_matching(
+            module=module,
+            existing_items=[existing],
+            compare_item=compare_item,
+            match_fields=match_fields,
+            simplify_func=simplify_func,
+        )
+        if _simple is not None:
+            matching.append(_simple)
 
     return matching

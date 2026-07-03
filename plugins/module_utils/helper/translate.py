@@ -193,14 +193,14 @@ def get_simple_existing(
         entries = _entries
 
     for entry in entries:
-        if simplify_func is not None and add_filter is not None:
-            simple_entries.append(add_filter(simplify_func(entry)))
+        entry_processed = entry.copy()
+        if simplify_func is not None:
+            entry_processed = simplify_func(entry_processed)
 
-        elif simplify_func is not None:
-            simple_entries.append(simplify_func(entry))
+        if add_filter is not None:
+            entry_processed = add_filter(entry_processed)
 
-        else:
-            simple_entries.append(entries)
+        simple_entries.append(entry_processed)
 
     return simple_entries
 
@@ -210,6 +210,8 @@ class SimplifyTranslate:
         Maps and converts OPNsense API response data into the canonical format used by Ansible.
         Handles field translation, type casting (bool/int/list), and value mapping.
     """
+
+    FLAG_PROCESSED = '__ansible_translated'
 
     def __init__(
             self,
@@ -230,12 +232,19 @@ class SimplifyTranslate:
     def translate(self, existing: dict) -> dict:
         translated = {}
         try:
+            if self.FLAG_PROCESSED in existing:
+                # already translated
+                return existing
+
             translated = self._translate_field_names_api_to_ansible(existing)
             self._ensure_field_value_typing(translated)
             self._apply_field_value_mapping(translated)
+            translated[self.FLAG_PROCESSED] = ''
             return translated
 
         except KeyError as err:
+            # DEBUG:
+            # raise err
             exit_bug(
                 f"Failed to translate API entry to Ansible entry! Maybe the API changed lately? "
                 f"Failed field: {err} | "

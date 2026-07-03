@@ -9,6 +9,7 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import Se
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.defaults.main import \
     OPN_MOD_ARGS, RELOAD_MOD_ARG_DEF_FALSE
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.translate import SimplifyTranslate
 
 
 def build_multi_mod_args(
@@ -197,6 +198,7 @@ class MultiModuleCallbacks(ABC):
                 except KeyError:
                     continue
 
+            entry_cnf[SimplifyTranslate.FLAG_PROCESSED] = ''
             cache['main'].append(entry_cnf)
 
         return cache
