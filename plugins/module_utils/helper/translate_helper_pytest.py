@@ -47,8 +47,16 @@ def test_get_simple_existing():
 # todo: add more tests for simplify_translate and other essential functions to catch regressions
 
 @pytest.mark.parametrize('existing, translate, simple', [
-    ({'api_name': 'value'}, {'ansible_name': 'api_name'}, {'ansible_name': 'value'}),
-    ({'api': {'name': 'value'}}, {'ansible_name': ('api', 'name')}, {'ansible_name': 'value'}),
+    (
+            {'api_name': 'value'},
+            {'ansible_name': 'api_name'},
+            {'ansible_name': 'value', '__ansible_translated': ''},
+    ),
+    (
+            {'api': {'name': 'value'}},
+            {'ansible_name': ('api', 'name')},
+            {'ansible_name': 'value', '__ansible_translated': ''},
+    ),
 ])
 def test_simplify_translate(existing, translate, simple):
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.translate import simplify_translate

@@ -574,96 +574,86 @@ class BaseLogic:
         return diff
 
     def _base_build_request(self, ignore_fields: list = None) -> dict:
-        # todo: separate into multiple methods & add unit-tests
+        ignore_fields = ignore_fields or []
         request = {}
-
-        if ignore_fields is None:
-            ignore_fields = []
 
         if is_unset(self.e):
             self.e = getattr(self, self.EXIST_ATTR)
 
         _translate_fields = getattr(self, self.ATTR_TRANSLATE, {})
-        _translate_values = getattr(self, self.ATTR_VALUE_MAP, {})
-        _bool_invert_fields = getattr(self, self.ATTR_BOOL_INVERT, [])
 
         for field in self.FIELDS_ALL:
             if field in ignore_fields:
                 continue
 
-            opn_field = field
-            if field in _translate_fields:
-                opn_field = _translate_fields[field]
+            opn_field = _translate_fields.get(field, field)
+            raw_data = self._build_request_extract_raw_data(field)
+            formatted_data = self._build_request_format_data(field, raw_data)
+            self._build_request_handle_field_name_translation(request, opn_field, formatted_data)
 
-            if isinstance(opn_field, tuple) and len(opn_field) > 1:
-                value = request.pop(opn_field)
+        return self._build_request_wrap_payload(request)
 
-                # dynamically build the nested structure
-                current_level = request
-                for key in opn_field[:-1]:
-                    if key not in current_level:
-                        current_level[key] = {}
+    def _build_request_extract_raw_data(self, field: str):
+        """Retrieves the raw data for a given field from priority sources."""
+        if field in getattr(self, 'p', {}):
+            return self.p[field]
 
-                    current_level = current_level[key]
+        if field in self.e:
+            return self.e[field]
 
-                current_level[opn_field[-1]] = value
+        return ''
 
-            elif isinstance(opn_field, list) and len(opn_field) > 0:
-                opn_field = opn_field[0]
+    def _build_request_format_data(self, field: str, opn_data):
+        """Handles value translation, boolean inversion, list joining, and null checks."""
+        _translate_values = getattr(self, self.ATTR_VALUE_MAP, {})
+        _bool_invert_fields = getattr(self, self.ATTR_BOOL_INVERT, [])
 
-            if field in self.p:
-                opn_data = self.p[field]
+        # Value Translation
+        if field in _translate_values and opn_data in _translate_values[field]:
+            opn_data = _translate_values[field][opn_data]
 
-            elif field in self.e:
-                opn_data = self.e[field]
+        # Type-specific formatting
+        if isinstance(opn_data, bool):
+            if field in _bool_invert_fields:
+                opn_data = not opn_data
 
-            else:
-                opn_data = ''
+            return to_digit(opn_data)
 
-            if field in _translate_values:
-                try:
-                    opn_data = _translate_values[field][opn_data]
+        if isinstance(opn_data, list):
+            join_char = getattr(self, self.ATTR_JOIN_CHAR, self.RESP_JOIN_CHAR)
+            return join_char.join(opn_data)
 
-                except KeyError:
-                    pass
+        if opn_data is None:
+            return ''
 
-            if isinstance(opn_data, bool):
-                if field in _bool_invert_fields:
-                    opn_data = not opn_data
+        return opn_data
 
-                request[opn_field] = to_digit(opn_data)
+    @staticmethod
+    def _build_request_handle_field_name_translation(request: dict, opn_field, value):
+        """Safely assigns a value to a flat key, nested tuple path, or list fallback."""
+        if isinstance(opn_field, tuple) and len(opn_field) > 0:
+            current_level = request
+            for key in opn_field[:-1]:
+                current_level = current_level.setdefault(key, {})
 
-            elif isinstance(opn_data, list):
-                join_char = self.RESP_JOIN_CHAR
+            current_level[opn_field[-1]] = value
 
-                if hasattr(self, self.ATTR_JOIN_CHAR):
-                    join_char = getattr(self, self.ATTR_JOIN_CHAR)
+        elif isinstance(opn_field, list) and len(opn_field) > 0:
+            request[opn_field[0]] = value
 
-                request[opn_field] = join_char.join(opn_data)
+        else:
+            request[opn_field] = value
 
-            elif opn_data is None:
-                request[opn_field] = ''
-
-            else:
-                request[opn_field] = opn_data
-
-        payload = request
-
+    def _build_request_wrap_payload(self, payload: dict) -> dict:
+        """Wraps the fully built request dictionary in the required outer AK paths."""
         if hasattr(self, self.ATTR_AK_PATH_REQ):
             ak_path = getattr(self, self.ATTR_AK_PATH_REQ).split(self.ATTR_AK_PATH_SPLIT_CHAR)
-            ak_path.reverse()
-
-            for k in ak_path:
+            for k in reversed(ak_path):
                 payload = {k: payload}
 
         elif hasattr(self, self.ATTR_AK_PATH):
-            # request only needs the last key
             ak_path = getattr(self, self.ATTR_AK_PATH)
-            attr_ak = ak_path
-
-            if ak_path.find('.') != -1:
-                attr_ak = ak_path.rsplit(self.ATTR_AK_PATH_SPLIT_CHAR, 1)[1]
-
+            attr_ak = ak_path.rsplit(self.ATTR_AK_PATH_SPLIT_CHAR, 1)[1] if '.' in ak_path else ak_path
             payload = {attr_ak: payload}
 
         return payload
