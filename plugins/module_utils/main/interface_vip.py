@@ -18,11 +18,12 @@ class Vip(BaseModule):
     API_MOD = 'interfaces'
     API_CONT = 'vip_settings'
     FIELDS_CHANGE = [
-        'address', 'mode', 'expand', 'bind', 'gateway', 'password', 'vhid',
+        'address', 'mode', 'bind', 'gateway', 'password', 'vhid',
         'advertising_base', 'advertising_skew', 'description', 'interface',
         'peer', 'peer6',
     ]
-    FIELDS_ALL = FIELDS_CHANGE
+    FIELDS_ALL = ['expand']
+    FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'address': ['network', 'address'],
         # 'network': 'subnet',
@@ -86,7 +87,5 @@ class Vip(BaseModule):
             entry.pop('subnet')
             entry.pop('subnet_bits')
             existing.append(entry)
-            for field in self.FIELDS_BOOL_INVERT:
-                entry[field] = not entry[field]
 
         return existing
