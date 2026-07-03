@@ -39,6 +39,7 @@ class Peer(BaseModule):
         'list': ['allowed_ips', 'servers'],
         'int': ['port', 'keepalive'],
     }
+    FIELDS_OPTIONAL = ['keepalive']
     FIELDS_DIFF_NO_LOG = ['psk']
     INT_VALIDATIONS = {
         'keepalive': {'min': 1, 'max': 86400},

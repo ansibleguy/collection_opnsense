@@ -72,6 +72,7 @@ class Rule(BaseModule):
         'list': ['interface', 'tcp_flags', 'tcp_flags_clear', 'icmp_type', 'icmpv6_type'],
         'int': ['sequence', 'state_timeout'],
     }
+    FIELDS_OPTIONAL = ['icmp_type']
     EXIST_ATTR = 'rule'
     TIMEOUT = 60.0  # urltable etc reload
     INT_VALIDATIONS = {

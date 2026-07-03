@@ -50,6 +50,7 @@ class Gw(BaseModule):
         ],
         'select': ['interface', 'ip_protocol'],
     }
+    FIELDS_OPTIONAL = ['far_gw']
     INT_VALIDATIONS = {
         'priority': {'min': 0, 'max': 255},
         'weight': {'min': 1, 'max': 5},

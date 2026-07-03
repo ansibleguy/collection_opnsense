@@ -23,6 +23,7 @@ class BaseLogic:
     ATTR_GET_DETAIL_ALL = 'SEARCH_DETAIL_ALL'
     ATTR_AK_PATH_SPLIT_CHAR = '.'
     ATTR_BOOL_INVERT = 'FIELDS_BOOL_INVERT'
+    ATTR_OPTIONAL = 'FIELDS_OPTIONAL'
     ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
     ATTR_DIFF_EXCL = 'FIELDS_DIFF_EXCLUDE'
     ATTR_DIFF_NO_LOG = 'FIELDS_DIFF_NO_LOG'
@@ -744,14 +745,16 @@ class BaseLogic:
         translate = getattr(self, self.ATTR_TRANSLATE, {})
         typing = getattr(self, self.ATTR_TYPING, {})
         bool_invert = getattr(self, self.ATTR_BOOL_INVERT, [])
+        optional = getattr(self, self.ATTR_OPTIONAL, [])
         value_map = getattr(self, self.ATTR_VALUE_MAP_RCV, getattr(self, self.ATTR_VALUE_MAP, {}))
 
         return simplify_translate(
             existing=existing,
             typing=typing,
             translate=translate,
-            bool_invert=bool_invert,
             value_map=value_map,
+            bool_invert=bool_invert,
+            optional=optional,
         )
 
     @property

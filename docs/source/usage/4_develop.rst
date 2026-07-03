@@ -323,6 +323,14 @@ Optional
 
   If this is not possible we need to do it manually inside the :code:`get_existing` or :code:`search_call` method. Per example see: :code:`bind_domain`
 
+* :code:`FIELDS_OPTIONAL`
+
+  Sometimes the OPNsense API will conditionally omit some fields from responses.
+
+  We cannot simply treat all fields as optional, as this would possibly lead to system-breaking bugs if the OPNsense-API changes via an version-update.
+
+  Thus we can define this module-specific list of fields that are allowed to be missing.
+
 * :code:`FIELDS_BOOL_INVERT`
 
   Boolean fields that should be inverted.
