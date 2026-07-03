@@ -28,9 +28,17 @@ except MODULE_EXCEPTIONS:
 def run_module():
     module_args = dict(
         address=dict(
-            type='str', required=True, aliases=['addr', 'ip', 'network', 'net'],
-            description='Provide an address and subnet to use. (e.g 192.168.0.1/24)',
+            type='str', required=True, aliases=['addr', 'ip', 'net', 'network'],
+            description='Provide an IP-address to use.',
         ),
+        # network=dict(
+        #     type='str', required=False, aliases=['net'],
+        #     description='Provide the network-subnet to use.',
+        # ),
+        # network_cidr=dict(
+        #     type='int', required=False, aliases=['cidr'],
+        #     description='Provide the network-subnet-cidr to use.',
+        # ),
         interface=dict(
             type='str', required=True, aliases=['port', 'int', 'if'],
             description='Existing interface - you must provide the network '

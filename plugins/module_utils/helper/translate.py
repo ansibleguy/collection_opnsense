@@ -276,6 +276,18 @@ class SimplifyTranslate:
 
                 translated[field_ansible] = current_level
 
+            elif isinstance(field_api, list):
+                # for edge-cases where the get and set API has different field-names for the same "value" :'(
+                found = False
+                for field_api_option in field_api:
+                    if field_api_option in existing:
+                        translated[field_ansible] = existing[field_api_option]
+                        found = True
+                        break
+
+                if not found:
+                    raise KeyError(field_api)
+
             else:
                 if field_ansible in self._fields_optional and field_api not in existing:
                     # OPNsense API may conditionally omit some fields from API-responses :(

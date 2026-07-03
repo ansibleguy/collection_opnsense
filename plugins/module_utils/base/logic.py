@@ -574,10 +574,8 @@ class BaseLogic:
         return diff
 
     def _base_build_request(self, ignore_fields: list = None) -> dict:
+        # todo: separate into multiple methods & add unit-tests
         request = {}
-        _translate_fields = {}
-        _translate_values = {}
-        _bool_invert_fields = []
 
         if ignore_fields is None:
             ignore_fields = []
@@ -585,14 +583,9 @@ class BaseLogic:
         if is_unset(self.e):
             self.e = getattr(self, self.EXIST_ATTR)
 
-        if hasattr(self, self.ATTR_TRANSLATE):
-            _translate_fields = getattr(self, self.ATTR_TRANSLATE)
-
-        if hasattr(self, self.ATTR_VALUE_MAP):
-            _translate_values = getattr(self, self.ATTR_VALUE_MAP)
-
-        if hasattr(self, self.ATTR_BOOL_INVERT):
-            _bool_invert_fields = getattr(self, self.ATTR_BOOL_INVERT)
+        _translate_fields = getattr(self, self.ATTR_TRANSLATE, {})
+        _translate_values = getattr(self, self.ATTR_VALUE_MAP, {})
+        _bool_invert_fields = getattr(self, self.ATTR_BOOL_INVERT, [])
 
         for field in self.FIELDS_ALL:
             if field in ignore_fields:
@@ -601,6 +594,22 @@ class BaseLogic:
             opn_field = field
             if field in _translate_fields:
                 opn_field = _translate_fields[field]
+
+            if isinstance(opn_field, tuple) and len(opn_field) > 1:
+                value = request.pop(opn_field)
+
+                # dynamically build the nested structure
+                current_level = request
+                for key in opn_field[:-1]:
+                    if key not in current_level:
+                        current_level[key] = {}
+
+                    current_level = current_level[key]
+
+                current_level[opn_field[-1]] = value
+
+            elif isinstance(opn_field, list) and len(opn_field) > 0:
+                opn_field = opn_field[0]
 
             if field in self.p:
                 opn_data = self.p[field]
@@ -637,10 +646,6 @@ class BaseLogic:
 
             else:
                 request[opn_field] = opn_data
-
-            if isinstance(opn_field, tuple):
-                hreqest = reduce(lambda r, i: r.setdefault(i, {}), opn_field[:-1], request)
-                hreqest[opn_field[-1]] = request.pop(opn_field)
 
         payload = request
 
