@@ -8,7 +8,7 @@ HAProxy traffic control modules
 
 **STATE**: unstable
 
-**COMPATIBILITY**: OPNsense 24.1+
+**COMPATIBILITY**: OPNsense 26.1+
 
 **TESTS**:
 `ACL <https://github.com/O-X-L/ansible_opnsense/blob/latest/tests/haproxy_acl.yml>`_ |
@@ -130,19 +130,25 @@ Manages HAProxy Actions that execute when ACL conditions are met.
 
     "name","string","true","\-","\-","Name to identify this rule"
     "description","string","false","\-","\-","Description for this rule"
-    "test_type","string","false","\-","\-","Condition test type. Choose how to test the condition. IF [default] tests if condition is true, UNLESS tests if condition is false"
+    "test_type","string","false","if","\-","Condition test type. Choose how to test the condition. IF [default] tests if condition is true, UNLESS tests if condition is false"
     "linked_acls","list","false","\-","\-","Associated ACL conditions. Select one or more conditions to be used for this rule"
-    "operator","string","false","\-","\-","Logical operator for multiple ACLs. Choose a logical operator to combine conditions: AND [default] or OR"
-    "type","string","false","\-","\-","HAProxy action type. Select HAProxy action type to execute when condition matches. Options: use_backend, use_server, map_use_backend, fcgi_pass_header, fcgi_set_param, http-request_allow, http-request_deny, http-request_tarpit, http-request_auth, http-request_redirect, http-request_lua, http-request_use-service, http-request_add-header, http-request_set-header, http-request_del-header, http-request_replace-header, http-request_replace-value, http-request_set-path, http-request_set-var, http-response_allow, http-response_deny, http-response_lua, http-response_add-header, http-response_set-header, http-response_del-header, http-response_replace-header, http-response_replace-value, http-response_set-status, http-response_set-var, monitor_fail, tcp-request_connection_accept, tcp-request_connection_reject, tcp-request_content_accept, tcp-request_content_reject, tcp-request_content_lua, tcp-request_content_use-service, tcp-request_inspect-delay, tcp-response_content_accept, tcp-response_content_close, tcp-response_content_reject, tcp-response_content_lua, tcp-response_inspect-delay, custom"
+    "operator","string","false","and","\-","Logical operator for multiple ACLs. Choose a logical operator to combine conditions: AND [default] or OR"
+    "kind","string","true","\-","type","HAProxy action type. Options: compression, fcgi_pass_header, fcgi_set_param, http-after-response, http-request, http-response, map_data_use_backend, map_use_backend, monitor_fail, tcp-request, tcp-response, use_backend, use_server, custom"
     "use_backend","string","false","\-","\-","Backend pool selection. HAProxy will use this backend pool if the condition evaluates to true"
-    "use_server","string","false","\-","\-","Specific server selection. HAProxy will use this server instead of other servers that are specified in the Backend Pool"
-    "custom_rule","string","false","\-","\-","Custom HAProxy rule. Custom rule (option pass-through)"
+    "use_server","string","false","\-","\-","Specific server selection. HAProxy will use this server instead of other servers in the Backend Pool"
+    "custom_rule","string","false","\-","custom","Custom rule (option pass-through)"
     "fcgi_pass_header","string","false","\-","\-","FastCGI pass-header"
     "fcgi_set_param","string","false","\-","\-","FastCGI set-param"
+    "monitor_fail_uri","string","false","\-","\-","Monitor fail URI"
+    "http_after_response_action","string","false","\-","\-","HTTP after response action type (e.g., add-header, allow, set-var, etc.)"
+    "http_after_response_option","string","false","\-","\-","HTTP after response option parameters"
+    "http_request_action","string","false","\-","\-","HTTP request action type (e.g., allow, deny, redirect, set-header, lua, etc.)"
+    "http_request_option","string","false","\-","\-","HTTP request option parameters"
     "http_request_auth","string","false","\-","\-","HTTP request auth realm"
+    "http_request_deny_status","integer","false","\-","\-","HTTP request deny status code (100-999)"
     "http_request_redirect","string","false","\-","\-","HTTP request redirect location"
-    "http_request_lua","string","false","\-","\-","HTTP request lua action"
-    "http_request_use_service","string","false","\-","\-","HTTP request lua service"
+    "http_request_lua","string","false","\-","\-","HTTP request lua script name"
+    "http_request_use_service","string","false","\-","\-","HTTP request lua service name"
     "http_request_add_header_name","string","false","\-","\-","HTTP request header name to add"
     "http_request_add_header_content","string","false","\-","\-","HTTP request header content to add"
     "http_request_set_header_name","string","false","\-","\-","HTTP request header name to set"
@@ -153,10 +159,12 @@ Manages HAProxy Actions that execute when ACL conditions are met.
     "http_request_replace_value_name","string","false","\-","\-","HTTP request value name to replace"
     "http_request_replace_value_regex","string","false","\-","\-","HTTP request value regex to replace"
     "http_request_set_path","string","false","\-","\-","HTTP request set-path value"
-    "http_request_set_var_scope","string","false","\-","\-","HTTP request variable scope. Variable scope: proc (whole process), sess (whole session), txn (transaction), req (request only), res (response only)"
+    "http_request_set_var_scope","string","false","txn","\-","HTTP request variable scope. Variable scope: proc, sess, txn, req, res"
     "http_request_set_var_name","string","false","\-","\-","HTTP request set-var name"
     "http_request_set_var_expr","string","false","\-","\-","HTTP request set-var expression"
-    "http_response_lua","string","false","\-","\-","HTTP response lua script"
+    "http_response_action","string","false","\-","\-","HTTP response action type (e.g., allow, set-header, lua, etc.)"
+    "http_response_option","string","false","\-","\-","HTTP response option parameters"
+    "http_response_lua","string","false","\-","\-","HTTP response lua script name"
     "http_response_add_header_name","string","false","\-","\-","HTTP response header name to add"
     "http_response_add_header_content","string","false","\-","\-","HTTP response header content to add"
     "http_response_set_header_name","string","false","\-","\-","HTTP response header name to set"
@@ -166,19 +174,39 @@ Manages HAProxy Actions that execute when ACL conditions are met.
     "http_response_replace_header_regex","string","false","\-","\-","HTTP response header regex to replace"
     "http_response_replace_value_name","string","false","\-","\-","HTTP response value name to replace"
     "http_response_replace_value_regex","string","false","\-","\-","HTTP response value regex to replace"
-    "http_response_set_status_code","integer","false","\-","\-","HTTP response status code. HTTP response status code (100-999)"
+    "http_response_set_status_code","integer","false","\-","\-","HTTP response status code (100-999)"
     "http_response_set_status_reason","string","false","\-","\-","HTTP response status reason"
-    "http_response_set_var_scope","string","false","\-","\-","HTTP response variable scope. Variable scope: proc (whole process), sess (whole session), txn (transaction), req (request only), res (response only)"
+    "http_response_set_var_scope","string","false","txn","\-","HTTP response variable scope. Variable scope: proc, sess, txn, req, res"
     "http_response_set_var_name","string","false","\-","\-","HTTP response set-var name"
     "http_response_set_var_expr","string","false","\-","\-","HTTP response set-var expression"
+    "tcp_request_action","string","false","\-","\-","TCP request action type (e.g., connection_accept, content_accept, etc.)"
+    "tcp_request_option","string","false","\-","\-","TCP request option parameters"
     "tcp_request_content_lua","string","false","\-","\-","TCP request content lua script"
     "tcp_request_content_use_service","string","false","\-","\-","TCP request content use-service"
     "tcp_request_inspect_delay","string","false","\-","\-","TCP request inspect-delay"
+    "tcp_response_action","string","false","\-","\-","TCP response action type"
+    "tcp_response_option","string","false","\-","\-","TCP response option parameters"
     "tcp_response_content_lua","string","false","\-","\-","TCP response content lua script"
     "tcp_response_inspect_delay","string","false","\-","\-","TCP response inspect-delay"
-    "monitor_fail_uri","string","false","\-","\-","Monitor fail URI"
-    "map_use_backend_file","string","false","\-","\-","Map file for backend selection"
-    "map_use_backend_default","string","false","\-","\-","Default backend for map-based selection"
+    "map_data_use_backend_file","string","false","\-","\-","Map file for data backend selection"
+    "map_data_use_backend_default","string","false","\-","\-","Default backend for map-data selection"
+    "map_data_use_backend_input","string","false","\-","\-","Input value for map-data backend lookup"
+    "map_use_backend_file","string","false","\-","\-","Map file for backend domain selection"
+    "map_use_backend_default","string","false","\-","\-","Default backend for map-based domain selection"
+    "compression_algo_res","string","false","gzip","\-","Compression algorithm for responses (gzip, deflate, raw-deflate)"
+    "compression_algo_req","string","false","gzip","\-","Compression algorithm for requests (gzip, deflate, raw-deflate)"
+    "compression_mime_res","list","false","\-","\-","List of valid response MIME types (e.g., text/html)"
+    "compression_mime_req","list","false","\-","\-","List of valid request MIME types"
+    "compression_offloading","boolean","false","false","\-","Enable compression offloading"
+    "compression_minsize_res","integer","false","1500","\-","Minimum response payload size for compression"
+    "compression_minsize_req","integer","false","1500","\-","Minimum request payload size for compression"
+    "compression_direction","string","false","response","\-","Compression direction (response, request, both)"
+    "gpc_number","integer","false","\-","\-","General Purpose Counter number (0-99)"
+    "gpt_number","integer","false","\-","\-","General Purpose Track number (0-99)"
+    "sc_number","integer","false","\-","\-","Stick Counter number (0-99)"
+    "mapfile","string","false","\-","\-","Reference mapfile"
+    "map_default","string","false","\-","\-","Default value for map"
+    "sample_fetch","string","false","\-","\-","Sample fetch expression"
 
 Examples
 --------
@@ -191,6 +219,7 @@ Examples
         description: 'Allow API access'
         test_type: 'if'
         linked_acls: ['acl_api_domain']
-        type: 'http-request_allow'
+        kind: 'http-request'
+        http_request_action: 'allow'
 
 See also: :ref:`modules_haproxy <modules_haproxy>` and :ref:`troubleshooting <modules_haproxy_troubleshooting>`

@@ -24,95 +24,88 @@ class HaproxyAction(BaseModule):
         'test_type': 'testType',
         'linked_acls': 'linkedAcls',
         'custom_rule': 'custom',
+        'kind': 'type',
     }
 
     FIELDS_CHANGE = list(FIELDS_TRANSLATE.keys()) + [
         'name', 'description', 'operator', 'kind',
-        'use_backend', 'use_server', 'fcgi_pass_header', 'fcgi_set_param',
-        'http_request_auth', 'http_request_redirect', 'http_request_lua',
-        'http_request_use_service', 'http_request_add_header_name',
-        'http_request_add_header_content', 'http_request_set_header_name',
-        'http_request_set_header_content', 'http_request_del_header_name',
-        'http_request_replace_header_name', 'http_request_replace_header_regex',
-        'http_request_replace_value_name', 'http_request_replace_value_regex',
-        'http_request_set_path', 'http_request_set_var_scope',
-        'http_request_set_var_name', 'http_request_set_var_expr',
-        'http_response_lua', 'http_response_add_header_name',
-        'http_response_add_header_content', 'http_response_set_header_name',
-        'http_response_set_header_content', 'http_response_del_header_name',
-        'http_response_replace_header_name', 'http_response_replace_header_regex',
-        'http_response_replace_value_name', 'http_response_replace_value_regex',
-        'http_response_set_status_code', 'http_response_set_status_reason',
-        'http_response_set_var_scope', 'http_response_set_var_name',
-        'http_response_set_var_expr', 'monitor_fail_uri',
-        'tcp_request_content_lua', 'tcp_request_content_use_service',
-        'tcp_request_inspect_delay', 'tcp_response_content_lua',
-        'tcp_response_inspect_delay',
-        'map_use_backend_file', 'map_use_backend_default'
+        'use_backend', 'use_server', 'fcgi_pass_header', 'fcgi_set_param', 'monitor_fail_uri',
+        'http_after_response_action', 'http_after_response_option',
+        'http_request_action', 'http_request_option', 'http_request_auth', 'http_request_deny_status',
+        'http_request_redirect', 'http_request_lua', 'http_request_use_service',
+        'http_request_add_header_name', 'http_request_add_header_content',
+        'http_request_set_header_name', 'http_request_set_header_content',
+        'http_request_del_header_name', 'http_request_replace_header_name',
+        'http_request_replace_header_regex', 'http_request_replace_value_name',
+        'http_request_replace_value_regex', 'http_request_set_path',
+        'http_request_set_var_scope', 'http_request_set_var_name', 'http_request_set_var_expr',
+        'http_response_action', 'http_response_option', 'http_response_lua',
+        'http_response_add_header_name', 'http_response_add_header_content',
+        'http_response_set_header_name', 'http_response_set_header_content',
+        'http_response_del_header_name', 'http_response_replace_header_name',
+        'http_response_replace_header_regex', 'http_response_replace_value_name',
+        'http_response_replace_value_regex', 'http_response_set_status_code',
+        'http_response_set_status_reason', 'http_response_set_var_scope',
+        'http_response_set_var_name', 'http_response_set_var_expr',
+        'tcp_request_action', 'tcp_request_option', 'tcp_request_content_lua',
+        'tcp_request_content_use_service', 'tcp_request_inspect_delay',
+        'tcp_response_action', 'tcp_response_option', 'tcp_response_content_lua',
+        'tcp_response_inspect_delay', 'map_data_use_backend_file',
+        'map_data_use_backend_default', 'map_data_use_backend_input',
+        'map_use_backend_file', 'map_use_backend_default',
+        'compression_algo_res', 'compression_algo_req', 'compression_mime_res',
+        'compression_mime_req', 'compression_offloading', 'compression_minsize_res',
+        'compression_minsize_req', 'compression_direction',
+        'gpc_number', 'gpt_number', 'sc_number', 'mapfile', 'map_default', 'sample_fetch'
     ]
     FIELDS_ALL = FIELDS_CHANGE
 
     FIELDS_TYPING = {
         "str": [
-            "name",
-            "description",
-            "fcgi_pass_header",
-            "fcgi_set_param",
-            "http_request_auth",
-            "http_request_redirect",
-            "http_request_use_service",
-            "http_request_add_header_name",
-            "http_request_add_header_content",
-            "http_request_set_header_name",
-            "http_request_set_header_content",
-            "http_request_del_header_name",
-            "http_request_replace_header_name",
-            "http_request_replace_header_regex",
-            "http_request_replace_value_name",
-            "http_request_replace_value_regex",
-            "http_request_set_path",
-            "http_request_set_var_name",
-            "http_request_set_var_expr",
-            "http_response_add_header_name",
-            "http_response_add_header_content",
-            "http_response_set_header_name",
-            "http_response_set_header_content",
-            "http_response_del_header_name",
-            "http_response_replace_header_name",
-            "http_response_replace_header_regex",
-            "http_response_replace_value_name",
-            "http_response_replace_value_regex",
-            "http_response_set_status_reason",
-            "http_response_set_var_name",
-            "http_response_set_var_expr",
-            "monitor_fail_uri",
-            "tcp_request_content_use_service",
-            "tcp_request_inspect_delay",
-            "tcp_response_inspect_delay",
-            "custom_rule",
+            "name", "description", "fcgi_pass_header", "fcgi_set_param",
+            "monitor_fail_uri", "http_after_response_option", "http_request_option",
+            "http_request_auth", "http_request_redirect", "http_request_use_service",
+            "http_request_add_header_name", "http_request_add_header_content",
+            "http_request_set_header_name", "http_request_set_header_content",
+            "http_request_del_header_name", "http_request_replace_header_name",
+            "http_request_replace_header_regex", "http_request_replace_value_name",
+            "http_request_replace_value_regex", "http_request_set_path",
+            "http_request_set_var_name", "http_request_set_var_expr", "http_response_option",
+            "http_response_add_header_name", "http_response_add_header_content",
+            "http_response_set_header_name", "http_response_set_header_content",
+            "http_response_del_header_name", "http_response_replace_header_name",
+            "http_response_replace_header_regex", "http_response_replace_value_name",
+            "http_response_replace_value_regex", "http_response_set_status_reason",
+            "http_response_set_var_name", "http_response_set_var_expr", "tcp_request_option",
+            "tcp_request_content_use_service", "tcp_request_inspect_delay",
+            "tcp_response_option", "tcp_response_inspect_delay", "custom_rule",
+            "map_data_use_backend_input", "map_default", "sample_fetch",
         ],
-        "int": ["http_response_set_status_code"],
-        "list": ["linked_acls"],
+        "int": [
+            "http_request_deny_status", "http_response_set_status_code",
+            "compression_minsize_res", "compression_minsize_req", "gpc_number",
+            "gpt_number", "sc_number"
+        ],
+        "bool": [
+            "compression_offloading"
+        ],
+        "list": [
+            "linked_acls", "compression_mime_res", "compression_mime_req"
+        ],
         "select": [
-            "test_type",
-            "operator",
-            "kind",
-            "http_request_set_var_scope",
-            "http_response_set_var_scope",
-            "use_backend",
-            "use_server",
-            "http_request_lua",
-            "http_response_lua",
-            "tcp_request_content_lua",
-            "tcp_response_content_lua",
-            "map_use_backend_file",
-            "map_use_backend_default",
+            "test_type", "operator", "kind", "use_backend", "use_server",
+            "http_after_response_action", "http_request_action", "http_response_action",
+            "tcp_request_action", "tcp_response_action", "http_request_set_var_scope",
+            "http_response_set_var_scope", "http_request_lua", "http_response_lua",
+            "tcp_request_content_lua", "tcp_response_content_lua", "map_use_backend_file",
+            "map_use_backend_default", "map_data_use_backend_file", "map_data_use_backend_default",
+            "mapfile", "compression_algo_res", "compression_algo_req", "compression_direction",
         ],
     }
     FIELDS_TRANSLATE = {
         'kind': 'type',
     }
-    FIELDS_OPTIONAL = ['linked_acls', 'test_type']
+    FIELDS_OPTIONAL = ['linked_acls', 'test_type', 'custom_rule']
 
     EXIST_ATTR = 'haproxy_action'
 
@@ -143,47 +136,20 @@ class HaproxyAction(BaseModule):
         self._base_check()
         if self.p['state'] == 'present':
             if self.p.get('linked_acls'):
-                self.find_multiple_links(
-                    field='linked_acls',
-                    existing=self.existing_acls,
-                )
-            if self.p.get('use_backend'):
-                self.find_single_link(
-                    field='use_backend',
-                    existing=self.existing_backends,
-                )
+                self.find_multiple_links(field='linked_acls', existing=self.existing_acls)
+
+            for bkd in ['use_backend', 'map_use_backend_default', 'map_data_use_backend_default']:
+                if self.p.get(bkd):
+                    self.find_single_link(field=bkd, existing=self.existing_backends)
+
+            for mfile in ['map_use_backend_file', 'map_data_use_backend_file', 'mapfile']:
+                if self.p.get(mfile):
+                    self.find_single_link(field=mfile, existing=self.existing_mapfiles)
+
             if self.p.get('use_server'):
-                self.find_single_link(
-                    field='use_server',
-                    existing=self.existing_servers,
-                )
-            if self.p.get('http_request_lua'):
-                self.find_single_link(
-                    field='http_request_lua',
-                    existing=self.existing_luas,
-                )
-            if self.p.get('http_response_lua'):
-                self.find_single_link(
-                    field='http_response_lua',
-                    existing=self.existing_luas,
-                )
-            if self.p.get('tcp_request_content_lua'):
-                self.find_single_link(
-                    field='tcp_request_content_lua',
-                    existing=self.existing_luas,
-                )
-            if self.p.get('tcp_response_content_lua'):
-                self.find_single_link(
-                    field='tcp_response_content_lua',
-                    existing=self.existing_luas,
-                )
-            if self.p.get('map_use_backend_file'):
-                self.find_single_link(
-                    field='map_use_backend_file',
-                    existing=self.existing_mapfiles,
-                )
-            if self.p.get('map_use_backend_default'):
-                self.find_single_link(
-                    field='map_use_backend_default',
-                    existing=self.existing_backends,
-                )
+                self.find_single_link(field='use_server', existing=self.existing_servers)
+
+            for lua_f in ['http_request_lua', 'http_response_lua', 'tcp_request_content_lua',
+                          'tcp_response_content_lua']:
+                if self.p.get(lua_f):
+                    self.find_single_link(field=lua_f, existing=self.existing_luas)

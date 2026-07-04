@@ -38,8 +38,7 @@ def run_module():
         test_type=dict(
             type='str', required=False, default=None,
             choices=['if', 'unless'],
-            description='Choose how to test the condition. IF [default] tests if condition is true, '
-                        'UNLESS tests if condition is false'
+            description='Choose how to test the condition'
         ),
         linked_acls=dict(
             type='list', required=False, default=None,
@@ -48,23 +47,15 @@ def run_module():
         operator=dict(
             type='str', required=False, default=None,
             choices=['and', 'or'],
-            description='Choose a logical operator to combine conditions: AND [default] or OR'
+            description='Choose a logical operator to combine conditions'
         ),
         kind=dict(
             type='str', required=False, default=None, aliases=['type'],
-            choices=['use_backend', 'use_server', 'map_use_backend', 'fcgi_pass_header', 'fcgi_set_param',
-                     'http-request_allow', 'http-request_deny', 'http-request_tarpit', 'http-request_auth',
-                     'http-request_redirect', 'http-request_lua', 'http-request_use-service',
-                     'http-request_add-header', 'http-request_set-header', 'http-request_del-header',
-                     'http-request_replace-header', 'http-request_replace-value', 'http-request_set-path',
-                     'http-request_set-var', 'http-response_allow', 'http-response_deny', 'http-response_lua',
-                     'http-request', 'http-response_add-header', 'http-response_set-header', 'http-response_del-header',
-                     'http-response_replace-header', 'http-response_replace-value', 'http-response_set-status',
-                     'http-response_set-var', 'monitor_fail', 'tcp-request_connection_accept',
-                     'tcp-request_connection_reject', 'tcp-request_content_accept', 'tcp-request_content_reject',
-                     'tcp-request_content_lua', 'tcp-request_content_use-service', 'tcp-request_inspect-delay',
-                     'tcp-response_content_accept', 'tcp-response_content_close', 'tcp-response_content_reject',
-                     'tcp-response_content_lua', 'tcp-response_inspect-delay', 'custom'],
+            choices=[
+                'compression', 'fcgi_pass_header', 'fcgi_set_param', 'http-after-response',
+                'http-request', 'http-response', 'map_data_use_backend', 'map_use_backend',
+                'monitor_fail', 'tcp-request', 'tcp-response', 'use_backend', 'use_server', 'custom',
+            ],
             description='Select HAProxy action type to execute when condition matches'
         ),
         use_backend=dict(
@@ -73,201 +64,160 @@ def run_module():
         ),
         use_server=dict(
             type='str', required=False, default='',
-            description='HAProxy will use this server instead of other servers that are specified in the Backend Pool'
+            description='HAProxy will use this server instead of other servers'
         ),
         custom_rule=dict(
             type='str', required=False, default='',
             description='Custom rule (option pass-through)'
         ),
-        # FastCGI fields
-        fcgi_pass_header=dict(
-            type='str', required=False, default='',
-            description='FastCGI pass-header'
+        fcgi_pass_header=dict(type='str', required=False, default=''),
+        fcgi_set_param=dict(type='str', required=False, default=''),
+        monitor_fail_uri=dict(type='str', required=False, default=''),
+
+        # HTTP After Response
+        http_after_response_action=dict(
+            type='str', required=False, default=None,
+            choices=['add-header', 'allow', 'capture', 'del-header', 'del-map', 'do-log', 'replace-header',
+                     'replace-value', 'sc-add-gpc', 'sc-inc-gpc', 'sc-inc-gpc0', 'sc-inc-gpc1', 'sc-set-gpt',
+                     'sc-set-gpt0', 'set-header', 'set-log-level', 'set-map', 'set-status', 'set-var', 'set-var-fmt',
+                     'strict-mode', 'unset-var']
         ),
-        fcgi_set_param=dict(
-            type='str', required=False, default='',
-            description='FastCGI set-param'
-        ),
+        http_after_response_option=dict(type='str', required=False, default=''),
+
         # HTTP Request fields
-        http_request_auth=dict(
-            type='str', required=False, default='',
-            description='HTTP request auth realm'
+        http_request_action=dict(
+            type='str', required=False, default=None,
+            choices=['add-acl', 'add-header', 'allow', 'auth', 'cache-use', 'capture', 'del-acl', 'del-header',
+                     'del-map', 'deny', 'disable-l7-retry', 'do-log', 'do-resolve', 'early-hint', 'lua',
+                     'normalize-uri', 'redirect', 'reject', 'replace-header', 'replace-path', 'replace-pathq',
+                     'replace-uri', 'replace-value', 'return', 'sc-add-gpc', 'sc-inc-gpc', 'sc-inc-gpc0', 'sc-inc-gpc1',
+                     'sc-set-gpt', 'sc-set-gpt0', 'send-spoe-group', 'set-dst', 'set-dst-port', 'set-fc-mark',
+                     'set-fc-tos', 'set-header', 'set-log-level', 'set-map', 'set-method', 'set-nice', 'set-path',
+                     'set-pathq', 'set-priority-class', 'set-priority-offset', 'set-query', 'set-src', 'set-src-port',
+                     'set-timeout', 'set-uri', 'set-var', 'set-var-fmt', 'silent-drop', 'strict-mode', 'tarpit',
+                     'track-sc0', 'track-sc1', 'track-sc2', 'unset-var', 'use-service', 'wait-for-body',
+                     'wait-for-handshake']
         ),
-        http_request_redirect=dict(
-            type='str', required=False, default='',
-            description='HTTP request redirect location'
-        ),
-        http_request_lua=dict(
-            type='str', required=False, default='',
-            description='HTTP request lua action'
-        ),
-        http_request_use_service=dict(
-            type='str', required=False, default='',
-            description='HTTP request lua service'
-        ),
-        # HTTP Request Header Add
-        http_request_add_header_name=dict(
-            type='str', required=False, default='',
-            description='HTTP request header name to add'
-        ),
-        http_request_add_header_content=dict(
-            type='str', required=False, default='',
-            description='HTTP request header content to add'
-        ),
-        # HTTP Request Header Set
-        http_request_set_header_name=dict(
-            type='str', required=False, default='',
-            description='HTTP request header name to set'
-        ),
-        http_request_set_header_content=dict(
-            type='str', required=False, default='',
-            description='HTTP request header content to set'
-        ),
-        # HTTP Request Header Delete
-        http_request_del_header_name=dict(
-            type='str', required=False, default='',
-            description='HTTP request header name to delete'
-        ),
-        # HTTP Request Header Replace
-        http_request_replace_header_name=dict(
-            type='str', required=False, default='',
-            description='HTTP request header name to replace'
-        ),
-        http_request_replace_header_regex=dict(
-            type='str', required=False, default='',
-            description='HTTP request header regex to replace'
-        ),
-        http_request_replace_value_name=dict(
-            type='str', required=False, default='',
-            description='HTTP request value name to replace'
-        ),
-        http_request_replace_value_regex=dict(
-            type='str', required=False, default='',
-            description='HTTP request value regex to replace'
-        ),
-        # HTTP Request Set Path
-        http_request_set_path=dict(
-            type='str', required=False, default='',
-            description='HTTP request set-path value'
-        ),
-        # HTTP Request Set Variable
+        http_request_option=dict(type='str', required=False, default=''),
+        http_request_auth=dict(type='str', required=False, default=''),
+        http_request_deny_status=dict(type='int', required=False),
+        http_request_redirect=dict(type='str', required=False, default=''),
+        http_request_lua=dict(type='str', required=False, default=''),
+        http_request_use_service=dict(type='str', required=False, default=''),
+        http_request_add_header_name=dict(type='str', required=False, default=''),
+        http_request_add_header_content=dict(type='str', required=False, default=''),
+        http_request_set_header_name=dict(type='str', required=False, default=''),
+        http_request_set_header_content=dict(type='str', required=False, default=''),
+        http_request_del_header_name=dict(type='str', required=False, default=''),
+        http_request_replace_header_name=dict(type='str', required=False, default=''),
+        http_request_replace_header_regex=dict(type='str', required=False, default=''),
+        http_request_replace_value_name=dict(type='str', required=False, default=''),
+        http_request_replace_value_regex=dict(type='str', required=False, default=''),
+        http_request_set_path=dict(type='str', required=False, default=''),
         http_request_set_var_scope=dict(
             type='str', required=False, default=None,
-            choices=['proc', 'sess', 'txn', 'req', 'res'],
-            description='Variable scope: proc (whole process), sess (whole session), txn (transaction), '
-            'req (request only), res (response only)'
+            choices=['proc', 'sess', 'txn', 'req', 'res']
         ),
-        http_request_set_var_name=dict(
-            type='str', required=False, default='',
-            description='HTTP request set-var name'
-        ),
-        http_request_set_var_expr=dict(
-            type='str', required=False, default='',
-            description='HTTP request set-var expression'
-        ),
+        http_request_set_var_name=dict(type='str', required=False, default=''),
+        http_request_set_var_expr=dict(type='str', required=False, default=''),
+
         # HTTP Response fields
-        http_response_lua=dict(
-            type='str', required=False, default='',
-            description='HTTP response lua script'
+        http_response_action=dict(
+            type='str', required=False, default=None,
+            choices=['add-acl', 'add-header', 'allow', 'cache-store', 'capture', 'del-acl', 'del-header', 'del-map',
+                     'deny', 'do-log', 'lua', 'redirect', 'replace-header', 'replace-value', 'return', 'sc-add-gpc',
+                     'sc-inc-gpc', 'sc-inc-gpc0', 'sc-inc-gpc1', 'sc-set-gpt', 'sc-set-gpt0', 'send-spoe-group',
+                     'set-fc-mark', 'set-fc-tos', 'set-header', 'set-log-level', 'set-map', 'set-nice', 'set-status',
+                     'set-timeout', 'set-var', 'set-var-fmt', 'silent-drop', 'strict-mode', 'track-sc0', 'track-sc1',
+                     'track-sc2', 'unset-var', 'wait-for-body']
         ),
-        # HTTP Response Header Add
-        http_response_add_header_name=dict(
-            type='str', required=False, default='',
-            description='HTTP response header name to add'
-        ),
-        http_response_add_header_content=dict(
-            type='str', required=False, default='',
-            description='HTTP response header content to add'
-        ),
-        # HTTP Response Header Set
-        http_response_set_header_name=dict(
-            type='str', required=False, default='',
-            description='HTTP response header name to set'
-        ),
-        http_response_set_header_content=dict(
-            type='str', required=False, default='',
-            description='HTTP response header content to set'
-        ),
-        # HTTP Response Header Delete
-        http_response_del_header_name=dict(
-            type='str', required=False, default='',
-            description='HTTP response header name to delete'
-        ),
-        # HTTP Response Header Replace
-        http_response_replace_header_name=dict(
-            type='str', required=False, default='',
-            description='HTTP response header name to replace'
-        ),
-        http_response_replace_header_regex=dict(
-            type='str', required=False, default='',
-            description='HTTP response header regex to replace'
-        ),
-        http_response_replace_value_name=dict(
-            type='str', required=False, default='',
-            description='HTTP response value name to replace'
-        ),
-        http_response_replace_value_regex=dict(
-            type='str', required=False, default='',
-            description='HTTP response value regex to replace'
-        ),
-        http_response_set_status_code=dict(
-            type='int', required=False,
-            description='HTTP response status code (100-999)'
-        ),
-        http_response_set_status_reason=dict(
-            type='str', required=False, default='',
-            description='HTTP response status reason'
-        ),
-        # HTTP Response Set Variable
+        http_response_option=dict(type='str', required=False, default=''),
+        http_response_lua=dict(type='str', required=False, default=''),
+        http_response_add_header_name=dict(type='str', required=False, default=''),
+        http_response_add_header_content=dict(type='str', required=False, default=''),
+        http_response_set_header_name=dict(type='str', required=False, default=''),
+        http_response_set_header_content=dict(type='str', required=False, default=''),
+        http_response_del_header_name=dict(type='str', required=False, default=''),
+        http_response_replace_header_name=dict(type='str', required=False, default=''),
+        http_response_replace_header_regex=dict(type='str', required=False, default=''),
+        http_response_replace_value_name=dict(type='str', required=False, default=''),
+        http_response_replace_value_regex=dict(type='str', required=False, default=''),
+        http_response_set_status_code=dict(type='int', required=False),
+        http_response_set_status_reason=dict(type='str', required=False, default=''),
         http_response_set_var_scope=dict(
             type='str', required=False, default=None,
-            choices=['proc', 'sess', 'txn', 'req', 'res'],
-            description='Variable scope: proc (whole process), sess (whole session), txn (transaction), '
-            'req (request only), res (response only)'
+            choices=['proc', 'sess', 'txn', 'req', 'res']
         ),
-        http_response_set_var_name=dict(
-            type='str', required=False, default='',
-            description='HTTP response set-var name'
-        ),
-        http_response_set_var_expr=dict(
-            type='str', required=False, default='',
-            description='HTTP response set-var expression'
-        ),
+        http_response_set_var_name=dict(type='str', required=False, default=''),
+        http_response_set_var_expr=dict(type='str', required=False, default=''),
+
         # TCP fields
-        tcp_request_content_lua=dict(
-            type='str', required=False, default='',
-            description='TCP request content lua script'
+        tcp_request_action=dict(
+            type='str', required=False, default=None,
+            choices=['connection_accept', 'connection_expect-netscaler-cip', 'connection_expect-proxy',
+                     'connection_fc-silent-drop', 'connection_reject', 'connection_sc-add-gpc', 'connection_sc-inc-gpc',
+                     'connection_sc-inc-gpc0', 'connection_sc-inc-gpc1', 'connection_sc-set-gpt',
+                     'connection_sc-set-gpt0', 'connection_send-spoe-group', 'connection_set-dst',
+                     'connection_set-dst-port', 'connection_set-fc-mark', 'connection_set-fc-tos',
+                     'connection_set-log-level', 'connection_set-src', 'connection_set-src-port', 'connection_set-var',
+                     'connection_set-var-fmt', 'connection_silent-drop', 'connection_track-sc0', 'connection_track-sc1',
+                     'connection_track-sc2', 'connection_unset-var', 'content_accept', 'content_capture',
+                     'content_do-resolve', 'content_lua', 'content_reject', 'content_sc-add-gpc', 'content_sc-inc-gpc',
+                     'content_sc-inc-gpc0', 'content_sc-inc-gpc1', 'content_sc-set-gpt', 'content_sc-set-gpt0',
+                     'content_send-spoe-group', 'content_set-dst', 'content_set-dst-port', 'content_set-fc-mark',
+                     'content_set-fc-tos', 'content_set-log-level', 'content_set-nice', 'content_set-priority-class',
+                     'content_set-priority-offset', 'content_set-src', 'content_set-src-port', 'content_set-var',
+                     'content_set-var-fmt', 'content_silent-drop', 'content_switch-mode', 'content_track-sc0',
+                     'content_track-sc1', 'content_track-sc2', 'content_unset-var', 'content_use-service',
+                     'inspect-delay', 'session_accept', 'session_attach-srv', 'session_reject', 'session_sc-add-gpc',
+                     'session_sc-inc-gpc', 'session_sc-inc-gpc0', 'session_sc-inc-gpc1', 'session_sc-set-gpt',
+                     'session_sc-set-gpt0', 'session_send-spoe-group', 'session_set-dst', 'session_set-dst-port',
+                     'session_set-fc-mark', 'session_set-fc-tos', 'session_set-log-level', 'session_set-src',
+                     'session_set-src-port', 'session_set-var', 'session_set-var-fmt', 'session_silent-drop',
+                     'session_track-sc0', 'session_track-sc1', 'session_track-sc2', 'session_unset-var']
         ),
-        tcp_request_content_use_service=dict(
-            type='str', required=False, default='',
-            description='TCP request content use-service'
+        tcp_request_option=dict(type='str', required=False, default=''),
+        tcp_request_content_lua=dict(type='str', required=False, default=''),
+        tcp_request_content_use_service=dict(type='str', required=False, default=''),
+        tcp_request_inspect_delay=dict(type='str', required=False, default=''),
+
+        tcp_response_action=dict(
+            type='str', required=False, default=None,
+            choices=['content_accept', 'content_close', 'content_lua', 'content_reject', 'content_sc-add-gpc',
+                     'content_sc-inc-gpc', 'content_sc-inc-gpc0', 'content_sc-inc-gpc1', 'content_sc-set-gpt',
+                     'content_sc-set-gpt0', 'content_send-spoe-group', 'content_set-fc-mark', 'content_set-fc-tos',
+                     'content_set-log-level', 'content_set-nice', 'content_set-var', 'content_set-var-fmt',
+                     'content_silent-drop', 'content_unset-var', 'inspect-delay']
         ),
-        tcp_request_inspect_delay=dict(
-            type='str', required=False, default='',
-            description='TCP request inspect-delay'
-        ),
-        tcp_response_content_lua=dict(
-            type='str', required=False, default='',
-            description='TCP response content lua script'
-        ),
-        tcp_response_inspect_delay=dict(
-            type='str', required=False, default='',
-            description='TCP response inspect-delay'
-        ),
-        # Monitor fail
-        monitor_fail_uri=dict(
-            type='str', required=False, default='',
-            description='Monitor fail URI'
-        ),
+        tcp_response_option=dict(type='str', required=False, default=''),
+        tcp_response_content_lua=dict(type='str', required=False, default=''),
+        tcp_response_inspect_delay=dict(type='str', required=False, default=''),
+
         # Map use backend
-        map_use_backend_file=dict(
-            type='str', required=False, default='',
-            description='Map file for backend selection'
-        ),
-        map_use_backend_default=dict(
-            type='str', required=False, default='',
-            description='Default backend for map-based selection'
-        ),
+        map_data_use_backend_file=dict(type='str', required=False, default=''),
+        map_data_use_backend_default=dict(type='str', required=False, default=''),
+        map_data_use_backend_input=dict(type='str', required=False, default=''),
+        map_use_backend_file=dict(type='str', required=False, default=''),
+        map_use_backend_default=dict(type='str', required=False, default=''),
+
+        # Compression
+        compression_algo_res=dict(type='str', required=False, default=None, choices=['gzip', 'deflate', 'raw-deflate']),
+        compression_algo_req=dict(type='str', required=False, default=None, choices=['gzip', 'deflate', 'raw-deflate']),
+        compression_mime_res=dict(type='list', elements='str', required=False, default=[]),
+        compression_mime_req=dict(type='list', elements='str', required=False, default=[]),
+        compression_offloading=dict(type='bool', required=False, default=False),
+        compression_minsize_res=dict(type='int', required=False),
+        compression_minsize_req=dict(type='int', required=False),
+        compression_direction=dict(type='str', required=False, default=None, choices=['response', 'request', 'both']),
+
+        # Others
+        gpc_number=dict(type='int', required=False),
+        gpt_number=dict(type='int', required=False),
+        sc_number=dict(type='int', required=False),
+        mapfile=dict(type='str', required=False, default=''),
+        map_default=dict(type='str', required=False, default=''),
+        sample_fetch=dict(type='str', required=False, default=''),
+
         **STATE_MOD_ARG,
         **RELOAD_MOD_ARG,
         **OPN_MOD_ARGS,
