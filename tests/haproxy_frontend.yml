@@ -141,7 +141,7 @@
         bind:
           - '127.0.0.1:8447'
         mode: 'http'
-        stickiness_pattern: 'sourceipv4'
+        stickiness_pattern: 'ipv4'
         stickiness_data_types:
           - 'conn_rate'
           - 'http_req_rate'
@@ -183,53 +183,19 @@
         opn8.failed or opn8.changed
       when: not ansible_check_mode
 
-    - name: Cleanup Frontend 1
+    - name: Cleanup Frontends
       oxlorg.opnsense.haproxy_frontend:
-        name: 'ANSIBLE_TEST_1_1'
-        bind: ['127.0.0.1:8080']
+        name: "{{ item.n }}"
+        bind: "{{ item.b }}"
         state: 'absent'
-      when: not ansible_check_mode
-
-    - name: Cleanup Frontend 1 no backend
-      oxlorg.opnsense.haproxy_frontend:
-        name: 'ANSIBLE_TEST_1_1_NO_BACKEND'
-        bind: ['127.0.0.1:8082']
-        state: 'absent'
-      when: not ansible_check_mode
-
-    - name: Cleanup Frontend 2
-      oxlorg.opnsense.haproxy_frontend:
-        name: 'ANSIBLE_TEST_1_2'
-        bind: ['127.0.0.1:8443']
-        state: 'absent'
-      when: not ansible_check_mode
-
-    - name: Cleanup Frontend 3
-      oxlorg.opnsense.haproxy_frontend:
-        name: 'ANSIBLE_TEST_1_3'
-        bind: ['127.0.0.1:9080']
-        state: 'absent'
-      when: not ansible_check_mode
-
-    - name: Cleanup Frontend 4
-      oxlorg.opnsense.haproxy_frontend:
-        name: 'ANSIBLE_TEST_1_4'
-        bind: ['127.0.0.1:8445']
-        state: 'absent'
-      when: not ansible_check_mode
-
-    - name: Cleanup Frontend 5
-      oxlorg.opnsense.haproxy_frontend:
-        name: 'ANSIBLE_TEST_1_5'
-        bind: ['127.0.0.1:8446']
-        state: 'absent'
-      when: not ansible_check_mode
-
-    - name: Cleanup Frontend 6
-      oxlorg.opnsense.haproxy_frontend:
-        name: 'ANSIBLE_TEST_1_6'
-        bind: ['127.0.0.1:8447']
-        state: 'absent'
+      loop:
+        - {n: 'ANSIBLE_TEST_1_1', b: ['127.0.0.1:8080']}
+        - {n: 'ANSIBLE_TEST_1_1_NO_BACKEND', b: ['127.0.0.1:8082']}
+        - {n: 'ANSIBLE_TEST_1_2', b: ['127.0.0.1:8443']}
+        - {n: 'ANSIBLE_TEST_1_3', b: ['127.0.0.1:9080']}
+        - {n: 'ANSIBLE_TEST_1_4', b: ['127.0.0.1:8445']}
+        - {n: 'ANSIBLE_TEST_1_5', b: ['127.0.0.1:8446']}
+        - {n: 'ANSIBLE_TEST_1_6', b: ['127.0.0.1:8447']}
       when: not ansible_check_mode
 
     - name: Cleanup test backend

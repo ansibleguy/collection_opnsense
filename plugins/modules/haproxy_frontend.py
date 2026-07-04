@@ -211,7 +211,7 @@ def run_module():
         ),
         stickiness_pattern=dict(
             type='str', required=False, default=None,
-            choices=['binary', 'cookievalue', 'integer', 'rdpcookie', 'string', 'sourceipv4', 'sourceipv6'],
+            choices=['binary', 'integer', 'ipv4', 'ipv6', 'string'],
             description='Pattern for stick table.'
         ),
         stickiness_data_types=dict(
