@@ -1215,3 +1215,30 @@
         - 'ANSIBLE_TEST_1_3'
         - 'ANSIBLE_TEST_1_4'
         - 'ANSIBLE_TEST_1_5'
+        - 'ANSIBLE_TEST_SERVER_1'
+
+    - name: Cleanup HAProxy Frontends
+      oxlorg.opnsense.haproxy_frontend:
+        name: "{{ item.n }}"
+        bind: "{{ item.b }}"
+        state: 'absent'
+      loop:
+        - {n: 'ANSIBLE_TEST_1_1', b: ['127.0.0.1:8080']}
+        - {n: 'ANSIBLE_TEST_1_1_NO_BACKEND', b: ['127.0.0.1:8082']}
+        - {n: 'ANSIBLE_TEST_1_2', b: ['127.0.0.1:8443']}
+        - {n: 'ANSIBLE_TEST_1_3', b: ['127.0.0.1:9080']}
+        - {n: 'ANSIBLE_TEST_1_4', b: ['127.0.0.1:8445']}
+        - {n: 'ANSIBLE_TEST_1_5', b: ['127.0.0.1:8446']}
+        - {n: 'ANSIBLE_TEST_1_6', b: ['127.0.0.1:8447']}
+
+    - name: Cleanup HAProxy Backends
+      oxlorg.opnsense.haproxy_backend:
+        name: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_1_3'
+        - 'ANSIBLE_TEST_1_4'
+        - 'ANSIBLE_TEST_1_5'
+        - 'ANSIBLE_TEST_BACKEND_1'

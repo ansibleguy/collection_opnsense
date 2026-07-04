@@ -144,34 +144,16 @@
         opn8.failed or opn8.changed
       when: not ansible_check_mode
 
-    - name: Cleanup Backend 1
+    - name: Cleanup Backends
       oxlorg.opnsense.haproxy_backend:
-        name: 'ANSIBLE_TEST_1_1'
+        name: "{{ item }}"
         state: 'absent'
-      when: not ansible_check_mode
-
-    - name: Cleanup Backend 2
-      oxlorg.opnsense.haproxy_backend:
-        name: 'ANSIBLE_TEST_1_2'
-        state: 'absent'
-      when: not ansible_check_mode
-
-    - name: Cleanup Backend 3
-      oxlorg.opnsense.haproxy_backend:
-        name: 'ANSIBLE_TEST_1_3'
-        state: 'absent'
-      when: not ansible_check_mode
-
-    - name: Cleanup Backend 4
-      oxlorg.opnsense.haproxy_backend:
-        name: 'ANSIBLE_TEST_1_4'
-        state: 'absent'
-      when: not ansible_check_mode
-
-    - name: Cleanup Backend 5
-      oxlorg.opnsense.haproxy_backend:
-        name: 'ANSIBLE_TEST_1_5'
-        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_1_3'
+        - 'ANSIBLE_TEST_1_4'
+        - 'ANSIBLE_TEST_1_5'
       when: not ansible_check_mode
 
     - name: Cleanup test server
