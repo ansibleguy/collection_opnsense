@@ -48,7 +48,7 @@ If you DO NOT want to use Ansible - [this fork](https://github.com/O-X-L/opnsens
 Support the Open-Source projects that make these modules possible:
 
 * [Donate to OPNsense](https://opnsense.org/donate/) or [Buy the Business-Edition](https://shop.opnsense.com/product-categorie/software_and_licenses/)
-* [Donate to the Ansible-Module Maintainers](https://shop.oxl.app/products/open-source-spende) or [Buy a Support-License](https://shop.oxl.app/products/open-source-support-opnsense-ansible-collection)
+* [Contact the ansible-collection maintainer for support](mailto://contact+opnsense@oxl.at)
 
 ----
 
@@ -68,7 +68,9 @@ We try that the `oxlorg.opnsense` modules always support the latest version of O
 
 If an API changed, the current module-implementation might fail for firewalls running an older firmware.
 
-As [this project is unfunded](https://github.com/O-X-L/ansible-opnsense/discussions/199) we do not actively check for API-changes - if you find missing functionalities you need/want to have please [report it](https://github.com/O-X-L/ansible-opnsense/issues)!
+I currently try to create a stable release once or twice a year - as this takes 10-20h of work each time for implementing API-fixes.
+
+As [this project is unfunded](https://github.com/O-X-L/ansible-opnsense/discussions/199) we do not actively check for API-changes - if you find missing functionalities you need/want to have please [report it](https://github.com/O-X-L/ansible-opnsense/issues)! Not all features will be implemented!
 
 ----
 
