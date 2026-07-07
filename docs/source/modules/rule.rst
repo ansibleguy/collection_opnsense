@@ -221,7 +221,7 @@ Basic
           register: existing_entries
 
         - name: Printing rules
-          ansible.bultin.debug:
+          ansible.builtin.debug:
             var: existing_entries.data
 
 With inventory config
