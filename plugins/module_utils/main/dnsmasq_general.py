@@ -41,7 +41,7 @@ class General(GeneralModule):
         'dhcp_enable_ra': ('dhcp', 'enable_ra'),
         'dhcp_hasync': ('dhcp', 'nosync'),
     }
-    FIELDS_BOOL_INVERT = ['resolve_etc_hosts', 'ident', 'forward_private_reverse', 'dhcp_hasync']
+    FIELDS_BOOL_INVERT = ['resolve_etc_hosts', 'ident', 'forward_private_reverse', 'dhcp_hasync', 'resolv_system']
     FIELDS_TYPING = {
         'bool': [
             'enabled','regdhcp','regdhcpstatic','domain_needed', 'dnssec', 'resolve_etc_hosts', 'dhcpfirst',
