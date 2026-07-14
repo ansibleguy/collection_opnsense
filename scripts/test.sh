@@ -130,6 +130,7 @@ run_test_soft 'interface_bridge' 1
 run_test_soft 'interface_gif' 1
 run_test_soft 'nat_source' 1
 run_test_soft 'nat_one_to_one' 1
+run_test_soft 'nat_destination' 1
 run_test_soft 'frr_diagnostic' 1
 run_test_soft 'frr_general' 1
 run_test_soft 'frr_bfd_general' 1

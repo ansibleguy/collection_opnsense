@@ -1,0 +1,194 @@
+---
+
+- name: Testing destination-nat
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    oxlorg.opnsense.destination_nat:
+      match_fields: ['description']
+
+    oxlorg.opnsense.list:
+      target: 'nat_destination'
+
+  environment:
+    HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'TEST_PROXY') | default('') }}"
+
+  tasks:
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      oxlorg.opnsense.destination_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        state: 'absent'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1 - failing because no target was provided
+      oxlorg.opnsense.destination_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: ['lan']
+        destination_net: '192.168.0.1'
+        destination_port: '8080'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding 1
+      oxlorg.opnsense.destination_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: ['lan']
+        protocol: 'TCP'
+        destination_net: '192.168.0.1'
+        destination_port: '8080'
+        target: '192.168.10.2'
+        local_port: '80'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      oxlorg.opnsense.destination_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: ['lan']
+        protocol: 'TCP'
+        destination_net: '192.168.0.1'
+        destination_port: '8080'
+        target: '192.168.10.5'
+        local_port: '80'
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+
+    - name: Disabling 1
+      oxlorg.opnsense.destination_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: ['lan']
+        protocol: 'TCP'
+        destination_net: '192.168.0.1'
+        destination_port: '8080'
+        target: '192.168.10.5'
+        local_port: '80'
+        enabled: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Disabling 1 - nothing changed (w/ module alias)
+      oxlorg.opnsense.dnat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: ['lan']
+        protocol: 'TCP'
+        destination_net: '192.168.0.1'
+        destination_port: '8080'
+        target: '192.168.10.5'
+        local_port: '80'
+        enabled: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      oxlorg.opnsense.destination_nat:
+        description: 'ANSIBLE_TEST_1_1'
+        interface: ['lan']
+        protocol: 'TCP'
+        destination_net: '192.168.0.1'
+        destination_port: '8080'
+        target: '192.168.10.5'
+        local_port: '80'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Adding 2 - with source-restriction, no_port_forward and associated_rule
+      oxlorg.opnsense.destination_nat:
+        description: 'ANSIBLE_TEST_1_2'
+        interface: ['wan']
+        protocol: 'TCP'
+        source_invert: true
+        source_net: 'bogons'
+        destination_net: '192.168.0.1'
+        destination_port: '443'
+        target: '192.168.10.6'
+        local_port: '8443'
+        no_port_forward: false
+        associated_rule: 'pass'
+        nat_reflection: 'disable'
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        not opn5.changed
+
+    - name: Adding 2 - nothing changed
+      oxlorg.opnsense.destination_nat:
+        description: 'ANSIBLE_TEST_1_2'
+        interface: ['wan']
+        protocol: 'TCP'
+        source_invert: true
+        source_net: 'bogons'
+        destination_net: '192.168.0.1'
+        destination_port: '443'
+        target: '192.168.10.6'
+        local_port: '8443'
+        no_port_forward: false
+        associated_rule: 'pass'
+        nat_reflection: 'disable'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      oxlorg.opnsense.destination_nat:
+        description: 'ANSIBLE_TEST_1_2'
+        state: 'absent'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn8
+      failed_when: >
+        'data' not in opn8 or
+        opn8.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      oxlorg.opnsense.destination_nat:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode

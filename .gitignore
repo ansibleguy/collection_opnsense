@@ -10,4 +10,4 @@ venv/
 .coverage.*
 __pycache__
 /test.log
-/test.sh
+/test.sh.DS_Store

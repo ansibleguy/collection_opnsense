@@ -56,6 +56,7 @@ def run_module():
                 'wazuh',
                 'nat_source',
                 'nat_one_to_one',
+                'nat_destination',
                 'nut',
             ],
             description='What part of the running config should be reloaded'
@@ -192,6 +193,10 @@ def run_module():
         elif target == 'nat_one_to_one':
             from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.nat_one_to_one import \
                 OneToOne as Target_Obj
+
+        elif target == 'nat_destination':
+            from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.nat_destination import \
+                DNat as Target_Obj
 
         elif target == 'nut':
             from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.nut import \

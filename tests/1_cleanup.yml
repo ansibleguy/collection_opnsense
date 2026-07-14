@@ -304,6 +304,15 @@
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
 
+    - name: Cleanup destination-nat
+      oxlorg.opnsense.destination_nat:
+        description: "{{ item }}"
+        state: 'absent'
+        match_fields: ['description']
+      loop:
+        - 'ANSIBLE_TEST_1_1'
+        - 'ANSIBLE_TEST_1_2'
+
     - name: Cleanup FRR general settings
       oxlorg.opnsense.frr_general:
         enabled: false

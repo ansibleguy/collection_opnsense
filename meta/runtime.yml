@@ -109,6 +109,7 @@ action_groups:
   nat:
     - oxlorg.opnsense.nat_source
     - oxlorg.opnsense.nat_one_to_one
+    - oxlorg.opnsense.nat_destination
   system:
     - oxlorg.opnsense.list
     - oxlorg.opnsense.reload
@@ -248,6 +249,8 @@ plugin_routing:
       redirect: oxlorg.opnsense.ipsec_pool
     snat:
       redirect: oxlorg.opnsense.source_nat
+    dnat:
+      redirect: oxlorg.opnsense.destination_nat
     proxy_general:
       redirect: oxlorg.opnsense.webproxy_general
     proxy_cache:
@@ -294,5 +297,7 @@ plugin_routing:
       redirect: oxlorg.opnsense.nat_source
     one_to_one:
       redirect: oxlorg.opnsense.nat_one_to_one
+    destination_nat:
+      redirect: oxlorg.opnsense.nat_destination
     wireguard_client:
       redirect: oxlorg.opnsense.wireguard_peer

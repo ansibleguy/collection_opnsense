@@ -36,6 +36,7 @@
    <url><loc>https://ansible-opnsense.oxl.app/modules/interface.html</loc></url>
    <url><loc>https://ansible-opnsense.oxl.app/modules/ipsec.html</loc></url>
    <url><loc>https://ansible-opnsense.oxl.app/modules/monit.html</loc></url>
+   <url><loc>https://ansible-opnsense.oxl.app/modules/nat_destination.html</loc></url>
    <url><loc>https://ansible-opnsense.oxl.app/modules/neighbor.html</loc></url>
    <url><loc>https://ansible-opnsense.oxl.app/modules/nginx.html</loc></url>
    <url><loc>https://ansible-opnsense.oxl.app/modules/openvpn.html</loc></url>
