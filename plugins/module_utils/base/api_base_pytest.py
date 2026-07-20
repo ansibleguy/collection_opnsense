@@ -11,6 +11,36 @@ def test_session_creation():
     s.close()
 
 
+def test_httpx_protocol_error_retries_with_curl(mocker):
+    """Large OPNsense chunked responses can fail in httpx/h11; curl should retry."""
+    import httpx
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import (
+        Session,
+        _CurlResponse,
+    )
+
+    pytest_mock_http_responses(mocker=mocker, handler=Testdata())
+
+    with Session(module=DUMMY_MODULE) as s:
+        mocker.patch.object(
+            s.s,
+            'get',
+            side_effect=httpx.RemoteProtocolError('illegal chunk header: bytearray(b\'x\')'),
+        )
+        mocker.patch.object(
+            s,
+            '_curl_request',
+            return_value=_CurlResponse(
+                status_code=200,
+                content=b'{"alias":{"aliases":{"alias":{}}}}',
+                url='https://example/api/firewall/alias/get',
+            ),
+        )
+        res = s.get({'module': 'firewall', 'controller': 'alias', 'command': 'get'})
+        assert res == {'alias': {'aliases': {'alias': {}}}}
+
+
+
 def test_session_contextmanager():
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import Session
     with Session(module=DUMMY_MODULE):
