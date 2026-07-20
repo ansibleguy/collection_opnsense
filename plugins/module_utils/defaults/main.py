@@ -55,6 +55,7 @@ OPN_MOD_ARGS = dict(
 
 BUILTIN_ALIASES = [
     'bogons', 'bogonsv6', 'sshlockout', 'virusprot', '__wazuh_agent_drop',
+    'crowdsec_blocklists', 'crowdsec6_blocklists',
 ]
 BUILTIN_INTERFACE_ALIASES_REG = '^__.*?_network$'  # auto-added interface aliases
 
