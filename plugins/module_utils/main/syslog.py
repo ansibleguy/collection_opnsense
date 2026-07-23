@@ -23,9 +23,9 @@ class Syslog(BaseModule):
     API_CONT_REL = 'service'
     FIELDS_CHANGE = [
         'target', 'transport', 'facility', 'program', 'level', 'certificate',
-        'port', 'description',
+        'port', 'description', 'rfc5424',
     ]
-    FIELDS_ALL = ['rfc5424', 'enabled']
+    FIELDS_ALL = ['enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'target': 'hostname',

@@ -107,6 +107,39 @@
         not opn8.changed
       when: not ansible_check_mode
 
+    - name: Enabling rfc5424 on 1
+      oxlorg.opnsense.syslog:
+        description: 'ANSIBLE_TEST_1'
+        target: '192.168.0.1'
+        rfc5424: true
+      register: opn12
+      failed_when: >
+        opn12.failed or
+        not opn12.changed
+      when: not ansible_check_mode
+
+    - name: Enabling rfc5424 on 1 - nothing changed
+      oxlorg.opnsense.syslog:
+        description: 'ANSIBLE_TEST_1'
+        target: '192.168.0.1'
+        rfc5424: true
+      register: opn13
+      failed_when: >
+        opn13.failed or
+        opn13.changed
+      when: not ansible_check_mode
+
+    - name: Disabling rfc5424 on 1
+      oxlorg.opnsense.syslog:
+        description: 'ANSIBLE_TEST_1'
+        target: '192.168.0.1'
+        rfc5424: false
+      register: opn14
+      failed_when: >
+        opn14.failed or
+        not opn14.changed
+      when: not ansible_check_mode
+
     - name: Listing
       oxlorg.opnsense.list:
       register: opn1

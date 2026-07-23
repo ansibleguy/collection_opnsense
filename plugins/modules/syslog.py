@@ -54,7 +54,7 @@ def run_module():
             ],
         ),
         certificate=dict(type='str', required=False, aliases=['cert']),
-        rfc5424=dict(type='bool', required=False, default=False),  # not getting current value from response
+        rfc5424=dict(type='bool', required=False, default=False),
         description=dict(type='str', required=False, aliases=['desc']),
         match_fields=dict(
             type='list', required=False, elements='str',
