@@ -46,6 +46,7 @@ Definition
     "description","string","false","\-","desc","Description for the alias"
     "content","list","false for state changes, else true","\-","cont, c","Values the alias should hold"
     "type","string","false","'host'","t","Type of value the alias should hold. One of: 'host', 'network', 'port', 'url', 'urltable', 'urljson', 'geoip', 'networkgroup', 'mac', 'dynipv6host', 'internal', 'external'"
+    "statistics","boolean","false","false","\-", "Maintain a set of counters for this alias"
     "updatefreq_days","float","false","7.0 if type=urltable","\-","Needed only for the alias-type 'urltable' or 'urljson'. Interval to update its content. Per example: 0.5 for every 12 hours"
     "interface","string","false","\-","int, if","Needed only for the alias-type 'dynipv6host'. Select the interface for the V6 dynamic IP"
     "path_expression","string","false","\-","pr, jq","Needed only for the alias-type 'urljson'. Simplified expression to select a field inside a container, a dot is used as field separator (e.g. container.fieldname). Expressions using the jq language are also supported."
