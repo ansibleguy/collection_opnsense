@@ -27,6 +27,9 @@ ALIAS_MOD_ARGS = dict(
         description='Simplified expression to select a field inside a container, a dot is used as field separator. '
                     'Expressions using the jq language are also supported.',
     ),
+    statistics=dict(
+        type='bool', default=False, required=False,
+    ),
     url_auth_type=dict(type='str', required=False, default='', aliases=['auth_type'], choices=[
         '', 'Basic', 'Bearer', 'Header',
     ]),
