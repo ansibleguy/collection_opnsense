@@ -79,9 +79,10 @@ class BaseAuth(BaseModule):
                     'authentication method!'
                 )
 
-        self._base_check()
-
         if self.p['state'] == 'present':
+            if self.existing_entries is None:
+                self.existing_entries = self._call_search()
+
             self.find_single_link(
                 field='connection',
                 existing=self.existing_conns,
@@ -97,6 +98,8 @@ class BaseAuth(BaseModule):
                     # if neither a local nor a remote authentication-entry exists ->
                     #   we must create one first to get the relevant entries
                     pass
+
+        self._base_check()
 
     def create(self) -> None:
         if self.p['authentication'] == 'pubkey' and not self.pubkey_link_found:
