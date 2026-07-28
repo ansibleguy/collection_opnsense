@@ -146,6 +146,14 @@
         opn2.changed
       when: not ansible_check_mode
 
+    - name: Listing after idempotent re-run
+      oxlorg.opnsense.list:
+      register: opn2_list
+      failed_when: >
+        'data' not in opn2_list or
+        opn2_list.data | length != 1
+      when: not ansible_check_mode
+
     - name: Changing 1 (pubkey)
       oxlorg.opnsense.ipsec_auth_remote:
         name: 'ANSIBLE_TEST_1_1'
