@@ -153,6 +153,10 @@ RULE_MOD_ARGS = dict(
         type='str', required=False, default=RULE_DEFAULTS['gateway'],
         aliases=RULE_MOD_ARG_ALIASES['gateway'], description='Existing gateway to use'
     ),
+    categories=dict(
+        type='list', elements='str', required=False, default=[],
+        description='List of firewall rule categories by display name'
+    ),
     replyto=dict(
         type='str', required=False, default=RULE_DEFAULTS['replyto'],
         aliases=RULE_MOD_ARG_ALIASES['replyto'],

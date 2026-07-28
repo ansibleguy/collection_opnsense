@@ -7,6 +7,10 @@ ALIAS_MOD_ARGS = dict(
     description=dict(
         type='str', required=False, default='', aliases=['desc'],
     ),
+    categories=dict(
+        type='list', required=False, default=[], elements='str',
+        description='List of firewall alias categories by display name'
+    ),
     content=dict(
         type='list', required=False, default=[], aliases=['c', 'cont'], elements='str',
     ),
