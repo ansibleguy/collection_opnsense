@@ -21,10 +21,11 @@ class PreSharedKey(BaseModule):
     API_MOD = 'ipsec'
     API_CONT = 'pre_shared_keys'
     API_CONT_REL = 'service'
-    FIELDS_CHANGE = ['identity_remote', 'psk', 'type']
+    FIELDS_CHANGE = ['description', 'identity_remote', 'psk', 'type']
     FIELDS_ALL = [FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
+        'description': 'description',
         'identity_local': 'ident',
         'identity_remote': 'remote_ident',
         'psk': 'Key',

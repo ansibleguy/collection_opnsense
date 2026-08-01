@@ -57,6 +57,7 @@
 
     - name: Adding 1
       oxlorg.opnsense.ipsec_psk:
+        description: 'ANSIBLE_TEST_1_1'
         identity: 'ANSIBLE@TEST1'
         psk: 'my-super-secret'
       register: opn1
@@ -66,6 +67,7 @@
 
     - name: Adding 2
       oxlorg.opnsense.ipsec_psk:
+        description: 'ANSIBLE_TEST_1_2'
         identity: 'ANSIBLE@TEST2'
         identity_remote: 'ANSIBLE@TEST2B'
         psk: 'LSfmuw3oiksfhnf3uhfwqhfwjuhnakfuwgfjsnhfnh'
@@ -76,6 +78,7 @@
 
     - name: Adding 2 - nothing changed
       oxlorg.opnsense.ipsec_psk:
+        description: 'ANSIBLE_TEST_1_2'
         identity: 'ANSIBLE@TEST2'
         identity_remote: 'ANSIBLE@TEST2B'
         psk: 'LSfmuw3oiksfhnf3uhfwqhfwjuhnakfuwgfjsnhfnh'

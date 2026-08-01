@@ -27,6 +27,10 @@ except MODULE_EXCEPTIONS:
 
 def run_module():
     module_args = dict(
+        description=dict(
+            type='str', required=False, aliases=['desc'],
+            description='Optional description shown for this pre-shared key entry.'
+        ),
         identity_local=dict(
             type='str', required=True, aliases=['identity', 'ident'],
             description='This can be either an IP address, fully qualified domain name or an email address.'
