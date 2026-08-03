@@ -46,7 +46,7 @@ class MultiCallbacks(MultiModuleCallbacks):
                     simplify_func=meta_entry.simplify_existing,
                 )
             ),
-            'categories': meta_entry._get_category_selection(),
+            'categories': meta_entry.get_category_selection(),
         }
 
     @staticmethod

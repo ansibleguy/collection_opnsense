@@ -154,6 +154,9 @@ class Rule(BaseModule):
 
         return {}
 
+    def get_category_selection(self) -> dict:
+        return self._get_category_selection()
+
     def build_request(self) -> dict:
         raw_request = self._base_build_request()
 

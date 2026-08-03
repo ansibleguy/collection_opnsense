@@ -67,7 +67,7 @@ def test_alias_multi_callbacks_cache_categories():
             'uuid-b': {'name': 'bogons', 'categories': {'cat-2': {'value': 'Builtin'}}},
         },
         simplify_existing=lambda entry: entry,
-        _get_category_selection=lambda: {'cat-1': {'value': 'Ops'}},
+        get_category_selection=lambda: {'cat-1': {'value': 'Ops'}},
     )
 
     cache = AliasMultiCallbacks.get_existing(meta_entry)
@@ -87,7 +87,7 @@ def test_rule_multi_callbacks_cache_categories():
             'uuid-r1': {'description': 'Allow VPN', 'categories': {'cat-1': {'value': 'VPN'}}},
         },
         simplify_existing=lambda entry: entry,
-        _get_category_selection=lambda: {'cat-1': {'value': 'VPN'}},
+        get_category_selection=lambda: {'cat-1': {'value': 'VPN'}},
     )
 
     cache = RuleMultiCallbacks.get_existing(meta_entry)
