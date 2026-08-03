@@ -23,7 +23,9 @@ try:
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.alias import Alias
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import ensure_list
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.alias import \
-        builtin_alias, build_updatefreq
+        builtin_alias, build_updatefreq, filter_builtin_alias
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.translate import \
+        get_simple_existing
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -34,6 +36,24 @@ except MODULE_EXCEPTIONS:
 
 
 class MultiCallbacks(MultiModuleCallbacks):
+    @staticmethod
+    def get_existing(meta_entry: Alias) -> dict:
+        existing_raw = meta_entry.search()
+        return {
+            'main': filter_builtin_alias(
+                get_simple_existing(
+                    entries=existing_raw,
+                    simplify_func=meta_entry.simplify_existing,
+                )
+            ),
+            'categories': meta_entry._get_category_selection(),
+        }
+
+    @staticmethod
+    def set_existing(entry: Alias, cache: dict):
+        entry.existing_entries = cache['main']
+        entry.existing_categories = cache['categories']
+
     @staticmethod
     def build(entry: dict) -> dict:
         entry['content'] = list(map(str, ensure_list(entry['content'])))
