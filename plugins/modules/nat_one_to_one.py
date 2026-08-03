@@ -33,6 +33,7 @@ def run_module():
         'source_invert': RULE_MOD_ARGS['source_invert'],
         'destination_net': RULE_MOD_ARGS['destination_net'],
         'destination_invert': RULE_MOD_ARGS['destination_invert'],
+        'categories': RULE_MOD_ARGS['categories'],
         'description': RULE_MOD_ARGS['description'],
         'uuid': RULE_MOD_ARGS['uuid'],
     }

@@ -5,6 +5,8 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.handler impor
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
     validate_int_fields
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import Session
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import \
+    is_unset
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.rule import \
     validate_values
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.module import BaseModule
@@ -30,7 +32,7 @@ class Rule(BaseModule):
         'allow_opts', 'state_type', 'state_policy', 'state_timeout',
         'max_states', 'max_src_nodes', 'max_src_states', 'max_src_conn', 'max_src_conn_rate',
         'max_src_conn_rates', 'overload', 'adaptive_start', 'adaptive_end', 'prio', 'set_prio', 'set_prio_low',
-        'tcp_flags', 'tcp_flags_clear', 'schedule', 'tos', 'icmp_type',
+        'tcp_flags', 'tcp_flags_clear', 'schedule', 'tos', 'icmp_type', 'categories',
         'divert_to', 'shaper1', 'shaper2',
     ]
     FIELDS_ALL = ['enabled']
@@ -73,6 +75,7 @@ class Rule(BaseModule):
             'divert_to', 'shaper1', 'shaper2',
         ],
         'list': ['interface', 'tcp_flags', 'tcp_flags_clear', 'icmp_type', 'icmpv6_type'],
+        'list_value': ['categories'],
         'int': ['sequence', 'state_timeout'],
     }
     FIELDS_OPTIONAL = ['icmp_type', 'icmpv6_type']
@@ -91,6 +94,7 @@ class Rule(BaseModule):
         BaseModule.__init__(self=self, m=module, r=result, s=session, f=fail, multi=multi)
         self.rule = {}
         self.log_name = None
+        self.existing_categories = None
 
     def _build_log_name(self) -> str:
         if self.p['description'] not in [None, '']:
@@ -135,3 +139,36 @@ class Rule(BaseModule):
         else:
             self.m.warn(msg)
             raise ModuleSoftError
+
+    def _get_category_selection(self) -> dict:
+        if isinstance(self.existing_categories, dict):
+            return self.existing_categories
+
+        if isinstance(self.existing_entries, dict):
+            if self.exists and self.field_pk in self.rule and self.rule[self.field_pk] in self.existing_entries:
+                return self.existing_entries[self.rule[self.field_pk]].get('categories', {})
+
+            for entry in self.existing_entries.values():
+                if isinstance(entry, dict) and 'categories' in entry:
+                    return entry['categories']
+
+        return {}
+
+    def get_category_selection(self) -> dict:
+        return self._get_category_selection()
+
+    def build_request(self) -> dict:
+        raw_request = self._base_build_request()
+
+        if not is_unset(self.p['categories']):
+            selection = self._get_category_selection()
+            categories = self.p['categories'].copy()
+            self.find_multiple_links(
+                field='categories',
+                existing=selection,
+                existing_field_id='value',
+            )
+            raw_request['rule']['categories'] = self.RESP_JOIN_CHAR.join(self.p['categories'])
+            self.p['categories'] = categories
+
+        return raw_request
