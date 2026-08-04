@@ -11,7 +11,8 @@ DHCP
 **TESTS**: `Reservation <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/dhcp_reservation.yml>`_ |
 `ControlAgent <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/dhcp_controlagent.yml>`_ |
 `Subnet <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/dhcp_subnet.yml>`_ |
-`General <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/dhcp_general.yml>`_
+`General <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/dhcp_general.yml>`_ |
+`HA-Peer <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/dhcp_ha_peer.yml>`_
 
 **API Docs**: `Core - KEA <https://docs.opnsense.org/development/api/core/kea.html>`_
 
@@ -40,6 +41,19 @@ oxlorg.opnsense.dhcp_general
     "socket_type","string","false","raw","dhcp_socket_type","One of: 'raw', 'udp'. Socket type used for DHCP communication."
     "fw_rules","boolean","false","true","fwrules, rules","Automatically add a basic set of firewall rules to allow DHCP traffic"
     "lifetime","int","false","4000","valid_lifetime","Defines how long the addresses (leases) given out by the server are valid (in seconds)"
+    "ha","dictionary","false","\-","\-","High-availability settings. Left untouched if not supplied. Sub-parameters: 'enabled' (boolean, default false) - enable high-availability on this server, requires the control agent to be enabled as well; 'this_server_name' (string, default '') - name of this server, should match one of the configured peers - when left empty, the hostname of the machine is used; 'max_unacked_clients' (int, default 0) - number of clients which send messages to the partner but appear to not receive any response"
+
+oxlorg.opnsense.dhcp_ha_peer
+================================
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "name","string","true","\-","\-","Name of the peer. There should be one entry matching the 'ha.this_server_name' of this firewall's dhcp_general config. All nodes should contain the exact same peer definitions"
+    "role","string","true","\-","\-","One of: 'primary', 'standby'. Role this peer takes in the high-availability setup"
+    "url","string","true","\-","\-","URL the peer's server instance uses for high-availability communication. Has to use a different port than its control agent (e.g. 'http://192.168.0.1:8080')"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 oxlorg.opnsense.dhcp_reservation
 ====================================
@@ -117,6 +131,72 @@ oxlorg.opnsense.dhcp_general
               # socket_type: 'raw'
               # fw_rules: true
               # lifetime: 4000
+              # ha:
+              #   enabled: false
+              #   this_server_name: ''
+              #   max_unacked_clients: 0
+
+          - name: Enabling high-availability
+            oxlorg.opnsense.dhcp_general:
+              enabled: true
+              interfaces: 'lan'
+              ha:
+                enabled: true
+                this_server_name: 'fw01'
+                max_unacked_clients: 2
+
+----
+
+oxlorg.opnsense.dhcp_ha_peer
+================================
+
+.. code-block:: yaml
+
+    - hosts: firewalls
+      connection: local
+      gather_facts: no
+      module_defaults:
+        group/oxlorg.opnsense.all:
+          firewall: 'opnsense.template.opnsense.oxl.app'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+        oxlorg.opnsense.list:
+          target: 'dhcp_ha_peer'
+
+      tasks:
+        - name: Example
+          oxlorg.opnsense.dhcp_ha_peer:
+            name: 'fw01'
+            role: 'primary'
+            url: 'http://192.168.0.1:8080'
+            # state: 'present'
+            # reload: true
+            # debug: false
+
+        - name: Adding the peers
+          oxlorg.opnsense.dhcp_ha_peer:
+            name: "{{ item.name }}"
+            role: "{{ item.role }}"
+            url: "{{ item.url }}"
+          loop:
+            - {name: 'fw01', role: 'primary', url: 'http://192.168.0.1:8080'}
+            - {name: 'fw02', role: 'standby', url: 'http://192.168.0.2:8080'}
+
+        - name: Removing
+          oxlorg.opnsense.dhcp_ha_peer:
+            name: 'fw02'
+            role: 'standby'
+            url: 'http://192.168.0.2:8080'
+            state: 'absent'
+
+        - name: Listing
+          oxlorg.opnsense.list:
+          #  target: 'dhcp_ha_peer'
+          register: existing_entries
+
+        - name: Show existing peers
+          ansible.builtin.debug:
+            var: existing_entries.data
 
 ----
 

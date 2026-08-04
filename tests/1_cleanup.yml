@@ -788,6 +788,16 @@
         http_host: '127.0.0.1'
         http_port: 8000
 
+    - name: Cleanup DHCP HA-Peers
+      oxlorg.opnsense.dhcp_ha_peer:
+        name: "{{ item }}"
+        role: 'primary'
+        url: 'http://192.168.1.1:8080'
+        state: 'absent'
+      loop:
+        - 'peer1'
+        - 'peer2'
+
     - name: Cleanup DHCP Settings
       oxlorg.opnsense.dhcp_general:
         enabled: false

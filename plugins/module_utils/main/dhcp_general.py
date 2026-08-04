@@ -40,17 +40,13 @@ class General(GeneralModule):
         'lifetime': {'min': 0},
         'ha_max_unacked_clients': {'min': 0},
     }
+    FIELDS_OPTIONAL = ['ha_enabled', 'ha_this_server_name', 'ha_max_unacked_clients']
 
     def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        ha_input = module.params.get('ha')
-        if ha_input is not None:
-            module.params['ha_enabled'] = ha_input['enabled']
-            module.params['ha_this_server_name'] = ha_input['this_server_name']
-            module.params['ha_max_unacked_clients'] = ha_input['max_unacked_clients']
-        else:
-            self.FIELDS_CHANGE = [f for f in self.FIELDS_CHANGE if not f.startswith('ha_')]
-            self.FIELDS_ALL = self.FIELDS_CHANGE
-            self.FIELDS_TRANSLATE = {k: v for k, v in self.FIELDS_TRANSLATE.items() if not k.startswith('ha_')}
-            self.FIELDS_TYPING = {t: [f for f in fields if not f.startswith('ha_')] for t, fields in self.FIELDS_TYPING.items()}
-            self.INT_VALIDATIONS = {k: v for k, v in self.INT_VALIDATIONS.items() if not k.startswith('ha_')}
+        # NOT module.params['ha'] - the 'list' module instantiates us without the module-args
+        ha = module.params.get('ha')
+        if ha is not None:
+            for key, value in ha.items():
+                module.params[f'ha_{key}'] = value
+
         GeneralModule.__init__(self=self, m=module, r=result, s=session)
