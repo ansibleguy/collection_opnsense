@@ -203,6 +203,7 @@ run_test_soft 'nginx_upstream_server' 1
 run_test_soft 'dhcrelay_destination' 1
 run_test_soft 'dhcrelay_relay' 1
 run_test_soft 'dhcp_general' 1
+run_test_soft 'dhcp_ha_peer' 1
 run_test_soft 'dhcp_controlagent' 1
 run_test_soft 'dhcp_subnet' 1
 run_test_soft 'dhcp_reservation' 1

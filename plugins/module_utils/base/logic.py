@@ -533,6 +533,9 @@ class BaseLogic:
                 if field in self.p:
                     diff[field] = self.p[field]
 
+                elif field in getattr(self, self.ATTR_OPTIONAL, []):
+                    continue
+
             if isinstance(diff[field], list):
                 try:
                     diff[field].sort()
