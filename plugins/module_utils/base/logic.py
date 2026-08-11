@@ -188,7 +188,11 @@ class BaseLogic:
 
                 # todo: perform async calls for parallel data fetching
                 detail_entry = {}
-                if force_details or not base_match_fields or \
+                if base_entry.get('is_automatic'):
+                    if self.raw is None:
+                        self.raw = base_entry
+
+                elif force_details or not base_match_fields or \
                         all(base_entry[field] == self.p[field] for field in match_fields):
                     detail_entry = self._search_path_handling(
                         self._api_get({

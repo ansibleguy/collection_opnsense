@@ -14,10 +14,11 @@ class SNat(BaseModule):
         'add': 'add_rule',
         'del': 'del_rule',
         'set': 'set_rule',
-        'search': 'get',
+        'search': 'search_rule',
+        'detail': 'get_rule',
         'toggle': 'toggle_rule',
     }
-    API_KEY_PATH = 'filter.snatrules.rule'
+    API_KEY_PATH = 'rule'
     API_MOD = 'firewall'
     API_CONT = 'source_nat'
     FIELDS_CHANGE = [
@@ -61,6 +62,15 @@ class SNat(BaseModule):
                 self.m.fail_json(
                     "You need to provide an 'target' to create a source-nat rule!"
                 )
+
+        if not is_unset(self.p['protocol']):
+            # OPNsense returns source-NAT protocols mostly uppercase, except 'any' which
+            # stays lowercase. Normalize to the API's canonical values for idempotency.
+            if self.p['protocol'].lower() == 'any':
+                self.p['protocol'] = 'any'
+
+            else:
+                self.p['protocol'] = self.p['protocol'].upper()
 
         self._build_log_name()
         self.find(match_fields=self.p['match_fields'])
