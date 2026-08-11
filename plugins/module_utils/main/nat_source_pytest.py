@@ -97,3 +97,37 @@ def test_nat_source_existing_uppercase_protocol_stays_idempotent(mocker):
     snat._base_update(enable_switch=False)
 
     assert result['changed'] is False
+
+
+def test_nat_source_any_protocol_stays_lowercase(mocker):
+    module = MockAnsibleModule()
+    module.params.update({
+        'state': 'present',
+        'enabled': True,
+        'sequence': 1,
+        'no_nat': False,
+        'interface': 'lan',
+        'target': '192.168.0.5',
+        'target_port': '',
+        'description': 'ANSIBLE_TEST_SNAT',
+        'ip_protocol': 'inet',
+        'protocol': 'ANY',
+        'source_invert': False,
+        'source_net': 'any',
+        'source_port': '',
+        'destination_invert': False,
+        'destination_net': '192.168.0.1',
+        'destination_port': '',
+        'log': False,
+        'static_port': False,
+        'match_fields': ['description'],
+    })
+    result = {'changed': False, 'diff': {'before': {}, 'after': {}}}
+    snat = SNat(module=module, result=result)
+
+    mocker.patch.object(snat, 'find')
+    mocker.patch.object(snat, '_base_check')
+
+    snat.check()
+
+    assert snat.p['protocol'] == 'any'

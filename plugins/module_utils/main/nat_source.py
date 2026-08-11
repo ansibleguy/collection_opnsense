@@ -64,9 +64,13 @@ class SNat(BaseModule):
                 )
 
         if not is_unset(self.p['protocol']):
-            # OPNsense returns protocol values uppercase on existing source-NAT rules.
-            # Normalize user input to that canonical form so re-runs stay idempotent.
-            self.p['protocol'] = self.p['protocol'].upper()
+            # OPNsense returns source-NAT protocols mostly uppercase, except 'any' which
+            # stays lowercase. Normalize to the API's canonical values for idempotency.
+            if self.p['protocol'].lower() == 'any':
+                self.p['protocol'] = 'any'
+
+            else:
+                self.p['protocol'] = self.p['protocol'].upper()
 
         self._build_log_name()
         self.find(match_fields=self.p['match_fields'])
