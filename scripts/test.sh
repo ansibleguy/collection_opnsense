@@ -120,6 +120,7 @@ run_test_soft 'wireguard_peer' 1
 run_test_soft 'wireguard_server' 1
 run_test_soft 'wireguard_general' 1
 run_test_soft 'wireguard_show' 1
+run_test_soft 'interface_assignment' 1
 run_test_soft 'interface_vlan' 1
 run_test_soft 'interface_vxlan' 1
 run_test_soft 'interface_vip' 1

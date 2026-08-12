@@ -58,6 +58,7 @@ def run_module():
                 'nat_one_to_one',
                 'nat_destination',
                 'nut',
+                'interface_assignment',
             ],
             description='What part of the running config should be reloaded'
         ),
@@ -201,6 +202,10 @@ def run_module():
         elif target == 'nut':
             from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.nut import \
                 Nut as Target_Obj
+
+        elif target == 'interface_assignment':
+            from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.interface_assignment import \
+                Assignment as Target_Obj
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()
