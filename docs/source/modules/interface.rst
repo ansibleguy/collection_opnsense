@@ -32,6 +32,11 @@ Interface
 Info
 ****
 
+oxlorg.opnsense.interface_assignment
+==================================
+
+This module manages interface assigned that can be found in the WEB-UI menu: 'Interfaces - Assignments'
+
 oxlorg.opnsense.interface_vlan
 ==================================
 
@@ -86,6 +91,23 @@ Definition
 **********
 
 .. include:: ../_include/param_basic.rst
+
+oxlorg.opnsense.interface_assignment
+==================================
+
+.. warning::
+
+    This feature is only available in OPNsense version >= 26.7
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "identifier","string", "false for creation,else true","\-","id","Technical identifier of the interface, used by hasync for example. "
+    "description","string","false","\-","desc","You may enter a description here for your reference (not parsed)"
+    "device","string","false ","\-","if","Device name to connect this interface to."
+    "lock","boolean","false","\-","\-","Prevent interface removal."
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 oxlorg.opnsense.interface_vlan
 ==================================
@@ -242,7 +264,7 @@ oxlorg.opnsense.interface_vlan
 ==================================
 
 .. code-block:: yaml
-
+    
     - hosts: firewalls
       connection: local
       gather_facts: false
@@ -253,36 +275,45 @@ oxlorg.opnsense.interface_vlan
     
         oxlorg.opnsense.list:
           target: 'interface_vlan'
+
+oxlorg.opnsense.interface_vlan
+==================================
+
+.. code-block:: yaml
+
+    - hosts: firewalls
+      connection: local
+      gather_facts: false
+      module_defaults:
+        group/oxlorg.opnsense.all:
+          firewall: 'opnsense.template.opnsense.oxl.app'
+          api_credential_file: '/home/guy/.secret/opn.key'
+    
+        oxlorg.opnsense.list:
+          target: 'interface_assignment'
     
       tasks:
-        - name: Example
-          oxlorg.opnsense.interface_vlan:
+        - name: Assign a physical device
+          oxlorg.opnsense.interface_assignment:
             description: 'example'
-            interface: 'vtnet0'
-            vlan: 100
-            # priority: 0
-            # debug: false
-            # state: 'present'
-            # reload: true
-    
-        - name: Adding VLAN
-          oxlorg.opnsense.interface_vlan:
+            interface: 'vtnet2'
+               
+        - name: Assign a VLAN
+          oxlorg.opnsense.interface_assignment:
             description: 'test1'
-            interface: 'vtnet0'
-            vlan: 100
+            interface: '"vlan0.20"'
     
         - name: Listing
           oxlorg.opnsense.list:
-          #  target: 'interface_vlan'
           register: existing_entries
     
-        - name: Printing VLANs
+        - name: Printing Assignments
           ansible.builtin.debug:
             var: existing_entries.data
     
         - name: Removing VLAN
           oxlorg.opnsense.interface_vlan:
-            description: 'test1'
+            identifier: 'opt2'
             state: 'absent'
 
 oxlorg.opnsense.interface_vxlan
