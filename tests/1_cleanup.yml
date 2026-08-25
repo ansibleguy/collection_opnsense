@@ -801,6 +801,13 @@
         - '192.168.88.0/24'
         - '192.168.89.0/24'
 
+    - name: Cleanup Kea DHCPv4 Options
+      oxlorg.opnsense.kea_dhcp4_option:
+        description: "{{ item }}"
+        state: 'absent'
+      loop:
+        - 'ansible-test-option'
+
     - name: Cleanup ACME Certificates
       oxlorg.opnsense.acme_certificate:
         description: '{{ item }}'
