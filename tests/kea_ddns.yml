@@ -1,0 +1,84 @@
+---
+
+- name: Testing KEA DDNS
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    oxlorg.opnsense.list:
+      target: 'kea_ddns'
+
+  environment:
+    HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'TEST_PROXY') | default('') }}"
+
+  tasks:
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        'data' not in opn_pre1
+
+    - name: Configuring - failing because of invalid server port
+      oxlorg.opnsense.kea_ddns:
+        server_port: 0
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Configuring - failing because of invalid server IP
+      oxlorg.opnsense.kea_ddns:
+        server_ip: 'not-an-ip'
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+
+    - name: Configuring
+      oxlorg.opnsense.kea_ddns:
+        enabled: true
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing
+      oxlorg.opnsense.kea_ddns:
+        enabled: true
+        server_ip: '127.0.0.1'
+        server_port: 53002
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+      when: not ansible_check_mode
+
+    - name: Nothing changed
+      oxlorg.opnsense.kea_ddns:
+        enabled: true
+        server_ip: '127.0.0.1'
+        server_port: 53002
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        opn3.changed
+      when: not ansible_check_mode
+
+    - name: Disable
+      oxlorg.opnsense.kea_ddns:
+        enabled: false
+        server_ip: '127.0.0.1'
+        server_port: 53002
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      oxlorg.opnsense.kea_ddns:
+        enabled: false
+        server_ip: '127.0.0.1'
+        server_port: 53001
+      when: not ansible_check_mode

@@ -11,7 +11,8 @@ DHCP
 **TESTS**: `Reservation <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/dhcp_reservation.yml>`_ |
 `ControlAgent <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/dhcp_controlagent.yml>`_ |
 `Subnet <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/dhcp_subnet.yml>`_ |
-`General <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/dhcp_general.yml>`_
+`General <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/dhcp_general.yml>`_ |
+`DDNS <https://github.com/O-X-L/ansible-opnsense/blob/latest/tests/kea_ddns.yml>`_
 
 **API Docs**: `Core - KEA <https://docs.opnsense.org/development/api/core/kea.html>`_
 
@@ -90,6 +91,18 @@ oxlorg.opnsense.dhcp_subnet
     "tftp_file","string","false","\-","tftp_boot_file,boot_file_name","TFTP Boot filename to request"
     "ipv","int","false","4","ip_version","IP version - one of '4', '6'"
     "v6_only_preferred","boolean","false","false","v6_preferred","If clients should prefer IPv6 over IPv4"
+
+oxlorg.opnsense.kea_ddns
+============================
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "enabled","boolean","false","true","\-","Enable or disable the Kea DHCP DDNS service"
+    "server_ip","string","false","127.0.0.1","host","Address on which the DHCP DDNS server interface should be available"
+    "server_port","int","false","53001","port","Portnumber to use for the DHCP DDNS server interface"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 ----
 
@@ -251,3 +264,32 @@ oxlorg.opnsense.dhcp_subnet
           oxlorg.opnsense.dhcp_subnet:
             subnet: '10.0.100.0/24'
             state: absent
+
+----
+
+oxlorg.opnsense.kea_ddns
+============================
+
+.. code-block:: yaml
+
+    - hosts: firewalls
+      connection: local
+      gather_facts: false
+      module_defaults:
+        group/oxlorg.opnsense.all:
+          firewall: 'opnsense.template.opnsense.oxl.app'
+          api_credential_file: '/home/guy/.secret/opn.key'
+
+      tasks:
+        - name: Example
+          oxlorg.opnsense.kea_ddns:
+            enabled: true
+            server_ip: '127.0.0.1'
+            server_port: 53001
+            # reload: true
+            # debug: false
+
+        - name: Stopping
+          oxlorg.opnsense.kea_ddns:
+            enabled: false
+            reload: true
