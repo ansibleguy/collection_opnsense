@@ -1,0 +1,153 @@
+---
+
+- name: Testing Router Advertisements
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    oxlorg.opnsense.list:
+      target: 'radvd'
+
+  environment:
+    HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'TEST_PROXY') | default('') }}"
+
+  tasks:
+    - name: Cleanup - does not exist
+      oxlorg.opnsense.radvd:
+        interface: lan
+        state: absent
+        reload: false
+      register: opn_pre1
+      failed_when: >
+        opn_pre1.failed or
+        opn_pre1.changed
+      when: not ansible_check_mode
+
+    - name: Create entry
+      oxlorg.opnsense.radvd:
+        interface: lan
+        enabled: true
+        mode: stateless
+        routes:
+          - 2001:db8:1::/64
+        rdnss:
+          - 2001:db8::53
+        dnssl:
+          - example.net
+        min_rtr_adv_interval: 30
+        max_rtr_adv_interval: 100
+        adv_default_preference: medium
+        reload: false
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Create entry - nothing changed
+      oxlorg.opnsense.radvd:
+        interface: lan
+        enabled: true
+        mode: stateless
+        routes:
+          - 2001:db8:1::/64
+        rdnss:
+          - 2001:db8::53
+        dnssl:
+          - example.net
+        min_rtr_adv_interval: 30
+        max_rtr_adv_interval: 100
+        adv_default_preference: medium
+        reload: false
+      register: opn1b
+      failed_when: >
+        opn1b.failed or
+        opn1b.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_list1
+      failed_when: >
+        'data' not in opn_list1 or
+        opn_list1.data | length != 1 or
+        opn_list1.data[0].interface != 'lan' or
+        not opn_list1.data[0].enabled
+      when: not ansible_check_mode
+
+    - name: Update entry
+      oxlorg.opnsense.radvd:
+        interface: lan
+        enabled: true
+        mode: unmanaged
+        routes:
+          - 2001:db8:1::/64
+          - 2001:db8:2::/64
+        rdnss:
+          - 2001:db8::54
+        dnssl:
+          - example.org
+        dns: false
+        min_rtr_adv_interval: 40
+        max_rtr_adv_interval: 120
+        adv_default_preference: high
+        reload: false
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        not opn2.changed
+
+    - name: Disable entry
+      oxlorg.opnsense.radvd:
+        interface: lan
+        enabled: false
+        mode: unmanaged
+        routes:
+          - 2001:db8:1::/64
+          - 2001:db8:2::/64
+        rdnss:
+          - 2001:db8::54
+        dnssl:
+          - example.org
+        dns: false
+        min_rtr_adv_interval: 40
+        max_rtr_adv_interval: 120
+        adv_default_preference: high
+        reload: false
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+
+    - name: Delete entry
+      oxlorg.opnsense.radvd:
+        interface: lan
+        state: absent
+        reload: false
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        not opn4.changed
+      when: not ansible_check_mode
+
+    - name: Delete entry - nothing changed
+      oxlorg.opnsense.radvd:
+        interface: lan
+        state: absent
+        reload: false
+      register: opn5
+      failed_when: >
+        opn5.failed or
+        opn5.changed
+      when: not ansible_check_mode
+
+    - name: Listing - empty
+      oxlorg.opnsense.list:
+      register: opn_list2
+      failed_when: >
+        'data' not in opn_list2 or
+        opn_list2.data | length != 0
+      when: not ansible_check_mode

@@ -42,6 +42,7 @@
    <url><loc>https://ansible-opnsense.oxl.app/modules/openvpn.html</loc></url>
    <url><loc>https://ansible-opnsense.oxl.app/modules/package.html</loc></url>
    <url><loc>https://ansible-opnsense.oxl.app/modules/postfix.html</loc></url>
+   <url><loc>https://ansible-opnsense.oxl.app/modules/radvd.html</loc></url>
    <url><loc>https://ansible-opnsense.oxl.app/modules/route.html</loc></url>
    <url><loc>https://ansible-opnsense.oxl.app/modules/rule.html</loc></url>
    <url><loc>https://ansible-opnsense.oxl.app/modules/rule_interface_group.html</loc></url>
