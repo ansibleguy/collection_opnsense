@@ -204,6 +204,7 @@ run_test_soft 'dhcrelay_destination' 1
 run_test_soft 'dhcrelay_relay' 1
 run_test_soft 'dhcp_general' 1
 run_test_soft 'dhcp_controlagent' 1
+run_test_soft 'kea_dhcp4_option' 1
 run_test_soft 'dhcp_subnet' 1
 run_test_soft 'dhcp_reservation' 1
 run_test_soft 'acme_general' 1

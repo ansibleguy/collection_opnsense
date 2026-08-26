@@ -1,0 +1,114 @@
+---
+
+- name: Kea DHCPv4 Option
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    oxlorg.opnsense.list:
+      target: 'kea_dhcp4_option'
+
+  environment:
+    HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'TEST_PROXY') | default('') }}"
+
+  tasks:
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      oxlorg.opnsense.kea_dhcp4_option:
+        code: '66'
+        encoding: 'string'
+        data: 'test'
+        description: 'ansible-test-option'
+        state: 'absent'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1
+      oxlorg.opnsense.kea_dhcp4_option:
+        code: '66'
+        encoding: 'string'
+        data: 'test'
+        description: 'ansible-test-option'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Adding 1 - Nothing changed
+      oxlorg.opnsense.kea_dhcp4_option:
+        code: '66'
+        encoding: 'string'
+        data: 'test'
+        description: 'ansible-test-option'
+      register: opn2
+      failed_when: >
+        opn2.failed or
+        opn2.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1
+      oxlorg.opnsense.kea_dhcp4_option:
+        code: '66'
+        encoding: 'string'
+        data: 'changed'
+        force: true
+        description: 'ansible-test-option'
+      register: opn3
+      failed_when: >
+        opn3.failed or
+        not opn3.changed
+      when: not ansible_check_mode
+
+    - name: Changing 1 - Nothing changed
+      oxlorg.opnsense.kea_dhcp4_option:
+        code: '66'
+        encoding: 'string'
+        data: 'changed'
+        force: true
+        description: 'ansible-test-option'
+      register: opn4
+      failed_when: >
+        opn4.failed or
+        opn4.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn5
+      failed_when: >
+        'data' not in opn5 or
+        opn5.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Removing 1
+      oxlorg.opnsense.kea_dhcp4_option:
+        code: '66'
+        encoding: 'string'
+        data: 'changed'
+        description: 'ansible-test-option'
+        state: absent
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        not opn6.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode
