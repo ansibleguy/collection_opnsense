@@ -51,7 +51,7 @@ TARGETS = [
     'haproxy_maintenance', 'haproxy_cpu', 'haproxy_user', 'haproxy_group', 'haproxy_acl', 'haproxy_action',
     'haproxy_lua', 'haproxy_fcgi', 'haproxy_errorfile', 'haproxy_mailer', 'haproxy_mapfile',
     'haproxy_resolver', 'haproxy_backend', 'haproxy_frontend', 'haproxy_healthcheck', 'haproxy_server',
-    'wazuh_agent', 'nut',
+    'wazuh_agent', 'nut', 'radvd',
 ]
 
 
@@ -685,6 +685,10 @@ def run_module():
         elif target == 'nut':
             from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.nut import \
                 Nut as Target_Obj
+
+        elif target == 'radvd':
+            from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.radvd import \
+                Radvd as Target_Obj
 
     except AttributeError:
         module_dependency_error()

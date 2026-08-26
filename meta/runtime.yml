@@ -207,6 +207,8 @@ action_groups:
   nut:
     - oxlorg.opnsense.nut
     - oxlorg.opnsense.nut_diagnostics
+  radvd:
+    - oxlorg.opnsense.radvd
   all:
     - metadata:
         extend_group:
@@ -240,6 +242,7 @@ action_groups:
           - oxlorg.opnsense.haproxy
           - oxlorg.opnsense.nut
           - oxlorg.opnsense.nut_diagnostics
+          - oxlorg.opnsense.radvd
 
 plugin_routing:
   modules:

@@ -801,6 +801,14 @@
         - '192.168.88.0/24'
         - '192.168.89.0/24'
 
+    - name: Cleanup Router Advertisements
+      oxlorg.opnsense.radvd:
+        interface: "{{ item }}"
+        state: 'absent'
+        reload: false
+      loop:
+        - 'lan'
+
     - name: Cleanup ACME Certificates
       oxlorg.opnsense.acme_certificate:
         description: '{{ item }}'

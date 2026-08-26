@@ -259,6 +259,7 @@ run_test_soft 'haproxy_backend' 1
 run_test_soft 'haproxy_frontend' 1
 run_test_soft 'haproxy_healthcheck' 1
 run_test_soft 'haproxy_server' 1
+run_test_soft 'radvd' 1
 run_test_soft 'nut' 1
 run_test_soft 'nut_diagnostics' 1
 
