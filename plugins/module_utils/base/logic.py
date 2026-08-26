@@ -418,9 +418,88 @@ class BaseLogic:
             if self.p['debug']:
                 self.m.warn(f"{self.r['diff']}")
 
+            if isinstance(response, dict) and response.get('in_use', False):
+                self._base_delete_refused(response)
+
             return response
 
         return {}
+
+    def _base_delete_refused(self, response: dict) -> None:
+        # OPNsense refused the deletion because the item is still referenced
+        # somewhere in config.xml. Controllers that set
+        # $internalModelUseSafeDelete run checkAndThrowSafeDelete over the whole
+        # configuration, and a handful of others (firewall alias/group/category,
+        # routing gateways, interface vip/lagg/gre/gif/bridge) carry their own
+        # check. All of them answer with HTTP 500 and a message containing
+        # ' in use', which check_response() turns into this flag rather than
+        # failing on the spot - only the caller knows what was being deleted.
+        #
+        # Nothing was deleted, so the change has to be taken back. Reporting
+        # 'changed' here makes every following run report it again while the
+        # item stays exactly where it was.
+        self.r['changed'] = False
+        self.r['diff']['after'] = self.r['diff'].get('before', {})
+
+        detail = response.get('errorMessage', '')
+
+        if is_unset(detail):
+            detail = 'no detail returned by the API'
+
+        else:
+            # the API renders the referring items as an HTML list
+            detail = str(detail).replace('<br/>', '; ').replace('\n', '; ').strip('; ')
+
+        self._error_delete_refused(
+            f"Unable to delete {self.__class__.__name__} '{self._base_entry_id()}' - "
+            f"OPNsense refused it because the item is still referenced: {detail}"
+        )
+
+    def _base_entry_id(self) -> str:
+        # Whatever identifies the entry to the user who wrote the task, in
+        # descending order of how specific it is. Modules differ: some declare
+        # a single FIELD_ID, some let the caller choose match_fields, some
+        # carry a class-level FIELDS_MATCH and nothing else. Falling straight
+        # through to field_pk - 'uuid', which a delete-by-name task never sets -
+        # renders 'unknown' and leaves the failure naming no item at all.
+        fields = []
+
+        if hasattr(self, 'FIELD_ID'):
+            fields = [getattr(self, 'FIELD_ID')]
+
+        elif self.p.get('match_fields', None) is not None:
+            fields = self.p['match_fields']
+
+        elif hasattr(self, 'FIELDS_MATCH'):
+            fields = getattr(self, 'FIELDS_MATCH')
+
+        values = [
+            f"{f}={self.p[f]}" for f in fields
+            if f in self.p and not is_unset(self.p[f])
+        ]
+
+        if len(values) == 0:
+            # last resort before the uuid: the fields almost every model names
+            # its entries by
+            for field in ['name', 'description', 'descr']:
+                if field in self.p and not is_unset(self.p[field]):
+                    return f"{field}={self.p[field]}"
+
+            return str(self.p.get(self.field_pk, 'unknown'))
+
+        return ', '.join(values)
+
+    def _error_delete_refused(self, msg: str) -> None:
+        # A MultiModule passes explicit fail-behaviour; when it asked not to fail
+        # on processing errors (multi_control.fail_process, which purge_all
+        # implies) the entry is skipped with a warning so the remaining entries
+        # are still processed. Everywhere else this is a hard failure: the
+        # desired state was not reached and nothing else will say so.
+        if getattr(self, 'fail_explicit', False) and not getattr(self, 'fail_process', True):
+            self.m.warn(msg)
+            raise ModuleSoftError(msg)
+
+        self.m.fail_json(msg)
 
     def _base_reload(self) -> dict:
         # reload the running config
