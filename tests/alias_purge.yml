@@ -166,7 +166,8 @@
       register: opn11
       failed_when: >
         not opn11.failed or
-        'currently referenced' not in opn11.msg
+        'still referenced' not in opn11.msg or
+        'ANSIBLE_TEST_4_1' not in opn11.msg
 
     - name: Purge ALL (except referenced by other)
       oxlorg.opnsense.alias_multi:

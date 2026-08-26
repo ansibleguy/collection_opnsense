@@ -14,6 +14,9 @@ class BaseModule(BaseLogic):
             # override params by MultiModule
             self.p = multi
 
+        # only a MultiModule passes fail-behaviour explicitly - a single module
+        # run has nothing to keep going for, so it must not soft-error
+        self.fail_explicit = len(f) > 0
         self.fail_verify = f.get('verify', False)
         self.fail_process = f.get('process', False)
 

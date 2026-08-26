@@ -178,18 +178,25 @@ def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
                 f"Response: {response.__dict__}"
             )
 
+        elif 'validations' in json:
+            # checked before the ' in use' case below: a validation error is a
+            # real failure even when one of its messages happens to contain
+            # 'in use' (OPNsense uses that wording for port and id clashes on
+            # *set*), and it never carries an errorMessage for a caller to act on
+            module.fail_json(
+                f"API call failed | Error: {json['validations']} | "
+                f"Response: {response.__dict__}"
+            )
+
         elif f"{response.__dict__}".find(' in use') != -1:
+            # OPNsense refuses to delete an item that is still referenced. Flag
+            # it rather than failing here - the caller knows what it was trying
+            # to delete. BaseLogic._base_delete() picks this up and fails with
+            # the referring items named.
             json['in_use'] = True
 
         else:
-            if 'validations' in json:
-                module.fail_json(
-                    f"API call failed | Error: {json['validations']} | "
-                    f"Response: {response.__dict__}"
-                )
-
-            else:
-                module.fail_json(f"API call failed | Response: {response.__dict__}")
+            module.fail_json(f"API call failed | Response: {response.__dict__}")
 
     return json
 
