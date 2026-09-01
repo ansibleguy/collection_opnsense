@@ -442,6 +442,39 @@
           - '::1000'
           - '::f00d'
         interface: 'lan'
+    
+    # external
+    - name: Adding external alias with expiration
+      oxlorg.opnsense.alias:
+        name: 'ANSIBLE_TEST_1_2_EXTERNAL1'
+        type: 'external'
+        expire: 60
+      register: opn_external1
+      failed_when: >
+        opn_external1.failed or
+        not opn_external1.changed
+    
+    - name: Adding external alias with expiration - nothing changed
+      oxlorg.opnsense.alias:
+        name: 'ANSIBLE_TEST_1_2_EXTERNAL1'
+        type: 'external'
+        expire: 60
+      register: opn_external2
+      failed_when: >
+        opn_external2.failed or
+        opn_external2.changed
+      when: not ansible_check_mode
+    
+    - name: Updating external alias expiration
+      oxlorg.opnsense.alias:
+        name: 'ANSIBLE_TEST_1_2_EXTERNAL1'
+        type: 'external'
+        expire: 120
+      register: opn_external3
+      failed_when: >
+        opn_external3.failed or
+        not opn_external3.changed
+      when: not ansible_check_mode
 
     # cleanup
 
