@@ -514,6 +514,7 @@
         - 'ANSIBLE_TEST_1_2_GEOIP2'
         - 'ANSIBLE_TEST_1_2_GEOIP3'
         - 'ANSIBLE_TEST_1_2_DYNIPV6HOST1'
+        - 'ANSIBLE_TEST_1_2_EXTERNAL1'
 
 - name: Testing Alias - listing
   hosts: localhost
