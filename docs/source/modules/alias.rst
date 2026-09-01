@@ -50,6 +50,7 @@ Definition
     "updatefreq_days","float","false","7.0 if type=urltable","\-","Needed only for the alias-type 'urltable' or 'urljson'. Interval to update its content. Per example: 0.5 for every 12 hours"
     "interface","string","false","\-","int, if","Needed only for the alias-type 'dynipv6host'. Select the interface for the V6 dynamic IP"
     "path_expression","string","false","\-","pr, jq","Needed only for the alias-type 'urljson'. Simplified expression to select a field inside a container, a dot is used as field separator (e.g. container.fieldname). Expressions using the jq language are also supported."
+    "expire","integer","false","\-","\-","Expiration time in seconds for alias-type 'external'. Minimum 60, maximum 999999999."
     "reload","boolean","false","false","\-", .. include:: ../_include/param_reload.rst
 
 .. include:: ../_include/param_basic.rst
@@ -159,6 +160,12 @@ Examples
             name: 'ANSIBLE_TEST_1_2_GEOIP2'
             type: 'geoip'
             content: ['AT', 'DE', 'CH']
+
+        - name: External alias with expiration
+          oxlorg.opnsense.alias:
+            name: 'external_dns_entries'
+            type: 'external'
+            expire: 86400
 
         - name: Reloading running config
           oxlorg.opnsense.reload:
